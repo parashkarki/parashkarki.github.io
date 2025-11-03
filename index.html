@@ -587,291 +587,2488 @@
         </div>
 
         <div class="footer">
-            <p> Quiz with Parash &copy; 2023 | Test Your Computer Science Knowledge</p>
+            <p>Master Quiz with Parash &copy; 2023 | Test Your Computer Science Knowledge</p>
         </div>
     </div>
 
     <script>
-        // Quiz data structure
-        const quizData = {
-            "Computer": {
-                icon: "fas fa-desktop",
-                description: "Fundamentals of computing systems",
-                subcategories: {
-                    "History of Computers": {
-                        questions: [
-                            {
-                                type: "mcq",
-                                question: "Who is considered the 'Father of Computers'?",
-                                options: ["Alan Turing", "Charles Babbage", "John von Neumann", "Steve Jobs"],
-                                correct: 2
-                            },
-                            {
-                                type: "mcq",
-                                question: "Which was the first electronic general-purpose computer?",
-                                options: ["ENIAC", "UNIVAC", "ABC", "Harvard Mark I"],
-                                correct: 1
-                            },
-                            {
-                                type: "fill",
-                                question: "The first computer bug was an actual ______ found in the Harvard Mark II computer.",
-                                answer: "moth"
-                            },
-                            {
-                                type: "mcq",
-                                question: "Which generation of computers used vacuum tubes?",
-                                options: ["First Generation", "Second Generation", "Third Generation", "Fourth Generation"],
-                                correct: 1
-                            },
-                            {
-                                type: "fill",
-                                question: "The ______ was the first mass-produced computer by IBM.",
-                                answer: "IBM 650"
-                            },
-                            {
-                                type: "mcq",
-                                question: "What technology replaced vacuum tubes in second generation computers?",
-                                options: ["Integrated Circuits", "Transistors", "Microprocessors", "Artificial Intelligence"],
-                                correct: 2
-                            }
-                        ]
-                    },
-                    "Characteristics of Computers": {
-                        questions: [
-                            {
-                                type: "mcq",
-                                question: "What is the term for raw facts and figures?",
-                                options: ["Information", "Data", "Knowledge", "Wisdom"],
-                                correct: 2
-                            },
-                            {
-                                type: "fill",
-                                question: "The brain of the computer is called the ______.",
-                                answer: "CPU"
-                            },
-                            {
-                                type: "mcq",
-                                question: "Which of these is NOT a type of computer malware?",
-                                options: ["Virus", "Worm", "Trojan", "Firewall"],
-                                correct: 4
-                            },
-                            {
-                                type: "mcq",
-                                question: "What does RAM stand for?",
-                                options: ["Random Access Memory", "Read Access Memory", "Rapid Access Memory", "Random Allocation Memory"],
-                                correct: 1
-                            },
-                            {
-                                type: "fill",
-                                question: "The fear of being without a mobile phone is called ______.",
-                                answer: "nomophobia"
-                            },
-                            {
-                                type: "mcq",
-                                question: "Which number system do computers use internally?",
-                                options: ["Decimal", "Binary", "Hexadecimal", "Octal"],
-                                correct: 2
-                            }
-                        ]
-                    },
-                    "Types of Computers": {
-                        questions: [
-                            {
-                                type: "mcq",
-                                question: "Which type of computer is designed for general use by a single person?",
-                                options: ["Mainframe", "Server", "Personal Computer", "Supercomputer"],
-                                correct: 3
-                            },
-                            {
-                                type: "fill",
-                                question: "A ______ is a portable computer that is smaller than a traditional laptop.",
-                                answer: "tablet"
-                            },
-                            {
-                                type: "mcq",
-                                question: "Which computer is optimized to provide services to other computers over a network?",
-                                options: ["Workstation", "Server", "Mainframe", "Supercomputer"],
-                                correct: 2
-                            },
-                            {
-                                type: "mcq",
-                                question: "What type of computer would NASA use for space exploration research?",
-                                options: ["Personal Computer", "Server", "Supercomputer", "Workstation"],
-                                correct: 3
-                            },
-                            {
-                                type: "fill",
-                                question: "The latest trend in computing is ______ computers integrated into watches and clothing.",
-                                answer: "wearable"
-                            },
-                            {
-                                type: "mcq",
-                                question: "Which of these is a specialized computer for playing video games on a TV?",
-                                options: ["Game Console", "Workstation", "Server", "Mainframe"],
-                                correct: 1
-                            }
-                        ]
-                    },
-                    "Computer Organization": {
-                        questions: [
-                            {
-                                type: "mcq",
-                                question: "What is the purpose of a file allocation table (FAT)?",
-                                options: ["To allocate memory to programs", "To locate files on a disk", "To manage CPU processes", "To organize network connections"],
-                                correct: 2
-                            },
-                            {
-                                type: "fill",
-                                question: "A ______ is an input device that converts physical documents into digital format.",
-                                answer: "scanner"
-                            },
-                            {
-                                type: "mcq",
-                                question: "Which type of memory is volatile?",
-                                options: ["ROM", "RAM", "Hard Disk", "Flash Drive"],
-                                correct: 2
-                            },
-                            {
-                                type: "mcq",
-                                question: "What does OMR stand for?",
-                                options: ["Optical Mark Reader", "Optical Memory Reader", "Online Mark Recognition", "Optical Media Reader"],
-                                correct: 1
-                            },
-                            {
-                                type: "fill",
-                                question: "The ______ is the main circuit board in a computer that connects all components.",
-                                answer: "motherboard"
-                            },
-                            {
-                                type: "mcq",
-                                question: "Which storage device has no moving parts?",
-                                options: ["HDD", "Floppy Disk", "SSD", "Magnetic Tape"],
-                                correct: 3
-                            }
-                        ]
-                    },
-                    "Computer Processing": {
-                        questions: [
-                            {
-                                type: "mcq",
-                                question: "What is the first step in the CPU instruction cycle?",
-                                options: ["Decode", "Execute", "Fetch", "Store"],
-                                correct: 3
-                            },
-                            {
-                                type: "fill",
-                                question: "The ______ carries data between the CPU and memory.",
-                                answer: "data bus"
-                            },
-                            {
-                                type: "mcq",
-                                question: "Which component performs arithmetic and logical operations in the CPU?",
-                                options: ["Control Unit", "ALU", "Registers", "Cache"],
-                                correct: 2
-                            },
-                            {
-                                type: "mcq",
-                                question: "What does GPU stand for?",
-                                options: ["General Processing Unit", "Graphics Processing Unit", "Global Processing Unit", "Graphical Performance Unit"],
-                                correct: 2
-                            },
-                            {
-                                type: "fill",
-                                question: "______ is a technique where multiple instructions are overlapped in execution.",
-                                answer: "Pipelining"
-                            },
-                            {
-                                type: "mcq",
-                                question: "Which factor does NOT contribute to a computer's speed?",
-                                options: ["CPU Clock Speed", "Number of Cores", "Monitor Size", "RAM Size"],
-                                correct: 3
-                            }
-                        ]
-                    },
-                    "Operating Systems": {
-                        questions: [
-                            {
-                                type: "mcq",
-                                question: "What is the core of an operating system called?",
-                                options: ["Shell", "Kernel", "Interface", "Desktop"],
-                                correct: 2
-                            },
-                            {
-                                type: "fill",
-                                question: "______ is when a computer spends most of its time swapping data between memory and disk.",
-                                answer: "Thrashing"
-                            },
-                            {
-                                type: "mcq",
-                                question: "Which of these is NOT a function of an operating system?",
-                                options: ["Memory Management", "File Management", "Processor Management", "Application Development"],
-                                correct: 4
-                            },
-                            {
-                                type: "mcq",
-                                question: "What type of user interface uses icons and visual indicators?",
-                                options: ["CLI", "GUI", "TUI", "VUI"],
-                                correct: 2
-                            },
-                            {
-                                type: "fill",
-                                question: "The process of starting a computer is called ______.",
-                                answer: "booting"
-                            },
-                            {
-                                type: "mcq",
-                                question: "Which file system is used by modern Windows versions?",
-                                options: ["FAT32", "NTFS", "EXT4", "HFS+"],
-                                correct: 2
-                            }
-                        ]
-                    },
-                    "Internet and Networking": {
-                        questions: [
-                            {
-                                type: "mcq",
-                                question: "What does LAN stand for?",
-                                options: ["Local Area Network", "Large Access Network", "Linked Area Nodes", "Local Access Nodes"],
-                                correct: 1
-                            },
-                            {
-                                type: "fill",
-                                question: "The protocol that converts IP addresses to domain names is called ______.",
-                                answer: "DNS"
-                            },
-                            {
-                                type: "mcq",
-                                question: "Which device connects multiple networks together?",
-                                options: ["Hub", "Switch", "Router", "Modem"],
-                                correct: 3
-                            },
-                            {
-                                type: "mcq",
-                                question: "What is the worldwide standard protocol for Internet communication?",
-                                options: ["HTTP", "FTP", "TCP/IP", "SMTP"],
-                                correct: 3
-                            },
-                            {
-                                type: "fill",
-                                question: "A private network within an organization is called an ______.",
-                                answer: "intranet"
-                            },
-                            {
-                                type: "mcq",
-                                question: "Which topology connects all devices to a central hub?",
-                                options: ["Bus", "Ring", "Star", "Mesh"],
-                                correct: 3
-                            }
-                        ]
-                    }
-                }
-            }
-        };
+     const quizData = {
+    "History of Computers": {
+        icon: "fas fa-history",
+        description: "Evolution of computing from ancient times to modern era",
+        questions: [
+            {
+                type: "mcq",
+                question: "Who is considered the 'Father of Computers'?",
+                options: ["Alan Turing", "Steve Jobs", "Charles Babbage", "John von Neumann"],
+                correct: 2  // Fixed: "Charles Babbage" is at index 2 (0-indexed)
+            },
+            {
+                type: "fill",
+                question: "The first computer bug was an actual ______ found in the Harvard Mark II computer.",
+                answer: "moth"
+            },
+    {
+        type: "fill",
+        question: "The first computer bug was an actual ______ found in the Harvard Mark II computer.",
+        answer: "moth"
+    },
+    {
+        type: "mcq",
+        question: "Which was the first electronic general-purpose computer?",
+        options: ["UNIVAC", "ENIAC", "ABC", "Harvard Mark I"],
+        correct: 2
+    },
+    {
+        type: "mcq",
+        question: "Which generation of computers used vacuum tubes?",
+        options: ["Second Generation", "Fourth Generation", "First Generation", "Third Generation"],
+        correct: 3
+    },
+    {
+        type: "fill",
+        question: "The ______ was the first mass-produced computer by IBM.",
+        answer: "IBM 650"
+    },
+    {
+        type: "mcq",
+        question: "What technology replaced vacuum tubes in second generation computers?",
+        options: ["Microprocessors", "Integrated Circuits", "Artificial Intelligence", "Transistors"],
+        correct: 4
+    },
+    {
+        type: "mcq",
+        question: "Which early computing device used beads on rods for calculations?",
+        options: ["Difference Engine", "Pascaline", "Abacus", "Analytical Engine"],
+        correct: 3
+    },
+    {
+        type: "fill",
+        question: "The first portable computer was called ______.",
+        answer: "Osborne 1"
+    },
+    {
+        type: "mcq",
+        question: "Who developed the first programming language?",
+        options: ["Ada Lovelace", "John Backus", "Grace Hopper", "Alan Turing"],
+        correct: 3
+    },
+    {
+        type: "mcq",
+        question: "Which company introduced the first personal computer?",
+        options: ["Apple", "IBM", "Commodore", "Altair"],
+        correct: 4
+    },
+    {
+        type: "mcq",
+        question: "What was the name of the first computer with a graphical user interface?",
+        options: ["Apple Lisa", "Xerox Alto", "Macintosh", "IBM PC"],
+        correct: 2
+    },
+    {
+        type: "fill",
+        question: "The first computer mouse was invented by ______.",
+        answer: "Douglas Engelbart"
+    },
+    {
+        type: "mcq",
+        question: "Which computer was used to break German Enigma codes in WWII?",
+        options: ["ENIAC", "Colossus", "UNIVAC", "Harvard Mark I"],
+        correct: 2
+    },
+    {
+        type: "fill",
+        question: "The concept of stored program was introduced by ______.",
+        answer: "John von Neumann"
+    },
+    {
+        type: "mcq",
+        question: "What year was the first Apple computer released?",
+        options: ["1984", "1976", "1981", "1990"],
+        correct: 2
+    },
+    {
+        type: "mcq",
+        question: "Which computer used punched cards for input?",
+        options: ["Pascaline", "Jacquard Loom", "Difference Engine", "Analytical Engine"],
+        correct: 2
+    },
+    {
+        type: "fill",
+        question: "The world's first computer programmer was ______.",
+        answer: "Ada Lovelace"
+    },
+    {
+        type: "mcq",
+        question: "What was the name of IBM's first personal computer?",
+        options: ["IBM 650", "IBM 5150", "IBM System/360", "IBM 701"],
+        correct: 2
+    },
+    {
+        type: "mcq",
+        question: "Which computer used mercury delay lines for memory?",
+        options: ["UNIVAC", "EDSAC", "ENIAC", "Colossus"],
+        correct: 2
+    },
+    {
+        type: "fill",
+        question: "The first computer to use magnetic core memory was ______.",
+        answer: "Whirlwind"
+    },
+    {
+        type: "mcq",
+        question: "What was the first computer to use integrated circuits?",
+        options: ["DEC PDP-8", "IBM System/360", "Apollo Guidance Computer", "CDC 6600"],
+        correct: 3
+    },
+    {
+        type: "mcq",
+        question: "Which company developed the first microprocessor?",
+        options: ["AMD", "Intel", "IBM", "Motorola"],
+        correct: 2
+    },
+    {
+        type: "fill",
+        question: "The first computer virus was called ______.",
+        answer: "Creeper"
+    },
+    {
+        type: "mcq",
+        question: "What was the first computer to defeat a world chess champion?",
+        options: ["Watson", "Deep Blue", "AlphaGo", "Deep Thought"],
+        correct: 2
+    },
+    {
+        type: "mcq",
+        question: "Which computer introduced the mouse and graphical user interface?",
+        options: ["Apple Macintosh", "Xerox Alto", "IBM PC", "Commodore PET"],
+        correct: 2
+    },
+    {
+        type: "fill",
+        question: "The first computer to use transistors was ______.",
+        answer: "TX-0"
+    },
+    {
+        type: "mcq",
+        question: "What was the first computer to use magnetic tape storage?",
+        options: ["Harvard Mark I", "UNIVAC I", "ENIAC", "EDSAC"],
+        correct: 2
+    },
+    {
+        type: "mcq",
+        question: "Which computer was the first to use virtual memory?",
+        options: ["IBM System/360", "Atlas", "DEC PDP-11", "CDC 7600"],
+        correct: 2
+    },
+    {
+        type: "fill",
+        question: "The first computer network was called ______.",
+        answer: "ARPANET"
+    },
+    {
+        type: "mcq",
+        question: "What was the first computer to use a hard disk drive?",
+        options: ["DEC PDP-8", "IBM 305 RAMAC", "IBM System/360", "CDC 6600"],
+        correct: 2
+    },
+    {
+        type: "mcq",
+        question: "Which computer introduced the concept of time-sharing?",
+        options: ["UNIX", "CTSS", "Multics", "OS/360"],
+        correct: 2
+    },
+    {
+        type: "fill",
+        question: "The first computer to use parallel processing was ______.",
+        answer: "ILLIAC IV"
+    },
+    {
+        type: "mcq",
+        question: "What was the first computer to use RISC architecture?",
+        options: ["SPARC", "IBM 801", "MIPS", "ARM"],
+        correct: 2
+    },
+    {
+        type: "mcq",
+        question: "Which computer was the first to use optical fiber connections?",
+        options: ["IBM Blue Gene", "Cray-3", "Thinking Machines CM-5", "Fujitsu VP"],
+        correct: 2
+    },
+    {
+        type: "fill",
+        question: "The first computer to achieve 1 gigaflop was ______.",
+        answer: "Cray-2"
+    },
+    {
+        type: "mcq",
+        question: "What was the first computer to use CMOS technology?",
+        options: ["Commodore 64", "IBM PC/AT", "Apple II", "TRS-80"],
+        correct: 2
+    },
+    {
+        type: "mcq",
+        question: "Which computer introduced the first 64-bit processor?",
+        options: ["Cray-1", "CDC 6600", "DEC Alpha", "IBM System/360"],
+        correct: 3
+    },
+    {
+        type: "fill",
+        question: "The first computer to use artificial intelligence was ______.",
+        answer: "Logic Theorist"
+    },
+    {
+        type: "mcq",
+        question: "What was the first computer to use neural networks?",
+        options: ["IBM 704", "Mark I Perceptron", "DEC PDP-1", "CDC 1604"],
+        correct: 2
+    },
+    {
+        type: "mcq",
+        question: "Which computer was the first to use quantum computing principles?",
+        options: ["IBM Q", "D-Wave One", "Orion", "Google Sycamore"],
+        correct: 2
+    },
+    {
+        type: "fill",
+        question: "The first computer to use cloud computing was ______.",
+        answer: "Amazon EC2"
+    },
+    {
+        type: "mcq",
+        question: "What was the first computer to use touch screen technology?",
+        options: ["Apple Newton", "PLATO IV", "Palm Pilot", "IBM Simon"],
+        correct: 2
+    },
+    {
+        type: "mcq",
+        question: "Which computer introduced the first voice recognition system?",
+        options: ["Apple Macintosh", "IBM Shoebox", "Dragon NaturallySpeaking", "Windows XP"],
+        correct: 2
+    },
+    {
+        type: "fill",
+        question: "The first computer to use biometric authentication was ______.",
+        answer: "IBM ThinkPad T42"
+    },
+    {
+        type: "mcq",
+        question: "What was the first computer to use solid-state drives?",
+        options: ["Apple MacBook Air", "IBM 350", "Dell Latitude", "Toshiba Portégé"],
+        correct: 2
+    },
+    {
+        type: "mcq",
+        question: "Which computer was the first to use 3D printing technology?",
+        options: ["Stratasys FDM", "3D Systems SLA-1", "HP Jet Fusion", "Formlabs Form"],
+        correct: 2
+    },
+    {
+        type: "fill",
+        question: "The first computer to use virtual reality was ______.",
+        answer: "Sword of Damocles"
+    },
+    {
+        type: "mcq",
+        question: "What was the first computer to use augmented reality?",
+        options: ["Google Glass", "Virtual Fixtures", "Microsoft HoloLens", "Magic Leap"],
+        correct: 2
+    },
+    {
+        type: "mcq",
+        question: "Which computer introduced the first blockchain technology?",
+        options: ["Ethereum", "Bitcoin", "Ripple", "Litecoin"],
+        correct: 2
+    },
+    {
+        type: "fill",
+        question: "The first computer to use machine learning was ______.",
+        answer: "Samuel's Checkers Player"
+    },
+    {
+        type: "mcq",
+        question: "What was the first computer to use deep learning?",
+        options: ["AlexNet", "GoogleNet", "LeNet", "ResNet"],
+        correct: 3
+    },
+    {
+        type: "mcq",
+        question: "Which computer was the first to use natural language processing?",
+        options: ["IBM Watson", "ELIZA", "SHRDLU", "Google Assistant"],
+        correct: 2
+    },
+    {
+        type: "fill",
+        question: "The first computer to use computer vision was ______.",
+        answer: "Block World"
+    },
+    {
+        type: "mcq",
+        question: "What was the first computer to use robotics?",
+        options: ["ASIMO", "Unimate", "Shakey", "Boston Dynamics Spot"],
+        correct: 3
+    },
+    {
+        type: "mcq",
+        question: "Which computer introduced the first internet browser?",
+        options: ["Netscape", "WorldWideWeb", "Mosaic", "Internet Explorer"],
+        correct: 2
+    },
+    {
+        type: "fill",
+        question: "The first computer to use email was ______.",
+        answer: "ARPANET"
+    },
+    {
+        type: "mcq",
+        question: "What was the first computer to use social media?",
+        options: ["MySpace", "Six Degrees", "Friendster", "Facebook"],
+        correct: 2
+    },
+    {
+        type: "mcq",
+        question: "Which computer was the first to use mobile computing?",
+        options: ["Grid Compass", "Osborne 1", "Dynabook", "IBM Simon"],
+        correct: 2
+    },
+    {
+        type: "fill",
+        question: "The first computer to use wireless networking was ______.",
+        answer: "ALOHAnet"
+    }
+]
+},
 
-        // App state
+  "Characteristics of Computers": {
+    icon: "fas fa-microchip",
+    description: "Fundamental attributes and capabilities of computing systems",
+    questions: [
+        {
+            type: "mcq",
+            question: "What is the term for raw facts and figures?",
+            options: ["Information", "Wisdom", "Data", "Knowledge"],
+            correct: 2  // Fixed: "Data" is at index 2 (0-indexed)
+        },
+    {
+        type: "fill",
+        question: "The brain of the computer is called the ______.",
+        answer: "CPU"
+    },
+    {
+        type: "mcq",
+        question: "Which of these is NOT a type of computer malware?",
+        options: ["Worm", "Firewall", "Virus", "Trojan"],
+        correct: 2
+    },
+    {
+        type: "mcq",
+        question: "What does RAM stand for?",
+        options: ["Rapid Access Memory", "Random Access Memory", "Read Access Memory", "Random Allocation Memory"],
+        correct: 2
+    },
+    {
+        type: "fill",
+        question: "The fear of being without a mobile phone is called ______.",
+        answer: "nomophobia"
+    },
+    {
+        type: "mcq",
+        question: "Which number system do computers use internally?",
+        options: ["Hexadecimal", "Decimal", "Binary", "Octal"],
+        correct: 3
+    },
+    {
+        type: "mcq",
+        question: "What is the term for software that is freely available and can be modified?",
+        options: ["Commercial Software", "Proprietary Software", "Shareware", "Open-Source Software"],
+        correct: 4
+    },
+    {
+        type: "fill",
+        question: "A collection of hardware and software components that help accomplish tasks is called a ______.",
+        answer: "computer"
+    },
+    {
+        type: "mcq",
+        question: "Which component is considered the 'heart and mind' of the computer?",
+        options: ["Hard Disk", "CPU", "RAM", "Motherboard"],
+        correct: 2
+    },
+    {
+        type: "mcq",
+        question: "What type of software provides low-level control for a device's hardware?",
+        options: ["Application Software", "Malware", "Firmware", "System Software"],
+        correct: 3
+    },
+    {
+        type: "mcq",
+        question: "Which of these is an example of an input device?",
+        options: ["Printer", "Speaker", "Monitor", "Keyboard"],
+        correct: 4
+    },
+    {
+        type: "fill",
+        question: "The proper collection of data is called ______.",
+        answer: "information"
+    },
+    {
+        type: "mcq",
+        question: "What does ROM stand for?",
+        options: ["Read Only Memory", "Random Only Memory", "Read Output Memory", "Random Output Memory"],
+        correct: 1
+    },
+    {
+        type: "fill",
+        question: "The temporary memory that loses data when power is off is called ______ memory.",
+        answer: "volatile"
+    },
+    {
+        type: "mcq",
+        question: "Which component stores data permanently even when power is off?",
+        options: ["RAM", "Cache", "ROM", "Virtual Memory"],
+        correct: 3
+    },
+    {
+        type: "mcq",
+        question: "What is the main function of an operating system?",
+        options: ["Word Processing", "Resource Management", "Web Browsing", "Gaming"],
+        correct: 2
+    },
+    {
+        type: "fill",
+        question: "The physical components of a computer are called ______.",
+        answer: "hardware"
+    },
+    {
+        type: "mcq",
+        question: "Which of these is NOT a characteristic of computers?",
+        options: ["Speed", "Emotions", "Accuracy", "Storage Capacity"],
+        correct: 2
+    },
+    {
+        type: "mcq",
+        question: "What does ALU stand for in a CPU?",
+        options: ["Advanced Logic Unit", "Arithmetic Logic Unit", "Automated Logic Unit", "Analog Logic Unit"],
+        correct: 2
+    },
+    {
+        type: "fill",
+        question: "The set of instructions that tells the computer what to do is called ______.",
+        answer: "software"
+    },
+    {
+        type: "mcq",
+        question: "Which type of software is designed for specific tasks?",
+        options: ["System Software", "Application Software", "Utility Software", "Firmware"],
+        correct: 2
+    },
+    {
+        type: "mcq",
+        question: "What is the purpose of cache memory?",
+        options: ["Long-term storage", "Backup storage", "Fast temporary storage", "Network storage"],
+        correct: 3
+    },
+    {
+        type: "fill",
+        question: "The process of starting a computer is called ______.",
+        answer: "booting"
+    },
+    {
+        type: "mcq",
+        question: "Which component manages all computer operations?",
+        options: ["ALU", "RAM", "Control Unit", "Hard Disk"],
+        correct: 3
+    },
+    {
+        type: "mcq",
+        question: "What is the function of registers in a CPU?",
+        options: ["Long-term storage", "Fast temporary storage", "Network communication", "Display output"],
+        correct: 2
+    },
+    {
+        type: "fill",
+        question: "The speed of a CPU is measured in ______.",
+        answer: "hertz"
+    },
+    {
+        type: "mcq",
+        question: "Which bus carries data between CPU and memory?",
+        options: ["Control Bus", "System Bus", "Address Bus", "Data Bus"],
+        correct: 4
+    },
+    {
+        type: "mcq",
+        question: "What is the purpose of the address bus?",
+        options: ["Carry control signals", "Carry data", "Specify memory locations", "Manage power supply"],
+        correct: 3
+    },
+    {
+        type: "fill",
+        question: "The main circuit board in a computer is called the ______.",
+        answer: "motherboard"
+    },
+    {
+        type: "mcq",
+        question: "Which port is commonly used for connecting external storage devices?",
+        options: ["VGA", "USB", "HDMI", "Ethernet"],
+        correct: 2
+    },
+    {
+        type: "mcq",
+        question: "What does GPU stand for?",
+        options: ["General Processing Unit", "Graphics Processing Unit", "Global Processing Unit", "Graphical Performance Unit"],
+        correct: 2
+    },
+    {
+        type: "fill",
+        question: "The temporary storage area for frequently used data is called ______.",
+        answer: "cache"
+    },
+    {
+        type: "mcq",
+        question: "Which type of memory is fastest?",
+        options: ["Hard Disk", "RAM", "Cache", "ROM"],
+        correct: 3
+    },
+    {
+        type: "mcq",
+        question: "What is virtual memory?",
+        options: ["RAM simulation", "Hard disk used as RAM", "Cloud storage", "Cache memory"],
+        correct: 2
+    },
+    {
+        type: "fill",
+        question: "The process of converting source code to machine code is called ______.",
+        answer: "compilation"
+    },
+    {
+        type: "mcq",
+        question: "Which programming language is closest to machine language?",
+        options: ["Python", "Assembly Language", "Java", "C++"],
+        correct: 2
+    },
+    {
+        type: "mcq",
+        question: "What is the purpose of an interpreter?",
+        options: ["Compile entire program", "Execute line by line", "Optimize code", "Debug programs"],
+        correct: 2
+    },
+    {
+        type: "fill",
+        question: "The set of rules for data communication is called ______.",
+        answer: "protocol"
+    },
+    {
+        type: "mcq",
+        question: "Which network covers a small geographical area?",
+        options: ["WAN", "MAN", "LAN", "PAN"],
+        correct: 3
+    },
+    {
+        type: "mcq",
+        question: "What does DNS stand for?",
+        options: ["Domain Name System", "Data Network Service", "Digital Naming System", "Domain Network Service"],
+        correct: 1
+    },
+    {
+        type: "fill",
+        question: "The unique identifier for network devices is called ______ address.",
+        answer: "MAC"
+    },
+    {
+        type: "mcq",
+        question: "Which topology uses a central hub?",
+        options: ["Bus", "Ring", "Star", "Mesh"],
+        correct: 3
+    },
+    {
+        type: "mcq",
+        question: "What is the purpose of a router?",
+        options: ["Connect networks", "Amplify signals", "Filter data", "Store files"],
+        correct: 1
+    },
+    {
+        type: "fill",
+        question: "The protocol for web communication is ______.",
+        answer: "HTTP"
+    },
+    {
+        type: "mcq",
+        question: "Which security threat encrypts files for ransom?",
+        options: ["Virus", "Worm", "Ransomware", "Trojan"],
+        correct: 3
+    },
+    {
+        type: "mcq",
+        question: "What is the purpose of a firewall?",
+        options: ["Speed up internet", "Block unauthorized access", "Store backups", "Manage emails"],
+        correct: 2
+    },
+    {
+        type: "fill",
+        question: "The practice of protecting systems and data is called ______.",
+        answer: "cybersecurity"
+    },
+    {
+        type: "mcq",
+        question: "Which type of backup stores only changed files?",
+        options: ["Full Backup", "Incremental Backup", "Differential Backup", "Mirror Backup"],
+        correct: 2
+    },
+    {
+        type: "mcq",
+        question: "What is data encryption?",
+        options: ["Data compression", "Data conversion to code", "Data deletion", "Data backup"],
+        correct: 2
+    },
+    {
+        type: "fill",
+        question: "The process of verifying user identity is called ______.",
+        answer: "authentication"
+    },
+    {
+        type: "mcq",
+        question: "Which algorithm is used for encryption?",
+        options: ["RSA", "Bubble Sort", "Dijkstra", "Quick Sort"],
+        correct: 1
+    },
+    {
+        type: "mcq",
+        question: "What is cloud computing?",
+        options: ["Local storage", "Internet-based services", "Hardware maintenance", "Software installation"],
+        correct: 2
+    },
+    {
+        type: "fill",
+        question: "The practice of working from remote locations is called ______.",
+        answer: "telecommuting"
+    },
+    {
+        type: "mcq",
+        question: "Which technology enables virtual meetings?",
+        options: ["VR", "AR", "Video Conferencing", "3D Printing"],
+        correct: 3
+    },
+    {
+        type: "mcq",
+        question: "What is the Internet of Things?",
+        options: ["Social media", "Connected devices", "Web browsers", "Search engines"],
+        correct: 2
+    },
+    {
+        type: "fill",
+        question: "The study of human-computer interaction is called ______.",
+        answer: "HCI"
+    },
+    {
+        type: "mcq",
+        question: "Which programming paradigm uses objects?",
+        options: ["Procedural", "Functional", "Object-Oriented", "Logical"],
+        correct: 3
+    },
+    {
+        type: "mcq",
+        question: "What is agile methodology?",
+        options: ["Hardware design", "Software development", "Network setup", "Data analysis"],
+        correct: 2
+    },
+    {
+        type: "fill",
+        question: "The process of finding and fixing errors is called ______.",
+        answer: "debugging"
+    }
+ ]
+    },
+          "Types of Computers": {
+    icon: "fas fa-desktop",
+    description: "Different classifications and forms of computing devices",
+    questions: [  // Remove "const typesQuestions =" and just use "questions:"
+        {
+            type: "mcq",
+            question: "Which type of computer is designed for general use by a single person?",
+            options: ["Mainframe", "Server", "Supercomputer", "Personal Computer"],
+            correct: 3  // Fixed: "Personal Computer" is at index 3 (0-indexed)
+        },
+    {
+        type: "fill",
+        question: "A ______ is a portable computer that is smaller than a traditional laptop.",
+        answer: "tablet"
+    },
+    {
+        type: "mcq",
+        question: "Which computer is optimized to provide services to other computers over a network?",
+        options: ["Workstation", "Mainframe", "Server", "Supercomputer"],
+        correct: 3
+    },
+    {
+        type: "mcq",
+        question: "What type of computer would NASA use for space exploration research?",
+        options: ["Personal Computer", "Server", "Workstation", "Supercomputer"],
+        correct: 4
+    },
+    {
+        type: "fill",
+        question: "The latest trend in computing is ______ computers integrated into watches and clothing.",
+        answer: "wearable"
+    },
+    {
+        type: "mcq",
+        question: "Which of these is a specialized computer for playing video games on a TV?",
+        options: ["Workstation", "Game Console", "Server", "Mainframe"],
+        correct: 2
+    },
+    {
+        type: "mcq",
+        question: "What type of computer is designed to fit on a desk and is not portable?",
+        options: ["Laptop", "Tablet", "Desktop", "Smartphone"],
+        correct: 3
+    },
+    {
+        type: "fill",
+        question: "A computer that fills an entire room and processes millions of transactions is called a ______.",
+        answer: "mainframe"
+    },
+    {
+        type: "mcq",
+        question: "Which type of computer is typically used for scientific research and complex calculations?",
+        options: ["Personal Computer", "Workstation", "Server", "Supercomputer"],
+        correct: 4
+    },
+    {
+        type: "mcq",
+        question: "What is another name for a notebook computer?",
+        options: ["Desktop", "Tablet", "Laptop", "Mainframe"],
+        correct: 3
+    },
+    {
+        type: "mcq",
+        question: "Which device is considered a complete computer that can be carried anywhere?",
+        options: ["Desktop", "Server", "Laptop", "Mainframe"],
+        correct: 3
+    },
+    {
+        type: "fill",
+        question: "A mini laptop that is generally lighter and smaller is called a ______.",
+        answer: "netbook"
+    },
+    {
+        type: "mcq",
+        question: "Which type of computer is used in embedded systems?",
+        options: ["Microcontroller", "Mainframe", "Supercomputer", "Workstation"],
+        correct: 1
+    },
+    {
+        type: "fill",
+        question: "Computers in cars that control various functions are called ______ computers.",
+        answer: "embedded"
+    },
+    {
+        type: "mcq",
+        question: "Which computer type is designed for high-performance graphics and engineering applications?",
+        options: ["Server", "Workstation", "Mainframe", "Personal Computer"],
+        correct: 2
+    },
+    {
+        type: "mcq",
+        question: "What type of computer manages network resources and provides shared services?",
+        options: ["Client", "Server", "Peer", "Node"],
+        correct: 2
+    },
+    {
+        type: "fill",
+        question: "A computer that accesses services from a server is called a ______.",
+        answer: "client"
+    },
+    {
+        type: "mcq",
+        question: "Which type of computer is used for weather forecasting and climate research?",
+        options: ["Personal Computer", "Server", "Supercomputer", "Workstation"],
+        correct: 3
+    },
+    {
+        type: "mcq",
+        question: "What is a cluster computer?",
+        options: ["Single powerful computer", "Network of computers working together", "Portable computer", "Embedded computer"],
+        correct: 2
+    },
+    {
+        type: "fill",
+        question: "A computer that uses quantum bits instead of traditional bits is called a ______ computer.",
+        answer: "quantum"
+    },
+    {
+        type: "mcq",
+        question: "Which computer type is designed for mobile use with touch screen interface?",
+        options: ["Desktop", "Laptop", "Smartphone", "Mainframe"],
+        correct: 3
+    },
+    {
+        type: "mcq",
+        question: "What type of computer is typically used in point-of-sale systems?",
+        options: ["Workstation", "Server", "Terminal", "Supercomputer"],
+        correct: 3
+    },
+    {
+        type: "fill",
+        question: "A computer designed for playing games with high-performance graphics is called a ______ PC.",
+        answer: "gaming"
+    },
+    {
+        type: "mcq",
+        question: "Which computer type is used in industrial automation and control systems?",
+        options: ["PLC", "Server", "Desktop", "Laptop"],
+        correct: 1
+    },
+    {
+        type: "mcq",
+        question: "What is a thin client computer?",
+        options: ["Computer with minimal processing power", "High-performance computer", "Portable computer", "Gaming computer"],
+        correct: 1
+    },
+    {
+        type: "fill",
+        question: "A computer that processes data in analog form is called an ______ computer.",
+        answer: "analog"
+    },
+    {
+        type: "mcq",
+        question: "Which computer type uses both analog and digital features?",
+        options: ["Hybrid Computer", "Digital Computer", "Analog Computer", "Quantum Computer"],
+        correct: 1
+    },
+    {
+        type: "mcq",
+        question: "What type of computer is used in ATMs?",
+        options: ["Embedded Computer", "Mainframe", "Supercomputer", "Workstation"],
+        correct: 1
+    },
+    {
+        type: "fill",
+        question: "A computer that processes data in discrete form is called a ______ computer.",
+        answer: "digital"
+    },
+    {
+        type: "mcq",
+        question: "Which computer type is designed for real-time processing?",
+        options: ["Batch Processing Computer", "Real-time Computer", "Time-sharing Computer", "Distributed Computer"],
+        correct: 2
+    },
+    {
+        type: "mcq",
+        question: "What is a blade server?",
+        options: ["Portable server", "Server with multiple processors in one chassis", "Gaming server", "Personal server"],
+        correct: 2
+    },
+    {
+        type: "fill",
+        question: "A computer network where all computers have equal capabilities is called a ______ network.",
+        answer: "peer-to-peer"
+    },
+    {
+        type: "mcq",
+        question: "Which computer type is used in scientific laboratories for data analysis?",
+        options: ["Workstation", "Server", "Mainframe", "Personal Computer"],
+        correct: 1
+    },
+    {
+        type: "mcq",
+        question: "What is a rack server?",
+        options: ["Server mounted in a frame", "Portable server", "Gaming server", "Personal server"],
+        correct: 1
+    },
+    {
+        type: "fill",
+        question: "A computer that processes multiple tasks simultaneously is called a ______ computer.",
+        answer: "multiprocessing"
+    },
+    {
+        type: "mcq",
+        question: "Which computer type is used in airports for flight information displays?",
+        options: ["Kiosk", "Server", "Workstation", "Mainframe"],
+        correct: 1
+    },
+    {
+        type: "mcq",
+        question: "What is a tower server?",
+        options: ["Server in upright cabinet", "Portable server", "Rack server", "Blade server"],
+        correct: 1
+    },
+    {
+        type: "fill",
+        question: "A computer designed for media creation and editing is called a ______ workstation.",
+        answer: "media"
+    },
+    {
+        type: "mcq",
+        question: "Which computer type is used in hospitals for patient monitoring?",
+        options: ["Embedded System", "Server", "Supercomputer", "Workstation"],
+        correct: 1
+    },
+    {
+        type: "mcq",
+        question: "What is a microserver?",
+        options: ["Small, low-power server", "High-performance server", "Gaming server", "Personal server"],
+        correct: 1
+    },
+    {
+        type: "fill",
+        question: "A computer that uses light instead of electricity for processing is called an ______ computer.",
+        answer: "optical"
+    },
+    {
+        type: "mcq",
+        question: "Which computer type is used in smart home systems?",
+        options: ["Embedded Computer", "Server", "Mainframe", "Supercomputer"],
+        correct: 1
+    },
+    {
+        type: "mcq",
+        question: "What is a nano computer?",
+        options: ["Extremely small computer", "High-performance computer", "Portable computer", "Gaming computer"],
+        correct: 1
+    },
+    {
+        type: "fill",
+        question: "A computer that processes data using DNA molecules is called a ______ computer.",
+        answer: "DNA"
+    },
+    {
+        type: "mcq",
+        question: "Which computer type is used in traffic light control systems?",
+        options: ["Embedded System", "Server", "Workstation", "Personal Computer"],
+        correct: 1
+    },
+    {
+        type: "mcq",
+        question: "What is a pico computer?",
+        options: ["Very small embedded computer", "High-performance computer", "Portable computer", "Gaming computer"],
+        correct: 1
+    },
+    {
+        type: "fill",
+        question: "A computer that uses neural networks for processing is called a ______ computer.",
+        answer: "neuromorphic"
+    },
+    {
+        type: "mcq",
+        question: "Which computer type is used in robotics?",
+        options: ["Embedded System", "Server", "Mainframe", "Supercomputer"],
+        correct: 1
+    },
+    {
+        type: "mcq",
+        question: "What is a femto computer?",
+        options: ["Smallest type of computer", "High-performance computer", "Portable computer", "Gaming computer"],
+        correct: 1
+    },
+    {
+        type: "fill",
+        question: "A computer that processes data in continuous form is called an ______ computer.",
+        answer: "analog"
+    },
+    {
+        type: "mcq",
+        question: "Which computer type is used in military applications?",
+        options: ["Rugged Computer", "Server", "Personal Computer", "Workstation"],
+        correct: 1
+    },
+    {
+        type: "mcq",
+        question: "What is a mini computer?",
+        options: ["Mid-range computer between mainframe and micro", "Smallest computer", "Largest computer", "Portable computer"],
+        correct: 1
+    },
+    {
+        type: "fill",
+        question: "A computer that uses biological components for processing is called a ______ computer.",
+        answer: "biological"
+    },
+    {
+        type: "mcq",
+        question: "Which computer type is used in educational institutions?",
+        options: ["Personal Computer", "Server", "Mainframe", "Supercomputer"],
+        correct: 1
+    },
+    {
+        type: "mcq",
+        question: "What is a macro computer?",
+        options: ["Large-scale computer system", "Small computer", "Portable computer", "Gaming computer"],
+        correct: 1
+    },
+    {
+        type: "fill",
+        question: "A computer designed for virtual reality applications is called a ______ computer.",
+        answer: "VR"
+    },
+    {
+        type: "mcq",
+        question: "Which computer type is used in financial trading?",
+        options: ["High-frequency Trading Computer", "Server", "Personal Computer", "Workstation"],
+        correct: 1
+    },
+    {
+        type: "mcq",
+        question: "What is a mobile computer?",
+        options: ["Portable computing device", "Stationary computer", "Large computer", "Gaming computer"],
+        correct: 1
+    },
+    {
+        type: "fill",
+        question: "A computer that processes data using quantum mechanics is called a ______ computer.",
+        answer: "quantum"
+    }
+]
+            },
+           "Computer Organization": {
+    icon: "fas fa-sitemap",
+    description: "Internal structure and components of computer systems",
+    questions: [  // Remove "const organizationQuestions =" and just use "questions:"
+        {
+            type: "mcq",
+            question: "What is the purpose of a file allocation table (FAT)?",
+            options: ["To allocate memory to programs", "To manage CPU processes", "To locate files on a disk", "To organize network connections"],
+            correct: 2  // Fixed: "To locate files on a disk" is at index 2 (0-indexed)
+        },  
+    {
+        type: "fill",
+        question: "A ______ is an input device that converts physical documents into digital format.",
+        answer: "scanner"
+    },
+    {
+        type: "mcq",
+        question: "Which type of memory is volatile?",
+        options: ["ROM", "Hard Disk", "RAM", "Flash Drive"],
+        correct: 3
+    },
+    {
+        type: "mcq",
+        question: "What does OMR stand for?",
+        options: ["Optical Memory Reader", "Optical Mark Reader", "Online Mark Recognition", "Optical Media Reader"],
+        correct: 2
+    },
+    {
+        type: "fill",
+        question: "The ______ is the main circuit board in a computer that connects all components.",
+        answer: "motherboard"
+    },
+    {
+        type: "mcq",
+        question: "Which storage device has no moving parts?",
+        options: ["HDD", "Floppy Disk", "Magnetic Tape", "SSD"],
+        correct: 4
+    },
+    {
+        type: "mcq",
+        question: "What is the function of an ALU in a CPU?",
+        options: ["Manage memory", "Store data", "Perform calculations", "Control input/output"],
+        correct: 3
+    },
+    {
+        type: "fill",
+        question: "The temporary storage locations in a CPU are called ______.",
+        answer: "registers"
+    },
+    {
+        type: "mcq",
+        question: "Which component is responsible for managing all computer operations?",
+        options: ["ALU", "RAM", "Hard Disk", "Control Unit"],
+        correct: 4
+    },
+    {
+        type: "mcq",
+        question: "What type of memory retains data even when power is turned off?",
+        options: ["RAM", "Cache", "Virtual Memory", "ROM"],
+        correct: 4
+    },
+    {
+        type: "mcq",
+        question: "Which of these is an output device?",
+        options: ["Keyboard", "Mouse", "Scanner", "Printer"],
+        correct: 4
+    },
+    {
+        type: "fill",
+        question: "The smallest unit of data in a computer is called a ______.",
+        answer: "bit"
+    },
+    {
+        type: "mcq",
+        question: "What does BIOS stand for?",
+        options: ["Basic Input/Output System", "Binary Input/Output System", "Basic Internal Operating System", "Binary Internal Operating System"],
+        correct: 1
+    },
+    {
+        type: "fill",
+        question: "Eight bits make one ______.",
+        answer: "byte"
+    },
+    {
+        type: "mcq",
+        question: "Which component converts AC power to DC power?",
+        options: ["UPS", "SMPS", "CPU", "GPU"],
+        correct: 2
+    },
+    {
+        type: "mcq",
+        question: "What is the purpose of cache memory?",
+        options: ["Long-term storage", "Backup storage", "Fast temporary storage", "Network storage"],
+        correct: 3
+    },
+    {
+        type: "fill",
+        question: "The speed of the CPU is measured in ______.",
+        answer: "hertz"
+    },
+    {
+        type: "mcq",
+        question: "Which bus carries memory addresses?",
+        options: ["Data Bus", "Control Bus", "Address Bus", "System Bus"],
+        correct: 3
+    },
+    {
+        type: "mcq",
+        question: "What is the function of the control unit?",
+        options: ["Perform calculations", "Manage data flow", "Store information", "Display output"],
+        correct: 2
+    },
+    {
+        type: "fill",
+        question: "The process of fetching, decoding, and executing instructions is called the ______ cycle.",
+        answer: "instruction"
+    },
+    {
+        type: "mcq",
+        question: "Which memory type is fastest?",
+        options: ["Hard Disk", "RAM", "Cache", "ROM"],
+        correct: 3
+    },
+    {
+        type: "mcq",
+        question: "What is virtual memory?",
+        options: ["RAM simulation", "Hard disk used as RAM", "Cloud storage", "Cache memory"],
+        correct: 2
+    },
+    {
+        type: "fill",
+        question: "The ______ carries data between the CPU and memory.",
+        answer: "data bus"
+    },
+    {
+        type: "mcq",
+        question: "Which component stores the boot program?",
+        options: ["RAM", "ROM", "Cache", "Hard Disk"],
+        correct: 2
+    },
+    {
+        type: "mcq",
+        question: "What is the purpose of an interrupt?",
+        options: ["Speed up processing", "Signal attention needed", "Increase memory", "Store data"],
+        correct: 2
+    },
+    {
+        type: "fill",
+        question: "The ______ coordinates all computer activities.",
+        answer: "operating system"
+    },
+    {
+        type: "mcq",
+        question: "Which memory type is used for firmware?",
+        options: ["RAM", "ROM", "Cache", "Virtual Memory"],
+        correct: 2
+    },
+    {
+        type: "mcq",
+        question: "What is pipelining in CPU architecture?",
+        options: ["Multiple instructions processed simultaneously", "Single instruction processing", "Memory management", "Data storage"],
+        correct: 1
+    },
+    {
+        type: "fill",
+        question: "The ______ manages input and output operations.",
+        answer: "I/O controller"
+    },
+    {
+        type: "mcq",
+        question: "Which component connects the CPU to other devices?",
+        options: ["Motherboard", "RAM", "Hard Disk", "Power Supply"],
+        correct: 1
+    },
+    {
+        type: "mcq",
+        question: "What is the purpose of DMA?",
+        options: ["Direct Memory Access", "Data Management Algorithm", "Digital Media Access", "Direct Media Access"],
+        correct: 1
+    },
+    {
+        type: "fill",
+        question: "The ______ stores frequently accessed data for quick retrieval.",
+        answer: "cache"
+    },
+    {
+        type: "mcq",
+        question: "Which memory type is non-volatile and can be electrically erased?",
+        options: ["ROM", "RAM", "EEPROM", "Cache"],
+        correct: 3
+    },
+    {
+        type: "mcq",
+        question: "What is the function of the system clock?",
+        options: ["Keep time", "Synchronize operations", "Store data", "Manage power"],
+        correct: 2
+    },
+    {
+        type: "fill",
+        question: "The ______ performs arithmetic and logical operations.",
+        answer: "ALU"
+    },
+    {
+        type: "mcq",
+        question: "Which component provides stable power supply?",
+        options: ["SMPS", "CPU", "RAM", "Motherboard"],
+        correct: 1
+    },
+    {
+        type: "mcq",
+        question: "What is the purpose of the program counter?",
+        options: ["Count programs", "Store next instruction address", "Manage memory", "Control I/O"],
+        correct: 2
+    },
+    {
+        type: "fill",
+        question: "The ______ holds data being processed.",
+        answer: "accumulator"
+    },
+    {
+        type: "mcq",
+        question: "Which memory type uses capacitors to store data?",
+        options: ["ROM", "RAM", "Hard Disk", "Flash Drive"],
+        correct: 2
+    },
+    {
+        type: "mcq",
+        question: "What is the function of the memory management unit?",
+        options: ["Manage RAM", "Control CPU", "Handle I/O", "Store data"],
+        correct: 1
+    },
+    {
+        type: "fill",
+        question: "The ______ converts digital signals to analog for transmission.",
+        answer: "modem"
+    },
+    {
+        type: "mcq",
+        question: "Which component handles graphics processing?",
+        options: ["CPU", "GPU", "RAM", "Motherboard"],
+        correct: 2
+    },
+    {
+        type: "mcq",
+        question: "What is the purpose of the instruction register?",
+        options: ["Store current instruction", "Manage memory", "Control I/O", "Process data"],
+        correct: 1
+    },
+    {
+        type: "fill",
+        question: "The ______ stores the results of operations.",
+        answer: "register"
+    },
+    {
+        type: "mcq",
+        question: "Which memory type is used for BIOS?",
+        options: ["RAM", "ROM", "Cache", "Virtual Memory"],
+        correct: 2
+    },
+    {
+        type: "mcq",
+        question: "What is the function of the stack pointer?",
+        options: ["Point to stack top", "Manage memory", "Control I/O", "Process data"],
+        correct: 1
+    },
+    {
+        type: "fill",
+        question: "The ______ manages multiple processors in a system.",
+        answer: "multiprocessor controller"
+    },
+    {
+        type: "mcq",
+        question: "Which component provides temporary storage for data?",
+        options: ["CPU", "RAM", "ROM", "Hard Disk"],
+        correct: 2
+    },
+    {
+        type: "mcq",
+        question: "What is the purpose of the status register?",
+        options: ["Store operation results", "Indicate CPU state", "Manage memory", "Control I/O"],
+        correct: 2
+    },
+    {
+        type: "fill",
+        question: "The ______ handles interrupt requests.",
+        answer: "interrupt controller"
+    },
+    {
+        type: "mcq",
+        question: "Which memory type is used for cache?",
+        options: ["SRAM", "DRAM", "ROM", "Hard Disk"],
+        correct: 1
+    },
+    {
+        type: "mcq",
+        question: "What is the function of the memory address register?",
+        options: ["Store memory addresses", "Manage CPU", "Control I/O", "Process data"],
+        correct: 1
+    },
+    {
+        type: "fill",
+        question: "The ______ manages data transfer between devices.",
+        answer: "bus controller"
+    },
+    {
+        type: "mcq",
+        question: "Which component stores the operating system?",
+        options: ["RAM", "ROM", "Hard Disk", "Cache"],
+        correct: 3
+    },
+    {
+        type: "mcq",
+        question: "What is the purpose of the instruction decoder?",
+        options: ["Decode instructions", "Manage memory", "Control I/O", "Process data"],
+        correct: 1
+    },
+    {
+        type: "fill",
+        question: "The ______ coordinates multiple cores in a processor.",
+        answer: "core controller"
+    },
+    {
+        type: "mcq",
+        question: "Which memory type is used for main memory?",
+        options: ["SRAM", "DRAM", "ROM", "Cache"],
+        correct: 2
+    },
+    {
+        type: "mcq",
+        question: "What is the function of the memory buffer register?",
+        options: ["Store data for transfer", "Manage CPU", "Control I/O", "Process data"],
+        correct: 1
+    },
+    {
+        type: "fill",
+        question: "The ______ manages power distribution in the computer.",
+        answer: "power management unit"
+    },
+    {
+        type: "mcq",
+        question: "Which component handles network connections?",
+        options: ["NIC", "CPU", "RAM", "Motherboard"],
+        correct: 1
+    },
+    {
+        type: "mcq",
+        question: "What is the purpose of the floating-point unit?",
+        options: ["Handle decimal calculations", "Manage memory", "Control I/O", "Process integers"],
+        correct: 1
+    },
+    {
+        type: "fill",
+        question: "The ______ manages audio processing.",
+        answer: "sound card"
+    }
+]
+            },
+          "Computer Processing": {
+    icon: "fas fa-cogs",
+    description: "How computers process data and execute instructions",
+    questions: [
+        {
+            type: "mcq",
+            question: "What is the first step in the CPU instruction cycle?",
+            options: ["Decode", "Execute", "Store", "Fetch"],
+            correct: 3  // Fixed: "Fetch" is at index 3 (0-indexed)
+        }, 
+    {
+        type: "fill",
+        question: "The ______ carries data between the CPU and memory.",
+        answer: "data bus"
+    },
+    {
+        type: "mcq",
+        question: "Which component performs arithmetic and logical operations in the CPU?",
+        options: ["Control Unit", "Registers", "ALU", "Cache"],
+        correct: 3
+    },
+    {
+        type: "mcq",
+        question: "What does GPU stand for?",
+        options: ["General Processing Unit", "Global Processing Unit", "Graphics Processing Unit", "Graphical Performance Unit"],
+        correct: 3
+    },
+    {
+        type: "fill",
+        question: "______ is a technique where multiple instructions are overlapped in execution.",
+        answer: "Pipelining"
+    },
+    {
+        type: "mcq",
+        question: "Which factor does NOT contribute to a computer's speed?",
+        options: ["CPU Clock Speed", "Monitor Size", "Number of Cores", "RAM Size"],
+        correct: 2
+    },
+    {
+        type: "mcq",
+        question: "What is measured in gigahertz (GHz)?",
+        options: ["RAM Size", "Network Speed", "CPU Clock Speed", "Storage Capacity"],
+        correct: 3
+    },
+    {
+        type: "fill",
+        question: "The process of transforming raw data into useful information is called ______.",
+        answer: "processing"
+    },
+    {
+        type: "mcq",
+        question: "Which type of processing executes one instruction at a time?",
+        options: ["Parallel Processing", "Multiprocessing", "Distributed Processing", "Serial Processing"],
+        correct: 4
+    },
+    {
+        type: "mcq",
+        question: "What is the purpose of cache memory?",
+        options: ["Long-term storage", "Backup storage", "Network storage", "Fast temporary storage"],
+        correct: 4
+    },
+    {
+        type: "mcq",
+        question: "Which bus carries control signals in a computer?",
+        options: ["Data Bus", "System Bus", "Control Bus", "Address Bus"],
+        correct: 3
+    },
+    {
+        type: "fill",
+        question: "A processor with multiple cores is called a ______ core processor.",
+        answer: "multi"
+    },
+    {
+        type: "mcq",
+        question: "What is the purpose of the fetch cycle?",
+        options: ["Get instruction from memory", "Decode instruction", "Execute instruction", "Store result"],
+        correct: 1
+    },
+    {
+        type: "fill",
+        question: "The ______ cycle executes the instruction.",
+        answer: "execute"
+    },
+    {
+        type: "mcq",
+        question: "Which component stores the instruction being executed?",
+        options: ["Program Counter", "Instruction Register", "Accumulator", "Memory Buffer Register"],
+        correct: 2
+    },
+    {
+        type: "mcq",
+        question: "What is parallel processing?",
+        options: ["Multiple processors working together", "Single processor working", "Sequential processing", "Batch processing"],
+        correct: 1
+    },
+    {
+        type: "fill",
+        question: "The ______ stores the address of the next instruction.",
+        answer: "program counter"
+    },
+    {
+        type: "mcq",
+        question: "Which processing type uses multiple computers?",
+        options: ["Parallel Processing", "Distributed Processing", "Serial Processing", "Batch Processing"],
+        correct: 2
+    },
+    {
+        type: "mcq",
+        question: "What is the purpose of the decode cycle?",
+        options: ["Understand the instruction", "Get instruction", "Execute instruction", "Store result"],
+        correct: 1
+    },
+    {
+        type: "fill",
+        question: "The ______ cycle stores the result of execution.",
+        answer: "write-back"
+    },
+    {
+        type: "mcq",
+        question: "Which component performs floating-point calculations?",
+        options: ["ALU", "FPU", "Control Unit", "Cache"],
+        correct: 2
+    },
+    {
+        type: "mcq",
+        question: "What is superscalar architecture?",
+        options: ["Multiple execution units", "Single execution unit", "No execution units", "External execution units"],
+        correct: 1
+    },
+    {
+        type: "fill",
+        question: "The ______ manages the instruction pipeline.",
+        answer: "pipeline controller"
+    },
+    {
+        type: "mcq",
+        question: "Which processing method uses time slices?",
+        options: ["Batch Processing", "Real-time Processing", "Time-sharing Processing", "Distributed Processing"],
+        correct: 3
+    },
+    {
+        type: "mcq",
+        question: "What is the purpose of branch prediction?",
+        options: ["Predict program flow", "Manage memory", "Control I/O", "Process data"],
+        correct: 1
+    },
+    {
+        type: "fill",
+        question: "The ______ handles interrupt processing.",
+        answer: "interrupt handler"
+    },
+    {
+        type: "mcq",
+        question: "Which processing type is used for immediate response?",
+        options: ["Batch Processing", "Real-time Processing", "Time-sharing Processing", "Distributed Processing"],
+        correct: 2
+    },
+    {
+        type: "mcq",
+        question: "What is the purpose of speculative execution?",
+        options: ["Execute instructions ahead of time", "Manage memory", "Control I/O", "Process data"],
+        correct: 1
+    },
+    {
+        type: "fill",
+        question: "The ______ coordinates multiple processors.",
+        answer: "multiprocessor controller"
+    },
+    {
+        type: "mcq",
+        question: "Which processing method groups similar tasks?",
+        options: ["Batch Processing", "Real-time Processing", "Time-sharing Processing", "Distributed Processing"],
+        correct: 1
+    },
+    {
+        type: "mcq",
+        question: "What is the purpose of out-of-order execution?",
+        options: ["Execute instructions in optimal order", "Manage memory", "Control I/O", "Process data"],
+        correct: 1
+    },
+    {
+        type: "fill",
+        question: "The ______ manages cache coherence in multiprocessor systems.",
+        answer: "cache controller"
+    },
+    {
+        type: "mcq",
+        question: "Which processing type uses multiple threads?",
+        options: ["Multithreading", "Single-threading", "No-threading", "External threading"],
+        correct: 1
+    },
+    {
+        type: "mcq",
+        question: "What is the purpose of register renaming?",
+        options: ["Avoid data hazards", "Manage memory", "Control I/O", "Process data"],
+        correct: 1
+    },
+    {
+        type: "fill",
+        question: "The ______ handles memory management in processing.",
+        answer: "MMU"
+    },
+    {
+        type: "mcq",
+        question: "Which processing method uses priority levels?",
+        options: ["Priority Scheduling", "Batch Processing", "Real-time Processing", "Distributed Processing"],
+        correct: 1
+    },
+    {
+        type: "mcq",
+        question: "What is the purpose of Tomasulo's algorithm?",
+        options: ["Manage instruction scheduling", "Manage memory", "Control I/O", "Process data"],
+        correct: 1
+    },
+    {
+        type: "fill",
+        question: "The ______ coordinates I/O processing.",
+        answer: "I/O processor"
+    },
+    {
+        type: "mcq",
+        question: "Which processing type uses multiple computers for one task?",
+        options: ["Distributed Processing", "Parallel Processing", "Serial Processing", "Batch Processing"],
+        correct: 1
+    },
+    {
+        type: "mcq",
+        question: "What is the purpose of the scoreboarding technique?",
+        options: ["Manage instruction dependencies", "Manage memory", "Control I/O", "Process data"],
+        correct: 1
+    },
+    {
+        type: "fill",
+        question: "The ______ handles vector processing.",
+        answer: "vector processor"
+    },
+    {
+        type: "mcq",
+        question: "Which processing method uses quantum bits?",
+        options: ["Quantum Processing", "Classical Processing", "Analog Processing", "Digital Processing"],
+        correct: 1
+    },
+    {
+        type: "mcq",
+        question: "What is the purpose of the reorder buffer?",
+        options: ["Maintain instruction order", "Manage memory", "Control I/O", "Process data"],
+        correct: 1
+    },
+    {
+        type: "fill",
+        question: "The ______ manages speculative execution.",
+        answer: "speculation unit"
+    },
+    {
+        type: "mcq",
+        question: "Which processing type uses neural networks?",
+        options: ["Neuromorphic Processing", "Classical Processing", "Quantum Processing", "Analog Processing"],
+        correct: 1
+    },
+    {
+        type: "mcq",
+        question: "What is the purpose of the reservation station?",
+        options: ["Hold instructions waiting for execution", "Manage memory", "Control I/O", "Process data"],
+        correct: 1
+    },
+    {
+        type: "fill",
+        question: "The ______ handles floating-point operations.",
+        answer: "FPU"
+    },
+    {
+        type: "mcq",
+        question: "Which processing method uses optical computing?",
+        options: ["Optical Processing", "Electronic Processing", "Quantum Processing", "Neuromorphic Processing"],
+        correct: 1
+    },
+    {
+        type: "mcq",
+        question: "What is the purpose of the load-store unit?",
+        options: ["Handle memory operations", "Manage CPU", "Control I/O", "Process data"],
+        correct: 1
+    },
+    {
+        type: "fill",
+        question: "The ______ coordinates SIMD operations.",
+        answer: "vector unit"
+    },
+    {
+        type: "mcq",
+        question: "Which processing type uses DNA computing?",
+        options: ["DNA Processing", "Electronic Processing", "Quantum Processing", "Optical Processing"],
+        correct: 1
+    },
+    {
+        type: "mcq",
+        question: "What is the purpose of the memory management unit?",
+        options: ["Handle virtual memory", "Manage CPU", "Control I/O", "Process data"],
+        correct: 1
+    },
+    {
+        type: "fill",
+        question: "The ______ manages interrupt processing.",
+        answer: "interrupt controller"
+    },
+    {
+        type: "mcq",
+        question: "Which processing method uses approximate computing?",
+        options: ["Approximate Processing", "Exact Processing", "Quantum Processing", "Neuromorphic Processing"],
+        correct: 1
+    },
+    {
+        type: "mcq",
+        question: "What is the purpose of the translation lookaside buffer?",
+        options: ["Cache page table entries", "Manage memory", "Control I/O", "Process data"],
+        correct: 1
+    },
+    {
+        type: "fill",
+        question: "The ______ handles decimal arithmetic.",
+        answer: "decimal unit"
+    },
+    {
+        type: "mcq",
+        question: "Which processing type uses stochastic computing?",
+        options: ["Stochastic Processing", "Deterministic Processing", "Quantum Processing", "Neuromorphic Processing"],
+        correct: 1
+    },
+    {
+        type: "mcq",
+        question: "What is the purpose of the branch target buffer?",
+        options: ["Store branch targets", "Manage memory", "Control I/O", "Process data"],
+        correct: 1
+    },
+    {
+        type: "fill",
+        question: "The ______ coordinates MIMD operations.",
+        answer: "multiprocessor system"
+    },
+    {
+        type: "mcq",
+        question: "Which processing method uses reversible computing?",
+        options: ["Reversible Processing", "Irreversible Processing", "Quantum Processing", "Neuromorphic Processing"],
+        correct: 1
+    },
+    {
+        type: "mcq",
+        question: "What is the purpose of the memory order buffer?",
+        options: ["Track memory operations", "Manage CPU", "Control I/O", "Process data"],
+        correct: 1
+    },
+    {
+        type: "fill",
+        question: "The ______ handles cryptographic operations.",
+        answer: "crypto processor"
+    }
+]
+            },
+           "Operating Systems": {
+    icon: "fas fa-compact-disc",
+    description: "Software that manages computer hardware and software resources",
+    questions: [
+        {
+            type: "mcq",
+            question: "What is the core of an operating system called?",
+            options: ["Shell", "Interface", "Desktop", "Kernel"],
+            correct: 3  // Fixed: "Kernel" is at index 3 (0-indexed)
+        }, 
+    {
+        type: "fill",
+        question: "______ is when a computer spends most of its time swapping data between memory and disk.",
+        answer: "Thrashing"
+    },
+    {
+        type: "mcq",
+        question: "Which of these is NOT a function of an operating system?",
+        options: ["Memory Management", "Application Development", "File Management", "Processor Management"],
+        correct: 2
+    },
+    {
+        type: "mcq",
+        question: "What type of user interface uses icons and visual indicators?",
+        options: ["CLI", "TUI", "GUI", "VUI"],
+        correct: 3
+    },
+    {
+        type: "fill",
+        question: "The process of starting a computer is called ______.",
+        answer: "booting"
+    },
+    {
+        type: "mcq",
+        question: "Which file system is used by modern Windows versions?",
+        options: ["FAT32", "EXT4", "NTFS", "HFS+"],
+        correct: 3
+    },
+    {
+        type: "mcq",
+        question: "What does BIOS stand for?",
+        options: ["Binary Input/Output System", "Basic Input/Output System", "Basic Internal Operating System", "Binary Internal Operating System"],
+        correct: 2
+    },
+    {
+        type: "fill",
+        question: "The area where print jobs wait before printing is called a ______.",
+        answer: "spool"
+    },
+    {
+        type: "mcq",
+        question: "Which operating system is open-source?",
+        options: ["Windows", "macOS", "iOS", "Linux"],
+        correct: 4
+    },
+    {
+        type: "mcq",
+        question: "What is the purpose of virtual memory?",
+        options: ["Use disk space as RAM", "Increase RAM speed", "Backup important files", "Store operating system files"],
+        correct: 1
+    },
+    {
+        type: "mcq",
+        question: "Which component manages file operations in an OS?",
+        options: ["Memory Manager", "Process Manager", "File Manager", "Device Manager"],
+        correct: 3
+    },
+    {
+        type: "fill",
+        question: "A program that performs maintenance tasks on a computer is called a ______.",
+        answer: "utility"
+    },
+    {
+        type: "mcq",
+        question: "What is multitasking?",
+        options: ["Running multiple programs simultaneously", "Using multiple computers", "Having multiple users", "Using multiple processors"],
+        correct: 1
+    },
+    {
+        type: "fill",
+        question: "The ______ manages process scheduling.",
+        answer: "scheduler"
+    },
+    {
+        type: "mcq",
+        question: "Which scheduling algorithm gives each process equal time?",
+        options: ["FCFS", "Round Robin", "Priority", "SJF"],
+        correct: 2
+    },
+    {
+        type: "mcq",
+        question: "What is a deadlock?",
+        options: ["Processes waiting for each other", "System crash", "Memory full", "Disk failure"],
+        correct: 1
+    },
+    {
+        type: "fill",
+        question: "The ______ manages memory allocation.",
+        answer: "memory manager"
+    },
+    {
+        type: "mcq",
+        question: "Which memory allocation method suffers from external fragmentation?",
+        options: ["Paging", "Segmentation", "Fixed partitioning", "Dynamic partitioning"],
+        correct: 4
+    },
+    {
+        type: "mcq",
+        question: "What is the purpose of paging?",
+        options: ["Divide memory into fixed-size blocks", "Divide memory into variable-size blocks", "Manage processes", "Handle I/O"],
+        correct: 1
+    },
+    {
+        type: "fill",
+        question: "The ______ table maps virtual to physical addresses.",
+        answer: "page"
+    },
+    {
+        type: "mcq",
+        question: "Which OS component handles device communication?",
+        options: ["File System", "Device Drivers", "Memory Manager", "Process Manager"],
+        correct: 2
+    },
+    {
+        type: "mcq",
+        question: "What is the purpose of system calls?",
+        options: ["Interface between programs and OS", "Manage hardware directly", "User commands", "File operations"],
+        correct: 1
+    },
+    {
+        type: "fill",
+        question: "The ______ provides user interface to the OS.",
+        answer: "shell"
+    },
+    {
+        type: "mcq",
+        question: "Which OS feature allows multiple users?",
+        options: ["Multitasking", "Multiuser", "Multiprocessing", "Multithreading"],
+        correct: 2
+    },
+    {
+        type: "mcq",
+        question: "What is the purpose of interrupts?",
+        options: ["Signal events to CPU", "Manage memory", "Control processes", "Handle files"],
+        correct: 1
+    },
+    {
+        type: "fill",
+        question: "The ______ manages process creation and termination.",
+        answer: "process manager"
+    },
+    {
+        type: "mcq",
+        question: "Which process state means waiting for an event?",
+        options: ["Running", "Ready", "Waiting", "Terminated"],
+        correct: 3
+    },
+    {
+        type: "mcq",
+        question: "What is context switching?",
+        options: ["Saving and restoring process state", "Changing user context", "Switching memory", "Changing files"],
+        correct: 1
+    },
+    {
+        type: "fill",
+        question: "The ______ coordinates process synchronization.",
+        answer: "synchronization mechanism"
+    },
+    {
+        type: "mcq",
+        question: "Which synchronization tool uses wait and signal operations?",
+        options: ["Semaphore", "Mutex", "Monitor", "Lock"],
+        correct: 1
+    },
+    {
+        type: "mcq",
+        question: "What is the purpose of a mutex?",
+        options: ["Ensure mutual exclusion", "Manage memory", "Control I/O", "Handle files"],
+        correct: 1
+    },
+    {
+        type: "fill",
+        question: "The ______ prevents race conditions.",
+        answer: "synchronization"
+    },
+    {
+        type: "mcq",
+        question: "Which memory management technique uses pages?",
+        options: ["Paging", "Segmentation", "Partitioning", "Swapping"],
+        correct: 1
+    },
+    {
+        type: "mcq",
+        question: "What is the purpose of the TLB?",
+        options: ["Cache page table entries", "Manage memory", "Control processes", "Handle I/O"],
+        correct: 1
+    },
+    {
+        type: "fill",
+        question: "The ______ handles page faults.",
+        answer: "page fault handler"
+    },
+    {
+        type: "mcq",
+        question: "Which page replacement algorithm replaces the least recently used page?",
+        options: ["FIFO", "LRU", "Optimal", "Random"],
+        correct: 2
+    },
+    {
+        type: "mcq",
+        question: "What is the purpose of disk scheduling?",
+        options: ["Optimize disk access", "Manage memory", "Control processes", "Handle files"],
+        correct: 1
+    },
+    {
+        type: "fill",
+        question: "The ______ algorithm services requests in arrival order.",
+        answer: "FCFS"
+    },
+    {
+        type: "mcq",
+        question: "Which file system is used by Linux?",
+        options: ["NTFS", "FAT32", "EXT4", "HFS+"],
+        correct: 3
+    },
+    {
+        type: "mcq",
+        question: "What is the purpose of file permissions?",
+        options: ["Control access to files", "Manage memory", "Control processes", "Handle I/O"],
+        correct: 1
+    },
+    {
+        type: "fill",
+        question: "The ______ contains file system metadata.",
+        answer: "inode"
+    },
+    {
+        type: "mcq",
+        question: "Which OS component manages security?",
+        options: ["Security Manager", "File System", "Memory Manager", "Process Manager"],
+        correct: 1
+    },
+    {
+        type: "mcq",
+        question: "What is the purpose of authentication?",
+        options: ["Verify user identity", "Manage files", "Control processes", "Handle memory"],
+        correct: 1
+    },
+    {
+        type: "fill",
+        question: "The ______ controls access to resources.",
+        answer: "access control"
+    },
+    {
+        type: "mcq",
+        question: "Which OS feature allows running multiple OS instances?",
+        options: ["Virtualization", "Multitasking", "Multiuser", "Multiprocessing"],
+        correct: 1
+    },
+    {
+        type: "mcq",
+        question: "What is the purpose of a hypervisor?",
+        options: ["Manage virtual machines", "Manage files", "Control processes", "Handle memory"],
+        correct: 1
+    },
+    {
+        type: "fill",
+        question: "The ______ provides virtual hardware to guest OS.",
+        answer: "virtual machine"
+    },
+    {
+        type: "mcq",
+        question: "Which OS is designed for mobile devices?",
+        options: ["Windows", "Linux", "Android", "macOS"],
+        correct: 3
+    },
+    {
+        type: "mcq",
+        question: "What is the purpose of real-time OS?",
+        options: ["Guarantee response times", "Manage files", "Control processes", "Handle memory"],
+        correct: 1
+    },
+    {
+        type: "fill",
+        question: "The ______ manages distributed systems.",
+        answer: "distributed OS"
+    },
+    {
+        type: "mcq",
+        question: "Which OS component handles network communication?",
+        options: ["Network Stack", "File System", "Memory Manager", "Process Manager"],
+        correct: 1
+    },
+    {
+        type: "mcq",
+        question: "What is the purpose of system monitoring?",
+        options: ["Track system performance", "Manage files", "Control processes", "Handle memory"],
+        correct: 1
+    },
+    {
+        type: "fill",
+        question: "The ______ logs system events.",
+        answer: "system logger"
+    },
+    {
+        type: "mcq",
+        question: "Which OS feature allows hot swapping?",
+        options: ["Plug and Play", "Multitasking", "Multiuser", "Multiprocessing"],
+        correct: 1
+    },
+    {
+        type: "mcq",
+        question: "What is the purpose of power management?",
+        options: ["Conserve energy", "Manage files", "Control processes", "Handle memory"],
+        correct: 1
+    },
+    {
+        type: "fill",
+        question: "The ______ handles system backups.",
+        answer: "backup utility"
+    },
+    {
+        type: "mcq",
+        question: "Which OS is designed for embedded systems?",
+        options: ["Windows", "Linux", "RTOS", "macOS"],
+        correct: 3
+    },
+    {
+        type: "mcq",
+        question: "What is the purpose of system updates?",
+        options: ["Fix bugs and add features", "Manage files", "Control processes", "Handle memory"],
+        correct: 1
+    },
+    {
+        type: "fill",
+        question: "The ______ manages user accounts.",
+        answer: "account manager"
+    },
+    {
+        type: "mcq",
+        question: "Which OS feature provides fault tolerance?",
+        options: ["RAID", "Multitasking", "Multiuser", "Multiprocessing"],
+        correct: 1
+    },
+    {
+        type: "mcq",
+        question: "What is the purpose of system restore?",
+        options: ["Revert to previous state", "Manage files", "Control processes", "Handle memory"],
+        correct: 1
+    },
+    {
+        type: "fill",
+        question: "The ______ handles system shutdown and startup.",
+        answer: "init system"
+    }
+]
+            },
+      "Internet and Networking": {
+    icon: "fas fa-network-wired",
+    description: "Computer networks and internet technologies",
+    questions: [  // Remove "const networkingQuestions =" and just use "questions:"
+        {
+        type: "mcq",
+        question: "What does LAN stand for?",
+        options: ["Large Access Network", "Local Area Network", "Linked Area Nodes", "Local Access Nodes"],
+        correct: 2
+    },
+    {
+        type: "fill",
+        question: "The protocol that converts IP addresses to domain names is called ______.",
+        answer: "DNS"
+    },
+    {
+        type: "mcq",
+        question: "Which device connects multiple networks together?",
+        options: ["Hub", "Modem", "Switch", "Router"],
+        correct: 4
+    },
+    {
+        type: "mcq",
+        question: "What is the worldwide standard protocol for Internet communication?",
+        options: ["HTTP", "FTP", "SMTP", "TCP/IP"],
+        correct: 4
+    },
+    {
+        type: "fill",
+        question: "A private network within an organization is called an ______.",
+        answer: "intranet"
+    },
+    {
+        type: "mcq",
+        question: "Which topology connects all devices to a central hub?",
+        options: ["Bus", "Mesh", "Ring", "Star"],
+        correct: 4
+    },
+    {
+        type: "mcq",
+        question: "What does MAC address stand for?",
+        options: ["Memory Access Control", "Media Access Control", "Main Access Control", "Media Address Control"],
+        correct: 2
+    },
+    {
+        type: "fill",
+        question: "The method of slicing digital messages into parcels is called ______.",
+        answer: "packet switching"
+    },
+    {
+        type: "mcq",
+        question: "Which network covers a large geographical area?",
+        options: ["LAN", "PAN", "MAN", "WAN"],
+        correct: 4
+    },
+    {
+        type: "mcq",
+        question: "What device translates digital signals to analog for transmission over phone lines?",
+        options: ["Router", "Hub", "Switch", "Modem"],
+        correct: 4
+    },
+    {
+        type: "mcq",
+        question: "Which protocol is used for transferring web pages?",
+        options: ["FTP", "SMTP", "TCP", "HTTP"],
+        correct: 4
+    },
+    {
+        type: "fill",
+        question: "A network that allows sharing of hardware and software resources is called ______ computing.",
+        answer: "client/server"
+    },
+    {
+        type: "mcq",
+        question: "What does IP stand for?",
+        options: ["Internet Protocol", "Internal Protocol", "International Protocol", "Interconnected Protocol"],
+        correct: 1
+    },
+    {
+        type: "fill",
+        question: "The unique identifier for a website is called a ______.",
+        answer: "URL"
+    },
+    {
+        type: "mcq",
+        question: "Which device amplifies network signals?",
+        options: ["Router", "Repeater", "Switch", "Bridge"],
+        correct: 2
+    },
+    {
+        type: "mcq",
+        question: "What is the purpose of a firewall?",
+        options: ["Block unauthorized access", "Speed up internet", "Store files", "Manage emails"],
+        correct: 1
+    },
+    {
+        type: "fill",
+        question: "The ______ topology has every device connected to every other device.",
+        answer: "mesh"
+    },
+    {
+        type: "mcq",
+        question: "Which protocol is used for email transmission?",
+        options: ["HTTP", "FTP", "SMTP", "TCP"],
+        correct: 3
+    },
+    {
+        type: "mcq",
+        question: "What does URL stand for?",
+        options: ["Uniform Resource Locator", "Universal Resource Locator", "Uniform Reference Locator", "Universal Reference Locator"],
+        correct: 1
+    },
+    {
+        type: "fill",
+        question: "The ______ cable is commonly used for Ethernet networks.",
+        answer: "CAT5"
+    },
+    {
+        type: "mcq",
+        question: "Which network device operates at the data link layer?",
+        options: ["Router", "Switch", "Hub", "Repeater"],
+        correct: 2
+    },
+    {
+        type: "mcq",
+        question: "What is the purpose of NAT?",
+        options: ["Translate private to public IP addresses", "Manage network traffic", "Filter packets", "Amplify signals"],
+        correct: 1
+    },
+    {
+        type: "fill",
+        question: "The ______ protocol ensures reliable data delivery.",
+        answer: "TCP"
+    },
+    {
+        type: "mcq",
+        question: "Which wireless standard operates at 2.4 GHz?",
+        options: ["Bluetooth", "Wi-Fi", "Zigbee", "All of the above"],
+        correct: 4
+    },
+    {
+        type: "mcq",
+        question: "What is the purpose of DHCP?",
+        options: ["Assign IP addresses automatically", "Translate domain names", "Route packets", "Filter traffic"],
+        correct: 1
+    },
+    {
+        type: "fill",
+        question: "The ______ topology uses a single backbone cable.",
+        answer: "bus"
+    },
+    {
+        type: "mcq",
+        question: "Which protocol is used for file transfer?",
+        options: ["HTTP", "SMTP", "FTP", "TCP"],
+        correct: 3
+    },
+    {
+        type: "mcq",
+        question: "What does VPN stand for?",
+        options: ["Virtual Private Network", "Visual Private Network", "Virtual Public Network", "Visual Public Network"],
+        correct: 1
+    },
+    {
+        type: "fill",
+        question: "The ______ layer handles logical addressing.",
+        answer: "network"
+    },
+    {
+        type: "mcq",
+        question: "Which device connects similar networks?",
+        options: ["Router", "Bridge", "Gateway", "Modem"],
+        correct: 2
+    },
+    {
+        type: "mcq",
+        question: "What is the purpose of ARP?",
+        options: ["Map IP to MAC addresses", "Route packets", "Assign IP addresses", "Translate domain names"],
+        correct: 1
+    },
+    {
+        type: "fill",
+        question: "The ______ protocol doesn't guarantee delivery.",
+        answer: "UDP"
+    },
+    {
+        type: "mcq",
+        question: "Which network type uses radio waves?",
+        options: ["Wired Network", "Wireless Network", "Fiber Network", "Coaxial Network"],
+        correct: 2
+    },
+    {
+        type: "mcq",
+        question: "What is the purpose of ICMP?",
+        options: ["Send error messages", "Route packets", "Assign IP addresses", "Translate domain names"],
+        correct: 1
+    },
+    {
+        type: "fill",
+        question: "The ______ topology forms a circular connection.",
+        answer: "ring"
+    },
+    {
+        type: "mcq",
+        question: "Which device connects dissimilar networks?",
+        options: ["Router", "Bridge", "Gateway", "Switch"],
+        correct: 3
+    },
+    {
+        type: "mcq",
+        question: "What is the purpose of QoS?",
+        options: ["Manage network traffic priority", "Assign IP addresses", "Route packets", "Translate domain names"],
+        correct: 1
+    },
+    {
+        type: "fill",
+        question: "The ______ address identifies a network interface.",
+        answer: "MAC"
+    },
+    {
+        type: "mcq",
+        question: "Which protocol is used for web security?",
+        options: ["HTTP", "HTTPS", "FTP", "SMTP"],
+        correct: 2
+    },
+    {
+        type: "mcq",
+        question: "What is the purpose of a proxy server?",
+        options: ["Act as intermediary for requests", "Route packets", "Assign IP addresses", "Translate domain names"],
+        correct: 1
+    },
+    {
+        type: "fill",
+        question: "The ______ domain is for educational institutions.",
+        answer: ".edu"
+    },
+    {
+        type: "mcq",
+        question: "Which wireless security protocol is most secure?",
+        options: ["WEP", "WPA", "WPA2", "WPA3"],
+        correct: 4
+    },
+    {
+        type: "mcq",
+        question: "What is the purpose of SSH?",
+        options: ["Secure remote access", "File transfer", "Email", "Web browsing"],
+        correct: 1
+    },
+    {
+        type: "fill",
+        question: "The ______ protocol handles email retrieval.",
+        answer: "POP3"
+    },
+    {
+        type: "mcq",
+        question: "Which network type uses light pulses?",
+        options: ["Coaxial", "Twisted Pair", "Fiber Optic", "Wireless"],
+        correct: 3
+    },
+    {
+        type: "mcq",
+        question: "What is the purpose of TLS?",
+        options: ["Encrypt communication", "Route packets", "Assign IP addresses", "Translate domain names"],
+        correct: 1
+    },
+    {
+        type: "fill",
+        question: "The ______ topology combines multiple topologies.",
+        answer: "hybrid"
+    },
+    {
+        type: "mcq",
+        question: "Which protocol is used for network management?",
+        options: ["HTTP", "FTP", "SNMP", "SMTP"],
+        correct: 3
+    },
+    {
+        type: "mcq",
+        question: "What is the purpose of BGP?",
+        options: ["Route between autonomous systems", "Assign IP addresses", "Translate domain names", "Filter traffic"],
+        correct: 1
+    },
+    {
+        type: "fill",
+        question: "The ______ address is 127.0.0.1.",
+        answer: "localhost"
+    },
+    {
+        type: "mcq",
+        question: "Which device operates at the physical layer?",
+        options: ["Router", "Switch", "Hub", "Bridge"],
+        correct: 3
+    },
+    {
+        type: "mcq",
+        question: "What is the purpose of OSPF?",
+        options: ["Route within an autonomous system", "Assign IP addresses", "Translate domain names", "Filter traffic"],
+        correct: 1
+    },
+    {
+        type: "fill",
+        question: "The ______ protocol handles voice over IP.",
+        answer: "SIP"
+    },
+    {
+        type: "mcq",
+        question: "Which network service provides name resolution?",
+        options: ["DHCP", "DNS", "FTP", "HTTP"],
+        correct: 2
+    },
+    {
+        type: "mcq",
+        question: "What is the purpose of VLAN?",
+        options: ["Create virtual LANs", "Assign IP addresses", "Route packets", "Translate domain names"],
+        correct: 1
+    },
+    {
+        type: "fill",
+        question: "The ______ cable has four twisted pairs.",
+        answer: "Ethernet"
+    },
+    {
+        type: "mcq",
+        question: "Which protocol is used for time synchronization?",
+        options: ["HTTP", "FTP", "NTP", "SMTP"],
+        correct: 3
+    },
+    {
+        type: "mcq",
+        question: "What is the purpose of CDN?",
+        options: ["Distribute content geographically", "Assign IP addresses", "Route packets", "Translate domain names"],
+        correct: 1
+    },
+    {
+        type: "fill",
+        question: "The ______ address is automatically assigned.",
+        answer: "APIPA"
+    },
+    {
+        type: "mcq",
+        question: "Which wireless standard offers the highest speed?",
+        options: ["802.11a", "802.11b", "802.11g", "802.11ac"],
+        correct: 4
+    },
+    {
+        type: "mcq",
+        question: "What is the purpose of MPLS?",
+        options: ["Speed up packet forwarding", "Assign IP addresses", "Translate domain names", "Filter traffic"],
+        correct: 1
+    },
+    {
+        type: "fill",
+        question: "The ______ protocol handles network discovery.",
+        answer: "LLDP"
+    },
+    {
+        type: "mcq",
+        question: "Which device filters network traffic?",
+        options: ["Router", "Switch", "Firewall", "Hub"],
+        correct: 3
+    },
+    {
+        type: "mcq",
+        question: "What is the purpose of RSTP?",
+        options: ["Prevent network loops", "Assign IP addresses", "Translate domain names", "Filter traffic"],
+        correct: 1
+    },
+     {
+            type: "fill",
+            question: "The ______ protocol handles automatic configuration.",
+            answer: "DHCP"
+        }
+    ]  // <-- This closes the questions array for Internet and Networking
+}  // <-- This closes the Internet and Networking category object
+};  // <-- This semicolon closes the entire quizData object
+
+// App state
         let currentScreen = 'welcome-screen';
         let currentCategory = '';
-        let currentSubcategory = '';
         let currentQuestionIndex = 0;
         let score = 0;
         let timer;
@@ -984,23 +3181,21 @@
             subcategoriesSubtitle.textContent = quizData[category].description;
             subcategoriesContainer.innerHTML = '';
             
-            for (const subcategory in quizData[category].subcategories) {
-                const questionCount = quizData[category].subcategories[subcategory].questions.length;
-                const subcategoryCard = document.createElement('div');
-                subcategoryCard.className = 'subcategory-card';
-                subcategoryCard.innerHTML = `
-                    <div class="subcategory-name">${subcategory}</div>
-                    <div class="question-count">${questionCount} questions</div>
-                `;
-                
-                subcategoryCard.addEventListener('click', () => {
-                    currentSubcategory = subcategory;
-                    showScreen('quiz-screen');
-                    startQuiz();
-                });
-                
-                subcategoriesContainer.appendChild(subcategoryCard);
-            }
+            // Create subcategory cards for each topic
+            const subcategoryCard = document.createElement('div');
+            subcategoryCard.className = 'subcategory-card';
+            const questionCount = quizData[category].questions.length;
+            subcategoryCard.innerHTML = `
+                <div class="subcategory-name">${category} Quiz</div>
+                <div class="question-count">${questionCount} questions</div>
+            `;
+            
+            subcategoryCard.addEventListener('click', () => {
+                showScreen('quiz-screen');
+                startQuiz();
+            });
+            
+            subcategoriesContainer.appendChild(subcategoryCard);
             
             showScreen('subcategories-screen');
         }
@@ -1035,7 +3230,7 @@
         }
 
         function loadQuestion() {
-            const questions = quizData[currentCategory].subcategories[currentSubcategory].questions;
+            const questions = quizData[currentCategory].questions;
             const question = questions[currentQuestionIndex];
             
             currentQuestionDisplay.textContent = currentQuestionIndex + 1;
@@ -1083,7 +3278,7 @@
             if (selectedOption) return;
             
             selectedOption = optionIndex;
-            const questions = quizData[currentCategory].subcategories[currentSubcategory].questions;
+            const questions = quizData[currentCategory].questions;
             const question = questions[currentQuestionIndex];
             
             optionElement.classList.add('selected');
@@ -1108,7 +3303,7 @@
         }
 
         function nextQuestion() {
-            const questions = quizData[currentCategory].subcategories[currentSubcategory].questions;
+            const questions = quizData[currentCategory].questions;
             const question = questions[currentQuestionIndex];
             
             // Check answer for fill in the blank
@@ -1142,7 +3337,7 @@
         function endQuiz() {
             clearInterval(timer);
             
-            const questions = quizData[currentCategory].subcategories[currentSubcategory].questions;
+            const questions = quizData[currentCategory].questions;
             const correctCount = score / 10;
             const percentage = (correctCount / questions.length) * 100;
             const endTime = new Date();
@@ -1152,7 +3347,7 @@
             finalScoreDisplay.textContent = `${Math.round(percentage)}%`;
             correctAnswersDisplay.textContent = `${correctCount}/${questions.length}`;
             timeTakenDisplay.textContent = `${timeTaken}s`;
-            quizCategoryDisplay.textContent = `${currentCategory}: ${currentSubcategory}`;
+            quizCategoryDisplay.textContent = `${currentCategory}`;
             
             // Set rank based on score
             let rank = "Novice";
