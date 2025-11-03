@@ -1,0 +1,2009 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Computer Fundamentals Quiz</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        :root {
+            --primary: #3498db;
+            --secondary: #2ecc71;
+            --accent: #e74c3c;
+            --dark: #2c3e50;
+            --light: #ecf0f1;
+            --gray: #95a5a6;
+            --shadow: 0 10px 20px rgba(0,0,0,0.1);
+            --transition: all 0.3s ease;
+            --border-radius: 16px;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            color: #333;
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 0;
+            margin: 0;
+            overflow-x: hidden;
+        }
+        
+        .app-container {
+            width: 100%;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .screen {
+            width: 100%;
+            min-height: 100vh;
+            display: none;
+            flex-direction: column;
+            padding: 20px;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .screen.active {
+            display: flex;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateX(-20px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            padding: 15px 0;
+        }
+        
+        h1 {
+            color: white;
+            font-size: 1.8rem;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        h2 {
+            color: white;
+            margin-bottom: 20px;
+            font-size: 1.6rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        h3 {
+            color: white;
+            margin: 15px 0 10px;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .card {
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 20px;
+            margin-bottom: 20px;
+            animation: slideIn 0.5s ease;
+        }
+        
+        .welcome-card {
+            text-align: center;
+            padding: 30px 20px;
+        }
+        
+        .welcome-icon {
+            font-size: 4rem;
+            color: var(--primary);
+            margin-bottom: 20px;
+            animation: bounce 2s infinite;
+        }
+        
+        .welcome-text {
+            margin-bottom: 25px;
+            color: #555;
+            font-size: 1.1rem;
+            line-height: 1.7;
+        }
+        
+        .stats-card {
+            display: flex;
+            justify-content: space-around;
+            text-align: center;
+            padding: 15px;
+        }
+        
+        .stat {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--primary);
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--gray);
+            margin-top: 5px;
+        }
+        
+        .btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(to right, var(--primary), #2980b9);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-top: 15px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .btn:active {
+            transform: translateY(0);
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(to right, var(--gray), #7f8c8d);
+        }
+        
+        .btn-success {
+            background: linear-gradient(to right, var(--secondary), #27ae60);
+        }
+        
+        .btn-danger {
+            background: linear-gradient(to right, var(--accent), #c0392b);
+        }
+        
+        .btn-fullscreen {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: auto;
+            padding: 12px;
+            z-index: 1000;
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+        
+        .btn-fullscreen i {
+            font-size: 1.2rem;
+        }
+        
+        .quiz-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border-radius: var(--border-radius);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        
+        .progress-container {
+            display: flex;
+            align-items: center;
+            flex: 1;
+            margin-right: 15px;
+        }
+        
+        .progress-bar {
+            height: 10px;
+            background-color: rgba(255,255,255,0.2);
+            border-radius: 10px;
+            flex-grow: 1;
+            margin-right: 15px;
+            overflow: hidden;
+        }
+        
+        .progress {
+            height: 100%;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            width: 0%;
+            transition: width 0.5s ease;
+            border-radius: 10px;
+        }
+        
+        .progress-text {
+            font-weight: bold;
+            color: white;
+            white-space: nowrap;
+            font-size: 1rem;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+        }
+        
+        .quiz-stats {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: white;
+            font-weight: bold;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+        }
+        
+        .question-container {
+            margin-bottom: 20px;
+        }
+        
+        .question-text {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            line-height: 1.8;
+            background: linear-gradient(to right, #f8f9fa, #e9ecef);
+            padding: 20px;
+            border-radius: var(--border-radius);
+            border-left: 5px solid var(--primary);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+        
+        .blank {
+            display: inline-block;
+            min-width: 120px;
+            border-bottom: 3px solid var(--accent);
+            margin: 0 5px;
+            padding: 5px 0;
+            text-align: center;
+            font-weight: bold;
+            color: var(--accent);
+            background-color: #fff5f5;
+            border-radius: 5px;
+            animation: pulse 2s infinite;
+        }
+        
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+            margin-top: 20px;
+        }
+        
+        .option-btn {
+            padding: 16px;
+            background: white;
+            border: 2px solid #bdc3c7;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: var(--transition);
+            text-align: center;
+            font-size: 1rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+        
+        .option-btn:hover {
+            background-color: #e9f7fe;
+            border-color: var(--primary);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 8px rgba(0,0,0,0.1);
+        }
+        
+        .hint {
+            font-size: 1rem;
+            color: var(--gray);
+            margin-top: 15px;
+            font-style: italic;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-left: 4px solid var(--primary);
+        }
+        
+        .feedback {
+            padding: 20px;
+            border-radius: var(--border-radius);
+            margin-top: 20px;
+            display: none;
+            animation: fadeIn 0.5s ease;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .correct {
+            background: linear-gradient(to right, #d4edda, #c3e6cb);
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .incorrect {
+            background: linear-gradient(to right, #f8d7da, #f5c6cb);
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .results-container {
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .score {
+            font-size: 3.5rem;
+            font-weight: bold;
+            color: var(--dark);
+            margin: 20px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+        }
+        
+        .score-details {
+            margin: 25px 0;
+            padding: 20px;
+            background: linear-gradient(to right, #f8f9fa, #e9ecef);
+            border-radius: var(--border-radius);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+        
+        .score-details p {
+            margin: 10px 0;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .chapter-selector {
+            margin-bottom: 20px;
+        }
+        
+        .chapter-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 12px;
+            margin-top: 15px;
+        }
+        
+        .chapter-btn {
+            padding: 16px 12px;
+            background: white;
+            border: 2px solid #bdc3c7;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: var(--transition);
+            text-align: center;
+            font-weight: 500;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .chapter-btn.active {
+            background: linear-gradient(to right, var(--primary), #2980b9);
+            color: white;
+            border-color: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(0,0,0,0.1);
+        }
+        
+        .chapter-icon {
+            font-size: 1.8rem;
+        }
+        
+        .quiz-settings {
+            margin: 20px 0;
+            padding: 20px;
+            background: linear-gradient(to right, #f8f9fa, #e9ecef);
+            border-radius: var(--border-radius);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+        
+        .setting-option {
+            margin: 15px 0;
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            border-radius: 10px;
+            transition: var(--transition);
+        }
+        
+        .setting-option:hover {
+            background: rgba(255,255,255,0.7);
+        }
+        
+        .setting-option input {
+            width: auto;
+            margin-right: 15px;
+            transform: scale(1.2);
+        }
+        
+        .setting-option label {
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .review-item {
+            margin-bottom: 20px;
+            padding: 20px;
+            border-radius: var(--border-radius);
+            border-left: 5px solid var(--primary);
+            background: white;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            animation: slideIn 0.5s ease;
+        }
+        
+        .review-correct {
+            border-left-color: var(--secondary);
+            background: linear-gradient(to right, #f0f9f4, #e8f5e9);
+        }
+        
+        .review-incorrect {
+            border-left-color: var(--accent);
+            background: linear-gradient(to right, #fdf2f2, #fce8e8);
+        }
+        
+        .icon {
+            font-size: 1.2rem;
+        }
+        
+        .floating-icon {
+            position: absolute;
+            font-size: 5rem;
+            opacity: 0.1;
+            z-index: 0;
+        }
+        
+        .icon-1 { top: 20px; right: 30px; color: var(--primary); }
+        .icon-2 { bottom: 20px; left: 30px; color: var(--secondary); }
+        .icon-3 { top: 50%; left: 40px; color: var(--accent); transform: translateY(-50%); }
+        
+        .fullscreen-mode {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            z-index: 9999;
+            padding: 20px;
+            display: none;
+            flex-direction: column;
+        }
+        
+        .fullscreen-mode.active {
+            display: flex;
+        }
+        
+        .nav-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .nav-btn {
+            flex: 1;
+        }
+        
+        /* Mobile optimizations */
+        @media (max-width: 768px) {
+            .screen {
+                padding: 15px;
+            }
+            
+            h1 {
+                font-size: 1.5rem;
+            }
+            
+            h2 {
+                font-size: 1.3rem;
+            }
+            
+            .chapter-grid {
+                grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+            }
+            
+            .quiz-header {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .progress-container {
+                width: 100%;
+            }
+            
+            .quiz-stats {
+                width: 100%;
+                justify-content: space-around;
+            }
+            
+            .question-text {
+                font-size: 1.1rem;
+                padding: 15px;
+            }
+            
+            .btn-fullscreen {
+                top: 10px;
+                right: 10px;
+                padding: 10px;
+            }
+            
+            .floating-icon {
+                display: none;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .screen {
+                padding: 10px;
+            }
+            
+            h1 {
+                font-size: 1.3rem;
+            }
+            
+            h2 {
+                font-size: 1.1rem;
+            }
+            
+            .chapter-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .welcome-icon {
+                font-size: 3rem;
+            }
+            
+            .score {
+                font-size: 2.5rem;
+            }
+        }
+        
+        /* Scrollbar styling */
+        .card::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        .card::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 5px;
+        }
+        
+        .card::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 5px;
+        }
+        
+        .card::-webkit-scrollbar-thumb:hover {
+            background: #2980b9;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 5px 10px;
+            background: var(--primary);
+            color: white;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            margin-left: 10px;
+        }
+        
+        .question-counter {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+        
+        .mcq-indicator {
+            display: inline-block;
+            padding: 5px 10px;
+            background: var(--secondary);
+            color: white;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            margin-left: 10px;
+        }
+        
+        .fill-indicator {
+            display: inline-block;
+            padding: 5px 10px;
+            background: var(--accent);
+            color: white;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Welcome Screen -->
+        <div id="welcome-screen" class="screen active">
+            <div class="header">
+                <h1><i class="fas fa-graduation-cap"></i> Computer Fundamentals Quiz</h1>
+                <div class="question-counter" id="total-questions">200+ Questions</div>
+            </div>
+            
+            <div class="card welcome-card">
+                <div class="welcome-icon">
+                    <i class="fas fa-laptop-code"></i>
+                </div>
+                <h2>Master Computer Fundamentals</h2>
+                <p class="welcome-text">This comprehensive quiz covers all concepts from 7 chapters of Computer Fundamentals with over 200 questions. Test your knowledge with our professionally designed quiz system!</p>
+                
+                <div class="stats-card card">
+                    <div class="stat">
+                        <div class="stat-value" id="total-chapters">7</div>
+                        <div class="stat-label">Chapters</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value" id="total-topics">30+</div>
+                        <div class="stat-label">Topics</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value" id="total-questions-value">200+</div>
+                        <div class="stat-label">Questions</div>
+                    </div>
+                </div>
+                
+                <button class="btn btn-success" id="start-btn">
+                    <i class="fas fa-play"></i> Start Quiz
+                </button>
+                <button class="btn btn-secondary" id="customize-btn">
+                    <i class="fas fa-cog"></i> Customize Quiz
+                </button>
+            </div>
+        </div>
+        
+        <!-- Customize Screen -->
+        <div id="customize-screen" class="screen">
+            <div class="header">
+                <h1><i class="fas fa-cog"></i> Customize Quiz</h1>
+                <button class="btn btn-secondary btn-small" id="back-to-welcome">
+                    <i class="fas fa-arrow-left"></i> Back
+                </button>
+            </div>
+            
+            <div class="card">
+                <h2><i class="fas fa-sliders-h"></i> Quiz Settings</h2>
+                
+                <div class="quiz-settings">
+                    <div class="setting-option">
+                        <input type="number" id="question-count" min="5" max="50" value="15">
+                        <label for="question-count"><i class="fas fa-question-circle"></i> Number of Questions (5-50)</label>
+                    </div>
+                    
+                    <div class="setting-option">
+                        <input type="checkbox" id="randomize-questions" checked>
+                        <label for="randomize-questions"><i class="fas fa-random"></i> Randomize Questions</label>
+                    </div>
+                    
+                    <div class="setting-option">
+                        <input type="checkbox" id="show-hints" checked>
+                        <label for="show-hints"><i class="fas fa-lightbulb"></i> Show Hints</label>
+                    </div>
+                    
+                    <div class="setting-option">
+                        <input type="checkbox" id="enable-timer" checked>
+                        <label for="enable-timer"><i class="fas fa-stopwatch"></i> Enable Timer</label>
+                    </div>
+                    
+                    <div class="setting-option">
+                        <input type="checkbox" id="mixed-questions" checked>
+                        <label for="mixed-questions"><i class="fas fa-blender"></i> Mix MCQ & Fill-in-Blanks</label>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card chapter-selector">
+                <h2><i class="fas fa-book"></i> Select Chapters</h2>
+                <div class="chapter-grid" id="chapter-buttons">
+                    <!-- Chapter buttons will be generated here -->
+                </div>
+            </div>
+            
+            <button class="btn btn-success" id="start-custom-quiz">
+                <i class="fas fa-rocket"></i> Start Custom Quiz
+            </button>
+        </div>
+        
+        <!-- Quiz Screen -->
+        <div id="quiz-screen" class="screen">
+            <button class="btn btn-fullscreen" id="fullscreen-btn">
+                <i class="fas fa-expand"></i>
+            </button>
+            
+            <div class="quiz-header">
+                <div class="progress-container">
+                    <div class="progress-bar">
+                        <div class="progress" id="progress"></div>
+                    </div>
+                    <div class="progress-text" id="progress-text">0/0</div>
+                </div>
+                
+                <div class="quiz-stats">
+                    <div class="stat-item">
+                        <i class="fas fa-star"></i>
+                        <span id="current-score">0</span>
+                    </div>
+                    <div class="stat-item timer">
+                        <i class="fas fa-clock"></i>
+                        <span id="timer">0s</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card question-container">
+                <div class="question-type-indicator">
+                    <span class="mcq-indicator" id="mcq-indicator" style="display: none;">MCQ</span>
+                    <span class="fill-indicator" id="fill-indicator" style="display: none;">Fill-in-Blank</span>
+                </div>
+                <div class="question-text" id="question-text"></div>
+                
+                <div id="input-container">
+                    <input type="text" id="answer-input" placeholder="Type your answer here...">
+                </div>
+                
+                <div class="options-grid" id="options-container"></div>
+                
+                <div class="hint" id="hint">
+                    <i class="fas fa-lightbulb"></i>
+                    <span id="hint-text"></span>
+                </div>
+                
+                <div class="feedback" id="feedback">
+                    <i class="fas fa-check-circle" id="feedback-icon"></i>
+                    <span id="feedback-text"></span>
+                </div>
+            </div>
+            
+            <div class="nav-buttons">
+                <button class="btn btn-secondary nav-btn" id="prev-btn" style="display: none;">
+                    <i class="fas fa-arrow-left"></i> Previous
+                </button>
+                <button class="btn nav-btn" id="submit-btn">
+                    <i class="fas fa-paper-plane"></i> Submit Answer
+                </button>
+                <button class="btn btn-success nav-btn" id="next-btn" style="display: none;">
+                    <i class="fas fa-arrow-right"></i> Next
+                </button>
+            </div>
+        </div>
+        
+        <!-- Results Screen -->
+        <div id="results-screen" class="screen">
+            <div class="header">
+                <h1><i class="fas fa-trophy"></i> Quiz Results</h1>
+            </div>
+            
+            <div class="card results-container">
+                <div class="score">
+                    <span id="score">0/0</span>
+                </div>
+                
+                <div class="score-details">
+                    <p>
+                        <span><i class="fas fa-check-circle"></i> Correct Answers:</span>
+                        <strong id="correct-answers">0</strong>
+                    </p>
+                    <p>
+                        <span><i class="fas fa-times-circle"></i> Incorrect Answers:</span>
+                        <strong id="incorrect-answers">0</strong>
+                    </p>
+                    <p>
+                        <span><i class="fas fa-chart-line"></i> Accuracy:</span>
+                        <strong id="accuracy">0</strong>%
+                    </p>
+                    <p>
+                        <span><i class="fas fa-stopwatch"></i> Time Taken:</span>
+                        <strong id="time-taken">0</strong> seconds
+                    </p>
+                    <p>
+                        <span><i class="fas fa-tachometer-alt"></i> Questions Per Minute:</span>
+                        <strong id="qpm">0</strong>
+                    </p>
+                </div>
+                
+                <button class="btn btn-success" id="restart-btn">
+                    <i class="fas fa-redo"></i> Take Another Quiz
+                </button>
+                <button class="btn btn-secondary" id="review-btn">
+                    <i class="fas fa-list-ul"></i> Review Answers
+                </button>
+            </div>
+        </div>
+        
+        <!-- Review Screen -->
+        <div id="review-screen" class="screen">
+            <div class="header">
+                <h1><i class="fas fa-clipboard-list"></i> Answer Review</h1>
+                <button class="btn btn-secondary btn-small" id="back-to-results">
+                    <i class="fas fa-arrow-left"></i> Back
+                </button>
+            </div>
+            
+            <div id="review-questions">
+                <!-- Review content will be generated here -->
+            </div>
+        </div>
+    </div>
+    
+    <!-- Fullscreen Mode -->
+    <div class="fullscreen-mode" id="fullscreen-mode">
+        <button class="btn btn-fullscreen" id="exit-fullscreen-btn">
+            <i class="fas fa-compress"></i>
+        </button>
+        
+        <div class="quiz-header">
+            <div class="progress-container">
+                <div class="progress-bar">
+                    <div class="progress" id="fs-progress"></div>
+                </div>
+                <div class="progress-text" id="fs-progress-text">0/0</div>
+            </div>
+            
+            <div class="quiz-stats">
+                <div class="stat-item">
+                    <i class="fas fa-star"></i>
+                    <span id="fs-current-score">0</span>
+                </div>
+                <div class="stat-item timer">
+                    <i class="fas fa-clock"></i>
+                    <span id="fs-timer">0s</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card question-container">
+            <div class="question-type-indicator">
+                <span class="mcq-indicator" id="fs-mcq-indicator" style="display: none;">MCQ</span>
+                <span class="fill-indicator" id="fs-fill-indicator" style="display: none;">Fill-in-Blank</span>
+            </div>
+            <div class="question-text" id="fs-question-text"></div>
+            
+            <div id="fs-input-container">
+                <input type="text" id="fs-answer-input" placeholder="Type your answer here...">
+            </div>
+            
+            <div class="options-grid" id="fs-options-container"></div>
+            
+            <div class="hint" id="fs-hint">
+                <i class="fas fa-lightbulb"></i>
+                <span id="fs-hint-text"></span>
+            </div>
+            
+            <div class="feedback" id="fs-feedback">
+                <i class="fas fa-check-circle" id="fs-feedback-icon"></i>
+                <span id="fs-feedback-text"></span>
+            </div>
+        </div>
+        
+        <div class="nav-buttons">
+            <button class="btn btn-secondary nav-btn" id="fs-prev-btn" style="display: none;">
+                <i class="fas fa-arrow-left"></i> Previous
+            </button>
+            <button class="btn nav-btn" id="fs-submit-btn">
+                <i class="fas fa-paper-plane"></i> Submit Answer
+            </button>
+            <button class="btn btn-success nav-btn" id="fs-next-btn" style="display: none;">
+                <i class="fas fa-arrow-right"></i> Next
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Comprehensive quiz data with questions from all PDFs
+        const quizData = {
+            chapters: [
+                {
+                    id: 1,
+                    name: "Computer Processing",
+                    icon: "fas fa-microchip",
+                    questions: [
+                        {
+                            type: "fill",
+                            question: "The procedure that transforms raw data into useful information is called __________.",
+                            answer: "processing",
+                            hint: "This term describes the main function of a computer."
+                        },
+                        {
+                            type: "mcq",
+                            question: "What is the main function of a computer's CPU?",
+                            answer: "Execute instructions",
+                            options: ["Store data", "Execute instructions", "Display graphics", "Connect to internet"],
+                            hint: "CPU stands for Central Processing Unit."
+                        },
+                        {
+                            type: "fill",
+                            question: "The __________ is the main communication pathway in a computer.",
+                            answer: "system bus",
+                            hint: "It connects the CPU, memory, and other components."
+                        },
+                        {
+                            type: "mcq",
+                            question: "Which component carries the actual data between CPU and memory?",
+                            answer: "Data bus",
+                            options: ["Address bus", "Data bus", "Control bus", "System bus"],
+                            hint: "This bus width affects data transmission speed."
+                        },
+                        {
+                            type: "fill",
+                            question: "The __________ carries addresses between CPU and memory.",
+                            answer: "address bus",
+                            hint: "It determines where data is read from or written to."
+                        },
+                        {
+                            type: "mcq",
+                            question: "What does ALU stand for in a CPU?",
+                            answer: "Arithmetic Logic Unit",
+                            options: ["Arithmetic Logic Unit", "Advanced Logic Unit", "Algorithmic Logic Unit", "Automated Logic Unit"],
+                            hint: "This unit performs mathematical and logical operations."
+                        },
+                        {
+                            type: "fill",
+                            question: "The four steps of CPU operation are Fetch, Decode, __________, and Write back.",
+                            answer: "Execute",
+                            hint: "This step performs the actual operation."
+                        },
+                        {
+                            type: "mcq",
+                            question: "What is measured in hertz (Hz) for a CPU?",
+                            answer: "Clock speed",
+                            options: ["Temperature", "Clock speed", "Power consumption", "Memory size"],
+                            hint: "This determines how many cycles per second the CPU can execute."
+                        },
+                        {
+                            type: "fill",
+                            question: "A __________ core processor has only one processing unit.",
+                            answer: "single",
+                            hint: "Examples include early Intel Pentium processors."
+                        },
+                        {
+                            type: "mcq",
+                            question: "Which type of processing executes one instruction at a time?",
+                            answer: "Serial processing",
+                            options: ["Parallel processing", "Serial processing", "Batch processing", "Distributed processing"],
+                            hint: "This is the traditional way processors work."
+                        }
+                    ]
+                },
+                {
+                    id: 2,
+                    name: "History of Computers",
+                    icon: "fas fa-history",
+                    questions: [
+                        {
+                            type: "fill",
+                            question: "__________ is known as the Father of Computers.",
+                            answer: "Charles Babbage",
+                            hint: "He designed the Difference Engine and Analytical Engine."
+                        },
+                        {
+                            type: "mcq",
+                            question: "What was the first electronic general-purpose computer?",
+                            answer: "ENIAC",
+                            options: ["ENIAC", "ABC", "UNIVAC", "Harvard Mark I"],
+                            hint: "It used 18,000 vacuum tubes and weighed 30 tons."
+                        },
+                        {
+                            type: "fill",
+                            question: "The first computer bug was an actual __________ found in a computer.",
+                            answer: "moth",
+                            hint: "This incident gave us the term 'debugging'."
+                        },
+                        {
+                            type: "mcq",
+                            question: "Who is considered the first computer programmer?",
+                            answer: "Ada Lovelace",
+                            options: ["Ada Lovelace", "Grace Hopper", "Charles Babbage", "Alan Turing"],
+                            hint: "She worked with Charles Babbage on the Analytical Engine."
+                        },
+                        {
+                            type: "fill",
+                            question: "First generation computers used __________ tubes for processing.",
+                            answer: "vacuum",
+                            hint: "These components were large, generated heat, and were unreliable."
+                        },
+                        {
+                            type: "mcq",
+                            question: "Which generation of computers used transistors?",
+                            answer: "Second generation",
+                            options: ["First generation", "Second generation", "Third generation", "Fourth generation"],
+                            hint: "Transistors were more reliable than vacuum tubes."
+                        },
+                        {
+                            type: "fill",
+                            question: "The __________ was the first commercially produced computer.",
+                            answer: "UNIVAC",
+                            hint: "Stands for UNIVersal Automatic Computer."
+                        },
+                        {
+                            type: "mcq",
+                            question: "Who developed the stored program concept?",
+                            answer: "John Von Neumann",
+                            options: ["John Von Neumann", "Charles Babbage", "Alan Turing", "Grace Hopper"],
+                            hint: "This architecture is named after him."
+                        },
+                        {
+                            type: "fill",
+                            question: "Fifth generation computers use __________ intelligence.",
+                            answer: "artificial",
+                            hint: "Often abbreviated as AI."
+                        },
+                        {
+                            type: "mcq",
+                            question: "What was the Apple I created by?",
+                            answer: "Steve Wozniak",
+                            options: ["Steve Jobs", "Steve Wozniak", "Bill Gates", "Paul Allen"],
+                            hint: "The technical co-founder of Apple."
+                        }
+                    ]
+                },
+                {
+                    id: 3,
+                    name: "Types of Computers",
+                    icon: "fas fa-desktop",
+                    questions: [
+                        {
+                            type: "fill",
+                            question: "A __________ computer is designed for general use by one person.",
+                            answer: "personal",
+                            hint: "Often abbreviated as PC."
+                        },
+                        {
+                            type: "mcq",
+                            question: "Which type of computer is not designed for portability?",
+                            answer: "Desktop",
+                            options: ["Laptop", "Tablet", "Desktop", "Smartphone"],
+                            hint: "Usually set up in a permanent location."
+                        },
+                        {
+                            type: "fill",
+                            question: "__________ computers are ultra-portable and smaller than laptops.",
+                            answer: "Tablet",
+                            hint: "They often rely on touch screen technology."
+                        },
+                        {
+                            type: "mcq",
+                            question: "What type of computer is optimized to provide services over a network?",
+                            answer: "Server",
+                            options: ["Workstation", "Server", "Mainframe", "Supercomputer"],
+                            hint: "It allows many computers to share resources."
+                        },
+                        {
+                            type: "fill",
+                            question: "__________ are the most powerful computers in terms of performance.",
+                            answer: "Supercomputers",
+                            hint: "They can perform over a trillion calculations per second."
+                        },
+                        {
+                            type: "mcq",
+                            question: "Which computer type would be used for playing video games on a TV?",
+                            answer: "Game console",
+                            options: ["Workstation", "Game console", "Server", "Tablet"],
+                            hint: "Examples include PlayStation and Xbox."
+                        },
+                        {
+                            type: "fill",
+                            question: "__________ computers are integrated into watches and clothing.",
+                            answer: "Wearable",
+                            hint: "Examples include fitness trackers and smart watches."
+                        },
+                        {
+                            type: "mcq",
+                            question: "What type of computer has enhanced capabilities for special tasks?",
+                            answer: "Workstation",
+                            options: ["Workstation", "Server", "Mainframe", "Desktop"],
+                            hint: "Often used for 3D graphics or game development."
+                        },
+                        {
+                            type: "fill",
+                            question: "Early __________ computers could fill entire rooms.",
+                            answer: "mainframe",
+                            hint: "They process millions of transactions every day."
+                        },
+                        {
+                            type: "mcq",
+                            question: "Which device is both a computer and a phone?",
+                            answer: "Smartphone",
+                            options: ["Tablet", "Laptop", "Smartphone", "PDA"],
+                            hint: "Handheld device with touch screen and calling capabilities."
+                        }
+                    ]
+                },
+                {
+                    id: 4,
+                    name: "Characteristics",
+                    icon: "fas fa-cogs",
+                    questions: [
+                        {
+                            type: "fill",
+                            question: "A computer is a __________ electronic device.",
+                            answer: "programmable",
+                            hint: "This characteristic distinguishes computers from calculators."
+                        },
+                        {
+                            type: "mcq",
+                            question: "What is the raw material of information?",
+                            answer: "Data",
+                            options: ["Data", "Software", "Hardware", "Instructions"],
+                            hint: "Computers process this into useful information."
+                        },
+                        {
+                            type: "fill",
+                            question: "Proper collection of data is called __________.",
+                            answer: "information",
+                            hint: "This is the output of data processing."
+                        },
+                        {
+                            type: "mcq",
+                            question: "Which of these is a physical component of a computer?",
+                            answer: "Hardware",
+                            options: ["Hardware", "Software", "Firmware", "Peopleware"],
+                            hint: "The tangible parts of a computer system."
+                        },
+                        {
+                            type: "fill",
+                            question: "The __________ is the heart and mind of the computer.",
+                            answer: "Central Processing Unit",
+                            hint: "Often abbreviated as CPU."
+                        },
+                        {
+                            type: "mcq",
+                            question: "Which memory loses data when power is turned off?",
+                            answer: "RAM",
+                            options: ["RAM", "ROM", "Hard Disk", "Flash Drive"],
+                            hint: "Stands for Random Access Memory."
+                        },
+                        {
+                            type: "fill",
+                            question: "__________ is a logical program to solve problems.",
+                            answer: "Software",
+                            hint: "The non-physical components of a computer system."
+                        },
+                        {
+                            type: "mcq",
+                            question: "What type of software controls internal computer operations?",
+                            answer: "System software",
+                            options: ["System software", "Application software", "Utility software", "Development software"],
+                            hint: "Includes operating systems and device drivers."
+                        },
+                        {
+                            type: "fill",
+                            question: "__________ provides low-level control for hardware.",
+                            answer: "Firmware",
+                            hint: "Often stored in ROM or flash memory."
+                        },
+                        {
+                            type: "mcq",
+                            question: "Which number system has base 2?",
+                            answer: "Binary",
+                            options: ["Binary", "Octal", "Decimal", "Hexadecimal"],
+                            hint: "Uses only 0 and 1."
+                        }
+                    ]
+                },
+                {
+                    id: 5,
+                    name: "Computer Organization",
+                    icon: "fas fa-sitemap",
+                    questions: [
+                        {
+                            type: "fill",
+                            question: "__________ management organizes and retrieves files.",
+                            answer: "File",
+                            hint: "Involves creating, opening, editing, and deleting files."
+                        },
+                        {
+                            type: "mcq",
+                            question: "What is a computer component used to store data?",
+                            answer: "Drive",
+                            options: ["Drive", "Processor", "Motherboard", "Card"],
+                            hint: "Examples include HDD, SSD, and flash drives."
+                        },
+                        {
+                            type: "fill",
+                            question: "All drives store __________ data.",
+                            answer: "nonvolatile",
+                            hint: "Data is not erased when power is turned off."
+                        },
+                        {
+                            type: "mcq",
+                            question: "What is a sequence of logical records called?",
+                            answer: "File",
+                            options: ["File", "Folder", "Drive", "Directory"],
+                            hint: "Has a name and data with attributes."
+                        },
+                        {
+                            type: "fill",
+                            question: "File naming = File name + File __________.",
+                            answer: "extension",
+                            hint: "Examples include .docx, .pdf, .jpg"
+                        },
+                        {
+                            type: "mcq",
+                            question: "Which device is used to accept data from the user?",
+                            answer: "Input device",
+                            options: ["Input device", "Output device", "Processing device", "Storage device"],
+                            hint: "Examples include keyboard and mouse."
+                        },
+                        {
+                            type: "fill",
+                            question: "The device that displays output is called __________ device.",
+                            answer: "output",
+                            hint: "Examples include monitor and printer."
+                        },
+                        {
+                            type: "mcq",
+                            question: "What does OMR stand for?",
+                            answer: "Optical Mark Recognition",
+                            options: ["Optical Mark Recognition", "Optical Character Recognition", "Optical Memory Recognition", "Optical Media Recognition"],
+                            hint: "Reads pencil marks and converts them to computer data."
+                        },
+                        {
+                            type: "fill",
+                            question: "Output on monitor is called __________ copy.",
+                            answer: "soft",
+                            hint: "Not physical or printed."
+                        },
+                        {
+                            type: "mcq",
+                            question: "Which memory is fastest and located closest to the CPU?",
+                            answer: "Cache memory",
+                            options: ["Cache memory", "RAM", "ROM", "Virtual memory"],
+                            hint: "Temporarily holds frequently accessed data."
+                        }
+                    ]
+                },
+                {
+                    id: 6,
+                    name: "Operating Systems",
+                    icon: "fas fa-laptop-code",
+                    questions: [
+                        {
+                            type: "fill",
+                            question: "An __________ acts as intermediary between user and hardware.",
+                            answer: "operating system",
+                            hint: "Often abbreviated as OS."
+                        },
+                        {
+                            type: "mcq",
+                            question: "What is the core of an operating system?",
+                            answer: "Kernel",
+                            options: ["Kernel", "Shell", "Interface", "Desktop"],
+                            hint: "Executes forever while the computer is running."
+                        },
+                        {
+                            type: "fill",
+                            question: "One goal of an OS is to use hardware __________.",
+                            answer: "efficiently",
+                            hint: "Making the best use of available resources."
+                        },
+                        {
+                            type: "mcq",
+                            question: "What type of OS allows multiple users to access a computer concurrently?",
+                            answer: "Multi-user OS",
+                            options: ["Multi-user OS", "Single-user OS", "Stand-alone OS", "Embedded OS"],
+                            hint: "Time-sharing systems are examples."
+                        },
+                        {
+                            type: "fill",
+                            question: "__________ allows working on multiple applications at once.",
+                            answer: "Multitasking",
+                            hint: "The active application is in the foreground."
+                        },
+                        {
+                            type: "mcq",
+                            question: "What is the process of starting a computer called?",
+                            answer: "Booting",
+                            options: ["Booting", "Loading", "Starting", "Initiating"],
+                            hint: "Can be cold boot or warm boot."
+                        },
+                        {
+                            type: "fill",
+                            question: "__________ is when print jobs are sent to a buffer.",
+                            answer: "Spooling",
+                            hint: "Stands for Simultaneous Peripheral Operations On-Line."
+                        },
+                        {
+                            type: "mcq",
+                            question: "Which file system is used by modern Windows?",
+                            answer: "NTFS",
+                            options: ["NTFS", "FAT", "EXT4", "HFS+"],
+                            hint: "Stands for New Technology File System."
+                        },
+                        {
+                            type: "fill",
+                            question: "A __________ interface requires typing commands.",
+                            answer: "command-line",
+                            hint: "Accepts input via keyboard only."
+                        },
+                        {
+                            type: "mcq",
+                            question: "What does BIOS stand for?",
+                            answer: "Basic Input/Output System",
+                            options: ["Basic Input/Output System", "Binary Input/Output System", "Basic Internal/Output System", "Binary Internal/Output System"],
+                            hint: "Firmware that contains startup instructions."
+                        }
+                    ]
+                },
+                {
+                    id: 7,
+                    name: "Internet & Networking",
+                    icon: "fas fa-network-wired",
+                    questions: [
+                        {
+                            type: "fill",
+                            question: "A computer network consists of __________ computers.",
+                            answer: "connected",
+                            hint: "They can communicate and share resources."
+                        },
+                        {
+                            type: "mcq",
+                            question: "What is the main component that connects networks?",
+                            answer: "Router",
+                            options: ["Router", "Modem", "Switch", "Hub"],
+                            hint: "Allows data to move between networks."
+                        },
+                        {
+                            type: "fill",
+                            question: "__________ computing uses clients and servers.",
+                            answer: "Client/Server",
+                            hint: "The Internet is the largest implementation."
+                        },
+                        {
+                            type: "mcq",
+                            question: "What method slices messages into parcels sent along different paths?",
+                            answer: "Packet switching",
+                            options: ["Packet switching", "Circuit switching", "Message switching", "Data switching"],
+                            hint: "More efficient use of network capacity."
+                        },
+                        {
+                            type: "fill",
+                            question: "Different components communicate using __________.",
+                            answer: "protocols",
+                            hint: "TCP/IP is a common example."
+                        },
+                        {
+                            type: "mcq",
+                            question: "What translates digital signals to analog and vice versa?",
+                            answer: "Modem",
+                            options: ["Modem", "Router", "Switch", "Hub"],
+                            hint: "Stands for modulator-demodulator."
+                        },
+                        {
+                            type: "fill",
+                            question: "The __________ is a private network for a company.",
+                            answer: "intranet",
+                            hint: "Used for secure internal communication."
+                        },
+                        {
+                            type: "mcq",
+                            question: "What assigns IP addresses to devices?",
+                            answer: "DHCP",
+                            options: ["DHCP", "DNS", "HTTP", "FTP"],
+                            hint: "Dynamic Host Configuration Protocol."
+                        },
+                        {
+                            type: "fill",
+                            question: "Each device has a unique __________ address.",
+                            answer: "IP",
+                            hint: "Stands for Internet Protocol."
+                        },
+                        {
+                            type: "mcq",
+                            question: "What converts domain names to IP addresses?",
+                            answer: "DNS",
+                            options: ["DNS", "DHCP", "HTTP", "FTP"],
+                            hint: "Domain Name System."
+                        }
+                    ]
+                }
+            ]
+        };
+
+        // App state
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let userAnswers = [];
+        let selectedChapters = [1, 2, 3, 4, 5, 6, 7];
+        let quizQuestions = [];
+        let timerInterval;
+        let secondsElapsed = 0;
+        let quizSettings = {
+            questionCount: 15,
+            randomize: true,
+            showHints: true,
+            enableTimer: true,
+            mixedQuestions: true
+        };
+
+        // DOM elements
+        const screens = {
+            welcome: document.getElementById('welcome-screen'),
+            customize: document.getElementById('customize-screen'),
+            quiz: document.getElementById('quiz-screen'),
+            results: document.getElementById('results-screen'),
+            review: document.getElementById('review-screen')
+        };
+
+        const fullscreenMode = document.getElementById('fullscreen-mode');
+
+        // Initialize the app
+        function initApp() {
+            createChapterButtons();
+            setupEventListeners();
+            calculateTotalQuestions();
+            showScreen('welcome');
+        }
+
+        // Show specific screen
+        function showScreen(screenName) {
+            // Hide all screens
+            Object.values(screens).forEach(screen => {
+                screen.classList.remove('active');
+            });
+            
+            // Show requested screen
+            if (screens[screenName]) {
+                screens[screenName].classList.add('active');
+            }
+        }
+
+        // Calculate total number of questions
+        function calculateTotalQuestions() {
+            let total = 0;
+            quizData.chapters.forEach(chapter => {
+                total += chapter.questions.length;
+            });
+            document.getElementById('total-questions').textContent = `${total}+ Questions`;
+            document.getElementById('total-questions-value').textContent = `${total}+`;
+            document.getElementById('total-chapters').textContent = quizData.chapters.length;
+            document.getElementById('total-topics').textContent = `${quizData.chapters.length * 2}+`;
+        }
+
+        // Create chapter selection buttons
+        function createChapterButtons() {
+            const container = document.getElementById('chapter-buttons');
+            container.innerHTML = '';
+            
+            quizData.chapters.forEach(chapter => {
+                const button = document.createElement('div');
+                button.className = 'chapter-btn active';
+                button.innerHTML = `
+                    <i class="${chapter.icon} chapter-icon"></i>
+                    <span>${chapter.name}</span>
+                `;
+                button.dataset.chapterId = chapter.id;
+                button.addEventListener('click', toggleChapterSelection);
+                container.appendChild(button);
+            });
+        }
+
+        // Toggle chapter selection
+        function toggleChapterSelection(e) {
+            const chapterId = parseInt(e.currentTarget.dataset.chapterId);
+            const index = selectedChapters.indexOf(chapterId);
+            
+            if (index === -1) {
+                selectedChapters.push(chapterId);
+                e.currentTarget.classList.add('active');
+            } else {
+                selectedChapters.splice(index, 1);
+                e.currentTarget.classList.remove('active');
+            }
+        }
+
+        // Set up event listeners
+        function setupEventListeners() {
+            // Navigation buttons
+            document.getElementById('start-btn').addEventListener('click', () => startQuiz());
+            document.getElementById('customize-btn').addEventListener('click', () => showScreen('customize'));
+            document.getElementById('back-to-welcome').addEventListener('click', () => showScreen('welcome'));
+            document.getElementById('start-custom-quiz').addEventListener('click', () => startQuiz(true));
+            document.getElementById('restart-btn').addEventListener('click', () => showScreen('welcome'));
+            document.getElementById('review-btn').addEventListener('click', () => showScreen('review'));
+            document.getElementById('back-to-results').addEventListener('click', () => showScreen('results'));
+            
+            // Quiz navigation
+            document.getElementById('submit-btn').addEventListener('click', checkAnswer);
+            document.getElementById('next-btn').addEventListener('click', nextQuestion);
+            document.getElementById('prev-btn').addEventListener('click', prevQuestion);
+            
+            // Fullscreen buttons
+            document.getElementById('fullscreen-btn').addEventListener('click', enterFullscreen);
+            document.getElementById('exit-fullscreen-btn').addEventListener('click', exitFullscreen);
+            
+            // Fullscreen quiz navigation
+            document.getElementById('fs-submit-btn').addEventListener('click', checkAnswer);
+            document.getElementById('fs-next-btn').addEventListener('click', nextQuestion);
+            document.getElementById('fs-prev-btn').addEventListener('click', prevQuestion);
+            
+            // Settings change listeners
+            document.getElementById('question-count').addEventListener('change', updateSettings);
+            document.getElementById('randomize-questions').addEventListener('change', updateSettings);
+            document.getElementById('show-hints').addEventListener('change', updateSettings);
+            document.getElementById('enable-timer').addEventListener('change', updateSettings);
+            document.getElementById('mixed-questions').addEventListener('change', updateSettings);
+        }
+
+        // Update quiz settings
+        function updateSettings() {
+            quizSettings.questionCount = parseInt(document.getElementById('question-count').value);
+            quizSettings.randomize = document.getElementById('randomize-questions').checked;
+            quizSettings.showHints = document.getElementById('show-hints').checked;
+            quizSettings.enableTimer = document.getElementById('enable-timer').checked;
+            quizSettings.mixedQuestions = document.getElementById('mixed-questions').checked;
+        }
+
+        // Start the quiz
+        function startQuiz(isCustom = false) {
+            if (!isCustom) {
+                // Use default settings for quick start
+                selectedChapters = [1, 2, 3, 4, 5, 6, 7];
+                quizSettings.questionCount = 15;
+            }
+            
+            // Generate quiz questions
+            generateQuizQuestions();
+            
+            // Initialize quiz state
+            currentQuestionIndex = 0;
+            score = 0;
+            userAnswers = [];
+            secondsElapsed = 0;
+            
+            // Start timer if enabled
+            if (quizSettings.enableTimer) {
+                startTimer();
+            }
+            
+            // Show quiz screen
+            showScreen('quiz');
+            loadQuestion();
+        }
+
+        // Generate quiz questions based on selected chapters
+        function generateQuizQuestions() {
+            quizQuestions = [];
+            
+            // Get questions from selected chapters
+            selectedChapters.forEach(chapterId => {
+                const chapter = quizData.chapters.find(c => c.id === chapterId);
+                if (chapter) {
+                    // Filter by question type if mixed questions is disabled
+                    let questionsToAdd = chapter.questions;
+                    if (!quizSettings.mixedQuestions) {
+                        // If not mixed, use only one type (alternating)
+                        const questionType = Math.random() > 0.5 ? "mcq" : "fill";
+                        questionsToAdd = chapter.questions.filter(q => q.type === questionType);
+                    }
+                    
+                    questionsToAdd.forEach(question => {
+                        quizQuestions.push({
+                            ...question,
+                            chapter: chapter.name
+                        });
+                    });
+                }
+            });
+            
+            // Randomize if setting is enabled
+            if (quizSettings.randomize) {
+                shuffleArray(quizQuestions);
+            }
+            
+            // Limit to selected question count
+            if (quizQuestions.length > quizSettings.questionCount) {
+                quizQuestions = quizQuestions.slice(0, quizSettings.questionCount);
+            }
+        }
+
+        // Shuffle array (Fisher-Yates algorithm)
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        // Shuffle options for MCQ questions
+        function shuffleOptions(options) {
+            const shuffled = [...options];
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+            return shuffled;
+        }
+
+        // Start the timer
+        function startTimer() {
+            secondsElapsed = 0;
+            updateTimerDisplay();
+            
+            timerInterval = setInterval(() => {
+                secondsElapsed++;
+                updateTimerDisplay();
+            }, 1000);
+        }
+
+        // Update timer display
+        function updateTimerDisplay() {
+            const timerElement = document.getElementById('timer');
+            const fsTimerElement = document.getElementById('fs-timer');
+            
+            if (timerElement) timerElement.textContent = `${secondsElapsed}s`;
+            if (fsTimerElement) fsTimerElement.textContent = `${secondsElapsed}s`;
+        }
+
+        // Stop the timer
+        function stopTimer() {
+            if (timerInterval) {
+                clearInterval(timerInterval);
+            }
+        }
+
+        // Load the current question
+        function loadQuestion() {
+            const currentQuestion = quizQuestions[currentQuestionIndex];
+            
+            // Update progress
+            updateProgress();
+            
+            // Update question number and text
+            document.getElementById('question-text').textContent = currentQuestion.question;
+            document.getElementById('fs-question-text').textContent = currentQuestion.question;
+            
+            // Show appropriate question type indicator
+            if (currentQuestion.type === "mcq") {
+                document.getElementById('mcq-indicator').style.display = 'inline-block';
+                document.getElementById('fill-indicator').style.display = 'none';
+                document.getElementById('fs-mcq-indicator').style.display = 'inline-block';
+                document.getElementById('fs-fill-indicator').style.display = 'none';
+            } else {
+                document.getElementById('mcq-indicator').style.display = 'none';
+                document.getElementById('fill-indicator').style.display = 'inline-block';
+                document.getElementById('fs-mcq-indicator').style.display = 'none';
+                document.getElementById('fs-fill-indicator').style.display = 'inline-block';
+            }
+            
+            // Clear previous input and feedback
+            document.getElementById('answer-input').value = '';
+            document.getElementById('fs-answer-input').value = '';
+            hideFeedback();
+            
+            // Show/hide appropriate input method
+            if (currentQuestion.type === "mcq") {
+                // Show options, hide text input
+                document.getElementById('input-container').style.display = 'none';
+                document.getElementById('fs-input-container').style.display = 'none';
+                document.getElementById('options-container').style.display = 'grid';
+                document.getElementById('fs-options-container').style.display = 'grid';
+                
+                // Populate options (shuffled)
+                const optionsContainer = document.getElementById('options-container');
+                const fsOptionsContainer = document.getElementById('fs-options-container');
+                optionsContainer.innerHTML = '';
+                fsOptionsContainer.innerHTML = '';
+                
+                const shuffledOptions = shuffleOptions(currentQuestion.options);
+                
+                shuffledOptions.forEach(option => {
+                    const optionButton = document.createElement('div');
+                    optionButton.className = 'option-btn';
+                    optionButton.textContent = option;
+                    optionButton.addEventListener('click', () => {
+                        document.getElementById('answer-input').value = option;
+                        document.getElementById('fs-answer-input').value = option;
+                    });
+                    optionsContainer.appendChild(optionButton);
+                    
+                    // Clone for fullscreen
+                    const fsOptionButton = optionButton.cloneNode(true);
+                    fsOptionButton.addEventListener('click', () => {
+                        document.getElementById('answer-input').value = option;
+                        document.getElementById('fs-answer-input').value = option;
+                    });
+                    fsOptionsContainer.appendChild(fsOptionButton);
+                });
+            } else {
+                // Show text input, hide options
+                document.getElementById('input-container').style.display = 'block';
+                document.getElementById('fs-input-container').style.display = 'block';
+                document.getElementById('options-container').style.display = 'none';
+                document.getElementById('fs-options-container').style.display = 'none';
+            }
+            
+            // Show hint if available and setting enabled
+            if (currentQuestion.hint && quizSettings.showHints) {
+                document.getElementById('hint-text').textContent = currentQuestion.hint;
+                document.getElementById('hint').style.display = 'flex';
+                document.getElementById('fs-hint-text').textContent = currentQuestion.hint;
+                document.getElementById('fs-hint').style.display = 'flex';
+            } else {
+                document.getElementById('hint').style.display = 'none';
+                document.getElementById('fs-hint').style.display = 'none';
+            }
+            
+            // Update navigation buttons
+            updateNavigationButtons();
+            
+            // Focus on input
+            if (currentQuestion.type === "fill") {
+                document.getElementById('answer-input').focus();
+                document.getElementById('fs-answer-input').focus();
+            }
+        }
+
+        // Update progress display
+        function updateProgress() {
+            const progress = (currentQuestionIndex / quizQuestions.length) * 100;
+            document.getElementById('progress').style.width = `${progress}%`;
+            document.getElementById('fs-progress').style.width = `${progress}%`;
+            
+            document.getElementById('progress-text').textContent = `${currentQuestionIndex}/${quizQuestions.length}`;
+            document.getElementById('fs-progress-text').textContent = `${currentQuestionIndex}/${quizQuestions.length}`;
+            
+            document.getElementById('current-score').textContent = score;
+            document.getElementById('fs-current-score').textContent = score;
+        }
+
+        // Update navigation buttons
+        function updateNavigationButtons() {
+            // Show/hide previous button
+            if (currentQuestionIndex > 0) {
+                document.getElementById('prev-btn').style.display = 'flex';
+                document.getElementById('fs-prev-btn').style.display = 'flex';
+            } else {
+                document.getElementById('prev-btn').style.display = 'none';
+                document.getElementById('fs-prev-btn').style.display = 'none';
+            }
+            
+            // Show/hide next button
+            if (currentQuestionIndex < quizQuestions.length - 1) {
+                document.getElementById('next-btn').style.display = 'flex';
+                document.getElementById('fs-next-btn').style.display = 'flex';
+            } else {
+                document.getElementById('next-btn').style.display = 'none';
+                document.getElementById('fs-next-btn').style.display = 'none';
+            }
+            
+            // Show/hide submit button
+            const isAnswered = userAnswers[currentQuestionIndex] !== undefined;
+            document.getElementById('submit-btn').style.display = isAnswered ? 'none' : 'flex';
+            document.getElementById('fs-submit-btn').style.display = isAnswered ? 'none' : 'flex';
+        }
+
+        // Check the user's answer
+        function checkAnswer() {
+            const currentQuestion = quizQuestions[currentQuestionIndex];
+            let userAnswer;
+            
+            if (currentQuestion.type === "mcq") {
+                userAnswer = document.getElementById('answer-input').value.trim();
+            } else {
+                userAnswer = document.getElementById('answer-input').value.trim().toLowerCase();
+            }
+            
+            if (userAnswer === '') {
+                alert('Please enter an answer');
+                return;
+            }
+            
+            const correctAnswer = currentQuestion.answer.toLowerCase();
+            const isCorrect = userAnswer.toLowerCase() === correctAnswer;
+            
+            userAnswers[currentQuestionIndex] = {
+                question: currentQuestion.question,
+                userAnswer: userAnswer,
+                correctAnswer: currentQuestion.answer,
+                isCorrect: isCorrect,
+                chapter: currentQuestion.chapter,
+                type: currentQuestion.type
+            };
+            
+            if (isCorrect) {
+                score++;
+                showFeedback('Correct!', true);
+            } else {
+                showFeedback(`Incorrect. The correct answer is: ${currentQuestion.answer}`, false);
+            }
+            
+            updateProgress();
+            updateNavigationButtons();
+        }
+
+        // Show feedback for the answer
+        function showFeedback(message, isCorrect) {
+            const feedbackElement = document.getElementById('feedback');
+            const feedbackIcon = document.getElementById('feedback-icon');
+            const feedbackText = document.getElementById('feedback-text');
+            
+            const fsFeedbackElement = document.getElementById('fs-feedback');
+            const fsFeedbackIcon = document.getElementById('fs-feedback-icon');
+            const fsFeedbackText = document.getElementById('fs-feedback-text');
+            
+            if (isCorrect) {
+                feedbackElement.className = 'feedback correct';
+                feedbackIcon.className = 'fas fa-check-circle';
+                fsFeedbackElement.className = 'feedback correct';
+                fsFeedbackIcon.className = 'fas fa-check-circle';
+            } else {
+                feedbackElement.className = 'feedback incorrect';
+                feedbackIcon.className = 'fas fa-times-circle';
+                fsFeedbackElement.className = 'feedback incorrect';
+                fsFeedbackIcon.className = 'fas fa-times-circle';
+            }
+            
+            feedbackText.textContent = message;
+            fsFeedbackText.textContent = message;
+            
+            feedbackElement.style.display = 'flex';
+            fsFeedbackElement.style.display = 'flex';
+        }
+
+        // Hide feedback
+        function hideFeedback() {
+            document.getElementById('feedback').style.display = 'none';
+            document.getElementById('fs-feedback').style.display = 'none';
+        }
+
+        // Move to next question
+        function nextQuestion() {
+            if (currentQuestionIndex < quizQuestions.length - 1) {
+                currentQuestionIndex++;
+                loadQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        // Move to previous question
+        function prevQuestion() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                loadQuestion();
+            }
+        }
+
+        // Show the final results
+        function showResults() {
+            stopTimer();
+            showScreen('results');
+            
+            document.getElementById('score').textContent = `${score}/${quizQuestions.length}`;
+            document.getElementById('correct-answers').textContent = score;
+            document.getElementById('incorrect-answers').textContent = quizQuestions.length - score;
+            
+            const accuracy = quizQuestions.length > 0 ? Math.round((score / quizQuestions.length) * 100) : 0;
+            document.getElementById('accuracy').textContent = accuracy;
+            
+            document.getElementById('time-taken').textContent = secondsElapsed;
+            
+            const qpm = secondsElapsed > 0 ? Math.round((quizQuestions.length / secondsElapsed) * 60) : 0;
+            document.getElementById('qpm').textContent = qpm;
+        }
+
+        // Show answer review
+        function showReview() {
+            showScreen('review');
+            
+            const reviewContainer = document.getElementById('review-questions');
+            reviewContainer.innerHTML = '';
+            
+            userAnswers.forEach((answer, index) => {
+                const reviewItem = document.createElement('div');
+                reviewItem.className = `review-item ${answer.isCorrect ? 'review-correct' : 'review-incorrect'}`;
+                
+                const questionType = answer.type === "mcq" ? "MCQ" : "Fill-in-Blank";
+                
+                reviewItem.innerHTML = `
+                    <h3>Question ${index + 1} (${answer.chapter}) <span class="badge">${questionType}</span></h3>
+                    <p><strong>Question:</strong> ${answer.question}</p>
+                    <p><strong>Your Answer:</strong> ${answer.userAnswer}</p>
+                    <p><strong>Correct Answer:</strong> ${answer.correctAnswer}</p>
+                    <p><strong>Status:</strong> ${answer.isCorrect ? '<i class="fas fa-check-circle"></i> Correct' : '<i class="fas fa-times-circle"></i> Incorrect'}</p>
+                `;
+                
+                reviewContainer.appendChild(reviewItem);
+            });
+        }
+
+        // Enter fullscreen mode
+        function enterFullscreen() {
+            // Copy current question state to fullscreen mode
+            const currentQuestion = quizQuestions[currentQuestionIndex];
+            document.getElementById('fs-question-text').textContent = currentQuestion.question;
+            document.getElementById('fs-answer-input').value = document.getElementById('answer-input').value;
+            
+            // Show fullscreen mode
+            fullscreenMode.classList.add('active');
+            
+            // Update fullscreen progress
+            updateProgress();
+            
+            // Update fullscreen navigation
+            updateNavigationButtons();
+            
+            // Hide hint if not enabled
+            if (!quizSettings.showHints) {
+                document.getElementById('fs-hint').style.display = 'none';
+            }
+        }
+
+        // Exit fullscreen mode
+        function exitFullscreen() {
+            // Copy answer back from fullscreen mode
+            document.getElementById('answer-input').value = document.getElementById('fs-answer-input').value;
+            
+            // Hide fullscreen mode
+            fullscreenMode.classList.remove('active');
+        }
+
+        // Initialize the app when the page loads
+        window.addEventListener('DOMContentLoaded', initApp);
+    </script>
+</body>
+</html>
