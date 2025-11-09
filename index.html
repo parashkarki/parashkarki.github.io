@@ -3,3363 +3,2068 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Computer Science Master Quiz</title>
+    <title>Paras Karki | Creative Portfolio</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --secondary: #64748b;
+            --dark: #1e293b;
+            --light: #f8fafc;
+            --accent: #f59e0b;
+            --success: #10b981;
+            --error: #ef4444;
+            --card-bg: #ffffff;
+            --card-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            
+            /* Light theme variables */
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --text-primary: #f8fafc;
+            --text-secondary: #cbd5e1;
+            --card-bg-color: rgba(30, 41, 59, 0.7);
+        }
+
+        [data-theme="light"] {
+            --bg-primary: #f1f5f9;
+            --bg-secondary: #ffffff;
+            --text-primary: #1e293b;
+            --text-secondary: #475569;
+            --card-bg-color: rgba(255, 255, 255, 0.9);
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
-        :root {
-            --primary: #6a11cb;
-            --secondary: #2575fc;
-            --success: #4CAF50;
-            --danger: #F44336;
-            --warning: #FF9800;
-            --info: #2196F3;
-            --dark: #333;
-            --light: #f8f9fa;
+        html {
+            scroll-behavior: smooth;
         }
 
         body {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-            color: white;
-            min-height: 100vh;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+            color: var(--text-primary);
+            line-height: 1.6;
             overflow-x: hidden;
+            transition: background 0.5s ease, color 0.3s ease;
         }
 
         .container {
-            width: 100%;
-            max-width: 500px;
+            max-width: 1200px;
             margin: 0 auto;
-            padding: 20px;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
+            padding: 0 20px;
         }
 
-        .screen {
-            display: none;
-            flex-direction: column;
+        /* Header - Fixed Position */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            transition: var(--transition);
+        }
+
+        [data-theme="light"] header {
+            background: rgba(241, 245, 249, 0.95);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            text-decoration: none;
+        }
+
+        .logo span {
+            color: var(--primary);
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            align-items: center;
+        }
+
+        .nav-links li {
+            margin-left: 2rem;
+        }
+
+        .nav-links a {
+            color: var(--text-primary);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: var(--primary);
+            transition: var(--transition);
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* Theme Toggle */
+        .theme-toggle {
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            cursor: pointer;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            display: flex;
             align-items: center;
             justify-content: center;
-            width: 100%;
-            min-height: 100vh;
-            padding: 20px;
-            opacity: 0;
-            transform: translateY(20px);
-            transition: opacity 0.5s, transform 0.5s;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
         }
 
-        .screen.active {
-            display: flex;
-            opacity: 1;
-            transform: translateY(0);
+        .theme-toggle:hover {
+            background: rgba(37, 99, 235, 0.1);
+            transform: rotate(15deg);
         }
 
-        /* Welcome Screen */
-        .welcome-screen {
-            text-align: center;
-        }
-
-        .app-logo {
-            font-size: 4rem;
-            margin-bottom: 20px;
-            color: #ffcc00;
-            text-shadow: 0 0 10px rgba(255, 204, 0, 0.5);
-            animation: pulse 2s infinite;
-        }
-
-        .app-title {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-            font-weight: 700;
-        }
-
-        .app-subtitle {
+        .theme-toggle i {
             font-size: 1.2rem;
-            margin-bottom: 30px;
+            transition: transform 0.5s ease;
+        }
+
+        .theme-toggle .fa-sun {
+            position: absolute;
+            transform: scale(0) rotate(180deg);
+        }
+
+        [data-theme="light"] .theme-toggle .fa-moon {
+            transform: scale(0) rotate(180deg);
+        }
+
+        [data-theme="light"] .theme-toggle .fa-sun {
+            transform: scale(1) rotate(0);
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-primary);
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+            padding-top: 80px; /* Account for fixed header */
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            max-width: 800px;
+            padding: 2rem 0;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+            background: linear-gradient(90deg, var(--primary) 0%, #93c5fd 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: fadeInUp 1s ease;
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            margin-bottom: 2rem;
             opacity: 0.9;
+            animation: fadeInUp 1s ease 0.2s both;
+            color: var(--text-secondary);
+        }
+
+        .hero-badges {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            animation: fadeInUp 1s ease 0.4s both;
+        }
+
+        .badge {
+            background: rgba(37, 99, 235, 0.2);
+            backdrop-filter: blur(10px);
+            padding: 0.5rem 1.25rem;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: var(--transition);
+            border: 1px solid rgba(37, 99, 235, 0.3);
+            color: var(--text-primary);
+        }
+
+        .badge:hover {
+            transform: translateY(-3px);
+            background: rgba(37, 99, 235, 0.3);
         }
 
         .btn {
-            background: linear-gradient(to right, #ff416c, #ff4b2b);
-            color: white;
-            border: none;
-            padding: 15px 30px;
-            font-size: 1.1rem;
-            border-radius: 50px;
-            cursor: pointer;
-            margin: 10px 0;
-            width: 100%;
-            max-width: 300px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-            transition: transform 0.3s, box-shadow 0.3s;
-            display: flex;
+            display: inline-flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
+            background: var(--primary);
+            color: white;
+            padding: 0.75rem 2rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition);
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(37, 99, 235, 0.2);
         }
 
         .btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(37, 99, 235, 0.3);
         }
 
-        .btn-secondary {
-            background: linear-gradient(to right, #4776E6, #8E54E9);
+        .btn i {
+            margin-right: 0.5rem;
         }
 
-        .btn-success {
-            background: linear-gradient(to right, var(--success), #2E7D32);
-        }
-
-        /* Categories Screen */
-        .categories-container {
-            width: 100%;
-            margin-top: 20px;
-        }
-
-        .category-card {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 15px;
-            padding: 20px;
-            margin-bottom: 15px;
-            cursor: pointer;
-            transition: transform 0.3s, background 0.3s;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+        .social-links {
             display: flex;
-            align-items: center;
-            gap: 15px;
+            gap: 1rem;
+            margin-top: 2rem;
+            animation: fadeInUp 1s ease 0.6s both;
         }
 
-        .category-card:hover {
-            transform: scale(1.03);
-            background: rgba(255, 255, 255, 0.2);
-        }
-
-        .category-icon {
-            font-size: 2rem;
-            width: 60px;
-            height: 60px;
+        .social-link {
             display: flex;
             align-items: center;
             justify-content: center;
+            width: 44px;
+            height: 44px;
+            background: rgba(37, 99, 235, 0.2);
+            color: var(--text-primary);
             border-radius: 50%;
-            background: rgba(255, 255, 255, 0.2);
+            text-decoration: none;
+            transition: var(--transition);
+            border: 1px solid rgba(37, 99, 235, 0.3);
         }
 
-        .category-info {
-            flex: 1;
+        .social-link:hover {
+            background: rgba(37, 99, 235, 0.3);
+            transform: translateY(-3px);
         }
 
-        .category-name {
-            font-size: 1.3rem;
-            font-weight: 600;
-            margin-bottom: 5px;
+        /* Sections */
+        .section {
+            padding: 5rem 0;
         }
 
-        .category-desc {
-            font-size: 0.9rem;
-            opacity: 0.8;
+        .section-title {
+            text-align: center;
+            margin-bottom: 3rem;
         }
 
-        /* Subcategories Screen */
-        .subcategories-container {
-            width: 100%;
-            margin-top: 20px;
+        .section-title h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
         }
 
-        .subcategory-card {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 15px;
-            padding: 15px;
-            margin-bottom: 10px;
-            cursor: pointer;
-            transition: transform 0.3s, background 0.3s;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+        .section-title p {
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto;
+            font-size: 1.1rem;
+        }
+
+        /* About Section */
+        .about-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: center;
+        }
+
+        .about-text h3 {
+            font-size: 1.75rem;
+            margin-bottom: 1.5rem;
+            color: var(--text-primary);
+        }
+
+        .about-text p {
+            margin-bottom: 1.5rem;
+            color: var(--text-secondary);
+        }
+
+        .skills-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .skill-item {
             display: flex;
             align-items: center;
-            justify-content: space-between;
+            gap: 1rem;
+            padding: 1rem;
+            background: var(--card-bg-color);
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: var(--transition);
         }
 
-        .subcategory-card:hover {
-            transform: translateX(5px);
-            background: rgba(255, 255, 255, 0.2);
+        [data-theme="light"] .skill-item {
+            border: 1px solid rgba(0, 0, 0, 0.1);
         }
 
-        .subcategory-name {
-            font-size: 1.1rem;
+        .skill-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .skill-icon {
+            width: 50px;
+            height: 50px;
+            background: rgba(37, 99, 235, 0.1);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            font-size: 1.5rem;
+        }
+
+        .skill-info h4 {
+            margin-bottom: 0.25rem;
+            color: var(--text-primary);
+        }
+
+        .skill-info p {
+            margin: 0;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .about-image {
+            text-align: center;
+            position: relative;
+        }
+
+        .about-image::before {
+            content: '';
+            position: absolute;
+            top: -20px;
+            left: -20px;
+            right: 20px;
+            bottom: 20px;
+            background: var(--primary);
+            border-radius: 12px;
+            z-index: -1;
+            opacity: 0.1;
+        }
+
+        .about-image img {
+            max-width: 100%;
+            border-radius: 12px;
+            box-shadow: var(--card-shadow);
+            transition: transform 0.5s ease;
+        }
+
+        .about-image:hover img {
+            transform: translate(-10px, -10px);
+        }
+
+        /* Portfolio Section */
+        .portfolio-filters {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 3rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            background: var(--card-bg-color);
+            color: var(--text-primary);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: var(--transition);
             font-weight: 500;
         }
 
-        .question-count {
-            font-size: 0.8rem;
-            opacity: 0.7;
+        [data-theme="light"] .filter-btn {
+            border: 1px solid rgba(0, 0, 0, 0.1);
         }
 
-        /* Quiz Screen */
-        .quiz-header {
-            display: flex;
-            justify-content: space-between;
-            width: 100%;
-            margin-bottom: 20px;
-            font-size: 1rem;
+        .filter-btn:hover, .filter-btn.active {
+            background: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
         }
 
-        .progress-bar {
-            width: 100%;
-            height: 8px;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 4px;
-            margin: 20px 0;
+        .portfolio-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .portfolio-item {
+            background: var(--card-bg-color);
+            border-radius: 12px;
             overflow: hidden;
-        }
-
-        .progress {
-            height: 100%;
-            background: linear-gradient(to right, #ffcc00, #ff9900);
-            border-radius: 4px;
-            transition: width 0.5s;
-        }
-
-        .question-container {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 20px;
-            padding: 25px;
-            margin: 20px 0;
-            width: 100%;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-        }
-
-        .question-number {
-            font-size: 0.9rem;
-            opacity: 0.8;
-            margin-bottom: 10px;
-        }
-
-        .question-text {
-            font-size: 1.4rem;
-            margin-bottom: 20px;
-            line-height: 1.4;
-        }
-
-        .options-container {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            width: 100%;
-        }
-
-        .option {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 15px;
-            padding: 15px;
-            cursor: pointer;
-            transition: all 0.3s;
-            border: 2px solid transparent;
+            box-shadow: var(--card-shadow);
+            transition: var(--transition);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            animation: fadeIn 0.5s ease;
             position: relative;
-            overflow: hidden;
         }
 
-        .option:hover {
-            background: rgba(255, 255, 255, 0.2);
+        [data-theme="light"] .portfolio-item {
+            border: 1px solid rgba(0, 0, 0, 0.1);
         }
 
-        .option.selected {
-            background: rgba(255, 204, 0, 0.3);
-            border-color: #ffcc00;
+        .portfolio-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
         }
 
-        .option.correct {
-            background: rgba(76, 175, 80, 0.3);
-            border-color: #4CAF50;
-        }
-
-        .option.incorrect {
-            background: rgba(244, 67, 54, 0.3);
-            border-color: #F44336;
-        }
-
-        .option-feedback {
-            position: absolute;
-            top: 10px;
-            right: 15px;
-            font-size: 1.2rem;
-            opacity: 0;
-            transform: scale(0);
-            transition: opacity 0.3s, transform 0.3s;
-        }
-
-        .option.correct .option-feedback {
-            opacity: 1;
-            transform: scale(1);
-            color: #4CAF50;
-        }
-
-        .option.incorrect .option-feedback {
-            opacity: 1;
-            transform: scale(1);
-            color: #F44336;
-        }
-
-        .fill-blank-container {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 15px;
-            padding: 20px;
-            margin: 15px 0;
-        }
-
-        .fill-blank-input {
-            width: 100%;
-            padding: 12px 15px;
-            border-radius: 10px;
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-            font-size: 1rem;
-            margin-top: 10px;
-        }
-
-        .fill-blank-input:focus {
-            outline: none;
-            border-color: #ffcc00;
-        }
-
-        /* Results Screen */
-        .results-container {
-            text-align: center;
-            width: 100%;
-        }
-
-        .score-circle {
-            width: 200px;
+        .portfolio-image {
             height: 200px;
-            border-radius: 50%;
-            background: conic-gradient(#4CAF50 0deg, #4CAF50 var(--deg), rgba(255, 255, 255, 0.1) var(--deg));
-            margin: 30px auto;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            overflow: hidden;
             position: relative;
-            box-shadow: 0 0 20px rgba(76, 175, 80, 0.5);
         }
 
-        .score-inner {
-            width: 160px;
-            height: 160px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column;
-        }
-
-        .score-value {
-            font-size: 3rem;
-            font-weight: 700;
-        }
-
-        .score-text {
-            font-size: 1.2rem;
-            margin-top: 10px;
-        }
-
-        .results-details {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 20px;
-            padding: 20px;
-            margin: 20px 0;
+        .portfolio-image img {
             width: 100%;
-            backdrop-filter: blur(10px);
+            height: 100%;
+            object-fit: cover;
+            transition: var(--transition);
         }
 
-        .result-item {
+        .portfolio-item:hover .portfolio-image img {
+            transform: scale(1.05);
+        }
+
+        .portfolio-category {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(15, 23, 42, 0.8);
+            color: var(--text-primary);
+            padding: 0.25rem 0.75rem;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        [data-theme="light"] .portfolio-category {
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        .portfolio-info {
+            padding: 1.5rem;
+        }
+
+        .portfolio-info h3 {
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        .portfolio-info p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            margin-bottom: 1rem;
+        }
+
+        .portfolio-actions {
             display: flex;
             justify-content: space-between;
-            padding: 10px 0;
+            align-items: center;
+        }
+
+        .love-btn {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .love-btn:hover {
+            color: var(--error);
+        }
+
+        .love-btn.loved {
+            color: var(--error);
+        }
+
+        .love-btn.loved i {
+            animation: heartBeat 0.5s ease;
+        }
+
+        .love-count {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        /* Contact Section */
+        .contact-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+        }
+
+        .contact-info h3 {
+            font-size: 1.75rem;
+            margin-bottom: 1.5rem;
+            color: var(--text-primary);
+        }
+
+        .contact-info p {
+            margin-bottom: 2rem;
+            color: var(--text-secondary);
+        }
+
+        .contact-details {
+            margin-bottom: 2rem;
+        }
+
+        .contact-detail {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .contact-detail i {
+            width: 20px;
+            margin-right: 1rem;
+            color: var(--primary);
+        }
+
+        .contact-form .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .contact-form label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .contact-form input,
+        .contact-form textarea,
+        .contact-form select {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            font-family: 'Inter', sans-serif;
+            transition: var(--transition);
+            background: var(--card-bg-color);
+            color: var(--text-primary);
+        }
+
+        [data-theme="light"] .contact-form input,
+        [data-theme="light"] .contact-form textarea,
+        [data-theme="light"] .contact-form select {
+            border: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .contact-form input:focus,
+        .contact-form textarea:focus,
+        .contact-form select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .form-message {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+            display: none;
+        }
+
+        .form-message.success {
+            background: rgba(16, 185, 129, 0.2);
+            color: #10b981;
+            display: block;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .form-message.error {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+            display: block;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        /* File Upload Styles */
+        .file-upload {
+            position: relative;
+            display: inline-block;
+            width: 100%;
+        }
+
+        .file-upload-input {
+            position: absolute;
+            left: 0;
+            top: 0;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+
+        .file-upload-label {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.75rem 1rem;
+            border: 1px dashed rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+            background: var(--card-bg-color);
+            cursor: pointer;
+            transition: var(--transition);
+            text-align: center;
+            color: var(--text-primary);
+        }
+
+        [data-theme="light"] .file-upload-label {
+            border: 1px dashed rgba(0, 0, 0, 0.3);
+        }
+
+        .file-upload-label:hover {
+            border-color: var(--primary);
+            background: rgba(37, 99, 235, 0.1);
+        }
+
+        .file-upload-label i {
+            margin-right: 0.5rem;
+        }
+
+        .image-preview {
+            margin-top: 1rem;
+            text-align: center;
+        }
+
+        .image-preview img {
+            max-width: 100%;
+            max-height: 200px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        [data-theme="light"] .image-preview img {
+            border: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        /* Admin Panel */
+        .admin-panel {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            padding: 1rem;
+        }
+
+        .admin-panel.active {
+            display: flex;
+        }
+
+        .admin-login {
+            background: var(--card-bg-color);
+            border-radius: 12px;
+            padding: 2rem;
+            width: 100%;
+            max-width: 400px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-primary);
+        }
+
+        [data-theme="light"] .admin-login {
+            border: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .admin-login h2 {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            color: var(--text-primary);
+        }
+
+        .admin-content {
+            background: var(--card-bg-color);
+            border-radius: 12px;
+            padding: 2rem;
+            width: 100%;
+            max-width: 800px;
+            max-height: 80vh;
+            overflow-y: auto;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-primary);
+        }
+
+        [data-theme="light"] .admin-content {
+            border: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        .result-item:last-child {
+        [data-theme="light"] .admin-header {
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .admin-header h2 {
+            color: var(--text-primary);
+        }
+
+        .close-admin {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-secondary);
+        }
+
+        .management-tabs {
+            display: flex;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            flex-wrap: wrap;
+        }
+
+        [data-theme="light"] .management-tabs {
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .tab-btn {
+            background: none;
+            border: none;
+            padding: 1rem 1.5rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: var(--transition);
+            border-bottom: 2px solid transparent;
+        }
+
+        .tab-btn.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .content-form {
+            background: rgba(15, 23, 42, 0.7);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        [data-theme="light"] .content-form {
+            background: rgba(241, 245, 249, 0.7);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            font-family: 'Inter', sans-serif;
+            background: var(--card-bg-color);
+            color: var(--text-primary);
+        }
+
+        [data-theme="light"] .form-group input,
+        [data-theme="light"] .form-group textarea,
+        [data-theme="light"] .form-group select {
+            border: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .content-list {
+            background: rgba(15, 23, 42, 0.7);
+            border-radius: 8px;
+            padding: 1.5rem;
+        }
+
+        [data-theme="light"] .content-list {
+            background: rgba(241, 245, 249, 0.7);
+        }
+
+        .content-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        [data-theme="light"] .content-item {
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .content-item:last-child {
             border-bottom: none;
         }
 
-        /* Animations */
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
+        .content-info h4 {
+            margin-bottom: 0.25rem;
+            color: var(--text-primary);
         }
 
-        @keyframes bounce {
-            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
-            40% { transform: translateY(-10px); }
-            60% { transform: translateY(-5px); }
+        .content-info p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .delete-btn {
+            background: var(--error);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
         }
 
-        @keyframes correctAnswer {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-            100% { transform: scale(1); }
-        }
-
-        @keyframes incorrectAnswer {
-            0% { transform: translateX(0); }
-            25% { transform: translateX(-10px); }
-            50% { transform: translateX(10px); }
-            75% { transform: translateX(-10px); }
-            100% { transform: translateX(0); }
-        }
-
-        .bounce {
-            animation: bounce 1s;
-        }
-
-        .fade-in {
-            animation: fadeIn 0.5s;
-        }
-
-        .correct-animation {
-            animation: correctAnswer 0.5s;
-        }
-
-        .incorrect-animation {
-            animation: incorrectAnswer 0.5s;
+        @keyframes heartBeat {
+            0% {
+                transform: scale(1);
+            }
+            25% {
+                transform: scale(1.2);
+            }
+            50% {
+                transform: scale(1);
+            }
+            75% {
+                transform: scale(1.1);
+            }
+            100% {
+                transform: scale(1);
+            }
         }
 
         /* Footer */
-        .footer {
-            margin-top: auto;
-            text-align: center;
-            padding: 20px 0;
-            font-size: 0.9rem;
-            opacity: 0.7;
+        footer {
+            background: rgba(15, 23, 42, 0.9);
+            color: white;
+            padding: 3rem 0 1.5rem;
         }
 
-        /* Responsive adjustments */
-        @media (max-width: 400px) {
-            .question-text {
-                font-size: 1.2rem;
+        [data-theme="light"] footer {
+            background: rgba(241, 245, 249, 0.9);
+            color: var(--text-primary);
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .footer-logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .footer-logo span {
+            color: var(--primary);
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-secondary);
+        }
+
+        [data-theme="light"] .copyright {
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background: rgba(15, 23, 42, 0.95);
+                flex-direction: column;
+                padding: 1rem;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             }
-            
-            .score-circle {
-                width: 150px;
-                height: 150px;
+
+            [data-theme="light"] .nav-links {
+                background: rgba(241, 245, 249, 0.95);
             }
-            
-            .score-inner {
-                width: 120px;
-                height: 120px;
+
+            .nav-links.active {
+                display: flex;
             }
-            
-            .score-value {
+
+            .nav-links li {
+                margin: 0.5rem 0;
+            }
+
+            .mobile-menu-btn {
+                display: block;
+            }
+
+            .hero h1 {
                 font-size: 2.5rem;
+            }
+
+            .about-content {
+                grid-template-columns: 1fr;
+            }
+
+            .skills-container {
+                grid-template-columns: 1fr;
+            }
+
+            .portfolio-filters {
+                gap: 0.5rem;
+            }
+
+            .filter-btn {
+                padding: 0.5rem 1rem;
+                font-size: 0.9rem;
+            }
+
+            .contact-content {
+                grid-template-columns: 1fr;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-content {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .hero p {
+                font-size: 1rem;
+            }
+
+            .section {
+                padding: 3rem 0;
+            }
+
+            .section-title h2 {
+                font-size: 2rem;
             }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <!-- Welcome Screen -->
-        <div class="screen welcome-screen active" id="welcome-screen">
-            <div class="app-logo">
-                <i class="fas fa-laptop-code"></i>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <a href="#" class="logo">Paras<span>Karki</span></a>
+                <ul class="nav-links">
+                    <li><a href="#home">Home</a></li>
+                    <li><a href="#about">About</a></li>
+                    <li><a href="#portfolio">Portfolio</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                    <li>
+                        <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+                            <i class="fas fa-moon"></i>
+                            <i class="fas fa-sun"></i>
+                        </button>
+                    </li>
+                    <li><a href="#" id="adminNavBtn">Admin</a></li>
+                </ul>
+                <button class="mobile-menu-btn">
+                    <i class="fas fa-bars"></i>
+                </button>
             </div>
-            <h1 class="app-title">CS Master Quiz</h1>
-            <p class="app-subtitle">Test your computer science knowledge with our comprehensive quiz platform</p>
-            <button class="btn" id="start-btn">
-                <i class="fas fa-play"></i> Start Quiz
-            </button>
-            <button class="btn btn-secondary" id="categories-btn">
-                <i class="fas fa-layer-group"></i> Categories
-            </button>
         </div>
+    </header>
 
-        <!-- Categories Screen -->
-        <div class="screen" id="categories-screen">
-            <h1 class="app-title">Categories</h1>
-            <p class="app-subtitle">Choose your computer science topic</p>
-            <div class="categories-container" id="categories-container">
-                <!-- Categories will be dynamically added here -->
-            </div>
-            <button class="btn btn-secondary" id="back-from-categories">
-                <i class="fas fa-arrow-left"></i> Back
-            </button>
-        </div>
-
-        <!-- Subcategories Screen -->
-        <div class="screen" id="subcategories-screen">
-            <h1 class="app-title" id="subcategories-title">Subcategories</h1>
-            <p class="app-subtitle" id="subcategories-subtitle">Choose a specific topic</p>
-            <div class="subcategories-container" id="subcategories-container">
-                <!-- Subcategories will be dynamically added here -->
-            </div>
-            <button class="btn btn-secondary" id="back-from-subcategories">
-                <i class="fas fa-arrow-left"></i> Back
-            </button>
-        </div>
-
-        <!-- Quiz Screen -->
-        <div class="screen" id="quiz-screen">
-            <div class="quiz-header">
-                <div class="timer">
-                    <i class="fas fa-clock"></i> <span id="time">60</span>s
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="container">
+            <div class="hero-content">
+                <h1>Video Editor, Developer & Rapper</h1>
+                <p>Creating compelling visual stories, innovative code, and powerful lyrics</p>
+                <div class="hero-badges">
+                    <div class="badge">Video Editor</div>
+                    <div class="badge">Software Developer</div>
+                    <div class="badge">Rapper</div>
                 </div>
-                <div class="score">
-                    <i class="fas fa-star"></i> <span id="current-score">0</span>
-                </div>
-            </div>
-            
-            <div class="progress-bar">
-                <div class="progress" id="progress-bar"></div>
-            </div>
-            
-            <div class="question-container">
-                <div class="question-number">Question <span id="current-question">1</span> of <span id="total-questions">10</span></div>
-                <h2 class="question-text" id="question-text">What is the capital of France?</h2>
+                <a href="#portfolio" class="btn"><i class="fas fa-eye"></i> View My Work</a>
                 
-                <div class="options-container" id="options-container">
-                    <!-- Options will be dynamically added here -->
-                </div>
-
-                <div class="fill-blank-container" id="fill-blank-container" style="display: none;">
-                    <p>Enter your answer:</p>
-                    <input type="text" class="fill-blank-input" id="fill-blank-input" placeholder="Type your answer here...">
+                <div class="social-links">
+                    <a href="#" class="social-link"><i class="fab fa-youtube"></i></a>
+                    <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+                    <a href="#" class="social-link"><i class="fab fa-github"></i></a>
+                    <a href="#" class="social-link"><i class="fab fa-spotify"></i></a>
+                    <a href="#" class="social-link"><i class="fab fa-linkedin-in"></i></a>
                 </div>
             </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="section" id="about">
+        <div class="container">
+            <div class="section-title">
+                <h2>About Me</h2>
+                <p>Learn more about my journey and creative process</p>
+            </div>
+            <div class="about-content">
+                <div class="about-text">
+                    <h3>Creating at the Intersection of Technology and Art</h3>
+                    <p>I'm Paras Karki, a multi-disciplinary creative professional with expertise in video editing, software development, and music production. My unique combination of skills allows me to approach projects from multiple perspectives, creating work that is both technically sound and artistically compelling.</p>
+                    <p>With over 5 years of experience in the creative industry, I've worked with clients ranging from startups to established brands, helping them tell their stories through engaging video content, intuitive software solutions, and memorable musical compositions.</p>
+                    <p>My approach combines technical precision with artistic vision, ensuring that every project I deliver not only meets functional requirements but also resonates emotionally with its audience.</p>
+                    
+                    <div class="skills-container">
+                        <div class="skill-item">
+                            <div class="skill-icon">
+                                <i class="fas fa-video"></i>
+                            </div>
+                            <div class="skill-info">
+                                <h4>Video Editing</h4>
+                                <p>Premiere Pro, After Effects, Final Cut</p>
+                            </div>
+                        </div>
+                        <div class="skill-item">
+                            <div class="skill-icon">
+                                <i class="fas fa-code"></i>
+                            </div>
+                            <div class="skill-info">
+                                <h4>Web Development</h4>
+                                <p>React, Node.js, HTML/CSS, JavaScript</p>
+                            </div>
+                        </div>
+                        <div class="skill-item">
+                            <div class="skill-icon">
+                                <i class="fas fa-music"></i>
+                            </div>
+                            <div class="skill-info">
+                                <h4>Music Production</h4>
+                                <p>FL Studio, Logic Pro, Audacity</p>
+                            </div>
+                        </div>
+                        <div class="skill-item">
+                            <div class="skill-icon">
+                                <i class="fas fa-paint-brush"></i>
+                            </div>
+                            <div class="skill-info">
+                                <h4>Graphic Design</h4>
+                                <p>Photoshop, Illustrator, Figma</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="about-image">
+                    <img src="Parash.png" alt="Paras Karki">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Portfolio Section -->
+    <section class="section" id="portfolio">
+        <div class="container">
+            <div class="section-title">
+                <h2>My Portfolio</h2>
+                <p>A selection of my recent work across different disciplines</p>
+            </div>
             
-            <button class="btn" id="next-btn" disabled>
-                <i class="fas fa-arrow-right"></i> Next Question
-            </button>
+            <div class="portfolio-filters">
+                <button class="filter-btn active" data-filter="all">All</button>
+                <button class="filter-btn" data-filter="photos">Photos</button>
+                <button class="filter-btn" data-filter="videos">Videos</button>
+                <button class="filter-btn" data-filter="projects">Projects</button>
+                <button class="filter-btn" data-filter="music">Music</button>
+            </div>
+            
+            <div class="portfolio-grid" id="portfolio-container">
+                <!-- Portfolio items will be dynamically added here -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="section" id="contact">
+        <div class="container">
+            <div class="section-title">
+                <h2>Get In Touch</h2>
+                <p>Ready to bring your project to life? Let's collaborate</p>
+            </div>
+            <div class="contact-content">
+                <div class="contact-info">
+                    <h3>Let's Create Something Amazing Together</h3>
+                    <p>Whether you need a compelling video, innovative software, or powerful music, I'm here to help bring your vision to life. Get in touch to discuss your project.</p>
+                    <div class="contact-details">
+                        <div class="contact-detail">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <p>Kathmandu, Nepal</p>
+                        </div>
+                        <div class="contact-detail">
+                            <i class="fas fa-phone"></i>
+                            <p>+977 98XXXXXXXX</p>
+                        </div>
+                        <div class="contact-detail">
+                            <i class="fas fa-envelope"></i>
+                            <p>parashkarki782@gmail.com</p>
+                        </div>
+                    </div>
+                    <div class="social-links">
+                        <a href="#" class="social-link" style="background: rgba(255, 0, 0, 0.2);"><i class="fab fa-youtube"></i></a>
+                        <a href="#" class="social-link" style="background: rgba(228, 64, 95, 0.2);"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="social-link" style="background: rgba(51, 51, 51, 0.2);"><i class="fab fa-github"></i></a>
+                        <a href="#" class="social-link" style="background: rgba(29, 185, 84, 0.2);"><i class="fab fa-spotify"></i></a>
+                        <a href="#" class="social-link" style="background: rgba(0, 119, 181, 0.2);"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+                <div class="contact-form">
+                    <form id="contactForm">
+                        <div class="form-group">
+                            <label for="name">Your Name</label>
+                            <input type="text" id="name" name="name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Your Email</label>
+                            <input type="email" id="email" name="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="service">Service Needed</label>
+                            <select id="service" name="service" required>
+                                <option value="">Select a service</option>
+                                <option value="video">Video Editing</option>
+                                <option value="development">Software Development</option>
+                                <option value="music">Music Production</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="message">Your Message</label>
+                            <textarea id="message" name="message" rows="5" required></textarea>
+                        </div>
+                        <button type="submit" class="btn" style="width: 100%;"><i class="fas fa-paper-plane"></i> Send Message</button>
+                        <div class="form-message" id="formMessage"></div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Admin Panel -->
+    <div class="admin-panel" id="adminPanel">
+        <div class="admin-login" id="adminLogin">
+            <h2>Admin Login</h2>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" required>
+                </div>
+                <button type="submit" class="btn" style="width: 100%;">Login</button>
+                <p style="margin-top: 1rem; text-align: center; color: var(--text-secondary); font-size: 0.9rem;">
+                  Users can't access
+                </p>
+            </form>
         </div>
 
-        <!-- Results Screen -->
-        <div class="screen" id="results-screen">
-            <h1 class="app-title">Quiz Complete!</h1>
-            <p class="app-subtitle">Here's how you performed</p>
+        <div class="admin-content" id="adminContent" style="display: none;">
+            <div class="admin-header">
+                <h2>Content Management</h2>
+                <button class="close-admin" id="closeAdmin">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
             
-            <div class="score-circle" id="score-circle">
-                <div class="score-inner">
-                    <div class="score-value" id="final-score">0%</div>
-                    <div class="score-text">Score</div>
+            <div class="management-tabs">
+                <button class="tab-btn active" data-tab="photos">Photos</button>
+                <button class="tab-btn" data-tab="videos">Videos</button>
+                <button class="tab-btn" data-tab="projects">Projects</button>
+                <button class="tab-btn" data-tab="music">Music</button>
+            </div>
+            
+            <!-- Photos Tab -->
+            <div class="tab-content active" id="photos-tab">
+                <div class="content-form">
+                    <h3>Add New Photo</h3>
+                    <form id="photo-form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="photo-title">Photo Title</label>
+                                <input type="text" id="photo-title" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="photo-description">Description</label>
+                            <textarea id="photo-description" rows="3" required></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Upload Photo</label>
+                            <div class="file-upload">
+                                <input type="file" id="photo-upload" class="file-upload-input" accept="image/*" required>
+                                <label for="photo-upload" class="file-upload-label">
+                                    <i class="fas fa-cloud-upload-alt"></i> Choose a photo
+                                </label>
+                            </div>
+                            <div class="image-preview" id="photo-preview"></div>
+                        </div>
+                        <button type="submit" class="btn">Add Photo</button>
+                    </form>
+                </div>
+                
+                <div class="content-list">
+                    <h3>Your Photos</h3>
+                    <div id="photos-list">
+                        <!-- Photos will be listed here -->
+                    </div>
                 </div>
             </div>
             
-            <div class="results-details">
-                <div class="result-item">
-                    <span>Correct Answers:</span>
-                    <span id="correct-answers">0/10</span>
+            <!-- Videos Tab -->
+            <div class="tab-content" id="videos-tab">
+                <div class="content-form">
+                    <h3>Add New Video</h3>
+                    <form id="video-form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="video-title">Video Title</label>
+                                <input type="text" id="video-title" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="video-url">Video URL</label>
+                                <input type="url" id="video-url" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="video-description">Description</label>
+                            <textarea id="video-description" rows="3" required></textarea>
+                        </div>
+                        <button type="submit" class="btn">Add Video</button>
+                    </form>
                 </div>
-                <div class="result-item">
-                    <span>Time Taken:</span>
-                    <span id="time-taken">0s</span>
-                </div>
-                <div class="result-item">
-                    <span>Category:</span>
-                    <span id="quiz-category">General</span>
-                </div>
-                <div class="result-item">
-                    <span>Rank:</span>
-                    <span id="rank">Novice</span>
+                
+                <div class="content-list">
+                    <h3>Your Videos</h3>
+                    <div id="videos-list">
+                        <!-- Videos will be listed here -->
+                    </div>
                 </div>
             </div>
             
-            <button class="btn" id="restart-btn">
-                <i class="fas fa-redo"></i> Play Again
-            </button>
-            <button class="btn btn-secondary" id="home-btn">
-                <i class="fas fa-home"></i> Back to Home
-            </button>
-        </div>
-
-        <div class="footer">
-            <p>Master Quiz with Parash &copy; 2023 | Test Your Computer Science Knowledge</p>
+            <!-- Projects Tab -->
+            <div class="tab-content" id="projects-tab">
+                <div class="content-form">
+                    <h3>Add New Project</h3>
+                    <form id="project-form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="project-title">Project Title</label>
+                                <input type="text" id="project-title" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="project-url">Project URL</label>
+                                <input type="url" id="project-url" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="project-description">Description</label>
+                            <textarea id="project-description" rows="3" required></textarea>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="project-tech">Technologies</label>
+                                <input type="text" id="project-tech" placeholder="React, Node.js, etc.">
+                            </div>
+                        </div>
+                        <button type="submit" class="btn">Add Project</button>
+                    </form>
+                </div>
+                
+                <div class="content-list">
+                    <h3>Your Projects</h3>
+                    <div id="projects-list">
+                        <!-- Projects will be listed here -->
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Music Tab -->
+            <div class="tab-content" id="music-tab">
+                <div class="content-form">
+                    <h3>Add New Music</h3>
+                    <form id="music-form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="music-title">Track Title</label>
+                                <input type="text" id="music-title" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="music-artist">Artist</label>
+                                <input type="text" id="music-artist" required>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="music-url">Audio URL</label>
+                                <input type="url" id="music-url" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="music-description">Description</label>
+                            <textarea id="music-description" rows="3"></textarea>
+                        </div>
+                        <button type="submit" class="btn">Add Track</button>
+                    </form>
+                </div>
+                
+                <div class="content-list">
+                    <h3>Your Music</h3>
+                    <div id="music-list">
+                        <!-- Music will be listed here -->
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">Paras<span>Karki</span></div>
+                <div class="social-links">
+                    <a href="#" class="social-link" style="background: rgba(255, 0, 0, 0.2);"><i class="fab fa-youtube"></i></a>
+                    <a href="#" class="social-link" style="background: rgba(228, 64, 95, 0.2);"><i class="fab fa-instagram"></i></a>
+                    <a href="#" class="social-link" style="background: rgba(51, 51, 51, 0.2);"><i class="fab fa-github"></i></a>
+                    <a href="#" class="social-link" style="background: rgba(29, 185, 84, 0.2);"><i class="fab fa-spotify"></i></a>
+                    <a href="#" class="social-link" style="background: rgba(0, 119, 181, 0.2);"><i class="fab fa-linkedin-in"></i></a>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2023 Paras Karki. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
     <script>
-     const quizData = {
-    "History of Computers": {
-        icon: "fas fa-history",
-        description: "Evolution of computing from ancient times to modern era",
-        questions: [
-            {
-                type: "mcq",
-                question: "Who is considered the 'Father of Computers'?",
-                options: ["Alan Turing", "Steve Jobs", "Charles Babbage", "John von Neumann"],
-                correct: 2  // Fixed: "Charles Babbage" is at index 2 (0-indexed)
-            },
-            {
-                type: "fill",
-                question: "The first computer bug was an actual ______ found in the Harvard Mark II computer.",
-                answer: "moth"
-            },
-    {
-        type: "fill",
-        question: "The first computer bug was an actual ______ found in the Harvard Mark II computer.",
-        answer: "moth"
-    },
-    {
-        type: "mcq",
-        question: "Which was the first electronic general-purpose computer?",
-        options: ["UNIVAC", "ENIAC", "ABC", "Harvard Mark I"],
-        correct: 2
-    },
-    {
-        type: "mcq",
-        question: "Which generation of computers used vacuum tubes?",
-        options: ["Second Generation", "Fourth Generation", "First Generation", "Third Generation"],
-        correct: 3
-    },
-    {
-        type: "fill",
-        question: "The ______ was the first mass-produced computer by IBM.",
-        answer: "IBM 650"
-    },
-    {
-        type: "mcq",
-        question: "What technology replaced vacuum tubes in second generation computers?",
-        options: ["Microprocessors", "Integrated Circuits", "Artificial Intelligence", "Transistors"],
-        correct: 4
-    },
-    {
-        type: "mcq",
-        question: "Which early computing device used beads on rods for calculations?",
-        options: ["Difference Engine", "Pascaline", "Abacus", "Analytical Engine"],
-        correct: 3
-    },
-    {
-        type: "fill",
-        question: "The first portable computer was called ______.",
-        answer: "Osborne 1"
-    },
-    {
-        type: "mcq",
-        question: "Who developed the first programming language?",
-        options: ["Ada Lovelace", "John Backus", "Grace Hopper", "Alan Turing"],
-        correct: 3
-    },
-    {
-        type: "mcq",
-        question: "Which company introduced the first personal computer?",
-        options: ["Apple", "IBM", "Commodore", "Altair"],
-        correct: 4
-    },
-    {
-        type: "mcq",
-        question: "What was the name of the first computer with a graphical user interface?",
-        options: ["Apple Lisa", "Xerox Alto", "Macintosh", "IBM PC"],
-        correct: 2
-    },
-    {
-        type: "fill",
-        question: "The first computer mouse was invented by ______.",
-        answer: "Douglas Engelbart"
-    },
-    {
-        type: "mcq",
-        question: "Which computer was used to break German Enigma codes in WWII?",
-        options: ["ENIAC", "Colossus", "UNIVAC", "Harvard Mark I"],
-        correct: 2
-    },
-    {
-        type: "fill",
-        question: "The concept of stored program was introduced by ______.",
-        answer: "John von Neumann"
-    },
-    {
-        type: "mcq",
-        question: "What year was the first Apple computer released?",
-        options: ["1984", "1976", "1981", "1990"],
-        correct: 2
-    },
-    {
-        type: "mcq",
-        question: "Which computer used punched cards for input?",
-        options: ["Pascaline", "Jacquard Loom", "Difference Engine", "Analytical Engine"],
-        correct: 2
-    },
-    {
-        type: "fill",
-        question: "The world's first computer programmer was ______.",
-        answer: "Ada Lovelace"
-    },
-    {
-        type: "mcq",
-        question: "What was the name of IBM's first personal computer?",
-        options: ["IBM 650", "IBM 5150", "IBM System/360", "IBM 701"],
-        correct: 2
-    },
-    {
-        type: "mcq",
-        question: "Which computer used mercury delay lines for memory?",
-        options: ["UNIVAC", "EDSAC", "ENIAC", "Colossus"],
-        correct: 2
-    },
-    {
-        type: "fill",
-        question: "The first computer to use magnetic core memory was ______.",
-        answer: "Whirlwind"
-    },
-    {
-        type: "mcq",
-        question: "What was the first computer to use integrated circuits?",
-        options: ["DEC PDP-8", "IBM System/360", "Apollo Guidance Computer", "CDC 6600"],
-        correct: 3
-    },
-    {
-        type: "mcq",
-        question: "Which company developed the first microprocessor?",
-        options: ["AMD", "Intel", "IBM", "Motorola"],
-        correct: 2
-    },
-    {
-        type: "fill",
-        question: "The first computer virus was called ______.",
-        answer: "Creeper"
-    },
-    {
-        type: "mcq",
-        question: "What was the first computer to defeat a world chess champion?",
-        options: ["Watson", "Deep Blue", "AlphaGo", "Deep Thought"],
-        correct: 2
-    },
-    {
-        type: "mcq",
-        question: "Which computer introduced the mouse and graphical user interface?",
-        options: ["Apple Macintosh", "Xerox Alto", "IBM PC", "Commodore PET"],
-        correct: 2
-    },
-    {
-        type: "fill",
-        question: "The first computer to use transistors was ______.",
-        answer: "TX-0"
-    },
-    {
-        type: "mcq",
-        question: "What was the first computer to use magnetic tape storage?",
-        options: ["Harvard Mark I", "UNIVAC I", "ENIAC", "EDSAC"],
-        correct: 2
-    },
-    {
-        type: "mcq",
-        question: "Which computer was the first to use virtual memory?",
-        options: ["IBM System/360", "Atlas", "DEC PDP-11", "CDC 7600"],
-        correct: 2
-    },
-    {
-        type: "fill",
-        question: "The first computer network was called ______.",
-        answer: "ARPANET"
-    },
-    {
-        type: "mcq",
-        question: "What was the first computer to use a hard disk drive?",
-        options: ["DEC PDP-8", "IBM 305 RAMAC", "IBM System/360", "CDC 6600"],
-        correct: 2
-    },
-    {
-        type: "mcq",
-        question: "Which computer introduced the concept of time-sharing?",
-        options: ["UNIX", "CTSS", "Multics", "OS/360"],
-        correct: 2
-    },
-    {
-        type: "fill",
-        question: "The first computer to use parallel processing was ______.",
-        answer: "ILLIAC IV"
-    },
-    {
-        type: "mcq",
-        question: "What was the first computer to use RISC architecture?",
-        options: ["SPARC", "IBM 801", "MIPS", "ARM"],
-        correct: 2
-    },
-    {
-        type: "mcq",
-        question: "Which computer was the first to use optical fiber connections?",
-        options: ["IBM Blue Gene", "Cray-3", "Thinking Machines CM-5", "Fujitsu VP"],
-        correct: 2
-    },
-    {
-        type: "fill",
-        question: "The first computer to achieve 1 gigaflop was ______.",
-        answer: "Cray-2"
-    },
-    {
-        type: "mcq",
-        question: "What was the first computer to use CMOS technology?",
-        options: ["Commodore 64", "IBM PC/AT", "Apple II", "TRS-80"],
-        correct: 2
-    },
-    {
-        type: "mcq",
-        question: "Which computer introduced the first 64-bit processor?",
-        options: ["Cray-1", "CDC 6600", "DEC Alpha", "IBM System/360"],
-        correct: 3
-    },
-    {
-        type: "fill",
-        question: "The first computer to use artificial intelligence was ______.",
-        answer: "Logic Theorist"
-    },
-    {
-        type: "mcq",
-        question: "What was the first computer to use neural networks?",
-        options: ["IBM 704", "Mark I Perceptron", "DEC PDP-1", "CDC 1604"],
-        correct: 2
-    },
-    {
-        type: "mcq",
-        question: "Which computer was the first to use quantum computing principles?",
-        options: ["IBM Q", "D-Wave One", "Orion", "Google Sycamore"],
-        correct: 2
-    },
-    {
-        type: "fill",
-        question: "The first computer to use cloud computing was ______.",
-        answer: "Amazon EC2"
-    },
-    {
-        type: "mcq",
-        question: "What was the first computer to use touch screen technology?",
-        options: ["Apple Newton", "PLATO IV", "Palm Pilot", "IBM Simon"],
-        correct: 2
-    },
-    {
-        type: "mcq",
-        question: "Which computer introduced the first voice recognition system?",
-        options: ["Apple Macintosh", "IBM Shoebox", "Dragon NaturallySpeaking", "Windows XP"],
-        correct: 2
-    },
-    {
-        type: "fill",
-        question: "The first computer to use biometric authentication was ______.",
-        answer: "IBM ThinkPad T42"
-    },
-    {
-        type: "mcq",
-        question: "What was the first computer to use solid-state drives?",
-        options: ["Apple MacBook Air", "IBM 350", "Dell Latitude", "Toshiba Portégé"],
-        correct: 2
-    },
-    {
-        type: "mcq",
-        question: "Which computer was the first to use 3D printing technology?",
-        options: ["Stratasys FDM", "3D Systems SLA-1", "HP Jet Fusion", "Formlabs Form"],
-        correct: 2
-    },
-    {
-        type: "fill",
-        question: "The first computer to use virtual reality was ______.",
-        answer: "Sword of Damocles"
-    },
-    {
-        type: "mcq",
-        question: "What was the first computer to use augmented reality?",
-        options: ["Google Glass", "Virtual Fixtures", "Microsoft HoloLens", "Magic Leap"],
-        correct: 2
-    },
-    {
-        type: "mcq",
-        question: "Which computer introduced the first blockchain technology?",
-        options: ["Ethereum", "Bitcoin", "Ripple", "Litecoin"],
-        correct: 2
-    },
-    {
-        type: "fill",
-        question: "The first computer to use machine learning was ______.",
-        answer: "Samuel's Checkers Player"
-    },
-    {
-        type: "mcq",
-        question: "What was the first computer to use deep learning?",
-        options: ["AlexNet", "GoogleNet", "LeNet", "ResNet"],
-        correct: 3
-    },
-    {
-        type: "mcq",
-        question: "Which computer was the first to use natural language processing?",
-        options: ["IBM Watson", "ELIZA", "SHRDLU", "Google Assistant"],
-        correct: 2
-    },
-    {
-        type: "fill",
-        question: "The first computer to use computer vision was ______.",
-        answer: "Block World"
-    },
-    {
-        type: "mcq",
-        question: "What was the first computer to use robotics?",
-        options: ["ASIMO", "Unimate", "Shakey", "Boston Dynamics Spot"],
-        correct: 3
-    },
-    {
-        type: "mcq",
-        question: "Which computer introduced the first internet browser?",
-        options: ["Netscape", "WorldWideWeb", "Mosaic", "Internet Explorer"],
-        correct: 2
-    },
-    {
-        type: "fill",
-        question: "The first computer to use email was ______.",
-        answer: "ARPANET"
-    },
-    {
-        type: "mcq",
-        question: "What was the first computer to use social media?",
-        options: ["MySpace", "Six Degrees", "Friendster", "Facebook"],
-        correct: 2
-    },
-    {
-        type: "mcq",
-        question: "Which computer was the first to use mobile computing?",
-        options: ["Grid Compass", "Osborne 1", "Dynabook", "IBM Simon"],
-        correct: 2
-    },
-    {
-        type: "fill",
-        question: "The first computer to use wireless networking was ______.",
-        answer: "ALOHAnet"
-    }
-]
-},
+        // Data Management
+        let photos = JSON.parse(localStorage.getItem('photos')) || [];
+        let videos = JSON.parse(localStorage.getItem('videos')) || [];
+        let projects = JSON.parse(localStorage.getItem('projects')) || [];
+        let music = JSON.parse(localStorage.getItem('music')) || [];
+        let loves = JSON.parse(localStorage.getItem('loves')) || {};
+        let isAdmin = false;
+        let currentTheme = localStorage.getItem('theme') || 'dark';
 
-  "Characteristics of Computers": {
-    icon: "fas fa-microchip",
-    description: "Fundamental attributes and capabilities of computing systems",
-    questions: [
-        {
-            type: "mcq",
-            question: "What is the term for raw facts and figures?",
-            options: ["Information", "Wisdom", "Data", "Knowledge"],
-            correct: 2  // Fixed: "Data" is at index 2 (0-indexed)
-        },
-    {
-        type: "fill",
-        question: "The brain of the computer is called the ______.",
-        answer: "CPU"
-    },
-    {
-        type: "mcq",
-        question: "Which of these is NOT a type of computer malware?",
-        options: ["Worm", "Firewall", "Virus", "Trojan"],
-        correct: 2
-    },
-    {
-        type: "mcq",
-        question: "What does RAM stand for?",
-        options: ["Rapid Access Memory", "Random Access Memory", "Read Access Memory", "Random Allocation Memory"],
-        correct: 2
-    },
-    {
-        type: "fill",
-        question: "The fear of being without a mobile phone is called ______.",
-        answer: "nomophobia"
-    },
-    {
-        type: "mcq",
-        question: "Which number system do computers use internally?",
-        options: ["Hexadecimal", "Decimal", "Binary", "Octal"],
-        correct: 3
-    },
-    {
-        type: "mcq",
-        question: "What is the term for software that is freely available and can be modified?",
-        options: ["Commercial Software", "Proprietary Software", "Shareware", "Open-Source Software"],
-        correct: 4
-    },
-    {
-        type: "fill",
-        question: "A collection of hardware and software components that help accomplish tasks is called a ______.",
-        answer: "computer"
-    },
-    {
-        type: "mcq",
-        question: "Which component is considered the 'heart and mind' of the computer?",
-        options: ["Hard Disk", "CPU", "RAM", "Motherboard"],
-        correct: 2
-    },
-    {
-        type: "mcq",
-        question: "What type of software provides low-level control for a device's hardware?",
-        options: ["Application Software", "Malware", "Firmware", "System Software"],
-        correct: 3
-    },
-    {
-        type: "mcq",
-        question: "Which of these is an example of an input device?",
-        options: ["Printer", "Speaker", "Monitor", "Keyboard"],
-        correct: 4
-    },
-    {
-        type: "fill",
-        question: "The proper collection of data is called ______.",
-        answer: "information"
-    },
-    {
-        type: "mcq",
-        question: "What does ROM stand for?",
-        options: ["Read Only Memory", "Random Only Memory", "Read Output Memory", "Random Output Memory"],
-        correct: 1
-    },
-    {
-        type: "fill",
-        question: "The temporary memory that loses data when power is off is called ______ memory.",
-        answer: "volatile"
-    },
-    {
-        type: "mcq",
-        question: "Which component stores data permanently even when power is off?",
-        options: ["RAM", "Cache", "ROM", "Virtual Memory"],
-        correct: 3
-    },
-    {
-        type: "mcq",
-        question: "What is the main function of an operating system?",
-        options: ["Word Processing", "Resource Management", "Web Browsing", "Gaming"],
-        correct: 2
-    },
-    {
-        type: "fill",
-        question: "The physical components of a computer are called ______.",
-        answer: "hardware"
-    },
-    {
-        type: "mcq",
-        question: "Which of these is NOT a characteristic of computers?",
-        options: ["Speed", "Emotions", "Accuracy", "Storage Capacity"],
-        correct: 2
-    },
-    {
-        type: "mcq",
-        question: "What does ALU stand for in a CPU?",
-        options: ["Advanced Logic Unit", "Arithmetic Logic Unit", "Automated Logic Unit", "Analog Logic Unit"],
-        correct: 2
-    },
-    {
-        type: "fill",
-        question: "The set of instructions that tells the computer what to do is called ______.",
-        answer: "software"
-    },
-    {
-        type: "mcq",
-        question: "Which type of software is designed for specific tasks?",
-        options: ["System Software", "Application Software", "Utility Software", "Firmware"],
-        correct: 2
-    },
-    {
-        type: "mcq",
-        question: "What is the purpose of cache memory?",
-        options: ["Long-term storage", "Backup storage", "Fast temporary storage", "Network storage"],
-        correct: 3
-    },
-    {
-        type: "fill",
-        question: "The process of starting a computer is called ______.",
-        answer: "booting"
-    },
-    {
-        type: "mcq",
-        question: "Which component manages all computer operations?",
-        options: ["ALU", "RAM", "Control Unit", "Hard Disk"],
-        correct: 3
-    },
-    {
-        type: "mcq",
-        question: "What is the function of registers in a CPU?",
-        options: ["Long-term storage", "Fast temporary storage", "Network communication", "Display output"],
-        correct: 2
-    },
-    {
-        type: "fill",
-        question: "The speed of a CPU is measured in ______.",
-        answer: "hertz"
-    },
-    {
-        type: "mcq",
-        question: "Which bus carries data between CPU and memory?",
-        options: ["Control Bus", "System Bus", "Address Bus", "Data Bus"],
-        correct: 4
-    },
-    {
-        type: "mcq",
-        question: "What is the purpose of the address bus?",
-        options: ["Carry control signals", "Carry data", "Specify memory locations", "Manage power supply"],
-        correct: 3
-    },
-    {
-        type: "fill",
-        question: "The main circuit board in a computer is called the ______.",
-        answer: "motherboard"
-    },
-    {
-        type: "mcq",
-        question: "Which port is commonly used for connecting external storage devices?",
-        options: ["VGA", "USB", "HDMI", "Ethernet"],
-        correct: 2
-    },
-    {
-        type: "mcq",
-        question: "What does GPU stand for?",
-        options: ["General Processing Unit", "Graphics Processing Unit", "Global Processing Unit", "Graphical Performance Unit"],
-        correct: 2
-    },
-    {
-        type: "fill",
-        question: "The temporary storage area for frequently used data is called ______.",
-        answer: "cache"
-    },
-    {
-        type: "mcq",
-        question: "Which type of memory is fastest?",
-        options: ["Hard Disk", "RAM", "Cache", "ROM"],
-        correct: 3
-    },
-    {
-        type: "mcq",
-        question: "What is virtual memory?",
-        options: ["RAM simulation", "Hard disk used as RAM", "Cloud storage", "Cache memory"],
-        correct: 2
-    },
-    {
-        type: "fill",
-        question: "The process of converting source code to machine code is called ______.",
-        answer: "compilation"
-    },
-    {
-        type: "mcq",
-        question: "Which programming language is closest to machine language?",
-        options: ["Python", "Assembly Language", "Java", "C++"],
-        correct: 2
-    },
-    {
-        type: "mcq",
-        question: "What is the purpose of an interpreter?",
-        options: ["Compile entire program", "Execute line by line", "Optimize code", "Debug programs"],
-        correct: 2
-    },
-    {
-        type: "fill",
-        question: "The set of rules for data communication is called ______.",
-        answer: "protocol"
-    },
-    {
-        type: "mcq",
-        question: "Which network covers a small geographical area?",
-        options: ["WAN", "MAN", "LAN", "PAN"],
-        correct: 3
-    },
-    {
-        type: "mcq",
-        question: "What does DNS stand for?",
-        options: ["Domain Name System", "Data Network Service", "Digital Naming System", "Domain Network Service"],
-        correct: 1
-    },
-    {
-        type: "fill",
-        question: "The unique identifier for network devices is called ______ address.",
-        answer: "MAC"
-    },
-    {
-        type: "mcq",
-        question: "Which topology uses a central hub?",
-        options: ["Bus", "Ring", "Star", "Mesh"],
-        correct: 3
-    },
-    {
-        type: "mcq",
-        question: "What is the purpose of a router?",
-        options: ["Connect networks", "Amplify signals", "Filter data", "Store files"],
-        correct: 1
-    },
-    {
-        type: "fill",
-        question: "The protocol for web communication is ______.",
-        answer: "HTTP"
-    },
-    {
-        type: "mcq",
-        question: "Which security threat encrypts files for ransom?",
-        options: ["Virus", "Worm", "Ransomware", "Trojan"],
-        correct: 3
-    },
-    {
-        type: "mcq",
-        question: "What is the purpose of a firewall?",
-        options: ["Speed up internet", "Block unauthorized access", "Store backups", "Manage emails"],
-        correct: 2
-    },
-    {
-        type: "fill",
-        question: "The practice of protecting systems and data is called ______.",
-        answer: "cybersecurity"
-    },
-    {
-        type: "mcq",
-        question: "Which type of backup stores only changed files?",
-        options: ["Full Backup", "Incremental Backup", "Differential Backup", "Mirror Backup"],
-        correct: 2
-    },
-    {
-        type: "mcq",
-        question: "What is data encryption?",
-        options: ["Data compression", "Data conversion to code", "Data deletion", "Data backup"],
-        correct: 2
-    },
-    {
-        type: "fill",
-        question: "The process of verifying user identity is called ______.",
-        answer: "authentication"
-    },
-    {
-        type: "mcq",
-        question: "Which algorithm is used for encryption?",
-        options: ["RSA", "Bubble Sort", "Dijkstra", "Quick Sort"],
-        correct: 1
-    },
-    {
-        type: "mcq",
-        question: "What is cloud computing?",
-        options: ["Local storage", "Internet-based services", "Hardware maintenance", "Software installation"],
-        correct: 2
-    },
-    {
-        type: "fill",
-        question: "The practice of working from remote locations is called ______.",
-        answer: "telecommuting"
-    },
-    {
-        type: "mcq",
-        question: "Which technology enables virtual meetings?",
-        options: ["VR", "AR", "Video Conferencing", "3D Printing"],
-        correct: 3
-    },
-    {
-        type: "mcq",
-        question: "What is the Internet of Things?",
-        options: ["Social media", "Connected devices", "Web browsers", "Search engines"],
-        correct: 2
-    },
-    {
-        type: "fill",
-        question: "The study of human-computer interaction is called ______.",
-        answer: "HCI"
-    },
-    {
-        type: "mcq",
-        question: "Which programming paradigm uses objects?",
-        options: ["Procedural", "Functional", "Object-Oriented", "Logical"],
-        correct: 3
-    },
-    {
-        type: "mcq",
-        question: "What is agile methodology?",
-        options: ["Hardware design", "Software development", "Network setup", "Data analysis"],
-        correct: 2
-    },
-    {
-        type: "fill",
-        question: "The process of finding and fixing errors is called ______.",
-        answer: "debugging"
-    }
- ]
-    },
-          "Types of Computers": {
-    icon: "fas fa-desktop",
-    description: "Different classifications and forms of computing devices",
-    questions: [  // Remove "const typesQuestions =" and just use "questions:"
-        {
-            type: "mcq",
-            question: "Which type of computer is designed for general use by a single person?",
-            options: ["Mainframe", "Server", "Supercomputer", "Personal Computer"],
-            correct: 3  // Fixed: "Personal Computer" is at index 3 (0-indexed)
-        },
-    {
-        type: "fill",
-        question: "A ______ is a portable computer that is smaller than a traditional laptop.",
-        answer: "tablet"
-    },
-    {
-        type: "mcq",
-        question: "Which computer is optimized to provide services to other computers over a network?",
-        options: ["Workstation", "Mainframe", "Server", "Supercomputer"],
-        correct: 3
-    },
-    {
-        type: "mcq",
-        question: "What type of computer would NASA use for space exploration research?",
-        options: ["Personal Computer", "Server", "Workstation", "Supercomputer"],
-        correct: 4
-    },
-    {
-        type: "fill",
-        question: "The latest trend in computing is ______ computers integrated into watches and clothing.",
-        answer: "wearable"
-    },
-    {
-        type: "mcq",
-        question: "Which of these is a specialized computer for playing video games on a TV?",
-        options: ["Workstation", "Game Console", "Server", "Mainframe"],
-        correct: 2
-    },
-    {
-        type: "mcq",
-        question: "What type of computer is designed to fit on a desk and is not portable?",
-        options: ["Laptop", "Tablet", "Desktop", "Smartphone"],
-        correct: 3
-    },
-    {
-        type: "fill",
-        question: "A computer that fills an entire room and processes millions of transactions is called a ______.",
-        answer: "mainframe"
-    },
-    {
-        type: "mcq",
-        question: "Which type of computer is typically used for scientific research and complex calculations?",
-        options: ["Personal Computer", "Workstation", "Server", "Supercomputer"],
-        correct: 4
-    },
-    {
-        type: "mcq",
-        question: "What is another name for a notebook computer?",
-        options: ["Desktop", "Tablet", "Laptop", "Mainframe"],
-        correct: 3
-    },
-    {
-        type: "mcq",
-        question: "Which device is considered a complete computer that can be carried anywhere?",
-        options: ["Desktop", "Server", "Laptop", "Mainframe"],
-        correct: 3
-    },
-    {
-        type: "fill",
-        question: "A mini laptop that is generally lighter and smaller is called a ______.",
-        answer: "netbook"
-    },
-    {
-        type: "mcq",
-        question: "Which type of computer is used in embedded systems?",
-        options: ["Microcontroller", "Mainframe", "Supercomputer", "Workstation"],
-        correct: 1
-    },
-    {
-        type: "fill",
-        question: "Computers in cars that control various functions are called ______ computers.",
-        answer: "embedded"
-    },
-    {
-        type: "mcq",
-        question: "Which computer type is designed for high-performance graphics and engineering applications?",
-        options: ["Server", "Workstation", "Mainframe", "Personal Computer"],
-        correct: 2
-    },
-    {
-        type: "mcq",
-        question: "What type of computer manages network resources and provides shared services?",
-        options: ["Client", "Server", "Peer", "Node"],
-        correct: 2
-    },
-    {
-        type: "fill",
-        question: "A computer that accesses services from a server is called a ______.",
-        answer: "client"
-    },
-    {
-        type: "mcq",
-        question: "Which type of computer is used for weather forecasting and climate research?",
-        options: ["Personal Computer", "Server", "Supercomputer", "Workstation"],
-        correct: 3
-    },
-    {
-        type: "mcq",
-        question: "What is a cluster computer?",
-        options: ["Single powerful computer", "Network of computers working together", "Portable computer", "Embedded computer"],
-        correct: 2
-    },
-    {
-        type: "fill",
-        question: "A computer that uses quantum bits instead of traditional bits is called a ______ computer.",
-        answer: "quantum"
-    },
-    {
-        type: "mcq",
-        question: "Which computer type is designed for mobile use with touch screen interface?",
-        options: ["Desktop", "Laptop", "Smartphone", "Mainframe"],
-        correct: 3
-    },
-    {
-        type: "mcq",
-        question: "What type of computer is typically used in point-of-sale systems?",
-        options: ["Workstation", "Server", "Terminal", "Supercomputer"],
-        correct: 3
-    },
-    {
-        type: "fill",
-        question: "A computer designed for playing games with high-performance graphics is called a ______ PC.",
-        answer: "gaming"
-    },
-    {
-        type: "mcq",
-        question: "Which computer type is used in industrial automation and control systems?",
-        options: ["PLC", "Server", "Desktop", "Laptop"],
-        correct: 1
-    },
-    {
-        type: "mcq",
-        question: "What is a thin client computer?",
-        options: ["Computer with minimal processing power", "High-performance computer", "Portable computer", "Gaming computer"],
-        correct: 1
-    },
-    {
-        type: "fill",
-        question: "A computer that processes data in analog form is called an ______ computer.",
-        answer: "analog"
-    },
-    {
-        type: "mcq",
-        question: "Which computer type uses both analog and digital features?",
-        options: ["Hybrid Computer", "Digital Computer", "Analog Computer", "Quantum Computer"],
-        correct: 1
-    },
-    {
-        type: "mcq",
-        question: "What type of computer is used in ATMs?",
-        options: ["Embedded Computer", "Mainframe", "Supercomputer", "Workstation"],
-        correct: 1
-    },
-    {
-        type: "fill",
-        question: "A computer that processes data in discrete form is called a ______ computer.",
-        answer: "digital"
-    },
-    {
-        type: "mcq",
-        question: "Which computer type is designed for real-time processing?",
-        options: ["Batch Processing Computer", "Real-time Computer", "Time-sharing Computer", "Distributed Computer"],
-        correct: 2
-    },
-    {
-        type: "mcq",
-        question: "What is a blade server?",
-        options: ["Portable server", "Server with multiple processors in one chassis", "Gaming server", "Personal server"],
-        correct: 2
-    },
-    {
-        type: "fill",
-        question: "A computer network where all computers have equal capabilities is called a ______ network.",
-        answer: "peer-to-peer"
-    },
-    {
-        type: "mcq",
-        question: "Which computer type is used in scientific laboratories for data analysis?",
-        options: ["Workstation", "Server", "Mainframe", "Personal Computer"],
-        correct: 1
-    },
-    {
-        type: "mcq",
-        question: "What is a rack server?",
-        options: ["Server mounted in a frame", "Portable server", "Gaming server", "Personal server"],
-        correct: 1
-    },
-    {
-        type: "fill",
-        question: "A computer that processes multiple tasks simultaneously is called a ______ computer.",
-        answer: "multiprocessing"
-    },
-    {
-        type: "mcq",
-        question: "Which computer type is used in airports for flight information displays?",
-        options: ["Kiosk", "Server", "Workstation", "Mainframe"],
-        correct: 1
-    },
-    {
-        type: "mcq",
-        question: "What is a tower server?",
-        options: ["Server in upright cabinet", "Portable server", "Rack server", "Blade server"],
-        correct: 1
-    },
-    {
-        type: "fill",
-        question: "A computer designed for media creation and editing is called a ______ workstation.",
-        answer: "media"
-    },
-    {
-        type: "mcq",
-        question: "Which computer type is used in hospitals for patient monitoring?",
-        options: ["Embedded System", "Server", "Supercomputer", "Workstation"],
-        correct: 1
-    },
-    {
-        type: "mcq",
-        question: "What is a microserver?",
-        options: ["Small, low-power server", "High-performance server", "Gaming server", "Personal server"],
-        correct: 1
-    },
-    {
-        type: "fill",
-        question: "A computer that uses light instead of electricity for processing is called an ______ computer.",
-        answer: "optical"
-    },
-    {
-        type: "mcq",
-        question: "Which computer type is used in smart home systems?",
-        options: ["Embedded Computer", "Server", "Mainframe", "Supercomputer"],
-        correct: 1
-    },
-    {
-        type: "mcq",
-        question: "What is a nano computer?",
-        options: ["Extremely small computer", "High-performance computer", "Portable computer", "Gaming computer"],
-        correct: 1
-    },
-    {
-        type: "fill",
-        question: "A computer that processes data using DNA molecules is called a ______ computer.",
-        answer: "DNA"
-    },
-    {
-        type: "mcq",
-        question: "Which computer type is used in traffic light control systems?",
-        options: ["Embedded System", "Server", "Workstation", "Personal Computer"],
-        correct: 1
-    },
-    {
-        type: "mcq",
-        question: "What is a pico computer?",
-        options: ["Very small embedded computer", "High-performance computer", "Portable computer", "Gaming computer"],
-        correct: 1
-    },
-    {
-        type: "fill",
-        question: "A computer that uses neural networks for processing is called a ______ computer.",
-        answer: "neuromorphic"
-    },
-    {
-        type: "mcq",
-        question: "Which computer type is used in robotics?",
-        options: ["Embedded System", "Server", "Mainframe", "Supercomputer"],
-        correct: 1
-    },
-    {
-        type: "mcq",
-        question: "What is a femto computer?",
-        options: ["Smallest type of computer", "High-performance computer", "Portable computer", "Gaming computer"],
-        correct: 1
-    },
-    {
-        type: "fill",
-        question: "A computer that processes data in continuous form is called an ______ computer.",
-        answer: "analog"
-    },
-    {
-        type: "mcq",
-        question: "Which computer type is used in military applications?",
-        options: ["Rugged Computer", "Server", "Personal Computer", "Workstation"],
-        correct: 1
-    },
-    {
-        type: "mcq",
-        question: "What is a mini computer?",
-        options: ["Mid-range computer between mainframe and micro", "Smallest computer", "Largest computer", "Portable computer"],
-        correct: 1
-    },
-    {
-        type: "fill",
-        question: "A computer that uses biological components for processing is called a ______ computer.",
-        answer: "biological"
-    },
-    {
-        type: "mcq",
-        question: "Which computer type is used in educational institutions?",
-        options: ["Personal Computer", "Server", "Mainframe", "Supercomputer"],
-        correct: 1
-    },
-    {
-        type: "mcq",
-        question: "What is a macro computer?",
-        options: ["Large-scale computer system", "Small computer", "Portable computer", "Gaming computer"],
-        correct: 1
-    },
-    {
-        type: "fill",
-        question: "A computer designed for virtual reality applications is called a ______ computer.",
-        answer: "VR"
-    },
-    {
-        type: "mcq",
-        question: "Which computer type is used in financial trading?",
-        options: ["High-frequency Trading Computer", "Server", "Personal Computer", "Workstation"],
-        correct: 1
-    },
-    {
-        type: "mcq",
-        question: "What is a mobile computer?",
-        options: ["Portable computing device", "Stationary computer", "Large computer", "Gaming computer"],
-        correct: 1
-    },
-    {
-        type: "fill",
-        question: "A computer that processes data using quantum mechanics is called a ______ computer.",
-        answer: "quantum"
-    }
-]
-            },
-           "Computer Organization": {
-    icon: "fas fa-sitemap",
-    description: "Internal structure and components of computer systems",
-    questions: [  // Remove "const organizationQuestions =" and just use "questions:"
-        {
-            type: "mcq",
-            question: "What is the purpose of a file allocation table (FAT)?",
-            options: ["To allocate memory to programs", "To manage CPU processes", "To locate files on a disk", "To organize network connections"],
-            correct: 2  // Fixed: "To locate files on a disk" is at index 2 (0-indexed)
-        },  
-    {
-        type: "fill",
-        question: "A ______ is an input device that converts physical documents into digital format.",
-        answer: "scanner"
-    },
-    {
-        type: "mcq",
-        question: "Which type of memory is volatile?",
-        options: ["ROM", "Hard Disk", "RAM", "Flash Drive"],
-        correct: 3
-    },
-    {
-        type: "mcq",
-        question: "What does OMR stand for?",
-        options: ["Optical Memory Reader", "Optical Mark Reader", "Online Mark Recognition", "Optical Media Reader"],
-        correct: 2
-    },
-    {
-        type: "fill",
-        question: "The ______ is the main circuit board in a computer that connects all components.",
-        answer: "motherboard"
-    },
-    {
-        type: "mcq",
-        question: "Which storage device has no moving parts?",
-        options: ["HDD", "Floppy Disk", "Magnetic Tape", "SSD"],
-        correct: 4
-    },
-    {
-        type: "mcq",
-        question: "What is the function of an ALU in a CPU?",
-        options: ["Manage memory", "Store data", "Perform calculations", "Control input/output"],
-        correct: 3
-    },
-    {
-        type: "fill",
-        question: "The temporary storage locations in a CPU are called ______.",
-        answer: "registers"
-    },
-    {
-        type: "mcq",
-        question: "Which component is responsible for managing all computer operations?",
-        options: ["ALU", "RAM", "Hard Disk", "Control Unit"],
-        correct: 4
-    },
-    {
-        type: "mcq",
-        question: "What type of memory retains data even when power is turned off?",
-        options: ["RAM", "Cache", "Virtual Memory", "ROM"],
-        correct: 4
-    },
-    {
-        type: "mcq",
-        question: "Which of these is an output device?",
-        options: ["Keyboard", "Mouse", "Scanner", "Printer"],
-        correct: 4
-    },
-    {
-        type: "fill",
-        question: "The smallest unit of data in a computer is called a ______.",
-        answer: "bit"
-    },
-    {
-        type: "mcq",
-        question: "What does BIOS stand for?",
-        options: ["Basic Input/Output System", "Binary Input/Output System", "Basic Internal Operating System", "Binary Internal Operating System"],
-        correct: 1
-    },
-    {
-        type: "fill",
-        question: "Eight bits make one ______.",
-        answer: "byte"
-    },
-    {
-        type: "mcq",
-        question: "Which component converts AC power to DC power?",
-        options: ["UPS", "SMPS", "CPU", "GPU"],
-        correct: 2
-    },
-    {
-        type: "mcq",
-        question: "What is the purpose of cache memory?",
-        options: ["Long-term storage", "Backup storage", "Fast temporary storage", "Network storage"],
-        correct: 3
-    },
-    {
-        type: "fill",
-        question: "The speed of the CPU is measured in ______.",
-        answer: "hertz"
-    },
-    {
-        type: "mcq",
-        question: "Which bus carries memory addresses?",
-        options: ["Data Bus", "Control Bus", "Address Bus", "System Bus"],
-        correct: 3
-    },
-    {
-        type: "mcq",
-        question: "What is the function of the control unit?",
-        options: ["Perform calculations", "Manage data flow", "Store information", "Display output"],
-        correct: 2
-    },
-    {
-        type: "fill",
-        question: "The process of fetching, decoding, and executing instructions is called the ______ cycle.",
-        answer: "instruction"
-    },
-    {
-        type: "mcq",
-        question: "Which memory type is fastest?",
-        options: ["Hard Disk", "RAM", "Cache", "ROM"],
-        correct: 3
-    },
-    {
-        type: "mcq",
-        question: "What is virtual memory?",
-        options: ["RAM simulation", "Hard disk used as RAM", "Cloud storage", "Cache memory"],
-        correct: 2
-    },
-    {
-        type: "fill",
-        question: "The ______ carries data between the CPU and memory.",
-        answer: "data bus"
-    },
-    {
-        type: "mcq",
-        question: "Which component stores the boot program?",
-        options: ["RAM", "ROM", "Cache", "Hard Disk"],
-        correct: 2
-    },
-    {
-        type: "mcq",
-        question: "What is the purpose of an interrupt?",
-        options: ["Speed up processing", "Signal attention needed", "Increase memory", "Store data"],
-        correct: 2
-    },
-    {
-        type: "fill",
-        question: "The ______ coordinates all computer activities.",
-        answer: "operating system"
-    },
-    {
-        type: "mcq",
-        question: "Which memory type is used for firmware?",
-        options: ["RAM", "ROM", "Cache", "Virtual Memory"],
-        correct: 2
-    },
-    {
-        type: "mcq",
-        question: "What is pipelining in CPU architecture?",
-        options: ["Multiple instructions processed simultaneously", "Single instruction processing", "Memory management", "Data storage"],
-        correct: 1
-    },
-    {
-        type: "fill",
-        question: "The ______ manages input and output operations.",
-        answer: "I/O controller"
-    },
-    {
-        type: "mcq",
-        question: "Which component connects the CPU to other devices?",
-        options: ["Motherboard", "RAM", "Hard Disk", "Power Supply"],
-        correct: 1
-    },
-    {
-        type: "mcq",
-        question: "What is the purpose of DMA?",
-        options: ["Direct Memory Access", "Data Management Algorithm", "Digital Media Access", "Direct Media Access"],
-        correct: 1
-    },
-    {
-        type: "fill",
-        question: "The ______ stores frequently accessed data for quick retrieval.",
-        answer: "cache"
-    },
-    {
-        type: "mcq",
-        question: "Which memory type is non-volatile and can be electrically erased?",
-        options: ["ROM", "RAM", "EEPROM", "Cache"],
-        correct: 3
-    },
-    {
-        type: "mcq",
-        question: "What is the function of the system clock?",
-        options: ["Keep time", "Synchronize operations", "Store data", "Manage power"],
-        correct: 2
-    },
-    {
-        type: "fill",
-        question: "The ______ performs arithmetic and logical operations.",
-        answer: "ALU"
-    },
-    {
-        type: "mcq",
-        question: "Which component provides stable power supply?",
-        options: ["SMPS", "CPU", "RAM", "Motherboard"],
-        correct: 1
-    },
-    {
-        type: "mcq",
-        question: "What is the purpose of the program counter?",
-        options: ["Count programs", "Store next instruction address", "Manage memory", "Control I/O"],
-        correct: 2
-    },
-    {
-        type: "fill",
-        question: "The ______ holds data being processed.",
-        answer: "accumulator"
-    },
-    {
-        type: "mcq",
-        question: "Which memory type uses capacitors to store data?",
-        options: ["ROM", "RAM", "Hard Disk", "Flash Drive"],
-        correct: 2
-    },
-    {
-        type: "mcq",
-        question: "What is the function of the memory management unit?",
-        options: ["Manage RAM", "Control CPU", "Handle I/O", "Store data"],
-        correct: 1
-    },
-    {
-        type: "fill",
-        question: "The ______ converts digital signals to analog for transmission.",
-        answer: "modem"
-    },
-    {
-        type: "mcq",
-        question: "Which component handles graphics processing?",
-        options: ["CPU", "GPU", "RAM", "Motherboard"],
-        correct: 2
-    },
-    {
-        type: "mcq",
-        question: "What is the purpose of the instruction register?",
-        options: ["Store current instruction", "Manage memory", "Control I/O", "Process data"],
-        correct: 1
-    },
-    {
-        type: "fill",
-        question: "The ______ stores the results of operations.",
-        answer: "register"
-    },
-    {
-        type: "mcq",
-        question: "Which memory type is used for BIOS?",
-        options: ["RAM", "ROM", "Cache", "Virtual Memory"],
-        correct: 2
-    },
-    {
-        type: "mcq",
-        question: "What is the function of the stack pointer?",
-        options: ["Point to stack top", "Manage memory", "Control I/O", "Process data"],
-        correct: 1
-    },
-    {
-        type: "fill",
-        question: "The ______ manages multiple processors in a system.",
-        answer: "multiprocessor controller"
-    },
-    {
-        type: "mcq",
-        question: "Which component provides temporary storage for data?",
-        options: ["CPU", "RAM", "ROM", "Hard Disk"],
-        correct: 2
-    },
-    {
-        type: "mcq",
-        question: "What is the purpose of the status register?",
-        options: ["Store operation results", "Indicate CPU state", "Manage memory", "Control I/O"],
-        correct: 2
-    },
-    {
-        type: "fill",
-        question: "The ______ handles interrupt requests.",
-        answer: "interrupt controller"
-    },
-    {
-        type: "mcq",
-        question: "Which memory type is used for cache?",
-        options: ["SRAM", "DRAM", "ROM", "Hard Disk"],
-        correct: 1
-    },
-    {
-        type: "mcq",
-        question: "What is the function of the memory address register?",
-        options: ["Store memory addresses", "Manage CPU", "Control I/O", "Process data"],
-        correct: 1
-    },
-    {
-        type: "fill",
-        question: "The ______ manages data transfer between devices.",
-        answer: "bus controller"
-    },
-    {
-        type: "mcq",
-        question: "Which component stores the operating system?",
-        options: ["RAM", "ROM", "Hard Disk", "Cache"],
-        correct: 3
-    },
-    {
-        type: "mcq",
-        question: "What is the purpose of the instruction decoder?",
-        options: ["Decode instructions", "Manage memory", "Control I/O", "Process data"],
-        correct: 1
-    },
-    {
-        type: "fill",
-        question: "The ______ coordinates multiple cores in a processor.",
-        answer: "core controller"
-    },
-    {
-        type: "mcq",
-        question: "Which memory type is used for main memory?",
-        options: ["SRAM", "DRAM", "ROM", "Cache"],
-        correct: 2
-    },
-    {
-        type: "mcq",
-        question: "What is the function of the memory buffer register?",
-        options: ["Store data for transfer", "Manage CPU", "Control I/O", "Process data"],
-        correct: 1
-    },
-    {
-        type: "fill",
-        question: "The ______ manages power distribution in the computer.",
-        answer: "power management unit"
-    },
-    {
-        type: "mcq",
-        question: "Which component handles network connections?",
-        options: ["NIC", "CPU", "RAM", "Motherboard"],
-        correct: 1
-    },
-    {
-        type: "mcq",
-        question: "What is the purpose of the floating-point unit?",
-        options: ["Handle decimal calculations", "Manage memory", "Control I/O", "Process integers"],
-        correct: 1
-    },
-    {
-        type: "fill",
-        question: "The ______ manages audio processing.",
-        answer: "sound card"
-    }
-]
-            },
-          "Computer Processing": {
-    icon: "fas fa-cogs",
-    description: "How computers process data and execute instructions",
-    questions: [
-        {
-            type: "mcq",
-            question: "What is the first step in the CPU instruction cycle?",
-            options: ["Decode", "Execute", "Store", "Fetch"],
-            correct: 3  // Fixed: "Fetch" is at index 3 (0-indexed)
-        }, 
-    {
-        type: "fill",
-        question: "The ______ carries data between the CPU and memory.",
-        answer: "data bus"
-    },
-    {
-        type: "mcq",
-        question: "Which component performs arithmetic and logical operations in the CPU?",
-        options: ["Control Unit", "Registers", "ALU", "Cache"],
-        correct: 3
-    },
-    {
-        type: "mcq",
-        question: "What does GPU stand for?",
-        options: ["General Processing Unit", "Global Processing Unit", "Graphics Processing Unit", "Graphical Performance Unit"],
-        correct: 3
-    },
-    {
-        type: "fill",
-        question: "______ is a technique where multiple instructions are overlapped in execution.",
-        answer: "Pipelining"
-    },
-    {
-        type: "mcq",
-        question: "Which factor does NOT contribute to a computer's speed?",
-        options: ["CPU Clock Speed", "Monitor Size", "Number of Cores", "RAM Size"],
-        correct: 2
-    },
-    {
-        type: "mcq",
-        question: "What is measured in gigahertz (GHz)?",
-        options: ["RAM Size", "Network Speed", "CPU Clock Speed", "Storage Capacity"],
-        correct: 3
-    },
-    {
-        type: "fill",
-        question: "The process of transforming raw data into useful information is called ______.",
-        answer: "processing"
-    },
-    {
-        type: "mcq",
-        question: "Which type of processing executes one instruction at a time?",
-        options: ["Parallel Processing", "Multiprocessing", "Distributed Processing", "Serial Processing"],
-        correct: 4
-    },
-    {
-        type: "mcq",
-        question: "What is the purpose of cache memory?",
-        options: ["Long-term storage", "Backup storage", "Network storage", "Fast temporary storage"],
-        correct: 4
-    },
-    {
-        type: "mcq",
-        question: "Which bus carries control signals in a computer?",
-        options: ["Data Bus", "System Bus", "Control Bus", "Address Bus"],
-        correct: 3
-    },
-    {
-        type: "fill",
-        question: "A processor with multiple cores is called a ______ core processor.",
-        answer: "multi"
-    },
-    {
-        type: "mcq",
-        question: "What is the purpose of the fetch cycle?",
-        options: ["Get instruction from memory", "Decode instruction", "Execute instruction", "Store result"],
-        correct: 1
-    },
-    {
-        type: "fill",
-        question: "The ______ cycle executes the instruction.",
-        answer: "execute"
-    },
-    {
-        type: "mcq",
-        question: "Which component stores the instruction being executed?",
-        options: ["Program Counter", "Instruction Register", "Accumulator", "Memory Buffer Register"],
-        correct: 2
-    },
-    {
-        type: "mcq",
-        question: "What is parallel processing?",
-        options: ["Multiple processors working together", "Single processor working", "Sequential processing", "Batch processing"],
-        correct: 1
-    },
-    {
-        type: "fill",
-        question: "The ______ stores the address of the next instruction.",
-        answer: "program counter"
-    },
-    {
-        type: "mcq",
-        question: "Which processing type uses multiple computers?",
-        options: ["Parallel Processing", "Distributed Processing", "Serial Processing", "Batch Processing"],
-        correct: 2
-    },
-    {
-        type: "mcq",
-        question: "What is the purpose of the decode cycle?",
-        options: ["Understand the instruction", "Get instruction", "Execute instruction", "Store result"],
-        correct: 1
-    },
-    {
-        type: "fill",
-        question: "The ______ cycle stores the result of execution.",
-        answer: "write-back"
-    },
-    {
-        type: "mcq",
-        question: "Which component performs floating-point calculations?",
-        options: ["ALU", "FPU", "Control Unit", "Cache"],
-        correct: 2
-    },
-    {
-        type: "mcq",
-        question: "What is superscalar architecture?",
-        options: ["Multiple execution units", "Single execution unit", "No execution units", "External execution units"],
-        correct: 1
-    },
-    {
-        type: "fill",
-        question: "The ______ manages the instruction pipeline.",
-        answer: "pipeline controller"
-    },
-    {
-        type: "mcq",
-        question: "Which processing method uses time slices?",
-        options: ["Batch Processing", "Real-time Processing", "Time-sharing Processing", "Distributed Processing"],
-        correct: 3
-    },
-    {
-        type: "mcq",
-        question: "What is the purpose of branch prediction?",
-        options: ["Predict program flow", "Manage memory", "Control I/O", "Process data"],
-        correct: 1
-    },
-    {
-        type: "fill",
-        question: "The ______ handles interrupt processing.",
-        answer: "interrupt handler"
-    },
-    {
-        type: "mcq",
-        question: "Which processing type is used for immediate response?",
-        options: ["Batch Processing", "Real-time Processing", "Time-sharing Processing", "Distributed Processing"],
-        correct: 2
-    },
-    {
-        type: "mcq",
-        question: "What is the purpose of speculative execution?",
-        options: ["Execute instructions ahead of time", "Manage memory", "Control I/O", "Process data"],
-        correct: 1
-    },
-    {
-        type: "fill",
-        question: "The ______ coordinates multiple processors.",
-        answer: "multiprocessor controller"
-    },
-    {
-        type: "mcq",
-        question: "Which processing method groups similar tasks?",
-        options: ["Batch Processing", "Real-time Processing", "Time-sharing Processing", "Distributed Processing"],
-        correct: 1
-    },
-    {
-        type: "mcq",
-        question: "What is the purpose of out-of-order execution?",
-        options: ["Execute instructions in optimal order", "Manage memory", "Control I/O", "Process data"],
-        correct: 1
-    },
-    {
-        type: "fill",
-        question: "The ______ manages cache coherence in multiprocessor systems.",
-        answer: "cache controller"
-    },
-    {
-        type: "mcq",
-        question: "Which processing type uses multiple threads?",
-        options: ["Multithreading", "Single-threading", "No-threading", "External threading"],
-        correct: 1
-    },
-    {
-        type: "mcq",
-        question: "What is the purpose of register renaming?",
-        options: ["Avoid data hazards", "Manage memory", "Control I/O", "Process data"],
-        correct: 1
-    },
-    {
-        type: "fill",
-        question: "The ______ handles memory management in processing.",
-        answer: "MMU"
-    },
-    {
-        type: "mcq",
-        question: "Which processing method uses priority levels?",
-        options: ["Priority Scheduling", "Batch Processing", "Real-time Processing", "Distributed Processing"],
-        correct: 1
-    },
-    {
-        type: "mcq",
-        question: "What is the purpose of Tomasulo's algorithm?",
-        options: ["Manage instruction scheduling", "Manage memory", "Control I/O", "Process data"],
-        correct: 1
-    },
-    {
-        type: "fill",
-        question: "The ______ coordinates I/O processing.",
-        answer: "I/O processor"
-    },
-    {
-        type: "mcq",
-        question: "Which processing type uses multiple computers for one task?",
-        options: ["Distributed Processing", "Parallel Processing", "Serial Processing", "Batch Processing"],
-        correct: 1
-    },
-    {
-        type: "mcq",
-        question: "What is the purpose of the scoreboarding technique?",
-        options: ["Manage instruction dependencies", "Manage memory", "Control I/O", "Process data"],
-        correct: 1
-    },
-    {
-        type: "fill",
-        question: "The ______ handles vector processing.",
-        answer: "vector processor"
-    },
-    {
-        type: "mcq",
-        question: "Which processing method uses quantum bits?",
-        options: ["Quantum Processing", "Classical Processing", "Analog Processing", "Digital Processing"],
-        correct: 1
-    },
-    {
-        type: "mcq",
-        question: "What is the purpose of the reorder buffer?",
-        options: ["Maintain instruction order", "Manage memory", "Control I/O", "Process data"],
-        correct: 1
-    },
-    {
-        type: "fill",
-        question: "The ______ manages speculative execution.",
-        answer: "speculation unit"
-    },
-    {
-        type: "mcq",
-        question: "Which processing type uses neural networks?",
-        options: ["Neuromorphic Processing", "Classical Processing", "Quantum Processing", "Analog Processing"],
-        correct: 1
-    },
-    {
-        type: "mcq",
-        question: "What is the purpose of the reservation station?",
-        options: ["Hold instructions waiting for execution", "Manage memory", "Control I/O", "Process data"],
-        correct: 1
-    },
-    {
-        type: "fill",
-        question: "The ______ handles floating-point operations.",
-        answer: "FPU"
-    },
-    {
-        type: "mcq",
-        question: "Which processing method uses optical computing?",
-        options: ["Optical Processing", "Electronic Processing", "Quantum Processing", "Neuromorphic Processing"],
-        correct: 1
-    },
-    {
-        type: "mcq",
-        question: "What is the purpose of the load-store unit?",
-        options: ["Handle memory operations", "Manage CPU", "Control I/O", "Process data"],
-        correct: 1
-    },
-    {
-        type: "fill",
-        question: "The ______ coordinates SIMD operations.",
-        answer: "vector unit"
-    },
-    {
-        type: "mcq",
-        question: "Which processing type uses DNA computing?",
-        options: ["DNA Processing", "Electronic Processing", "Quantum Processing", "Optical Processing"],
-        correct: 1
-    },
-    {
-        type: "mcq",
-        question: "What is the purpose of the memory management unit?",
-        options: ["Handle virtual memory", "Manage CPU", "Control I/O", "Process data"],
-        correct: 1
-    },
-    {
-        type: "fill",
-        question: "The ______ manages interrupt processing.",
-        answer: "interrupt controller"
-    },
-    {
-        type: "mcq",
-        question: "Which processing method uses approximate computing?",
-        options: ["Approximate Processing", "Exact Processing", "Quantum Processing", "Neuromorphic Processing"],
-        correct: 1
-    },
-    {
-        type: "mcq",
-        question: "What is the purpose of the translation lookaside buffer?",
-        options: ["Cache page table entries", "Manage memory", "Control I/O", "Process data"],
-        correct: 1
-    },
-    {
-        type: "fill",
-        question: "The ______ handles decimal arithmetic.",
-        answer: "decimal unit"
-    },
-    {
-        type: "mcq",
-        question: "Which processing type uses stochastic computing?",
-        options: ["Stochastic Processing", "Deterministic Processing", "Quantum Processing", "Neuromorphic Processing"],
-        correct: 1
-    },
-    {
-        type: "mcq",
-        question: "What is the purpose of the branch target buffer?",
-        options: ["Store branch targets", "Manage memory", "Control I/O", "Process data"],
-        correct: 1
-    },
-    {
-        type: "fill",
-        question: "The ______ coordinates MIMD operations.",
-        answer: "multiprocessor system"
-    },
-    {
-        type: "mcq",
-        question: "Which processing method uses reversible computing?",
-        options: ["Reversible Processing", "Irreversible Processing", "Quantum Processing", "Neuromorphic Processing"],
-        correct: 1
-    },
-    {
-        type: "mcq",
-        question: "What is the purpose of the memory order buffer?",
-        options: ["Track memory operations", "Manage CPU", "Control I/O", "Process data"],
-        correct: 1
-    },
-    {
-        type: "fill",
-        question: "The ______ handles cryptographic operations.",
-        answer: "crypto processor"
-    }
-]
-            },
-           "Operating Systems": {
-    icon: "fas fa-compact-disc",
-    description: "Software that manages computer hardware and software resources",
-    questions: [
-        {
-            type: "mcq",
-            question: "What is the core of an operating system called?",
-            options: ["Shell", "Interface", "Desktop", "Kernel"],
-            correct: 3  // Fixed: "Kernel" is at index 3 (0-indexed)
-        }, 
-    {
-        type: "fill",
-        question: "______ is when a computer spends most of its time swapping data between memory and disk.",
-        answer: "Thrashing"
-    },
-    {
-        type: "mcq",
-        question: "Which of these is NOT a function of an operating system?",
-        options: ["Memory Management", "Application Development", "File Management", "Processor Management"],
-        correct: 2
-    },
-    {
-        type: "mcq",
-        question: "What type of user interface uses icons and visual indicators?",
-        options: ["CLI", "TUI", "GUI", "VUI"],
-        correct: 3
-    },
-    {
-        type: "fill",
-        question: "The process of starting a computer is called ______.",
-        answer: "booting"
-    },
-    {
-        type: "mcq",
-        question: "Which file system is used by modern Windows versions?",
-        options: ["FAT32", "EXT4", "NTFS", "HFS+"],
-        correct: 3
-    },
-    {
-        type: "mcq",
-        question: "What does BIOS stand for?",
-        options: ["Binary Input/Output System", "Basic Input/Output System", "Basic Internal Operating System", "Binary Internal Operating System"],
-        correct: 2
-    },
-    {
-        type: "fill",
-        question: "The area where print jobs wait before printing is called a ______.",
-        answer: "spool"
-    },
-    {
-        type: "mcq",
-        question: "Which operating system is open-source?",
-        options: ["Windows", "macOS", "iOS", "Linux"],
-        correct: 4
-    },
-    {
-        type: "mcq",
-        question: "What is the purpose of virtual memory?",
-        options: ["Use disk space as RAM", "Increase RAM speed", "Backup important files", "Store operating system files"],
-        correct: 1
-    },
-    {
-        type: "mcq",
-        question: "Which component manages file operations in an OS?",
-        options: ["Memory Manager", "Process Manager", "File Manager", "Device Manager"],
-        correct: 3
-    },
-    {
-        type: "fill",
-        question: "A program that performs maintenance tasks on a computer is called a ______.",
-        answer: "utility"
-    },
-    {
-        type: "mcq",
-        question: "What is multitasking?",
-        options: ["Running multiple programs simultaneously", "Using multiple computers", "Having multiple users", "Using multiple processors"],
-        correct: 1
-    },
-    {
-        type: "fill",
-        question: "The ______ manages process scheduling.",
-        answer: "scheduler"
-    },
-    {
-        type: "mcq",
-        question: "Which scheduling algorithm gives each process equal time?",
-        options: ["FCFS", "Round Robin", "Priority", "SJF"],
-        correct: 2
-    },
-    {
-        type: "mcq",
-        question: "What is a deadlock?",
-        options: ["Processes waiting for each other", "System crash", "Memory full", "Disk failure"],
-        correct: 1
-    },
-    {
-        type: "fill",
-        question: "The ______ manages memory allocation.",
-        answer: "memory manager"
-    },
-    {
-        type: "mcq",
-        question: "Which memory allocation method suffers from external fragmentation?",
-        options: ["Paging", "Segmentation", "Fixed partitioning", "Dynamic partitioning"],
-        correct: 4
-    },
-    {
-        type: "mcq",
-        question: "What is the purpose of paging?",
-        options: ["Divide memory into fixed-size blocks", "Divide memory into variable-size blocks", "Manage processes", "Handle I/O"],
-        correct: 1
-    },
-    {
-        type: "fill",
-        question: "The ______ table maps virtual to physical addresses.",
-        answer: "page"
-    },
-    {
-        type: "mcq",
-        question: "Which OS component handles device communication?",
-        options: ["File System", "Device Drivers", "Memory Manager", "Process Manager"],
-        correct: 2
-    },
-    {
-        type: "mcq",
-        question: "What is the purpose of system calls?",
-        options: ["Interface between programs and OS", "Manage hardware directly", "User commands", "File operations"],
-        correct: 1
-    },
-    {
-        type: "fill",
-        question: "The ______ provides user interface to the OS.",
-        answer: "shell"
-    },
-    {
-        type: "mcq",
-        question: "Which OS feature allows multiple users?",
-        options: ["Multitasking", "Multiuser", "Multiprocessing", "Multithreading"],
-        correct: 2
-    },
-    {
-        type: "mcq",
-        question: "What is the purpose of interrupts?",
-        options: ["Signal events to CPU", "Manage memory", "Control processes", "Handle files"],
-        correct: 1
-    },
-    {
-        type: "fill",
-        question: "The ______ manages process creation and termination.",
-        answer: "process manager"
-    },
-    {
-        type: "mcq",
-        question: "Which process state means waiting for an event?",
-        options: ["Running", "Ready", "Waiting", "Terminated"],
-        correct: 3
-    },
-    {
-        type: "mcq",
-        question: "What is context switching?",
-        options: ["Saving and restoring process state", "Changing user context", "Switching memory", "Changing files"],
-        correct: 1
-    },
-    {
-        type: "fill",
-        question: "The ______ coordinates process synchronization.",
-        answer: "synchronization mechanism"
-    },
-    {
-        type: "mcq",
-        question: "Which synchronization tool uses wait and signal operations?",
-        options: ["Semaphore", "Mutex", "Monitor", "Lock"],
-        correct: 1
-    },
-    {
-        type: "mcq",
-        question: "What is the purpose of a mutex?",
-        options: ["Ensure mutual exclusion", "Manage memory", "Control I/O", "Handle files"],
-        correct: 1
-    },
-    {
-        type: "fill",
-        question: "The ______ prevents race conditions.",
-        answer: "synchronization"
-    },
-    {
-        type: "mcq",
-        question: "Which memory management technique uses pages?",
-        options: ["Paging", "Segmentation", "Partitioning", "Swapping"],
-        correct: 1
-    },
-    {
-        type: "mcq",
-        question: "What is the purpose of the TLB?",
-        options: ["Cache page table entries", "Manage memory", "Control processes", "Handle I/O"],
-        correct: 1
-    },
-    {
-        type: "fill",
-        question: "The ______ handles page faults.",
-        answer: "page fault handler"
-    },
-    {
-        type: "mcq",
-        question: "Which page replacement algorithm replaces the least recently used page?",
-        options: ["FIFO", "LRU", "Optimal", "Random"],
-        correct: 2
-    },
-    {
-        type: "mcq",
-        question: "What is the purpose of disk scheduling?",
-        options: ["Optimize disk access", "Manage memory", "Control processes", "Handle files"],
-        correct: 1
-    },
-    {
-        type: "fill",
-        question: "The ______ algorithm services requests in arrival order.",
-        answer: "FCFS"
-    },
-    {
-        type: "mcq",
-        question: "Which file system is used by Linux?",
-        options: ["NTFS", "FAT32", "EXT4", "HFS+"],
-        correct: 3
-    },
-    {
-        type: "mcq",
-        question: "What is the purpose of file permissions?",
-        options: ["Control access to files", "Manage memory", "Control processes", "Handle I/O"],
-        correct: 1
-    },
-    {
-        type: "fill",
-        question: "The ______ contains file system metadata.",
-        answer: "inode"
-    },
-    {
-        type: "mcq",
-        question: "Which OS component manages security?",
-        options: ["Security Manager", "File System", "Memory Manager", "Process Manager"],
-        correct: 1
-    },
-    {
-        type: "mcq",
-        question: "What is the purpose of authentication?",
-        options: ["Verify user identity", "Manage files", "Control processes", "Handle memory"],
-        correct: 1
-    },
-    {
-        type: "fill",
-        question: "The ______ controls access to resources.",
-        answer: "access control"
-    },
-    {
-        type: "mcq",
-        question: "Which OS feature allows running multiple OS instances?",
-        options: ["Virtualization", "Multitasking", "Multiuser", "Multiprocessing"],
-        correct: 1
-    },
-    {
-        type: "mcq",
-        question: "What is the purpose of a hypervisor?",
-        options: ["Manage virtual machines", "Manage files", "Control processes", "Handle memory"],
-        correct: 1
-    },
-    {
-        type: "fill",
-        question: "The ______ provides virtual hardware to guest OS.",
-        answer: "virtual machine"
-    },
-    {
-        type: "mcq",
-        question: "Which OS is designed for mobile devices?",
-        options: ["Windows", "Linux", "Android", "macOS"],
-        correct: 3
-    },
-    {
-        type: "mcq",
-        question: "What is the purpose of real-time OS?",
-        options: ["Guarantee response times", "Manage files", "Control processes", "Handle memory"],
-        correct: 1
-    },
-    {
-        type: "fill",
-        question: "The ______ manages distributed systems.",
-        answer: "distributed OS"
-    },
-    {
-        type: "mcq",
-        question: "Which OS component handles network communication?",
-        options: ["Network Stack", "File System", "Memory Manager", "Process Manager"],
-        correct: 1
-    },
-    {
-        type: "mcq",
-        question: "What is the purpose of system monitoring?",
-        options: ["Track system performance", "Manage files", "Control processes", "Handle memory"],
-        correct: 1
-    },
-    {
-        type: "fill",
-        question: "The ______ logs system events.",
-        answer: "system logger"
-    },
-    {
-        type: "mcq",
-        question: "Which OS feature allows hot swapping?",
-        options: ["Plug and Play", "Multitasking", "Multiuser", "Multiprocessing"],
-        correct: 1
-    },
-    {
-        type: "mcq",
-        question: "What is the purpose of power management?",
-        options: ["Conserve energy", "Manage files", "Control processes", "Handle memory"],
-        correct: 1
-    },
-    {
-        type: "fill",
-        question: "The ______ handles system backups.",
-        answer: "backup utility"
-    },
-    {
-        type: "mcq",
-        question: "Which OS is designed for embedded systems?",
-        options: ["Windows", "Linux", "RTOS", "macOS"],
-        correct: 3
-    },
-    {
-        type: "mcq",
-        question: "What is the purpose of system updates?",
-        options: ["Fix bugs and add features", "Manage files", "Control processes", "Handle memory"],
-        correct: 1
-    },
-    {
-        type: "fill",
-        question: "The ______ manages user accounts.",
-        answer: "account manager"
-    },
-    {
-        type: "mcq",
-        question: "Which OS feature provides fault tolerance?",
-        options: ["RAID", "Multitasking", "Multiuser", "Multiprocessing"],
-        correct: 1
-    },
-    {
-        type: "mcq",
-        question: "What is the purpose of system restore?",
-        options: ["Revert to previous state", "Manage files", "Control processes", "Handle memory"],
-        correct: 1
-    },
-    {
-        type: "fill",
-        question: "The ______ handles system shutdown and startup.",
-        answer: "init system"
-    }
-]
-            },
-      "Internet and Networking": {
-    icon: "fas fa-network-wired",
-    description: "Computer networks and internet technologies",
-    questions: [  // Remove "const networkingQuestions =" and just use "questions:"
-        {
-        type: "mcq",
-        question: "What does LAN stand for?",
-        options: ["Large Access Network", "Local Area Network", "Linked Area Nodes", "Local Access Nodes"],
-        correct: 2
-    },
-    {
-        type: "fill",
-        question: "The protocol that converts IP addresses to domain names is called ______.",
-        answer: "DNS"
-    },
-    {
-        type: "mcq",
-        question: "Which device connects multiple networks together?",
-        options: ["Hub", "Modem", "Switch", "Router"],
-        correct: 4
-    },
-    {
-        type: "mcq",
-        question: "What is the worldwide standard protocol for Internet communication?",
-        options: ["HTTP", "FTP", "SMTP", "TCP/IP"],
-        correct: 4
-    },
-    {
-        type: "fill",
-        question: "A private network within an organization is called an ______.",
-        answer: "intranet"
-    },
-    {
-        type: "mcq",
-        question: "Which topology connects all devices to a central hub?",
-        options: ["Bus", "Mesh", "Ring", "Star"],
-        correct: 4
-    },
-    {
-        type: "mcq",
-        question: "What does MAC address stand for?",
-        options: ["Memory Access Control", "Media Access Control", "Main Access Control", "Media Address Control"],
-        correct: 2
-    },
-    {
-        type: "fill",
-        question: "The method of slicing digital messages into parcels is called ______.",
-        answer: "packet switching"
-    },
-    {
-        type: "mcq",
-        question: "Which network covers a large geographical area?",
-        options: ["LAN", "PAN", "MAN", "WAN"],
-        correct: 4
-    },
-    {
-        type: "mcq",
-        question: "What device translates digital signals to analog for transmission over phone lines?",
-        options: ["Router", "Hub", "Switch", "Modem"],
-        correct: 4
-    },
-    {
-        type: "mcq",
-        question: "Which protocol is used for transferring web pages?",
-        options: ["FTP", "SMTP", "TCP", "HTTP"],
-        correct: 4
-    },
-    {
-        type: "fill",
-        question: "A network that allows sharing of hardware and software resources is called ______ computing.",
-        answer: "client/server"
-    },
-    {
-        type: "mcq",
-        question: "What does IP stand for?",
-        options: ["Internet Protocol", "Internal Protocol", "International Protocol", "Interconnected Protocol"],
-        correct: 1
-    },
-    {
-        type: "fill",
-        question: "The unique identifier for a website is called a ______.",
-        answer: "URL"
-    },
-    {
-        type: "mcq",
-        question: "Which device amplifies network signals?",
-        options: ["Router", "Repeater", "Switch", "Bridge"],
-        correct: 2
-    },
-    {
-        type: "mcq",
-        question: "What is the purpose of a firewall?",
-        options: ["Block unauthorized access", "Speed up internet", "Store files", "Manage emails"],
-        correct: 1
-    },
-    {
-        type: "fill",
-        question: "The ______ topology has every device connected to every other device.",
-        answer: "mesh"
-    },
-    {
-        type: "mcq",
-        question: "Which protocol is used for email transmission?",
-        options: ["HTTP", "FTP", "SMTP", "TCP"],
-        correct: 3
-    },
-    {
-        type: "mcq",
-        question: "What does URL stand for?",
-        options: ["Uniform Resource Locator", "Universal Resource Locator", "Uniform Reference Locator", "Universal Reference Locator"],
-        correct: 1
-    },
-    {
-        type: "fill",
-        question: "The ______ cable is commonly used for Ethernet networks.",
-        answer: "CAT5"
-    },
-    {
-        type: "mcq",
-        question: "Which network device operates at the data link layer?",
-        options: ["Router", "Switch", "Hub", "Repeater"],
-        correct: 2
-    },
-    {
-        type: "mcq",
-        question: "What is the purpose of NAT?",
-        options: ["Translate private to public IP addresses", "Manage network traffic", "Filter packets", "Amplify signals"],
-        correct: 1
-    },
-    {
-        type: "fill",
-        question: "The ______ protocol ensures reliable data delivery.",
-        answer: "TCP"
-    },
-    {
-        type: "mcq",
-        question: "Which wireless standard operates at 2.4 GHz?",
-        options: ["Bluetooth", "Wi-Fi", "Zigbee", "All of the above"],
-        correct: 4
-    },
-    {
-        type: "mcq",
-        question: "What is the purpose of DHCP?",
-        options: ["Assign IP addresses automatically", "Translate domain names", "Route packets", "Filter traffic"],
-        correct: 1
-    },
-    {
-        type: "fill",
-        question: "The ______ topology uses a single backbone cable.",
-        answer: "bus"
-    },
-    {
-        type: "mcq",
-        question: "Which protocol is used for file transfer?",
-        options: ["HTTP", "SMTP", "FTP", "TCP"],
-        correct: 3
-    },
-    {
-        type: "mcq",
-        question: "What does VPN stand for?",
-        options: ["Virtual Private Network", "Visual Private Network", "Virtual Public Network", "Visual Public Network"],
-        correct: 1
-    },
-    {
-        type: "fill",
-        question: "The ______ layer handles logical addressing.",
-        answer: "network"
-    },
-    {
-        type: "mcq",
-        question: "Which device connects similar networks?",
-        options: ["Router", "Bridge", "Gateway", "Modem"],
-        correct: 2
-    },
-    {
-        type: "mcq",
-        question: "What is the purpose of ARP?",
-        options: ["Map IP to MAC addresses", "Route packets", "Assign IP addresses", "Translate domain names"],
-        correct: 1
-    },
-    {
-        type: "fill",
-        question: "The ______ protocol doesn't guarantee delivery.",
-        answer: "UDP"
-    },
-    {
-        type: "mcq",
-        question: "Which network type uses radio waves?",
-        options: ["Wired Network", "Wireless Network", "Fiber Network", "Coaxial Network"],
-        correct: 2
-    },
-    {
-        type: "mcq",
-        question: "What is the purpose of ICMP?",
-        options: ["Send error messages", "Route packets", "Assign IP addresses", "Translate domain names"],
-        correct: 1
-    },
-    {
-        type: "fill",
-        question: "The ______ topology forms a circular connection.",
-        answer: "ring"
-    },
-    {
-        type: "mcq",
-        question: "Which device connects dissimilar networks?",
-        options: ["Router", "Bridge", "Gateway", "Switch"],
-        correct: 3
-    },
-    {
-        type: "mcq",
-        question: "What is the purpose of QoS?",
-        options: ["Manage network traffic priority", "Assign IP addresses", "Route packets", "Translate domain names"],
-        correct: 1
-    },
-    {
-        type: "fill",
-        question: "The ______ address identifies a network interface.",
-        answer: "MAC"
-    },
-    {
-        type: "mcq",
-        question: "Which protocol is used for web security?",
-        options: ["HTTP", "HTTPS", "FTP", "SMTP"],
-        correct: 2
-    },
-    {
-        type: "mcq",
-        question: "What is the purpose of a proxy server?",
-        options: ["Act as intermediary for requests", "Route packets", "Assign IP addresses", "Translate domain names"],
-        correct: 1
-    },
-    {
-        type: "fill",
-        question: "The ______ domain is for educational institutions.",
-        answer: ".edu"
-    },
-    {
-        type: "mcq",
-        question: "Which wireless security protocol is most secure?",
-        options: ["WEP", "WPA", "WPA2", "WPA3"],
-        correct: 4
-    },
-    {
-        type: "mcq",
-        question: "What is the purpose of SSH?",
-        options: ["Secure remote access", "File transfer", "Email", "Web browsing"],
-        correct: 1
-    },
-    {
-        type: "fill",
-        question: "The ______ protocol handles email retrieval.",
-        answer: "POP3"
-    },
-    {
-        type: "mcq",
-        question: "Which network type uses light pulses?",
-        options: ["Coaxial", "Twisted Pair", "Fiber Optic", "Wireless"],
-        correct: 3
-    },
-    {
-        type: "mcq",
-        question: "What is the purpose of TLS?",
-        options: ["Encrypt communication", "Route packets", "Assign IP addresses", "Translate domain names"],
-        correct: 1
-    },
-    {
-        type: "fill",
-        question: "The ______ topology combines multiple topologies.",
-        answer: "hybrid"
-    },
-    {
-        type: "mcq",
-        question: "Which protocol is used for network management?",
-        options: ["HTTP", "FTP", "SNMP", "SMTP"],
-        correct: 3
-    },
-    {
-        type: "mcq",
-        question: "What is the purpose of BGP?",
-        options: ["Route between autonomous systems", "Assign IP addresses", "Translate domain names", "Filter traffic"],
-        correct: 1
-    },
-    {
-        type: "fill",
-        question: "The ______ address is 127.0.0.1.",
-        answer: "localhost"
-    },
-    {
-        type: "mcq",
-        question: "Which device operates at the physical layer?",
-        options: ["Router", "Switch", "Hub", "Bridge"],
-        correct: 3
-    },
-    {
-        type: "mcq",
-        question: "What is the purpose of OSPF?",
-        options: ["Route within an autonomous system", "Assign IP addresses", "Translate domain names", "Filter traffic"],
-        correct: 1
-    },
-    {
-        type: "fill",
-        question: "The ______ protocol handles voice over IP.",
-        answer: "SIP"
-    },
-    {
-        type: "mcq",
-        question: "Which network service provides name resolution?",
-        options: ["DHCP", "DNS", "FTP", "HTTP"],
-        correct: 2
-    },
-    {
-        type: "mcq",
-        question: "What is the purpose of VLAN?",
-        options: ["Create virtual LANs", "Assign IP addresses", "Route packets", "Translate domain names"],
-        correct: 1
-    },
-    {
-        type: "fill",
-        question: "The ______ cable has four twisted pairs.",
-        answer: "Ethernet"
-    },
-    {
-        type: "mcq",
-        question: "Which protocol is used for time synchronization?",
-        options: ["HTTP", "FTP", "NTP", "SMTP"],
-        correct: 3
-    },
-    {
-        type: "mcq",
-        question: "What is the purpose of CDN?",
-        options: ["Distribute content geographically", "Assign IP addresses", "Route packets", "Translate domain names"],
-        correct: 1
-    },
-    {
-        type: "fill",
-        question: "The ______ address is automatically assigned.",
-        answer: "APIPA"
-    },
-    {
-        type: "mcq",
-        question: "Which wireless standard offers the highest speed?",
-        options: ["802.11a", "802.11b", "802.11g", "802.11ac"],
-        correct: 4
-    },
-    {
-        type: "mcq",
-        question: "What is the purpose of MPLS?",
-        options: ["Speed up packet forwarding", "Assign IP addresses", "Translate domain names", "Filter traffic"],
-        correct: 1
-    },
-    {
-        type: "fill",
-        question: "The ______ protocol handles network discovery.",
-        answer: "LLDP"
-    },
-    {
-        type: "mcq",
-        question: "Which device filters network traffic?",
-        options: ["Router", "Switch", "Firewall", "Hub"],
-        correct: 3
-    },
-    {
-        type: "mcq",
-        question: "What is the purpose of RSTP?",
-        options: ["Prevent network loops", "Assign IP addresses", "Translate domain names", "Filter traffic"],
-        correct: 1
-    },
-     {
-            type: "fill",
-            question: "The ______ protocol handles automatic configuration.",
-            answer: "DHCP"
-        }
-    ]  // <-- This closes the questions array for Internet and Networking
-}  // <-- This closes the Internet and Networking category object
-};  // <-- This semicolon closes the entire quizData object
-
-// App state
-        let currentScreen = 'welcome-screen';
-        let currentCategory = '';
-        let currentQuestionIndex = 0;
-        let score = 0;
-        let timer;
-        let timeLeft = 60;
-        let selectedOption = null;
-        let quizStartTime;
-        let userAnswer = '';
-
-        // DOM elements
-        const screens = document.querySelectorAll('.screen');
-        const startBtn = document.getElementById('start-btn');
-        const categoriesBtn = document.getElementById('categories-btn');
-        const backFromCategoriesBtn = document.getElementById('back-from-categories');
-        const backFromSubcategoriesBtn = document.getElementById('back-from-subcategories');
-        const categoriesContainer = document.getElementById('categories-container');
-        const subcategoriesContainer = document.getElementById('subcategories-container');
-        const subcategoriesTitle = document.getElementById('subcategories-title');
-        const subcategoriesSubtitle = document.getElementById('subcategories-subtitle');
-        const nextBtn = document.getElementById('next-btn');
-        const restartBtn = document.getElementById('restart-btn');
-        const homeBtn = document.getElementById('home-btn');
-        const timeDisplay = document.getElementById('time');
-        const currentScoreDisplay = document.getElementById('current-score');
-        const progressBar = document.getElementById('progress-bar');
-        const currentQuestionDisplay = document.getElementById('current-question');
-        const totalQuestionsDisplay = document.getElementById('total-questions');
-        const questionText = document.getElementById('question-text');
-        const optionsContainer = document.getElementById('options-container');
-        const fillBlankContainer = document.getElementById('fill-blank-container');
-        const fillBlankInput = document.getElementById('fill-blank-input');
-        const finalScoreDisplay = document.getElementById('final-score');
-        const correctAnswersDisplay = document.getElementById('correct-answers');
-        const timeTakenDisplay = document.getElementById('time-taken');
-        const quizCategoryDisplay = document.getElementById('quiz-category');
-        const rankDisplay = document.getElementById('rank');
-        const scoreCircle = document.getElementById('score-circle');
-
-        // Event listeners
-        startBtn.addEventListener('click', () => {
-            showScreen('categories-screen');
-            loadCategories();
-        });
-
-        categoriesBtn.addEventListener('click', () => {
-            showScreen('categories-screen');
-            loadCategories();
-        });
-
-        backFromCategoriesBtn.addEventListener('click', () => {
-            showScreen('welcome-screen');
-        });
-
-        backFromSubcategoriesBtn.addEventListener('click', () => {
-            showScreen('categories-screen');
-        });
-
-        nextBtn.addEventListener('click', nextQuestion);
-
-        restartBtn.addEventListener('click', () => {
-            showScreen('categories-screen');
-            loadCategories();
-        });
-
-        homeBtn.addEventListener('click', () => {
-            showScreen('welcome-screen');
-        });
-
-        fillBlankInput.addEventListener('input', (e) => {
-            userAnswer = e.target.value.trim().toLowerCase();
-            nextBtn.disabled = userAnswer === '';
-        });
-
-        // Functions
-        function showScreen(screenId) {
-            screens.forEach(screen => {
-                screen.classList.remove('active');
-            });
-            document.getElementById(screenId).classList.add('active');
-            currentScreen = screenId;
-        }
-
-        function loadCategories() {
-            categoriesContainer.innerHTML = '';
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set initial theme
+            document.documentElement.setAttribute('data-theme', currentTheme);
             
-            for (const category in quizData) {
-                const categoryCard = document.createElement('div');
-                categoryCard.className = 'category-card';
-                categoryCard.innerHTML = `
-                    <div class="category-icon">
-                        <i class="${quizData[category].icon}"></i>
+            renderPortfolio();
+            setupEventListeners();
+            
+            // Add some sample data if empty
+            if (photos.length === 0 && videos.length === 0 && projects.length === 0 && music.length === 0) {
+                initializeSampleData();
+            }
+        });
+
+        // Setup event listeners
+        function setupEventListeners() {
+            // Mobile menu
+            const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+            const navLinks = document.querySelector('.nav-links');
+            
+            mobileMenuBtn.addEventListener('click', function() {
+                navLinks.classList.toggle('active');
+            });
+
+            // Theme toggle
+            document.getElementById('themeToggle').addEventListener('click', toggleTheme);
+
+            // Smooth scrolling for navigation links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth'
+                        });
+                        navLinks.classList.remove('active');
+                    }
+                });
+            });
+
+            // Portfolio filters
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    const filter = this.getAttribute('data-filter');
+                    filterPortfolio(filter);
+                });
+            });
+
+            // Admin panel
+            document.getElementById('adminNavBtn').addEventListener('click', function(e) {
+                e.preventDefault();
+                openAdminPanel();
+            });
+
+            document.getElementById('closeAdmin').addEventListener('click', closeAdminPanel);
+            document.getElementById('loginForm').addEventListener('submit', handleLogin);
+
+            // Tab switching
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                    
+                    this.classList.add('active');
+                    const tabId = this.getAttribute('data-tab');
+                    document.getElementById(`${tabId}-tab`).classList.add('active');
+                });
+            });
+
+            // Form submissions
+            document.getElementById('photo-form').addEventListener('submit', addPhoto);
+            document.getElementById('video-form').addEventListener('submit', addVideo);
+            document.getElementById('project-form').addEventListener('submit', addProject);
+            document.getElementById('music-form').addEventListener('submit', addMusic);
+            document.getElementById('contactForm').addEventListener('submit', handleContactForm);
+
+            // File upload preview
+            document.getElementById('photo-upload').addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const preview = document.getElementById('photo-preview');
+                        preview.innerHTML = `<img src="${e.target.result}" alt="Preview">`;
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            // Love button clicks (delegated)
+            document.getElementById('portfolio-container').addEventListener('click', function(e) {
+                if (e.target.closest('.love-btn')) {
+                    const loveBtn = e.target.closest('.love-btn');
+                    const itemId = loveBtn.getAttribute('data-id');
+                    const category = loveBtn.getAttribute('data-category');
+                    toggleLove(itemId, category, loveBtn);
+                }
+            });
+
+            // Header scroll effect
+            window.addEventListener('scroll', function() {
+                const header = document.querySelector('header');
+                if (window.scrollY > 50) {
+                    header.style.boxShadow = '0 4px 6px rgba(0, 0, 0, 0.1)';
+                } else {
+                    header.style.boxShadow = '0 1px 3px rgba(0, 0, 0, 0.1)';
+                }
+            });
+        }
+
+        // Toggle theme
+        function toggleTheme() {
+            currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', currentTheme);
+            localStorage.setItem('theme', currentTheme);
+        }
+
+        // Render portfolio items
+        function renderPortfolio() {
+            const container = document.getElementById('portfolio-container');
+            container.innerHTML = '';
+            
+            // Combine all content
+            const allContent = [
+                ...photos.map(p => ({...p, type: 'photos'})),
+                ...videos.map(v => ({...v, type: 'videos'})),
+                ...projects.map(p => ({...p, type: 'projects'})),
+                ...music.map(m => ({...m, type: 'music'}))
+            ];
+            
+            if (allContent.length === 0) {
+                container.innerHTML = '<p style="text-align: center; grid-column: 1 / -1; color: var(--text-secondary);">No content added yet. Use the admin panel to add your work.</p>';
+                return;
+            }
+            
+            allContent.forEach(item => {
+                const itemElement = document.createElement('div');
+                itemElement.className = 'portfolio-item';
+                itemElement.setAttribute('data-category', item.type);
+                
+                const imageUrl = item.image || item.thumbnail || item.cover || item.url || 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80';
+                const loveCount = getLoveCount(item.id, item.type);
+                
+                itemElement.innerHTML = `
+                    <div class="portfolio-image">
+                        <img src="${imageUrl}" alt="${item.title}">
+                        <div class="portfolio-category">${item.type.charAt(0).toUpperCase() + item.type.slice(1)}</div>
                     </div>
-                    <div class="category-info">
-                        <div class="category-name">${category}</div>
-                        <div class="category-desc">${quizData[category].description}</div>
+                    <div class="portfolio-info">
+                        <h3>${item.title}</h3>
+                        <p>${item.description.substring(0, 100)}...</p>
+                        <div class="portfolio-actions">
+                            <button class="love-btn" data-id="${item.id}" data-category="${item.type}">
+                                <i class="fas fa-heart"></i> Love
+                            </button>
+                            <span class="love-count">${loveCount} loves</span>
+                        </div>
                     </div>
-                    <i class="fas fa-chevron-right"></i>
                 `;
                 
-                categoryCard.addEventListener('click', () => {
-                    currentCategory = category;
-                    loadSubcategories(category);
-                });
-                
-                categoriesContainer.appendChild(categoryCard);
+                container.appendChild(itemElement);
+            });
+        }
+
+        // Filter portfolio items
+        function filterPortfolio(filter) {
+            const items = document.querySelectorAll('.portfolio-item');
+            
+            items.forEach(item => {
+                if (filter === 'all' || item.getAttribute('data-category') === filter) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
+
+        // Toggle love for an item
+        function toggleLove(itemId, category, loveBtn) {
+            const key = `${category}-${itemId}`;
+            
+            if (!loves[key]) {
+                loves[key] = 0;
+            }
+            
+            // Increment love count
+            loves[key]++;
+            
+            // Update love count display
+            const loveCount = loves[key];
+            loveBtn.nextElementSibling.textContent = `${loveCount} loves`;
+            
+            // Add loved class for visual feedback
+            loveBtn.classList.add('loved');
+            
+            // Save to localStorage
+            localStorage.setItem('loves', JSON.stringify(loves));
+        }
+
+        // Get love count for an item
+        function getLoveCount(itemId, category) {
+            const key = `${category}-${itemId}`;
+            return loves[key] || 0;
+        }
+
+        // Admin Panel Functions
+        function openAdminPanel() {
+            document.getElementById('adminPanel').classList.add('active');
+            document.getElementById('adminLogin').style.display = 'block';
+            document.getElementById('adminContent').style.display = 'none';
+            isAdmin = false;
+        }
+
+        function closeAdminPanel() {
+            document.getElementById('adminPanel').classList.remove('active');
+            isAdmin = false;
+        }
+
+        function handleLogin(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            if (username === 'hozunbaby' && password === 'lifeonprime') {
+                document.getElementById('adminLogin').style.display = 'none';
+                document.getElementById('adminContent').style.display = 'block';
+                isAdmin = true;
+                loadAdminContent();
+            } else {
+                alert('Invalid credentials! Try: admin / password123');
             }
         }
 
-        function loadSubcategories(category) {
-            subcategoriesTitle.textContent = category;
-            subcategoriesSubtitle.textContent = quizData[category].description;
-            subcategoriesContainer.innerHTML = '';
-            
-            // Create subcategory cards for each topic
-            const subcategoryCard = document.createElement('div');
-            subcategoryCard.className = 'subcategory-card';
-            const questionCount = quizData[category].questions.length;
-            subcategoryCard.innerHTML = `
-                <div class="subcategory-name">${category} Quiz</div>
-                <div class="question-count">${questionCount} questions</div>
-            `;
-            
-            subcategoryCard.addEventListener('click', () => {
-                showScreen('quiz-screen');
-                startQuiz();
+        function loadAdminContent() {
+            // Load photos
+            const photosList = document.getElementById('photos-list');
+            photosList.innerHTML = '';
+            photos.forEach(photo => {
+                const item = document.createElement('div');
+                item.className = 'content-item';
+                item.innerHTML = `
+                    <div class="content-info">
+                        <h4>${photo.title}</h4>
+                        <p>${photo.description}</p>
+                    </div>
+                    <div class="content-actions">
+                        <button class="delete-btn" onclick="deletePhoto(${photo.id})">Delete</button>
+                    </div>
+                `;
+                photosList.appendChild(item);
             });
             
-            subcategoriesContainer.appendChild(subcategoryCard);
+            // Load videos
+            const videosList = document.getElementById('videos-list');
+            videosList.innerHTML = '';
+            videos.forEach(video => {
+                const item = document.createElement('div');
+                item.className = 'content-item';
+                item.innerHTML = `
+                    <div class="content-info">
+                        <h4>${video.title}</h4>
+                        <p>${video.description}</p>
+                    </div>
+                    <div class="content-actions">
+                        <button class="delete-btn" onclick="deleteVideo(${video.id})">Delete</button>
+                    </div>
+                `;
+                videosList.appendChild(item);
+            });
             
-            showScreen('subcategories-screen');
+            // Load projects
+            const projectsList = document.getElementById('projects-list');
+            projectsList.innerHTML = '';
+            projects.forEach(project => {
+                const item = document.createElement('div');
+                item.className = 'content-item';
+                item.innerHTML = `
+                    <div class="content-info">
+                        <h4>${project.title}</h4>
+                        <p>${project.description}</p>
+                    </div>
+                    <div class="content-actions">
+                        <button class="delete-btn" onclick="deleteProject(${project.id})">Delete</button>
+                    </div>
+                `;
+                projectsList.appendChild(item);
+            });
+            
+            // Load music
+            const musicList = document.getElementById('music-list');
+            musicList.innerHTML = '';
+            music.forEach(track => {
+                const item = document.createElement('div');
+                item.className = 'content-item';
+                item.innerHTML = `
+                    <div class="content-info">
+                        <h4>${track.title}</h4>
+                        <p>${track.artist}</p>
+                    </div>
+                    <div class="content-actions">
+                        <button class="delete-btn" onclick="deleteMusic(${track.id})">Delete</button>
+                    </div>
+                `;
+                musicList.appendChild(item);
+            });
         }
 
-        function startQuiz() {
-            currentQuestionIndex = 0;
-            score = 0;
-            timeLeft = 60;
-            selectedOption = null;
-            userAnswer = '';
-            quizStartTime = new Date();
+        // Add Photo
+        function addPhoto(e) {
+            e.preventDefault();
+            if (!isAdmin) return alert('Please log in first');
             
-            currentScoreDisplay.textContent = score;
-            timeDisplay.textContent = timeLeft;
-            nextBtn.disabled = true;
+            const title = document.getElementById('photo-title').value;
+            const description = document.getElementById('photo-description').value;
+            const fileInput = document.getElementById('photo-upload');
             
-            startTimer();
-            loadQuestion();
-        }
-
-        function startTimer() {
-            clearInterval(timer);
-            timer = setInterval(() => {
-                timeLeft--;
-                timeDisplay.textContent = timeLeft;
+            if (!fileInput.files[0]) {
+                alert('Please select a photo to upload');
+                return;
+            }
+            
+            const file = fileInput.files[0];
+            const reader = new FileReader();
+            
+            reader.onload = function(e) {
+                const photo = {
+                    id: Date.now(),
+                    title,
+                    description,
+                    url: e.target.result // Store as base64 data URL
+                };
                 
-                if (timeLeft <= 0) {
-                    clearInterval(timer);
-                    endQuiz();
-                }
-            }, 1000);
+                photos.push(photo);
+                localStorage.setItem('photos', JSON.stringify(photos));
+                document.getElementById('photo-form').reset();
+                document.getElementById('photo-preview').innerHTML = '';
+                loadAdminContent();
+                renderPortfolio();
+                alert('Photo added successfully!');
+            };
+            
+            reader.readAsDataURL(file);
         }
 
-        function loadQuestion() {
-            const questions = quizData[currentCategory].questions;
-            const question = questions[currentQuestionIndex];
+        function deletePhoto(id) {
+            if (!isAdmin) return alert('Please log in first');
+            if (!confirm('Are you sure?')) return;
             
-            currentQuestionDisplay.textContent = currentQuestionIndex + 1;
-            totalQuestionsDisplay.textContent = questions.length;
-            questionText.textContent = question.question;
-            
-            // Update progress bar
-            const progress = ((currentQuestionIndex) / questions.length) * 100;
-            progressBar.style.width = `${progress}%`;
-            
-            // Clear options and reset UI
-            optionsContainer.innerHTML = '';
-            fillBlankContainer.style.display = 'none';
-            fillBlankInput.value = '';
-            userAnswer = '';
-            
-            // Show appropriate question type
-            if (question.type === 'mcq') {
-                // Add options for MCQ
-                question.options.forEach((option, index) => {
-                    const optionElement = document.createElement('div');
-                    optionElement.className = 'option';
-                    optionElement.innerHTML = `
-                        ${option}
-                        <div class="option-feedback">
-                            <i class="fas fa-check"></i>
-                        </div>
-                    `;
-                    
-                    optionElement.addEventListener('click', () => selectOption(optionElement, index + 1));
-                    
-                    optionsContainer.appendChild(optionElement);
-                });
-            } else if (question.type === 'fill') {
-                // Show fill in the blank input
-                fillBlankContainer.style.display = 'block';
-            }
-            
-            // Reset next button
-            nextBtn.disabled = true;
-            selectedOption = null;
+            photos = photos.filter(p => p.id !== id);
+            localStorage.setItem('photos', JSON.stringify(photos));
+            loadAdminContent();
+            renderPortfolio();
         }
 
-        function selectOption(optionElement, optionIndex) {
-            if (selectedOption) return;
+        // Add Video
+        function addVideo(e) {
+            e.preventDefault();
+            if (!isAdmin) return alert('Please log in first');
             
-            selectedOption = optionIndex;
-            const questions = quizData[currentCategory].questions;
-            const question = questions[currentQuestionIndex];
+            const title = document.getElementById('video-title').value;
+            const url = document.getElementById('video-url').value;
+            const description = document.getElementById('video-description').value;
             
-            optionElement.classList.add('selected');
+            const video = {
+                id: Date.now(),
+                title,
+                url,
+                description
+            };
             
-            // Check if answer is correct
-            if (selectedOption === question.correct) {
-                optionElement.classList.add('correct');
-                optionElement.classList.add('correct-animation');
-                score += 10;
-                currentScoreDisplay.textContent = score;
-            } else {
-                optionElement.classList.add('incorrect');
-                optionElement.classList.add('incorrect-animation');
-                // Highlight correct answer
-                const correctOption = optionsContainer.querySelector(`[data-option="${question.correct}"]`);
-                if (correctOption) {
-                    correctOption.classList.add('correct');
-                }
-            }
-            
-            nextBtn.disabled = false;
+            videos.push(video);
+            localStorage.setItem('videos', JSON.stringify(videos));
+            document.getElementById('video-form').reset();
+            loadAdminContent();
+            renderPortfolio();
+            alert('Video added successfully!');
         }
 
-        function nextQuestion() {
-            const questions = quizData[currentCategory].questions;
-            const question = questions[currentQuestionIndex];
+        function deleteVideo(id) {
+            if (!isAdmin) return alert('Please log in first');
+            if (!confirm('Are you sure?')) return;
             
-            // Check answer for fill in the blank
-            if (question.type === 'fill') {
-                if (userAnswer === question.answer.toLowerCase()) {
-                    score += 10;
-                    currentScoreDisplay.textContent = score;
-                    fillBlankContainer.classList.add('correct');
-                    fillBlankContainer.classList.add('correct-animation');
-                } else {
-                    fillBlankContainer.classList.add('incorrect');
-                    fillBlankContainer.classList.add('incorrect-animation');
-                    // Show correct answer
-                    setTimeout(() => {
-                        fillBlankInput.value = question.answer;
-                        fillBlankInput.disabled = true;
-                    }, 1000);
-                }
-            }
+            videos = videos.filter(v => v.id !== id);
+            localStorage.setItem('videos', JSON.stringify(videos));
+            loadAdminContent();
+            renderPortfolio();
+        }
+
+        // Add Project
+        function addProject(e) {
+            e.preventDefault();
+            if (!isAdmin) return alert('Please log in first');
             
+            const title = document.getElementById('project-title').value;
+            const url = document.getElementById('project-url').value;
+            const description = document.getElementById('project-description').value;
+            const tech = document.getElementById('project-tech').value;
+            
+            const project = {
+                id: Date.now(),
+                title,
+                url,
+                description,
+                tech
+            };
+            
+            projects.push(project);
+            localStorage.setItem('projects', JSON.stringify(projects));
+            document.getElementById('project-form').reset();
+            loadAdminContent();
+            renderPortfolio();
+            alert('Project added successfully!');
+        }
+
+        function deleteProject(id) {
+            if (!isAdmin) return alert('Please log in first');
+            if (!confirm('Are you sure?')) return;
+            
+            projects = projects.filter(p => p.id !== id);
+            localStorage.setItem('projects', JSON.stringify(projects));
+            loadAdminContent();
+            renderPortfolio();
+        }
+
+        // Add Music
+        function addMusic(e) {
+            e.preventDefault();
+            if (!isAdmin) return alert('Please log in first');
+            
+            const title = document.getElementById('music-title').value;
+            const artist = document.getElementById('music-artist').value;
+            const url = document.getElementById('music-url').value;
+            const description = document.getElementById('music-description').value;
+            
+            const track = {
+                id: Date.now(),
+                title,
+                artist,
+                url,
+                description
+            };
+            
+            music.push(track);
+            localStorage.setItem('music', JSON.stringify(music));
+            document.getElementById('music-form').reset();
+            loadAdminContent();
+            renderPortfolio();
+            alert('Music track added successfully!');
+        }
+
+        function deleteMusic(id) {
+            if (!isAdmin) return alert('Please log in first');
+            if (!confirm('Are you sure?')) return;
+            
+            music = music.filter(m => m.id !== id);
+            localStorage.setItem('music', JSON.stringify(music));
+            loadAdminContent();
+            renderPortfolio();
+        }
+
+        // Contact Form - Send to Email
+        function handleContactForm(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const name = formData.get('name');
+            const email = formData.get('email');
+            const service = formData.get('service');
+            const message = formData.get('message');
+            
+            // Simulate form submission
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+            submitBtn.disabled = true;
+            
+            // In a real implementation, you would use a service like EmailJS, Formspree, or a backend
+            // For demonstration, we'll simulate sending an email
             setTimeout(() => {
-                if (currentQuestionIndex < questions.length - 1) {
-                    currentQuestionIndex++;
-                    loadQuestion();
-                } else {
-                    endQuiz();
-                }
+                // This is where you would integrate with an email service
+                // For example with EmailJS:
+                /*
+                emailjs.send('service_id', 'template_id', {
+                    from_name: name,
+                    from_email: email,
+                    service: service,
+                    message: message,
+                    to_email: 'parashkarki782@gmail.com'
+                })
+                .then(function(response) {
+                    // Show success message
+                    showFormMessage('Thank you for your message! I will get back to you soon.', 'success');
+                    // Reset form
+                    e.target.reset();
+                }, function(error) {
+                    // Show error message
+                    showFormMessage('Sorry, there was an error sending your message. Please try again.', 'error');
+                });
+                */
+                
+                // For now, we'll just simulate success
+                console.log('Contact form submitted:', { name, email, service, message });
+                
+                // Show success message
+                const messageElement = document.getElementById('formMessage');
+                messageElement.textContent = 'Thank you for your message! I will get back to you soon.';
+                messageElement.className = 'form-message success';
+                
+                // Reset form
+                this.reset();
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+                
+                // Hide message after 5 seconds
+                setTimeout(() => {
+                    messageElement.style.display = 'none';
+                }, 5000);
             }, 1500);
         }
 
-        function endQuiz() {
-            clearInterval(timer);
+        // Initialize sample data
+        function initializeSampleData() {
+            // Sample photos
+            photos = [
+                {
+                    id: 1,
+                    title: 'Creative Photography',
+                    url: 'https://images.unsplash.com/photo-1542038784456-1ea8e935640e?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
+                    description: 'Artistic photography showcasing creative vision'
+                }
+            ];
             
-            const questions = quizData[currentCategory].questions;
-            const correctCount = score / 10;
-            const percentage = (correctCount / questions.length) * 100;
-            const endTime = new Date();
-            const timeTaken = Math.floor((endTime - quizStartTime) / 1000);
+            // Sample videos
+            videos = [
+                {
+                    id: 2,
+                    title: 'Brand Campaign Video',
+                    url: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
+                    description: 'A complete video production for a tech startup'
+                }
+            ];
             
-            // Update results screen
-            finalScoreDisplay.textContent = `${Math.round(percentage)}%`;
-            correctAnswersDisplay.textContent = `${correctCount}/${questions.length}`;
-            timeTakenDisplay.textContent = `${timeTaken}s`;
-            quizCategoryDisplay.textContent = `${currentCategory}`;
+            // Sample projects
+            projects = [
+                {
+                    id: 3,
+                    title: 'E-commerce Platform',
+                    url: 'https://example.com',
+                    description: 'Full-stack development with React and Node.js',
+                    tech: 'React, Node.js, MongoDB'
+                }
+            ];
             
-            // Set rank based on score
-            let rank = "Novice";
-            if (percentage >= 90) rank = "Computer Science Master";
-            else if (percentage >= 70) rank = "Expert";
-            else if (percentage >= 50) rank = "Intermediate";
-            rankDisplay.textContent = rank;
+            // Sample music
+            music = [
+                {
+                    id: 4,
+                    title: 'Urban Dreams',
+                    artist: 'Paras Karki',
+                    url: 'https://example.com/audio.mp3',
+                    description: 'My latest hip-hop track about chasing dreams'
+                }
+            ];
             
-            // Update score circle
-            scoreCircle.style.setProperty('--deg', `${percentage * 3.6}deg`);
+            // Save to localStorage
+            localStorage.setItem('photos', JSON.stringify(photos));
+            localStorage.setItem('videos', JSON.stringify(videos));
+            localStorage.setItem('projects', JSON.stringify(projects));
+            localStorage.setItem('music', JSON.stringify(music));
             
-            showScreen('results-screen');
+            // Update UI
+            renderPortfolio();
         }
     </script>
 </body>
