@@ -8,7 +8,7 @@
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <script type="text/javascript">
         (function() {
-            emailjs.init("YOUR_PUBLIC_KEY");
+            emailjs.init("QNC64rgXPNYqzo-l0");
         })();
     </script>
     <style>
@@ -122,7 +122,7 @@
             gap: 1rem;
         }
 
-        .search-icon, .menu-btn {
+        .search-icon, .menu-btn, .tools-btn, .language-btn {
             background: none;
             border: 1px solid var(--primary);
             color: var(--text-primary);
@@ -137,12 +137,12 @@
             text-shadow: var(--glow);
         }
 
-        .search-icon:hover, .menu-btn:hover {
+        .search-icon:hover, .menu-btn:hover, .tools-btn:hover, .language-btn:hover {
             background: rgba(0, 255, 65, 0.1);
             box-shadow: var(--glow);
         }
 
-        .search-container {
+        .search-container, .tools-container, .language-container {
             position: absolute;
             top: 100%;
             right: 0;
@@ -155,7 +155,7 @@
             box-shadow: var(--glow);
         }
 
-        .search-container.active {
+        .search-container.active, .tools-container.active, .language-container.active {
             display: block;
             animation: slideDown 0.3s ease;
         }
@@ -173,6 +173,48 @@
         .search-container input:focus {
             outline: none;
             box-shadow: var(--glow);
+        }
+
+        .tools-list, .language-list {
+            list-style: none;
+        }
+
+        .tool-item, .language-item {
+            border-bottom: 1px solid rgba(0, 255, 65, 0.2);
+        }
+
+        .tool-item:last-child, .language-item:last-child {
+            border-bottom: none;
+        }
+
+        .tool-item a, .language-item button {
+            display: block;
+            padding: 1rem;
+            color: var(--text-primary);
+            text-decoration: none;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            background: none;
+            border: none;
+            width: 100%;
+            text-align: left;
+            font-family: 'Courier New', monospace;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+
+        .tool-item a::before, .language-item button::before {
+            content: '>';
+            margin-right: 10px;
+            color: var(--accent);
+            text-shadow: var(--accent-glow);
+        }
+
+        .tool-item a:hover, .language-item button:hover {
+            background: rgba(0, 255, 65, 0.1);
+            text-shadow: var(--glow);
+            padding-left: 1.5rem;
         }
 
         /* Menu */
@@ -995,6 +1037,63 @@
             }
         }
 
+        /* New Features */
+        .language-indicator {
+            font-size: 0.8rem;
+            color: var(--accent);
+            text-shadow: var(--accent-glow);
+            margin-left: 5px;
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: var(--accent);
+            color: var(--darker);
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 0.7rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .featured-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: var(--accent);
+            color: var(--darker);
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            z-index: 10;
+        }
+
+        .tool-tip {
+            position: relative;
+        }
+
+        .tool-tip:hover::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 20, 0, 0.9);
+            color: var(--text-primary);
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            white-space: nowrap;
+            border: 1px solid var(--primary);
+            z-index: 100;
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
             .projects-grid, .resources-grid {
@@ -1065,13 +1164,20 @@
         <div class="header-content">
             <a href="#" class="logo" id="homeLogo">
                 <i class="fas fa-terminal"></i>
-                All Tools Here
+                <span id="logoText">All Tools Here</span>
             </a>
             <div class="header-right">
-                <button class="search-icon" id="searchToggle">
+                <button class="search-icon tool-tip" id="searchToggle" data-tooltip="Search">
                     <i class="fas fa-search"></i>
                 </button>
-                <button class="menu-btn" id="menuToggle">
+                <button class="tools-btn tool-tip" id="toolsToggle" data-tooltip="Tools">
+                    <i class="fas fa-tools"></i>
+                </button>
+                <button class="language-btn tool-tip" id="languageToggle" data-tooltip="Language">
+                    <i class="fas fa-globe"></i>
+                    <span class="language-indicator" id="languageIndicator">EN</span>
+                </button>
+                <button class="menu-btn tool-tip" id="menuToggle" data-tooltip="Menu">
                     <i class="fas fa-bars"></i>
                 </button>
             </div>
@@ -1079,24 +1185,56 @@
         
         <!-- Search Container -->
         <div class="search-container" id="searchContainer">
-            <input type="text" id="searchInput" placeholder="Search tools...">
+            <input type="text" id="searchInput" placeholder="Search tools, projects, and resources...">
+        </div>
+        
+        <!-- Tools Container -->
+        <div class="tools-container" id="toolsContainer">
+            <ul class="tools-list">
+                <li class="tool-item"><a href="bg-remover.html">Background Remover</a></li>
+                <li class="tool-item"><a href="jpg-to-png.html">JPG to PNG Converter</a></li>
+                <li class="tool-item"><a href="image-compressor.html">Image Compressor</a></li>
+                <li class="tool-item"><a href="pdf-merger.html">PDF Merger</a></li>
+                <li class="tool-item"><a href="password-generator.html">Password Generator</a></li>
+                <li class="tool-item"><a href="qr-generator.html">QR Code Generator</a></li>
+                <li class="tool-item"><a href="text-analyzer.html">Text Analyzer</a></li>
+                <li class="tool-item"><a href="file-encryptor.html">File Encryptor</a></li>
+            </ul>
+        </div>
+        
+        <!-- Language Container -->
+        <div class="language-container" id="languageContainer">
+            <ul class="language-list">
+                <li class="language-item">
+                    <button data-lang="en">
+                        <i class="fas fa-language"></i> English
+                    </button>
+                </li>
+                <li class="language-item">
+                    <button data-lang="ko">
+                        <i class="fas fa-language"></i> 한국어 (Korean)
+                    </button>
+                </li>
+            </ul>
         </div>
     </header>
 
     <!-- Menu -->
     <div class="menu" id="menu">
         <div class="menu-header">
-            <h3>System Navigation</h3>
+            <h3 id="menuTitle">System Navigation</h3>
             <button class="close-menu" id="closeMenu">
                 <i class="fas fa-times"></i>
             </button>
         </div>
         <ul class="menu-items">
-            <li class="menu-item"><a href="#" data-section="home">> Home</a></li>
-            <li class="menu-item"><a href="#" data-section="projects">> My Projects</a></li>
-            <li class="menu-item"><a href="#" data-section="resources">> Security Resources</a></li>
-            <li class="menu-item"><a href="#" data-section="about">> About Me</a></li>
-            <li class="menu-item"><a href="tools.html">> Tools</a></li>
+            <li class="menu-item"><a href="#" data-section="home">> <span data-i18n="home">Home</span></a></li>
+            <li class="menu-item"><a href="#" data-section="projects">> <span data-i18n="projects">My Projects</span></a></li>
+            <li class="menu-item"><a href="#" data-section="resources">> <span data-i18n="resources">Security Resources</span></a></li>
+            <li class="menu-item"><a href="#" data-section="about">> <span data-i18n="about">About Me</span></a></li>
+            <li class="menu-item"><a href="Freecourse.html">> <span data-i18n="freeCourses">Free Courses</span></a></li>
+            <li class="menu-item"><a href="EarnMoney.html">> <span data-i18n="earnMoney">Earn Money</span></a></li>
+            <li class="menu-item"><a href="tools.html">> <span data-i18n="allTools">All Tools</span></a></li>
         </ul>
     </div>
 
@@ -1105,35 +1243,35 @@
         <!-- Home Section -->
         <section id="home" class="page-section active">
             <div class="hero">
-                <h1>SECURITY SOLUTIONS & TOOLS</h1>
-                <p>Advanced cybersecurity tools and resources for professionals</p>
+                <h1 id="heroTitle">SECURITY SOLUTIONS & TOOLS</h1>
+                <p id="heroSubtitle">Advanced cybersecurity tools and resources for professionals</p>
                 
                 <div class="social-links">
-                    <a href="#" class="social-link"><i class="fab fa-github"></i></a>
-                    <a href="#" class="social-link"><i class="fab fa-youtube"></i></a>
-                    <a href="#" class="social-link"><i class="fab fa-linkedin"></i></a>
-                    <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+                    <a href="https://github.com/parashkarki" class="social-link"><i class="fab fa-github"></i></a>
+                    <a href="https://www.youtube.com/@kosaymusic" class="social-link"><i class="fab fa-youtube"></i></a>
+                    <a href="https://www.instagram.com/ho_zun.0?igsh=MWZ6a3E0MWk2Mm9kMA==" class="social-link"><i class="fab fa-instagram"></i></a>
+                    <a href="https://www.tiktok.com/@ho_zun?_r=1&_t=ZS-91H2bmFrqVw" class="social-link"><i class="fab fa-tiktok"></i></a>
                 </div>
                 
-                <button class="hire-btn" id="hireBtn">HIRE ME</button>
+                <button class="hire-btn" id="hireBtn" data-i18n="hireMe">HIRE ME</button>
             </div>
 
             <!-- Featured Projects on Home -->
             <div class="section-header">
-                <h2 class="section-title">Featured Projects</h2>
+                <h2 class="section-title" data-i18n="featuredProjects">Featured Projects</h2>
             </div>
             <div class="projects-grid" id="featuredProjectsContainer">
                 <!-- Featured projects will be dynamically added here -->
             </div>
             <div class="see-more-container">
-                <button class="btn btn-primary" id="seeMoreBtn">VIEW ALL PROJECTS</button>
+                <button class="btn btn-primary" id="seeMoreBtn" data-i18n="viewAllProjects">VIEW ALL PROJECTS</button>
             </div>
         </section>
 
         <!-- Projects Section -->
         <section id="projects" class="page-section">
             <div class="project-search-header" id="projectSearchHeader">
-                <h2 class="section-title">All Projects</h2>
+                <h2 class="section-title" data-i18n="allProjects">All Projects</h2>
                 <div class="project-search-box">
                     <input type="text" id="projectSearchInput" placeholder="Search projects...">
                     <button class="search-icon">
@@ -1149,7 +1287,7 @@
         <!-- Resources Section -->
         <section id="resources" class="page-section">
             <div class="section-header">
-                <h2 class="section-title">Security Resources</h2>
+                <h2 class="section-title" data-i18n="securityResources">Security Resources</h2>
             </div>
             <div class="resources-container">
                 <div class="resources-grid" id="resourcesContainer">
@@ -1161,29 +1299,29 @@
         <!-- About Section -->
         <section id="about" class="page-section">
             <div class="section-header">
-                <h2 class="section-title">About Me</h2>
+                <h2 class="section-title" data-i18n="aboutMe">About Me</h2>
             </div>
             <div class="about-container">
                 <div class="about-content">
                     <div class="about-image">
-                        <img src="parashkarki.jpg">
+                        <img src="parash.jpg" alt="Paras Karki">
                     </div>
                     <div class="about-text">
-                        <h2>Security Researcher & Developer</h2>
+                        <h2 data-i18n="securityResearcher">Security Researcher & Developer</h2>
                         <div class="typing-text" id="typingText">
                             <!-- Text will be typed here -->
                         </div>
                         
-                        <h3 style="margin-top: 2rem;">Skills & Expertise</h3>
+                        <h3 style="margin-top: 2rem;" data-i18n="skillsExpertise">Skills & Expertise</h3>
                         <div class="skills">
-                            <span class="skill">Penetration Testing</span>
-                            <span class="skill">Web Security</span>
-                            <span class="skill">Network Security</span>
-                            <span class="skill">Malware Analysis</span>
-                            <span class="skill">Python Development</span>
-                            <span class="skill">Cryptography</span>
-                            <span class="skill">Digital Forensics</span>
-                            <span class="skill">Incident Response</span>
+                            <span class="skill" data-i18n="penetrationTesting">Penetration Testing</span>
+                            <span class="skill" data-i18n="webSecurity">Web Security</span>
+                            <span class="skill" data-i18n="networkSecurity">Network Security</span>
+                            <span class="skill" data-i18n="malwareAnalysis">Malware Analysis</span>
+                            <span class="skill" data-i18n="pythonDevelopment">Python Development</span>
+                            <span class="skill" data-i18n="cryptography">Cryptography</span>
+                            <span class="skill" data-i18n="digitalForensics">Digital Forensics</span>
+                            <span class="skill" data-i18n="incidentResponse">Incident Response</span>
                         </div>
                     </div>
                 </div>
@@ -1191,19 +1329,19 @@
                 <div class="stats">
                     <div class="stat-card">
                         <div class="stat-number">50+</div>
-                        <div class="stat-label">Tools Developed</div>
+                        <div class="stat-label" data-i18n="toolsDeveloped">Tools Developed</div>
                     </div>
                     <div class="stat-card">
                         <div class="stat-number">100+</div>
-                        <div class="stat-label">Projects Completed</div>
+                        <div class="stat-label" data-i18n="projectsCompleted">Projects Completed</div>
                     </div>
                     <div class="stat-card">
                         <div class="stat-number">5+</div>
-                        <div class="stat-label">Years Experience</div>
+                        <div class="stat-label" data-i18n="yearsExperience">Years Experience</div>
                     </div>
                     <div class="stat-card">
                         <div class="stat-number">24/7</div>
-                        <div class="stat-label">Support Available</div>
+                        <div class="stat-label" data-i18n="supportAvailable">Support Available</div>
                     </div>
                 </div>
             </div>
@@ -1213,9 +1351,9 @@
     <!-- Footer -->
     <footer>
         <div class="footer-content">
-            <div class="footer-logo">All Tools Here</div>
-            <div class="copyright">
-                &copy; 2023 All Tools Here. All rights reserved. | Secure. Reliable. Professional.
+            <div class="footer-logo" data-i18n="footerLogo">All Tools Here</div>
+            <div class="copyright" data-i18n="copyright">
+                &copy; 2025 All Tools Here. All rights reserved. | Secure. Reliable. Professional.
             </div>
         </div>
     </footer>
@@ -1224,7 +1362,7 @@
     <div class="modal" id="hireModal">
         <div class="modal-content">
             <div class="modal-header">
-                <h3>Hire Me</h3>
+                <h3 data-i18n="hireMe">Hire Me</h3>
                 <button class="close-modal" id="closeHireModal">
                     <i class="fas fa-times"></i>
                 </button>
@@ -1232,29 +1370,29 @@
             <div class="modal-body">
                 <form id="hireForm">
                     <div class="form-group">
-                        <label for="hireName">Your Name</label>
+                        <label for="hireName" data-i18n="yourName">Your Name</label>
                         <input type="text" id="hireName" name="name" required>
                     </div>
                     <div class="form-group">
-                        <label for="hireEmail">Your Email</label>
+                        <label for="hireEmail" data-i18n="yourEmail">Your Email</label>
                         <input type="email" id="hireEmail" name="email" required>
                     </div>
                     <div class="form-group">
-                        <label for="hireService">Service Needed</label>
+                        <label for="hireService" data-i18n="serviceNeeded">Service Needed</label>
                         <select id="hireService" name="service" required>
-                            <option value="">Select a service</option>
-                            <option value="penetration-testing">Penetration Testing</option>
-                            <option value="security-audit">Security Audit</option>
-                            <option value="tool-development">Tool Development</option>
-                            <option value="consultation">Consultation</option>
-                            <option value="other">Other</option>
+                            <option value="" data-i18n="selectService">Select a service</option>
+                            <option value="penetration-testing" data-i18n="penetrationTesting">Penetration Testing</option>
+                            <option value="security-audit" data-i18n="securityAudit">Security Audit</option>
+                            <option value="tool-development" data-i18n="toolDevelopment">Tool Development</option>
+                            <option value="consultation" data-i18n="consultation">Consultation</option>
+                            <option value="other" data-i18n="other">Other</option>
                         </select>
                     </div>
                     <div class="form-group">
-                        <label for="hireMessage">Project Details</label>
+                        <label for="hireMessage" data-i18n="projectDetails">Project Details</label>
                         <textarea id="hireMessage" name="message" rows="5" required></textarea>
                     </div>
-                    <button type="submit" class="btn btn-primary" style="width: 100%;">Send Request</button>
+                    <button type="submit" class="btn btn-primary" style="width: 100%;" data-i18n="sendRequest">Send Request</button>
                     <div class="form-message" id="hireMessageEl"></div>
                 </form>
             </div>
@@ -1265,7 +1403,7 @@
     <div class="modal" id="purchaseModal">
         <div class="modal-content">
             <div class="modal-header">
-                <h3 id="purchaseTitle">Purchase Project</h3>
+                <h3 id="purchaseTitle" data-i18n="purchaseProject">Purchase Project</h3>
                 <button class="close-modal" id="closePurchaseModal">
                     <i class="fas fa-times"></i>
                 </button>
@@ -1279,6 +1417,143 @@
     </div>
 
     <script>
+        // Language data
+        const translations = {
+            en: {
+                // Header
+                logoText: "All Tools Here",
+                search: "Search",
+                tools: "Tools",
+                language: "Language",
+                menu: "Menu",
+                
+                // Menu
+                menuTitle: "System Navigation",
+                home: "Home",
+                projects: "My Projects",
+                resources: "Security Resources",
+                about: "About Me",
+                freeCourses: "Free Courses",
+                earnMoney: "Earn Money",
+                allTools: "All Tools",
+                
+                // Hero Section
+                heroTitle: "SECURITY SOLUTIONS & TOOLS",
+                heroSubtitle: "Advanced cybersecurity tools and resources for professionals",
+                hireMe: "HIRE ME",
+                
+                // Sections
+                featuredProjects: "Featured Projects",
+                viewAllProjects: "VIEW ALL PROJECTS",
+                allProjects: "All Projects",
+                securityResources: "Security Resources",
+                aboutMe: "About Me",
+                securityResearcher: "Security Researcher & Developer",
+                skillsExpertise: "Skills & Expertise",
+                
+                // Skills
+                penetrationTesting: "Penetration Testing",
+                webSecurity: "Web Security",
+                networkSecurity: "Network Security",
+                malwareAnalysis: "Malware Analysis",
+                pythonDevelopment: "Python Development",
+                cryptography: "Cryptography",
+                digitalForensics: "Digital Forensics",
+                incidentResponse: "Incident Response",
+                
+                // Stats
+                toolsDeveloped: "Tools Developed",
+                projectsCompleted: "Projects Completed",
+                yearsExperience: "Years Experience",
+                supportAvailable: "Support Available",
+                
+                // Forms
+                yourName: "Your Name",
+                yourEmail: "Your Email",
+                serviceNeeded: "Service Needed",
+                selectService: "Select a service",
+                securityAudit: "Security Audit",
+                toolDevelopment: "Tool Development",
+                consultation: "Consultation",
+                other: "Other",
+                projectDetails: "Project Details",
+                sendRequest: "Send Request",
+                purchaseProject: "Purchase Project",
+                
+                // Footer
+                footerLogo: "All Tools Here",
+                copyright: "© 2023 All Tools Here. All rights reserved. | Secure. Reliable. Professional."
+            },
+            ko: {
+                // Header
+                logoText: "모든 도구 여기",
+                search: "검색",
+                tools: "도구",
+                language: "언어",
+                menu: "메뉴",
+                
+                // Menu
+                menuTitle: "시스템 네비게이션",
+                home: "홈",
+                projects: "내 프로젝트",
+                resources: "보안 리소스",
+                about: "내 정보",
+                freeCourses: "무료 강의",
+                earnMoney: "수익 창출",
+                allTools: "모든 도구",
+                
+                // Hero Section
+                heroTitle: "보안 솔루션 및 도구",
+                heroSubtitle: "전문가를 위한 고급 사이버 보안 도구 및 리소스",
+                hireMe: "고용하기",
+                
+                // Sections
+                featuredProjects: "주요 프로젝트",
+                viewAllProjects: "모든 프로젝트 보기",
+                allProjects: "모든 프로젝트",
+                securityResources: "보안 리소스",
+                aboutMe: "내 정보",
+                securityResearcher: "보안 연구원 및 개발자",
+                skillsExpertise: "기술 및 전문 분야",
+                
+                // Skills
+                penetrationTesting: "침투 테스트",
+                webSecurity: "웹 보안",
+                networkSecurity: "네트워크 보안",
+                malwareAnalysis: "멀웨어 분석",
+                pythonDevelopment: "파이썬 개발",
+                cryptography: "암호화",
+                digitalForensics: "디지털 포렌식",
+                incidentResponse: "사고 대응",
+                
+                // Stats
+                toolsDeveloped: "개발된 도구",
+                projectsCompleted: "완료된 프로젝트",
+                yearsExperience: "경력 연수",
+                supportAvailable: "지원 가능",
+                
+                // Forms
+                yourName: "이름",
+                yourEmail: "이메일",
+                serviceNeeded: "필요한 서비스",
+                selectService: "서비스 선택",
+                securityAudit: "보안 감사",
+                toolDevelopment: "도구 개발",
+                consultation: "컨설팅",
+                other: "기타",
+                projectDetails: "프로젝트 상세 정보",
+                sendRequest: "요청 보내기",
+                purchaseProject: "프로젝트 구매",
+                
+                // Footer
+                footerLogo: "모든 도구 여기",
+                copyright: "© 2023 모든 도구 여기. 모든 권리 보유. | 안전함. 신뢰할 수 있음. 전문적."
+            }
+        };
+
+        // Current language
+        let currentLanguage = 'en';
+
         // Project data
         const projectsData = [
             {
@@ -1355,6 +1630,69 @@
             }
         ];
 
+        // Tools data
+        const toolsData = [
+            {
+                name: "Background Remover",
+                url: "bg-remover.html",
+                category: "Image Tools"
+            },
+            {
+                name: "JPG to PNG Converter",
+                url: "jpg-to-png.html",
+                category: "Image Tools"
+            },
+            {
+                name: "Image Compressor",
+                url: "image-compressor.html",
+                category: "Image Tools"
+            },
+            {
+                name: "PDF Merger",
+                url: "pdf-merger.html",
+                category: "Document Tools"
+            },
+            {
+                name: "Password Generator",
+                url: "password-generator.html",
+                category: "Security Tools"
+            },
+            {
+                name: "QR Code Generator",
+                url: "qr-generator.html",
+                category: "Utility Tools"
+            },
+            {
+                name: "Text Analyzer",
+                url: "text-analyzer.html",
+                category: "Text Tools"
+            },
+            {
+                name: "File Encryptor",
+                url: "file-encryptor.html",
+                category: "Security Tools"
+            }
+        ];
+
+        // Additional pages data
+        const additionalPages = [
+            {
+                name: "Free Courses",
+                url: "Freecourse.html",
+                category: "Learning"
+            },
+            {
+                name: "Earn Money",
+                url: "EarnMoney.html",
+                category: "Opportunities"
+            },
+            {
+                name: "All Tools",
+                url: "tools.html",
+                category: "Tools"
+            }
+        ];
+
         // Resources data
         const resourcesData = [
             {
@@ -1408,7 +1746,8 @@
         ];
 
         // About me text for typing effect
-        const aboutText = `> INITIALIZING USER PROFILE...
+        const aboutText = {
+            en: `> INITIALIZING USER PROFILE...
 > 
 > NAME: Paras Karki
 > TITLE: Security Researcher & Developer
@@ -1442,7 +1781,41 @@
 > their digital assets against evolving cyber threats.
 > 
 > > CONTACT: parashkarki782@gmail.com
-> > STATUS: Available for projects`;
+> > STATUS: Available for projects`,
+            ko: `> 사용자 프로필 초기화 중...
+> 
+> 이름: Paras Karki
+> 직함: 보안 연구원 및 개발자
+> 위치: 네팔 카트만두
+> 
+> > 프로필 요약:
+> 저는 5년 이상의 경력을 가진 헌신적인 보안 전문가로
+> 사이버 보안 연구 및 도구 개발 경험이 있습니다.
+> 네트워크 보안, 침투 테스트, 멀웨어 분석 및
+> 안전한 소프트웨어 개발을 포함한 다양한 분야에 걸친 전문 지식을 보유하고 있습니다.
+> 
+> > 기술 전문 분야:
+> - 침투 테스트 및 취약점 평가
+> - 웹 애플리케이션 보안 및 코드 검토
+> - 네트워크 보안 및 인프라 강화
+> - 멀웨어 분석 및 리버스 엔지니어링
+> - 암호화 및 안전한 통신
+> - 디지털 포렌식 및 사고 대응
+> 
+> > 개발 기술:
+> - Python, JavaScript, C/C++
+> - 웹 개발 (React, Node.js)
+> - 데이터베이스 보안 (SQL/NoSQL)
+> - API 보안 및 마이크로서비스
+> - 클라우드 보안 (AWS, Azure)
+> 
+> > 미션 선언문:
+> 최첨단 보안 도구를 개발하고 조직이 진화하는 사이버 위협으로부터
+> 디지털 자산을 보호할 수 있도록 포괄적인 솔루션을 제공하는 것입니다.
+> 
+> > 연락처: parashkarki782@gmail.com
+> > 상태: 프로젝트 가능`
+        };
 
         // Initialize the page
         document.addEventListener('DOMContentLoaded', function() {
@@ -1452,18 +1825,96 @@
             setupEventListeners();
             createMatrixEffect();
             startTypingEffect();
+            
+            // Load saved language preference
+            const savedLanguage = localStorage.getItem('preferredLanguage');
+            if (savedLanguage) {
+                changeLanguage(savedLanguage);
+            }
         });
+
+        // Change language function
+        function changeLanguage(lang) {
+            currentLanguage = lang;
+            localStorage.setItem('preferredLanguage', lang);
+            
+            // Update language indicator
+            document.getElementById('languageIndicator').textContent = lang.toUpperCase();
+            
+            // Update all elements with data-i18n attribute
+            document.querySelectorAll('[data-i18n]').forEach(element => {
+                const key = element.getAttribute('data-i18n');
+                if (translations[lang][key]) {
+                    element.textContent = translations[lang][key];
+                }
+            });
+            
+            // Update tooltips
+            document.querySelectorAll('.tool-tip').forEach(element => {
+                const key = element.getAttribute('data-tooltip').toLowerCase();
+                if (translations[lang][key]) {
+                    element.setAttribute('data-tooltip', translations[lang][key]);
+                }
+            });
+            
+            // Update search placeholder
+            document.getElementById('searchInput').placeholder = translations[lang].search + " tools, projects, and resources...";
+            
+            // Update project search placeholder
+            document.getElementById('projectSearchInput').placeholder = translations[lang].search + " projects...";
+            
+            // Update about text for typing effect
+            if (document.getElementById('about').classList.contains('active')) {
+                startTypingEffect();
+            }
+        }
 
         // Setup event listeners
         function setupEventListeners() {
             // Search toggle
             document.getElementById('searchToggle').addEventListener('click', function() {
                 const searchContainer = document.getElementById('searchContainer');
+                const toolsContainer = document.getElementById('toolsContainer');
+                const languageContainer = document.getElementById('languageContainer');
+                
                 searchContainer.classList.toggle('active');
+                toolsContainer.classList.remove('active');
+                languageContainer.classList.remove('active');
                 
                 if (searchContainer.classList.contains('active')) {
                     document.getElementById('searchInput').focus();
                 }
+            });
+
+            // Tools toggle
+            document.getElementById('toolsToggle').addEventListener('click', function() {
+                const toolsContainer = document.getElementById('toolsContainer');
+                const searchContainer = document.getElementById('searchContainer');
+                const languageContainer = document.getElementById('languageContainer');
+                
+                toolsContainer.classList.toggle('active');
+                searchContainer.classList.remove('active');
+                languageContainer.classList.remove('active');
+            });
+
+            // Language toggle
+            document.getElementById('languageToggle').addEventListener('click', function() {
+                const languageContainer = document.getElementById('languageContainer');
+                const searchContainer = document.getElementById('searchContainer');
+                const toolsContainer = document.getElementById('toolsContainer');
+                
+                languageContainer.classList.toggle('active');
+                searchContainer.classList.remove('active');
+                toolsContainer.classList.remove('active');
+            });
+
+            // Language selection
+            document.querySelectorAll('.language-item button').forEach(button => {
+                button.addEventListener('click', function() {
+                    const lang = this.getAttribute('data-lang');
+                    changeLanguage(lang);
+                    document.getElementById('languageContainer').classList.remove('active');
+                });
             });
 
             // Menu toggle
@@ -1486,16 +1937,22 @@
                 item.addEventListener('click', function(e) {
                     e.preventDefault();
                     const section = this.getAttribute('data-section');
+                    const href = this.getAttribute('href');
+                    
                     if (section) {
                         showSection(section);
+                    } else if (href && href.endsWith('.html')) {
+                        // Handle external page links
+                        window.location.href = href;
                     }
+                    
                     document.getElementById('menu').classList.remove('active');
                 });
             });
 
             // Search functionality
             document.getElementById('searchInput').addEventListener('input', function() {
-                filterProjects(this.value);
+                filterEverything(this.value);
             });
 
             // Project search functionality
@@ -1533,6 +1990,28 @@
                     }
                 });
             });
+
+            // Close search, tools, and language containers when clicking outside
+            document.addEventListener('click', function(e) {
+                const searchContainer = document.getElementById('searchContainer');
+                const toolsContainer = document.getElementById('toolsContainer');
+                const languageContainer = document.getElementById('languageContainer');
+                const searchToggle = document.getElementById('searchToggle');
+                const toolsToggle = document.getElementById('toolsToggle');
+                const languageToggle = document.getElementById('languageToggle');
+                
+                if (!searchContainer.contains(e.target) && !searchToggle.contains(e.target)) {
+                    searchContainer.classList.remove('active');
+                }
+                
+                if (!toolsContainer.contains(e.target) && !toolsToggle.contains(e.target)) {
+                    toolsContainer.classList.remove('active');
+                }
+                
+                if (!languageContainer.contains(e.target) && !languageToggle.contains(e.target)) {
+                    languageContainer.classList.remove('active');
+                }
+            });
         }
 
         // Show specific section
@@ -1550,6 +2029,11 @@
                 document.getElementById('projectSearchHeader').classList.add('active');
             } else {
                 document.getElementById('projectSearchHeader').classList.remove('active');
+            }
+            
+            // Update typing effect for about section
+            if (sectionName === 'about') {
+                startTypingEffect();
             }
             
             // Scroll to top
@@ -1644,13 +2128,14 @@
             });
         }
 
-        // Filter projects based on search (home page)
-        function filterProjects(searchTerm) {
+        // Filter everything based on search (home page)
+        function filterEverything(searchTerm) {
             if (!searchTerm) {
                 renderFeaturedProjects();
                 return;
             }
             
+            // Filter projects
             const filteredProjects = projectsData.filter(project => {
                 return (
                     project.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -1659,23 +2144,131 @@
                 );
             }).slice(0, 4); // Only show first 4 results on home page
             
+            // Filter tools
+            const filteredTools = toolsData.filter(tool => {
+                return (
+                    tool.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                    tool.category.toLowerCase().includes(searchTerm.toLowerCase())
+                );
+            }).slice(0, 4); // Only show first 4 results on home page
+            
+            // Filter additional pages
+            const filteredPages = additionalPages.filter(page => {
+                return (
+                    page.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                    page.category.toLowerCase().includes(searchTerm.toLowerCase())
+                );
+            }).slice(0, 2); // Only show first 2 results on home page
+            
+            // Filter resources
+            const filteredResources = resourcesData.filter(resource => {
+                return (
+                    resource.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                    resource.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                    resource.category.toLowerCase().includes(searchTerm.toLowerCase())
+                );
+            }).slice(0, 2); // Only show first 2 results on home page
+            
             const container = document.getElementById('featuredProjectsContainer');
             container.innerHTML = '';
             
-            if (filteredProjects.length === 0) {
+            if (filteredProjects.length === 0 && filteredTools.length === 0 && 
+                filteredPages.length === 0 && filteredResources.length === 0) {
                 container.innerHTML = `
                     <div style="text-align: center; grid-column: 1 / -1; color: var(--text-secondary); padding: 2rem;">
                         <i class="fas fa-search" style="font-size: 3rem; margin-bottom: 1rem;"></i>
-                        <p>No projects found matching your search.</p>
+                        <p>No results found matching your search.</p>
                     </div>
                 `;
                 return;
             }
             
+            // Show matching projects
             filteredProjects.forEach(project => {
                 const projectElement = createProjectElement(project);
                 container.appendChild(projectElement);
             });
+            
+            // Show matching tools
+            filteredTools.forEach(tool => {
+                const toolElement = createToolElement(tool);
+                container.appendChild(toolElement);
+            });
+            
+            // Show matching pages
+            filteredPages.forEach(page => {
+                const pageElement = createPageElement(page);
+                container.appendChild(pageElement);
+            });
+            
+            // Show matching resources
+            filteredResources.forEach(resource => {
+                const resourceElement = createResourceElement(resource);
+                container.appendChild(resourceElement);
+            });
+        }
+
+        // Create tool element for search results
+        function createToolElement(tool) {
+            const toolElement = document.createElement('div');
+            toolElement.className = 'project-card';
+            
+            toolElement.innerHTML = `
+                <div class="project-image">
+                    <img src="https://images.unsplash.com/photo-1581094794329-c8112a89af12?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="${tool.name}">
+                </div>
+                <div class="project-info">
+                    <h3 class="project-title">${tool.name}</h3>
+                    <p class="project-description">Utility tool for ${tool.category.toLowerCase()}.</p>
+                    <div class="project-actions">
+                        <a href="${tool.url}" class="btn btn-primary" target="_blank">Use Tool</a>
+                    </div>
+                </div>
+            `;
+            
+            return toolElement;
+        }
+
+        // Create page element for search results
+        function createPageElement(page) {
+            const pageElement = document.createElement('div');
+            pageElement.className = 'project-card';
+            
+            pageElement.innerHTML = `
+                <div class="project-image">
+                    <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="${page.name}">
+                </div>
+                <div class="project-info">
+                    <h3 class="project-title">${page.name}</h3>
+                    <p class="project-description">Explore ${page.category.toLowerCase()} resources.</p>
+                    <div class="project-actions">
+                        <a href="${page.url}" class="btn btn-primary" target="_blank">Visit Page</a>
+                    </div>
+                </div>
+            `;
+            
+            return pageElement;
+        }
+
+        // Create resource element for search results
+        function createResourceElement(resource) {
+            const resourceElement = document.createElement('div');
+            resourceElement.className = 'project-card';
+            
+            resourceElement.innerHTML = `
+                <div class="project-image">
+                    <img src="https://images.unsplash.com/photo-1550751827-4bd374c3f58b?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="${resource.title}">
+                </div>
+                <div class="project-info">
+                    <h3 class="project-title">${resource.title}</h3>
+                    <p class="project-description">${resource.description}</p>
+                    <div class="project-actions">
+                        <a href="${resource.link}" class="btn btn-primary" target="_blank">Access Resource</a>
+                    </div>
+                </div>
+            `;
+            
+            return resourceElement;
         }
 
         // Filter all projects (projects page)
@@ -1704,7 +2297,7 @@
             const purchaseContent = document.getElementById('purchaseContent');
             const purchaseTitle = document.getElementById('purchaseTitle');
             
-            purchaseTitle.textContent = `Purchase ${project.title}`;
+            purchaseTitle.textContent = translations[currentLanguage].purchaseProject + `: ${project.title}`;
             
             purchaseContent.innerHTML = `
                 <div class="form-group">
@@ -1715,21 +2308,33 @@
                 </div>
                 <form id="purchaseForm">
                     <div class="form-group">
-                        <label for="purchaseName">Your Name</label>
+                        <label for="purchaseName" data-i18n="yourName">Your Name</label>
                         <input type="text" id="purchaseName" name="name" required>
                     </div>
                     <div class="form-group">
-                        <label for="purchaseEmail">Your Email</label>
+                        <label for="purchaseEmail" data-i18n="yourEmail">Your Email</label>
                         <input type="email" id="purchaseEmail" name="email" required>
                     </div>
                     <div class="form-group">
-                        <label for="purchaseMessage">Additional Requirements</label>
+                        <label for="purchaseMessage" data-i18n="projectDetails">Project Details</label>
                         <textarea id="purchaseMessage" name="message" rows="3" placeholder="Any specific requirements..."></textarea>
                     </div>
-                    <button type="submit" class="btn btn-primary" style="width: 100%;">Confirm Purchase</button>
+                    <button type="submit" class="btn btn-primary" style="width: 100%;" data-i18n="sendRequest">Send Request</button>
                     <div class="form-message" id="purchaseMessageEl"></div>
                 </form>
             `;
+            
+            // Update form labels with current language
+            document.querySelectorAll('#purchaseForm [data-i18n]').forEach(element => {
+                const key = element.getAttribute('data-i18n');
+                if (translations[currentLanguage][key]) {
+                    if (element.tagName === 'LABEL') {
+                        element.textContent = translations[currentLanguage][key];
+                    } else if (element.tagName === 'BUTTON') {
+                        element.textContent = translations[currentLanguage][key];
+                    }
+                }
+            });
             
             document.getElementById('purchaseModal').classList.add('active');
             
@@ -1754,7 +2359,7 @@
             const submitBtn = this.querySelector('button[type="submit"]');
             const originalText = submitBtn.innerHTML;
             
-            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> ' + translations[currentLanguage].sendRequest + '...';
             submitBtn.disabled = true;
             
             // Prepare template parameters
@@ -1767,7 +2372,7 @@
             };
             
             // Send email using EmailJS
-            emailjs.send('YOUR_SERVICE_ID', 'YOUR_TEMPLATE_ID', templateParams)
+            emailjs.send('service_uic2fq4', 'template_c6gkk2k', templateParams)
                 .then(function(response) {
                     // Show success message
                     const messageElement = document.getElementById('hireMessageEl');
@@ -1820,7 +2425,7 @@
             };
             
             // Send email using EmailJS
-            emailjs.send('YOUR_SERVICE_ID', 'YOUR_TEMPLATE_ID', templateParams)
+            emailjs.send('service_uic2fq4', 'template_c6gkk2k', templateParams)
                 .then(function(response) {
                     // Show success message
                     const messageElement = document.getElementById('purchaseMessageEl');
@@ -1871,12 +2476,12 @@
             const speed = 30; // typing speed in milliseconds
             
             function typeWriter() {
-                if (i < aboutText.length) {
-                    typingText.innerHTML = aboutText.substring(0, i+1) + '<span class="typing-cursor"></span>';
+                if (i < aboutText[currentLanguage].length) {
+                    typingText.innerHTML = aboutText[currentLanguage].substring(0, i+1) + '<span class="typing-cursor"></span>';
                     i++;
                     setTimeout(typeWriter, speed);
                 } else {
-                    typingText.innerHTML = aboutText + '<span class="typing-cursor"></span>';
+                    typingText.innerHTML = aboutText[currentLanguage] + '<span class="typing-cursor"></span>';
                 }
             }
             
