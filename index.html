@@ -1165,6 +1165,89 @@
                 font-size: 1.8rem;
             }
         }
+
+/* Offer Banner Styles */
+.offer-banner {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background: linear-gradient(45deg, var(--accent), #ff00aa, #00ffaa);
+    color: var(--darker);
+    padding: 15px 0;
+    text-align: center;
+    z-index: 9999;
+    font-weight: bold;
+    font-size: 1.1rem;
+    box-shadow: 0 5px 20px rgba(255, 0, 255, 0.5);
+    animation: pulse-glow 2s infinite;
+    cursor: pointer;
+    border-bottom: 2px solid var(--primary);
+}
+
+.offer-banner-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.offer-text {
+    flex: 1;
+    text-align: center;
+    font-family: 'Courier New', monospace;
+    letter-spacing: 1px;
+}
+
+.close-offer {
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--darker);
+    color: var(--darker);
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-weight: bold;
+    transition: var(--transition);
+}
+
+.close-offer:hover {
+    background: rgba(0, 0, 0, 0.6);
+    color: white;
+    transform: scale(1.1);
+}
+
+@keyframes pulse-glow {
+    0%, 100% { 
+        box-shadow: 0 5px 20px rgba(255, 0, 255, 0.5);
+    }
+    50% { 
+        box-shadow: 0 5px 30px rgba(255, 0, 255, 0.8), 0 0 40px rgba(255, 0, 255, 0.4);
+    }
+}
+
+/* Adjust header margin when banner is visible */
+body.has-offer-banner header {
+    margin-top: 60px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
     </style>
 </head>
 <body>
@@ -1206,8 +1289,8 @@
         <!-- Tools Container -->
         <div class="tools-container" id="toolsContainer">
             <ul class="tools-list">
-                <li class="tool-item"><a href="randomizer.html">Randomizer</a></li>
-                <li class="tool-item"><a href="cmidterm.html">C Midterm Project</a></li>
+                <li class="tool-item"><a href="bg-remover.html">Background Remover</a></li>
+                <li class="tool-item"><a href="jpg-to-png.html">JPG to PNG Converter</a></li>
                 <li class="tool-item"><a href="image-compressor.html">Image Compressor</a></li>
                 <li class="tool-item"><a href="pdf-merger.html">PDF Merger</a></li>
                 <li class="tool-item"><a href="password-generator.html">Password Generator</a></li>
@@ -1249,7 +1332,7 @@
             <li class="menu-item"><a href="#" data-section="about">> <span data-i18n="about">About Me</span></a></li>
             <li class="menu-item"><a href="Freecourse.html">> <span data-i18n="freeCourses">Free Courses</span></a></li>
             <li class="menu-item"><a href="EarnMoney.html">> <span data-i18n="earnMoney">Earn Money</span></a></li>
-            <li class="menu-item"><a href="toolstore.html">> <span data-i18n="allTools">ToolStore</span></a></li>
+            <li class="menu-item"><a href="tools.html">> <span data-i18n="allTools">All Tools</span></a></li>
         </ul>
     </div>
 
@@ -1319,7 +1402,7 @@
             <div class="about-container">
                 <div class="about-content">
                     <div class="about-image">
-                        <img src="Parash.jpg" alt="Paras Karki">
+                        <img src="parash.jpg" alt="Paras Karki">
                     </div>
                     <div class="about-text">
                         <h2 data-i18n="securityResearcher">Security Researcher & Developer</h2>
@@ -1913,11 +1996,11 @@
         const projectsData = [
             {
                 id: 1,
-                title: "Woosong Guide",
-                description: "AI Chatbot Project for Woosong University Students – 2025 Edition.",
-                image: "https://plus.unsplash.com/premium_photo-1682023587356-86065925727a?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8Y2hhdGJvdHxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&q=60&w=600",
+                title: "Network Scanner Pro",
+                description: "Advanced network scanning tool with vulnerability detection and reporting features.",
+                image: "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
                 price: "$49.99",
-                previewUrl: "woosongguide.html",
+                previewUrl: "network-scanner.html",
                 category: "Security Tools"
             },
             {
@@ -2858,11 +2941,122 @@
                 attributes: true
             });
         }
+
+
+// Offer Banner Functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const offerBanner = document.getElementById('offerBanner');
+    const closeOfferBtn = document.getElementById('closeOffer');
+    
+    // Check if user has previously closed the banner
+    const offerClosed = localStorage.getItem('offerBannerClosed');
+    
+    if (!offerClosed) {
+        // Show banner if not previously closed
+        offerBanner.style.display = 'block';
+        document.body.classList.add('has-offer-banner');
+    } else {
+        offerBanner.style.display = 'none';
+        document.body.classList.remove('has-offer-banner');
+    }
+    
+    // Close banner when X is clicked
+    closeOfferBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        closeOfferBanner();
+    });
+    
+    // Show offer details when banner is clicked
+    offerBanner.addEventListener('click', function(e) {
+        if (e.target !== closeOfferBtn && !closeOfferBtn.contains(e.target)) {
+            showOfferModal();
+        }
+    });
+    
+    function closeOfferBanner() {
+        offerBanner.style.display = 'none';
+        document.body.classList.remove('has-offer-banner');
+        localStorage.setItem('offerBannerClosed', 'true');
+    }
+    
+    function showOfferModal() {
+        // Create offer modal
+        const modal = document.createElement('div');
+        modal.className = 'modal active';
+        modal.innerHTML = `
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>🚀 Special Website Offer</h3>
+                    <button class="close-modal" id="closeOfferModal">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div style="text-align: center; padding: 2rem;">
+                        <div style="font-size: 3rem; margin-bottom: 1rem;">🎯</div>
+                        <h2 style="color: var(--accent); margin-bottom: 1rem;">Create Your Full Static Website</h2>
+                        <div style="font-size: 2rem; color: var(--primary); font-weight: bold; margin-bottom: 1.5rem;">
+                            Just 5,000 Won
+                        </div>
+                        <div style="background: var(--card-bg); padding: 1.5rem; border-radius: 4px; border: 1px solid var(--primary); margin-bottom: 1.5rem;">
+                            <h4 style="color: var(--text-primary); margin-bottom: 1rem;">✅ What's Included:</h4>
+                            <ul style="text-align: left; color: var(--text-secondary); line-height: 1.8;">
+                                <li>Fully responsive design</li>
+                                <li>Up to 5 pages</li>
+                                <li>Contact form integration</li>
+                                <li>SEO optimized</li>
+                                <li>Fast loading speed</li>
+                                <li>Mobile-friendly</li>
+                                <li>1 year technical support</li>
+                            </ul>
+                        </div>
+                        <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">
+                            <strong>Delivery Time:</strong> Just 1 Day! ⚡
+                        </p>
+                        <button class="btn btn-primary" id="hireFromOffer" style="font-size: 1.2rem; padding: 1rem 2rem;">
+                            Get Your Website Now
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        document.body.appendChild(modal);
+        
+        // Add event listeners for the modal
+        document.getElementById('closeOfferModal').addEventListener('click', function() {
+            document.body.removeChild(modal);
+        });
+        
+        modal.addEventListener('click', function(e) {
+            if (e.target === modal) {
+                document.body.removeChild(modal);
+            }
+        });
+        
+        document.getElementById('hireFromOffer').addEventListener('click', function() {
+            document.body.removeChild(modal);
+            document.getElementById('hireModal').classList.add('active');
+        });
+    }
+});
+
+
+
+
+
+
     </script>
 </body>
+<!-- Offer Banner -->
+<div class="offer-banner" id="offerBanner">
+    <div class="offer-banner-content">
+        <div class="offer-text">
+            🚀 Create your full static website in just 5000 Won. Just in 1 Day. Limited Time Offer!
+        </div>
+        <button class="close-offer" id="closeOffer">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+</div>
 </html>
-
-
-
-
-
