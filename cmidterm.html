@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>C Language Compiler</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/themes/prism.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #4a6ee0;
+            --primary-dark: #3a5ac8;
+            --bg-color: #f8f9fa;
+            --surface-color: #ffffff;
+            --text-color: #333333;
+            --text-secondary: #666666;
+            --border-color: #e0e0e0;
+            --success-color: #28a745;
+            --error-color: #dc3545;
+            --warning-color: #ffc107;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        .dark-mode {
+            --primary-color: #6d8aec;
+            --primary-dark: #5a7ae0;
+            --bg-color: #121212;
+            --surface-color: #1e1e1e;
+            --text-color: #e0e0e0;
+            --text-secondary: #a0a0a0;
+            --border-color: #333333;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: var(--transition);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .logo i {
+            font-size: 1.8rem;
+        }
+
+        .theme-toggle {
+            background: none;
+            border: none;
+            color: var(--text-color);
+            cursor: pointer;
+            font-size: 1.2rem;
+            padding: 8px;
+            border-radius: 50%;
+            transition: var(--transition);
+        }
+
+        .theme-toggle:hover {
+            background-color: var(--border-color);
+        }
+
+        .editor-container {
+            background-color: var(--surface-color);
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            margin-bottom: 20px;
+            transition: var(--transition);
+        }
+
+        .editor-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 20px;
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .editor-header h2 {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .editor-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .btn-secondary {
+            background-color: var(--surface-color);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            background-color: var(--border-color);
+        }
+
+        .code-editor {
+            position: relative;
+            height: 400px;
+            overflow: auto;
+        }
+
+        .line-numbers {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 50px;
+            height: 100%;
+            background-color: #f5f5f5;
+            border-right: 1px solid var(--border-color);
+            padding: 10px 5px;
+            text-align: right;
+            font-family: monospace;
+            font-size: 14px;
+            line-height: 1.5;
+            color: var(--text-secondary);
+            overflow: hidden;
+            user-select: none;
+        }
+
+        .dark-mode .line-numbers {
+            background-color: #2d2d2d;
+        }
+
+        textarea {
+            width: 100%;
+            height: 100%;
+            border: none;
+            padding: 10px 10px 10px 60px;
+            font-family: monospace;
+            font-size: 14px;
+            line-height: 1.5;
+            resize: none;
+            background-color: transparent;
+            color: var(--text-color);
+            outline: none;
+            tab-size: 4;
+        }
+
+        .output-container {
+            background-color: var(--surface-color);
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            margin-bottom: 20px;
+            transition: var(--transition);
+        }
+
+        .output-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 20px;
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .output-header h2 {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .output-content {
+            padding: 20px;
+            min-height: 150px;
+            max-height: 300px;
+            overflow-y: auto;
+            font-family: monospace;
+            white-space: pre-wrap;
+        }
+
+        .success {
+            color: var(--success-color);
+        }
+
+        .error {
+            color: var(--error-color);
+        }
+
+        .warning {
+            color: var(--warning-color);
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 15px;
+            border-top: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .editor-header, .output-header {
+                flex-direction: column;
+                gap: 10px;
+                align-items: flex-start;
+            }
+            
+            .editor-actions {
+                width: 100%;
+                justify-content: space-between;
+            }
+            
+            .btn {
+                flex: 1;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <i class="fas fa-code"></i>
+                <span>C Compiler</span>
+            </div>
+            <button class="theme-toggle" id="themeToggle">
+                <i class="fas fa-moon"></i>
+            </button>
+        </header>
+
+        <div class="editor-container">
+            <div class="editor-header">
+                <h2>C Code Editor</h2>
+                <div class="editor-actions">
+                    <button class="btn btn-primary" id="compileBtn">
+                        <i class="fas fa-play"></i> Run
+                    </button>
+                    <button class="btn btn-secondary" id="clearBtn">
+                        <i class="fas fa-trash"></i> Clear
+                    </button>
+                </div>
+            </div>
+            <div class="code-editor">
+                <div class="line-numbers" id="lineNumbers">1</div>
+                <textarea id="codeInput" placeholder="Enter your C code here...">
+
+// Woosong C langugage Midterm Mini game Project  (AI & Big Data)
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+
+/*
+ * Number Guessing Game
+ * ---------------------------------------
+ * Rules:
+ *   - Secret is in [1, 50].
+ *   - For each VALID guess:
+ *       * print "Up"   if guess < secret
+ *       * print "Down" if guess > secret
+ *       * print "Correct, attempt n times", then exit, if guess == secret
+ *   - INVALID input handling (attempts NOT counted):
+ *       * Non-integer  -> print "Invalid input. Try again."
+ *       * Out of range -> print "Out of range (1-50). Try again."
+ */
+
+// ------------------------------------------------------
+// Function 1: Compare guess vs secret
+// Returns: 0 = correct, 1 = too high, -1 = too low
+// ------------------------------------------------------
+int check_guess(int secret, int guess) {
+    if (guess == secret)
+        return 0;
+    else if (guess > secret)
+        return 1;
+    else
+        return -1;
+}
+
+// ------------------------------------------------------
+// Function 2: Get a valid guess from user
+// Returns:
+//   -1 → invalid input (non-integer or out-of-range)
+//    n → valid guess (1–50)
+// ------------------------------------------------------
+int get_valid_guess(void) {
+    int guess;
+    int result;
+    int c;
+
+    printf("Enter your guess: ");
+    result = scanf("%d", &guess);
+
+    // Handle non-integer input
+    if (result != 1) {
+        printf("Invalid input. Try again.\n");
+        while ((c = getchar()) != '\n' && c != EOF) { /* clear buffer */ }
+        return -1;
+    }
+
+    // Handle out-of-range input
+    if (guess < 1 || guess > 50) {
+        printf("Out of range (1-50). Try again.\n");
+        return -1;
+    }
+
+    return guess;
+}
+
+// ------------------------------------------------------
+// Function main
+// ------------------------------------------------------
+int main(int argc, char *argv[]) {
+    int secret = 0;
+
+    // === DO NOT EDIT: argument setup ===
+    if (argc >= 2) {
+        secret = atoi(argv[1]);
+    } 
+    // === END DO NOT EDIT ===        
+    else {
+        srand(time(NULL));
+        secret = rand() % 50 + 1;
+    }
+
+    int guess = 0;
+    int attempts = 0;
+
+    printf("GAME Start!!!\nGuess the number between 1 and 50!\n");
+
+    while (1) {
+        guess = get_valid_guess();
+        if (guess == -1) {
+            continue;  // invalid input, skip attempt
+        }
+
+        attempts++;
+        int result = check_guess(secret, guess);
+
+        if (result == 0) {
+            printf("Correct, attempt %d times\n", attempts);
+            break;
+        } else if (result == 1) {
+            printf("Down\n");
+        } else if (result == -1) {
+            printf("Up\n");
+        }
+    }
+
+    printf("GAME End!!!\nSecret number is %d!\n", secret);
+    return 0;
+}
+</textarea>
+            </div>
+        </div>
+
+        <div class="output-container">
+            <div class="output-header">
+                <h2>Output</h2>
+                <button class="btn btn-secondary" id="clearOutputBtn">
+                    <i class="fas fa-trash"></i> Clear Output
+                </button>
+            </div>
+            <div class="output-content" id="outputContent">
+                // Output will appear here after running your code
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>C Language Compiler Web Application &copy; 2023</p>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    <script>
+        // DOM Elements
+        const themeToggle = document.getElementById('themeToggle');
+        const codeInput = document.getElementById('codeInput');
+        const lineNumbers = document.getElementById('lineNumbers');
+        const compileBtn = document.getElementById('compileBtn');
+        const clearBtn = document.getElementById('clearBtn');
+        const clearOutputBtn = document.getElementById('clearOutputBtn');
+        const outputContent = document.getElementById('outputContent');
+
+        // Theme Toggle
+        themeToggle.addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode');
+            const icon = themeToggle.querySelector('i');
+            if (document.body.classList.contains('dark-mode')) {
+                icon.classList.remove('fa-moon');
+                icon.classList.add('fa-sun');
+            } else {
+                icon.classList.remove('fa-sun');
+                icon.classList.add('fa-moon');
+            }
+        });
+
+        // Line Numbers
+        function updateLineNumbers() {
+            const lines = codeInput.value.split('\n').length;
+            lineNumbers.innerHTML = '';
+            for (let i = 1; i <= lines; i++) {
+                lineNumbers.innerHTML += i + '<br>';
+            }
+        }
+
+        codeInput.addEventListener('input', updateLineNumbers);
+        codeInput.addEventListener('scroll', () => {
+            lineNumbers.scrollTop = codeInput.scrollTop;
+        });
+
+        // Initialize line numbers
+        updateLineNumbers();
+
+        // Tab support for indentation
+        codeInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Tab') {
+                e.preventDefault();
+                const start = this.selectionStart;
+                const end = this.selectionEnd;
+                
+                // Insert tab character
+                this.value = this.value.substring(0, start) + '    ' + this.value.substring(end);
+                
+                // Move cursor to after the inserted tab
+                this.selectionStart = this.selectionEnd = start + 4;
+            }
+        });
+
+        // Compile and Run
+        compileBtn.addEventListener('click', () => {
+            const code = codeInput.value;
+            
+            // Show loading state
+            outputContent.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Compiling and running your code...';
+            compileBtn.disabled = true;
+            compileBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Running...';
+            
+            // Simulate API call with timeout
+            setTimeout(() => {
+                // Mock compilation and execution
+                if (code.includes('printf("Hello, World!")')) {
+                    outputContent.innerHTML = '<span class="success">Compilation successful!</span>\n\nHello, World!';
+                } else if (code.includes('error')) {
+                    outputContent.innerHTML = '<span class="error">Compilation failed!</span>\n\nError: Undefined reference to function "error"';
+                } else {
+                    outputContent.innerHTML = '<span class="success">Compilation successful!</span>\n\nProgram executed without output.';
+                }
+                
+                // Reset button state
+                compileBtn.disabled = false;
+                compileBtn.innerHTML = '<i class="fas fa-play"></i> Run';
+            }, 1500);
+        });
+
+        // Clear Editor
+        clearBtn.addEventListener('click', () => {
+            codeInput.value = '';
+            updateLineNumbers();
+        });
+
+        // Clear Output
+        clearOutputBtn.addEventListener('click', () => {
+            outputContent.textContent = '// Output cleared';
+        });
+    </script>
+</body>
+</html>
