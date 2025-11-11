@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Woosong Guide AI — 50+ Page Project Portal (Static)</title>
+<meta name="description" content="A complete, static HTML/CSS/JS manual and project portal for Woosong Guide AI: planning → research → design → build → deploy → maintain. Printable to 50+ page PDF." />
+
+<style>
+/* ========= THEME ========= */
+:root{
+  --navy:#001F3F;
+  --navy-2:#0a2d62;
+  --red:#C8102E;
+  --blue:#0074CC;
+  --ink:#1b1f23;
+  --muted:#6b7280;
+  --bg:#f7f9fc;
+  --card:#ffffff;
+  --border:#e5e7eb;
+  --shadow:0 14px 30px rgba(2,12,27,.06);
+  --shadow-sm:0 8px 16px rgba(2,12,27,.05);
+  --tag:#eef2ff;
+  --ok:#16a34a;
+  --warn:#f59e0b;
+  --err:#ef4444;
+}
+
+/* ========= RESET ========= */
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0; font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  color:var(--ink); background:var(--bg); line-height:1.65;
+}
+
+/* ========= TOP BAR ========= */
+.topbar{
+  position:sticky; top:0; z-index:80; display:flex; align-items:center; gap:14px;
+  padding:14px 18px; color:#fff;
+  background:linear-gradient(90deg, var(--navy), #0c2a56);
+  border-bottom:3px solid var(--red);
+}
+.brand{font-weight:900; letter-spacing:.3px; font-size:18px}
+.tagline{opacity:.9; font-size:14px}
+.actions{margin-left:auto; display:flex; gap:8px; flex-wrap:wrap}
+.btn{
+  background:var(--blue); color:#fff; border:none; padding:9px 12px; border-radius:12px; cursor:pointer; font-weight:700;
+  box-shadow:var(--shadow-sm);
+}
+.btn.ghost{background:transparent; border:1px solid rgba(255,255,255,.6)}
+.btn.navy{background:#0b5ed7}
+.btn.red{background:var(--red)}
+.btn:active{transform:translateY(1px)}
+
+/* ========= LAYOUT ========= */
+.layout{
+  display:grid; grid-template-columns: 320px 1fr; gap:0;
+}
+aside{
+  position:sticky; top:57px; height:calc(100vh - 57px);
+  overflow:auto; background:#081d3a; color:#deebff;
+  border-right:1px solid #0a2d62; padding:14px 12px 90px;
+}
+.search input{
+  width:100%; padding:10px 12px; border-radius:10px; border:1px solid #13305b; background:#0b254b; color:#eaf1ff; outline:none;
+}
+.toc{margin-top:10px; font-size:14px}
+.toc .sec{color:#fff; font-weight:900; margin:10px 6px 6px}
+.toc a{
+  display:flex; align-items:center; gap:8px;
+  color:#dbe8ff; text-decoration:none; padding:8px 10px; border-radius:8px;
+}
+.toc a:hover{background:#0d2e5c}
+.toc a.active{background:#123d79; border-left:3px solid var(--red)}
+.toc .icon{width:18px; height:18px; opacity:.9}
+
+main{
+  padding:28px; max-width:1180px; margin:0 auto;
+}
+.card{
+  background:var(--card); border:1px solid var(--border);
+  border-radius:16px; padding:22px; margin:16px 0; box-shadow:var(--shadow);
+  opacity:0; transform:translateY(12px); animation:fadeUp .7s forwards;
+}
+@keyframes fadeUp { to { opacity:1; transform:translateY(0)} }
+
+h1.title{margin:6px 0 0; font-weight:900; font-size:30px; color:var(--navy)}
+.subtitle{color:var(--blue); font-weight:800}
+.badge{display:inline-block; background:var(--tag); color:#3b5bdb; padding:4px 10px; border-radius:999px; font-weight:800; font-size:12px}
+
+h2{margin:12px 0 8px; color:var(--navy)}
+h3{margin:10px 0 4px; color:#0b3d91}
+p{margin:8px 0}
+ul,ol{margin:6px 0 8px 22px}
+
+.kpis{display:grid; grid-template-columns:repeat(4,1fr); gap:12px}
+.k{
+  background:linear-gradient(180deg, #0a2d62, #001a33);
+  color:#fff; padding:16px; border-radius:14px; border:1px solid #0e356f;
+}
+.k .v{font-size:22px; font-weight:900}
+.k .l{opacity:.9}
+
+/* ========= TABLES ========= */
+table{width:100%; border-collapse:collapse; margin:12px 0; font-size:14px}
+th,td{border:1px solid var(--border); padding:10px; vertical-align:top}
+th{background:#eef4ff; color:#0b3d91; text-align:left}
+tr:nth-child(even) td{background:#fbfdff}
+
+/* ========= DIAGRAMS ========= */
+.diagram{
+  background:#0b254b; color:#eaf1ff; padding:12px 14px; border-radius:12px;
+  font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size:13.5px; overflow:auto; border:1px solid #10356d;
+}
+
+/* ========= CODE ========= */
+pre.code{
+  position:relative; background:#0f172a; color:#d1e7ff; border-radius:12px; padding:14px 12px; overflow:auto; border:1px solid #1f2a44;
+  font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size:13px; line-height:1.55;
+}
+.copy{
+  position:absolute; top:8px; right:8px; font-size:12px; background:#0b5ed7; color:#fff; border:none; border-radius:8px; padding:6px 8px; cursor:pointer;
+}
+
+/* ========= NOTES ========= */
+.note{border-left:4px solid var(--blue); background:#eef6ff; padding:10px 12px; border-radius:8px; margin:10px 0}
+.ok{border-left-color:var(--ok); background:#ecfdf5}
+.warn{border-left-color:var(--warn); background:#fff7e6}
+.err{border-left-color:var(--err); background:#fff1f2}
+
+/* ========= DETAILS ========= */
+details{
+  border:1px solid var(--border); border-radius:12px; background:#fff; padding:10px 12px; margin:10px 0;
+}
+summary{cursor:pointer; font-weight:900; color:#0b3d91}
+details[open]{box-shadow:var(--shadow-sm)}
+
+/* ========= TIMELINE ========= */
+.timeline{display:grid; gap:10px}
+.bar{
+  background:#e8eefc; border-radius:10px; position:relative; padding:8px 12px; border:1px solid #d7e2ff; overflow:hidden;
+}
+.bar .fill{position:absolute; left:0; top:0; bottom:0; width:var(--w,0%); background:linear-gradient(90deg,#0b5ed7,#1f8fff); border-radius:10px; opacity:.25}
+.bar .label{position:relative; font-weight:900; color:#0b3d91}
+.muted{color:var(--muted)}
+
+/* ========= KANBAN / NOTES ========= */
+.board{display:grid; grid-template-columns: repeat(3, 1fr); gap:12px}
+.col{background:#fff; border:1px solid var(--border); border-radius:12px; padding:12px; min-height:220px; box-shadow:var(--shadow-sm)}
+.card-sm{
+  background:#fff; border:1px solid var(--border); border-radius:10px; padding:10px; margin:8px 0; box-shadow:var(--shadow-sm)
+}
+.card-sm .meta{display:flex; align-items:center; justify-content:space-between; font-size:12px; color:var(--muted)}
+.tag{display:inline-block; background:#eef2ff; color:#1f51ff; padding:2px 8px; border-radius:999px; font-size:11px; font-weight:800}
+
+/* ========= ICONS (inline) ========= */
+.icon{width:18px; height:18px; display:inline-block; vertical-align:-3px;}
+
+/* ========= PRINT ========= */
+@media print{
+  .topbar, aside, .navOnly, .noPrint { display:none !important; }
+  .layout{grid-template-columns:1fr}
+  body{background:#fff}
+  .card{page-break-inside:avoid}
+  .pagebreak{page-break-before:always}
+}
+
+/* ========= RESPONSIVE ========= */
+@media (max-width: 980px){
+  .layout{grid-template-columns:1fr}
+  aside{display:none}
+  .kpis{grid-template-columns:1fr 1fr}
+  .board{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- ========= TOP BAR ========= -->
+<div class="topbar">
+  <div class="brand">Woosong Guide AI — Project Portal</div>
+  <div class="tagline">“Empowering Woosong Students with AI Knowledge”</div>
+  <div class="actions">
+    <button class="btn ghost" onclick="expandAll()">Expand all</button>
+    <button class="btn ghost" onclick="collapseAll()">Collapse all</button>
+    <button class="btn navy" onclick="window.print()">Download as PDF</button>
+  </div>
+</div>
+
+<!-- ========= LAYOUT ========= -->
+<div class="layout">
+  <!-- ========= SIDEBAR / TOC ========= -->
+  <aside>
+    <div class="search"><input id="search" placeholder="Search this portal…" oninput="filterSections(this.value)" /></div>
+    <nav class="toc" id="toc">
+      <div class="sec">Overview</div>
+      <a href="#cover" class="active"><span class="icon">🔖</span> Cover</a>
+      <a href="#exec"><span class="icon">📌</span> Executive Summary</a>
+      <a href="#team"><span class="icon">👥</span> Team</a>
+
+      <div class="sec">Lifecycle</div>
+      <a href="#lifecycle"><span class="icon">🧭</span> Project Lifecycle</a>
+      <a href="#planning"><span class="icon">📝</span> Stage 1 — Planning</a>
+      <a href="#research"><span class="icon">🔎</span> Stage 2 — Research</a>
+      <a href="#requirements"><span class="icon">✅</span> Stage 3 — Requirements</a>
+      <a href="#design"><span class="icon">🎨</span> Stage 4 — System & UX Design</a>
+      <a href="#devsetup"><span class="icon">🛠️</span> Stage 5 — Dev Setup</a>
+      <a href="#frontend"><span class="icon">💻</span> Stage 6 — Frontend</a>
+      <a href="#backendless"><span class="icon">🧩</span> Stage 7 — Retrieval & Model (Local)</a>
+      <a href="#integration"><span class="icon">🔗</span> Stage 8 — Integration</a>
+      <a href="#testing"><span class="icon">🧪</span> Stage 9 — Testing & QA</a>
+      <a href="#deploy"><span class="icon">🚀</span> Stage 10 — Deploy</a>
+      <a href="#maintenance"><span class="icon">🔧</span> Stage 11 — Maintenance</a>
+
+      <div class="sec">Architecture</div>
+      <a href="#architecture"><span class="icon">🏗️</span> Internal & External</a>
+      <a href="#rag"><span class="icon">🧠</span> RAG Flow</a>
+      <a href="#journey"><span class="icon">🗺️</span> User Journey Map</a>
+      <a href="#workflow"><span class="icon">⚙️</span> App Working Structure</a>
+
+      <div class="sec">Management</div>
+      <a href="#timeline"><span class="icon">📅</span> 20-Day Timeline</a>
+      <a href="#kanban"><span class="icon">🗂️</span> Tasks Board</a>
+      <a href="#notes"><span class="icon">📝</span> Notes & Decisions</a>
+      <a href="#risks"><span class="icon">⚠️</span> Risks & Mitigations</a>
+
+      <div class="sec">Appendices</div>
+      <a href="#install"><span class="icon">⬇️</span> Install & Commands</a>
+      <a href="#glossary"><span class="icon">📖</span> Glossary</a>
+      <a href="#references"><span class="icon">🔗</span> References</a>
+    </nav>
+  </aside>
+
+  <!-- ========= CONTENT ========= -->
+  <main id="main">
+
+    <!-- COVER -->
+    <section id="cover" class="card">
+      <span class="badge">Woosong Guide AI · 2025 Edition</span>
+      <h1 class="title">Woosong Guide AI — Complete Project Manual & Portal</h1>
+      <div class="subtitle">“Empowering Woosong Students with AI Knowledge”</div>
+      <div class="kpis">
+        <div class="k"><div class="v">50+ Pages</div><div class="l">Printable Manual</div></div>
+        <div class="k"><div class="v">HTML+CSS+JS</div><div class="l">No Backend</div></div>
+        <div class="k"><div class="v">RAG</div><div class="l">Accurate Answers</div></div>
+        <div class="k"><div class="v">Local</div><div class="l">Laptop Friendly</div></div>
+      </div>
+    </section>
+
+    <!-- EXEC SUMMARY -->
+    <section id="exec" class="card">
+      <h2>Executive Summary</h2>
+      <p><strong>Woosong Guide AI</strong> is a student-built chatbot that answers questions about Woosong University using a lightweight, retrieval-augmented approach. This static project portal contains the entire plan—from planning and research to deployment and maintenance—plus diagrams, timelines, and interactive boards to manage the work without any backend.</p>
+      <div class="note ok"><strong>Outcome:</strong> A working student-facing assistant; 20-day build; no paid services required.</div>
+    </section>
+
+    <!-- TEAM -->
+    <section id="team" class="card">
+      <h2>Team</h2>
+      <table>
+        <thead><tr><th>Member</th><th>Focus Area</th></tr></thead>
+        <tbody>
+          <tr><td>Parash</td><td>AI setup, documentation, coordination</td></tr>
+          <tr><td>Rohit</td><td>Data collection & verification</td></tr>
+          <tr><td>Naomi</td><td>UI/UX design & accessibility</td></tr>
+          <tr><td>Prashant</td><td>Indexing & performance testing</td></tr>
+          <tr><td>Shiv</td><td>Packaging & deployment</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- LIFECYCLE -->
+    <section id="lifecycle" class="card">
+      <h2>Project Lifecycle (Stages)</h2>
+      <div class="diagram">
+PLAN → RESEARCH → REQUIREMENTS → SYSTEM/UX DESIGN → DEV SETUP → FRONTEND → RAG/RETRIEVAL →
+INTEGRATION → TESTING/QA → DEPLOYMENT → MAINTENANCE/IMPROVEMENTS
+      </div>
+      <div class="timeline">
+        <div class="bar" style="--w:10%"><div class="fill"></div><div class="label">Planning (Days 1–2)</div><div class="muted">Scope, goals, repo</div></div>
+        <div class="bar" style="--w:20%"><div class="fill"></div><div class="label">Research (Days 2–5)</div><div class="muted">Data sources, validation</div></div>
+        <div class="bar" style="--w:35%"><div class="fill"></div><div class="label">Build (Days 6–16)</div><div class="muted">UI + Retrieval + Speed</div></div>
+        <div class="bar" style="--w:20%"><div class="fill"></div><div class="label">Quality (Days 12–19)</div><div class="muted">QA, polish</div></div>
+        <div class="bar" style="--w:15%"><div class="fill"></div><div class="label">Launch (Day 20)</div><div class="muted">Release & docs</div></div>
+      </div>
+    </section>
+
+    <!-- PLANNING -->
+    <section id="planning" class="card">
+      <h2>Stage 1 — Planning</h2>
+      <ul>
+        <li>Define audiences (new students, international students, current students).</li>
+        <li>Agree scope (admissions, academics, dorms, fees, clubs, facilities, contacts).</li>
+        <li>Create Git repo & shared drive; set naming conventions.</li>
+      </ul>
+      <details><summary>Deliverables</summary>
+        <ul>
+          <li>Problem statement, goals, success criteria (≥90% accuracy on 150 Qs).</li>
+          <li>Timeline (20 days), roles matrix, communication plan.</li>
+        </ul>
+      </details>
+    </section>
+
+    <!-- RESEARCH -->
+    <section id="research" class="card">
+      <h2>Stage 2 — Research</h2>
+      <p>Collect official, public information and your verified notes. Keep it factual and chunked for retrieval.</p>
+      <div class="diagram">
+Sources:
+- Official Woosong pages (admissions, departments, dorms)
+- Handbooks, syllabi, calendars
+- Contact directories
+- Student services, clubs, campus maps
+      </div>
+      <div class="note warn"><strong>Tip:</strong> Save sources/URLs in comments so you can audit facts later.</div>
+    </section>
+
+    <!-- REQUIREMENTS -->
+    <section id="requirements" class="card">
+      <h2>Stage 3 — Requirements</h2>
+      <table>
+        <thead><tr><th>Type</th><th>Requirements</th></tr></thead>
+        <tbody>
+          <tr><td>Functional</td><td>Answer Qs, show sources, run locally, exportable to web.</td></tr>
+          <tr><td>Non-Functional</td><td>Latency &lt; 4s, 80–90% accuracy, simple maintenance, responsive UI.</td></tr>
+          <tr><td>Constraints</td><td>HTML/CSS/JS only for this portal (no backend).</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- DESIGN -->
+    <section id="design" class="card">
+      <h2>Stage 4 — System & UX Design</h2>
+      <h3>Internal & External Architecture</h3>
+      <div class="diagram">
++----------------------+       HTTPS        +----------------------+
+|  Browser (Frontend)  |  ───────────────►  |  Local Model & Index |
+|  - Chat UI (Gradio)  |                   |  - Ollama (phi3)     |
+|  - RAG Interface     |  ◄───────────────  |  - Chroma vectors    |
++----------------------+       Reply        +----------------------+
+        Data files: /data/*.md   →  embedded (vectors) → searched per query
+      </div>
+
+      <h3>User Journey Map</h3>
+      <div class="diagram">
+Student lands on page
+  ↓ sees "Getting Started" tips
+Asks: "How to apply for dorms?"
+  ↓ Retrieve chunks from /data/dorms.md
+  ↓ Model composes response
+Answer + Sources displayed
+      </div>
+
+      <h3>UX Notes</h3>
+      <ul>
+        <li>Clear input, helpful examples, visible sources.</li>
+        <li>Short/Long toggle; copy answer; print.</li>
+      </ul>
+    </section>
+
+    <!-- DEV SETUP -->
+    <section id="devsetup" class="card">
+      <h2>Stage 5 — Development Setup</h2>
+      <pre class="code"><button class="copy" onclick="copyBlock(this)">Copy</button>woosong-guide-ai/
+├─ app.py
+├─ requirements.txt
+├─ data/
+│  ├─ admissions.md
+│  ├─ academics.md
+│  ├─ dorms.md
+│  ├─ clubs.md
+│  └─ facilities.md
+└─ storage/   # (optional) index persistence
+</pre>
+      <div class="note">Keep paragraphs 3–6 lines; use headings and bullets; avoid long prose for better retrieval.</div>
+    </section>
+
+    <!-- FRONTEND -->
+    <section id="frontend" class="card">
+      <h2>Stage 6 — Frontend (this portal)</h2>
+      <ul>
+        <li>Animated sections; responsive layout; scroll-spy TOC.</li>
+        <li>Export as A4 PDF via <strong>Download as PDF</strong> (print).</li>
+        <li>JS utilities: search, copy-code, expand/collapse.</li>
+      </ul>
+      <div class="note ok"><strong>Bonus:</strong> LocalStorage boards below: Tasks, Notes, Decisions, Risks.</div>
+    </section>
+
+    <!-- RAG / MODEL -->
+    <section id="backendless" class="card">
+      <h2>Stage 7 — Retrieval & Model (local, outside this portal)</h2>
+      <p>Use Ollama + LlamaIndex + Chroma locally (see Install & Commands appendix). This portal documents the full process.</p>
+      <div class="diagram">
+Question → Embed → Search top-k chunks → Prompt model with chunks → Answer (with sources)
+      </div>
+    </section>
+
+    <!-- INTEGRATION -->
+    <section id="integration" class="card">
+      <h2>Stage 8 — Integration</h2>
+      <ul>
+        <li>Link chat UI to query engine; show sources & file names.</li>
+        <li>Cache frequent answers; limit context length.</li>
+      </ul>
+    </section>
+
+    <!-- TESTING -->
+    <section id="testing" class="card">
+      <h2>Stage 9 — Testing & QA</h2>
+      <h3>Daily DoD</h3>
+      <ul>
+        <li>App launches cleanly</li>
+        <li>10 verified chunks added</li>
+        <li>10 new test questions pass</li>
+        <li>Accuracy ≥ 80%</li>
+        <li>Latency &lt; 4s</li>
+      </ul>
+      <h3>Sample Evaluation Set</h3>
+      <table>
+        <thead><tr><th>Question</th><th>Expected Points</th></tr></thead>
+        <tbody>
+          <tr><td>How to apply for dorms?</td><td>Where; When; Documents; Fees; Contacts</td></tr>
+          <tr><td>GPA scale?</td><td>Scale value; letter mapping</td></tr>
+          <tr><td>Join clubs?</td><td>Portal; signup period; sample clubs</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- DEPLOY -->
+    <section id="deploy" class="card">
+      <h2>Stage 10 — Deployment</h2>
+      <ul>
+        <li>Hugging Face Spaces (Gradio app)</li>
+        <li>Vercel (static site like this portal)</li>
+        <li>Render (Flask/FastAPI if needed)</li>
+      </ul>
+      <div class="note warn"><strong>Tip:</strong> Include disclaimer: data may change; always check official pages.</div>
+    </section>
+
+    <!-- MAINTENANCE -->
+    <section id="maintenance" class="card">
+      <h2>Stage 11 — Maintenance</h2>
+      <ol>
+        <li>Weekly /data updates.</li>
+        <li>Re-embed if large changes.</li>
+        <li>Track issues in Decisions & Risks boards.</li>
+      </ol>
+    </section>
+
+    <!-- ARCHITECTURE -->
+    <section id="architecture" class="card">
+      <h2>Internal & External Architecture</h2>
+      <div class="diagram">
++-----------------------------+         +----------------------------+
+|         FRONTEND            |         |          BACKEND           |
+|  (Chat UI / this Portal)    |         | (Local model & retrieval)  |
+|  - Gradio / HTML             |  ---->  |  - Ollama (phi3, llama)   |
+|  - Answer viewer            |  <----  |  - LlamaIndex + Chroma    |
++-----------------------------+         +----------------------------+
+           Public knowledge files under /data/*.md (curated and verified)
+      </div>
+    </section>
+
+    <!-- RAG -->
+    <section id="rag" class="card">
+      <h2>RAG Flow</h2>
+      <div class="diagram">
+[Split] docs → [Embed] vectors → [Store] in DB → [Search] top-k → [Answer] using chunks
+      </div>
+      <ul>
+        <li>Chunk size: 400–800 chars with overlap.</li>
+        <li>Top-k: 3–5; adjust for speed/quality.</li>
+      </ul>
+    </section>
+
+    <!-- JOURNEY -->
+    <section id="journey" class="card">
+      <h2>User Journey Map</h2>
+      <div class="diagram">
+Student arrives → Reads tips → Asks question
+          ↓
+   Retrieve matching chunks (context)
+          ↓
+     Compose grounded answer
+          ↓
+ Show answer + "Sources" section
+      </div>
+    </section>
+
+    <!-- WORKFLOW -->
+    <section id="workflow" class="card">
+      <h2>Working Structure of the App</h2>
+      <ol>
+        <li><strong>Input</strong>: text question</li>
+        <li><strong>Search</strong>: vector similarity on embeddings</li>
+        <li><strong>Compose</strong>: model responds using retrieved context</li>
+        <li><strong>Display</strong>: answer + sources + copy/print</li>
+      </ol>
+    </section>
+
+    <!-- TIMELINE -->
+    <section id="timeline" class="card pagebreak">
+      <h2>20-Day Timeline</h2>
+      <table>
+        <thead><tr><th>Day</th><th>Focus</th><th>Output</th></tr></thead>
+        <tbody id="timelineTable"></tbody>
+      </table>
+      <div class="timeline" id="timelineBars"></div>
+    </section>
+
+    <!-- KANBAN -->
+    <section id="kanban" class="card">
+      <h2>Tasks Board (LocalStorage)</h2>
+      <div class="note">Add tasks and drag between columns. Data stays in this browser only.</div>
+      <div class="navOnly" style="display:flex; gap:10px; margin:10px 0">
+        <input id="taskText" placeholder="New task..." />
+        <select id="taskTag">
+          <option>Plan</option><option>Research</option><option>Design</option>
+          <option>Frontend</option><option>Retrieval</option><option>QA</option><option>Deploy</option>
+        </select>
+        <button class="btn" onclick="addTask()">Add Task</button>
+        <button class="btn ghost" onclick="clearTasks()">Clear All</button>
+      </div>
+      <div class="board" id="board">
+        <div class="col" data-col="todo"><h3>To-Do</h3><div class="list" id="todo"></div></div>
+        <div class="col" data-col="doing"><h3>In Progress</h3><div class="list" id="doing"></div></div>
+        <div class="col" data-col="done"><h3>Done</h3><div class="list" id="done"></div></div>
+      </div>
+    </section>
+
+    <!-- NOTES & DECISIONS -->
+    <section id="notes" class="card">
+      <h2>Notes & Decisions</h2>
+      <div class="navOnly" style="display:flex; gap:10px; margin:10px 0">
+        <input id="noteTitle" placeholder="Title" />
+        <input id="noteTag" placeholder="Tag (e.g., Decision, Idea, Info)" />
+      </div>
+      <textarea id="noteBody" rows="6" style="width:100%; border-radius:10px; border:1px solid var(--border); padding:10px" placeholder="Note content..."></textarea>
+      <div class="navOnly" style="display:flex; gap:10px; margin:10px 0">
+        <button class="btn" onclick="addNote()">Add Note</button>
+        <button class="btn ghost" onclick="clearNotes()">Clear Notes</button>
+      </div>
+      <div id="notesList"></div>
+    </section>
+
+    <!-- RISKS -->
+    <section id="risks" class="card">
+      <h2>Risks & Mitigations</h2>
+      <div class="navOnly" style="display:flex; gap:10px; margin:10px 0">
+        <input id="riskText" placeholder="Risk (e.g., outdated data)" />
+        <select id="riskLevel"><option>Low</option><option>Medium</option><option>High</option></select>
+        <input id="riskMit" placeholder="Mitigation plan" />
+        <button class="btn" onclick="addRisk()">Add</button>
+        <button class="btn ghost" onclick="clearRisks()">Clear</button>
+      </div>
+      <div id="risksList"></div>
+    </section>
+
+    <!-- INSTALL -->
+    <section id="install" class="card pagebreak">
+      <h2>Install & Commands (outside this portal)</h2>
+      <p>Use locally to run the actual chatbot (Ollama + LlamaIndex + Gradio).</p>
+      <pre class="code"><button class="copy" onclick="copyBlock(this)">Copy</button>ollama pull phi3:mini
+ollama run phi3:mini
+</pre>
+      <pre class="code"><button class="copy" onclick="copyBlock(this)">Copy</button>gradio==4.44.0
+llama-index==0.11.20
+llama-index-embeddings-huggingface
+llama-index-llms-ollama
+chromadb
+</pre>
+      <pre class="code"><button class="copy" onclick="copyBlock(this)">Copy</button>from llama_index.core import VectorStoreIndex, SimpleDirectoryReader, Settings
+from llama_index.embeddings.huggingface import HuggingFaceEmbedding
+from llama_index.llms.ollama import Ollama
+import gradio as gr, os
+
+os.makedirs("storage", exist_ok=True)
+Settings.embed_model = HuggingFaceEmbedding(model_name="sentence-transformers/all-MiniLM-L6-v2")
+Settings.llm = Ollama(model="phi3:mini", request_timeout=120)
+
+docs = SimpleDirectoryReader("data").load_data()
+index = VectorStoreIndex.from_documents(docs)
+qa = index.as_query_engine(similarity_top_k=4, response_mode="compact")
+
+def ask(q):
+    try: return str(qa.query(q))
+    except Exception as e: return f"Error: {e}"
+
+demo = gr.Interface(ask, "text", "text", title="Woosong Guide AI")
+if __name__ == "__main__":
+    demo.launch()
+</pre>
+    </section>
+
+    <!-- GLOSSARY -->
+    <section id="glossary" class="card">
+      <h2>Glossary</h2>
+      <ul>
+        <li><strong>Model</strong> — the “brain” that writes answers.</li>
+        <li><strong>Embedding</strong> — numbers representing meaning of text.</li>
+        <li><strong>Vector DB</strong> — fast database for embeddings.</li>
+        <li><strong>RAG</strong> — retrieve context first, then generate the answer.</li>
+        <li><strong>Top-k</strong> — how many chunks we retrieve per question.</li>
+        <li><strong>Prompt</strong> — instruction template to the model.</li>
+      </ul>
+    </section>
+
+    <!-- REFERENCES -->
+    <section id="references" class="card">
+      <h2>References</h2>
+      <ul>
+        <li>Ollama (local model runner)</li>
+        <li>LlamaIndex (RAG framework)</li>
+        <li>Gradio (web UI)</li>
+        <li>Hugging Face (models & Spaces)</li>
+      </ul>
+      <div class="note">Use only public & permitted information in <code>/data</code>.</div>
+    </section>
+
+    <section class="card">
+      <h2>Export Instructions</h2>
+      <ol>
+        <li>Click <strong>Download as PDF</strong> (or press <kbd>Ctrl/Cmd + P</kbd>).</li>
+        <li>Set destination to <strong>Save as PDF</strong>, paper size <strong>A4</strong>.</li>
+        <li>Enable <strong>Background Graphics</strong>.</li>
+        <li>Save — you’ll get a clean **50+ page** PDF with page breaks.</li>
+      </ol>
+    </section>
+
+    <footer class="noPrint" style="text-align:center; color:#6b7280; font-size:12px; padding:30px 0 60px">
+      © 2025 Woosong Guide AI · Parash · Rohit · Naomi · Prashant · Shiv
+    </footer>
+  </main>
+</div>
+
+<script>
+/* ===== Scroll-reveal animation with IntersectionObserver ===== */
+const observer = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{ if(e.isIntersecting) e.target.style.animationDelay = '0s'; });
+},{threshold:.1});
+document.querySelectorAll('.card').forEach(el=>observer.observe(el));
+
+/* ===== Copy code blocks ===== */
+function copyBlock(btn){
+  const text = btn.parentElement.innerText.replace(/^Copy\s*/,'');
+  navigator.clipboard.writeText(text).then(()=>{
+    const old = btn.textContent; btn.textContent = "Copied!"; setTimeout(()=>btn.textContent=old, 1000);
+  });
+}
+
+/* ===== Expand/Collapse all ===== */
+function expandAll(){ document.querySelectorAll('details').forEach(d=>d.open=true); }
+function collapseAll(){ document.querySelectorAll('details').forEach(d=>d.open=false); }
+
+/* ===== Search filter ===== */
+function filterSections(q){
+  q = (q||'').toLowerCase();
+  const cards = Array.from(document.querySelectorAll('main .card'));
+  cards.forEach(c=>{
+    c.style.display = c.innerText.toLowerCase().includes(q) ? '' : 'none';
+  });
+}
+
+/* ===== Scrollspy ===== */
+const tocLinks = Array.from(document.querySelectorAll('.toc a'));
+window.addEventListener('scroll', ()=>{
+  let fromTop = window.scrollY + 80;
+  tocLinks.forEach(link=>{
+    const id = link.getAttribute('href');
+    const sec = document.querySelector(id);
+    if(!sec) return;
+    if(sec.offsetTop <= fromTop && sec.offsetTop + sec.offsetHeight > fromTop){
+      tocLinks.forEach(l=>l.classList.remove('active'));
+      link.classList.add('active');
+    }
+  });
+});
+document.querySelectorAll('a[href^="#"]').forEach(a=>{
+  a.addEventListener('click', e=>{
+    const el = document.querySelector(a.getAttribute('href'));
+    if(el){ e.preventDefault(); el.scrollIntoView({behavior:'smooth', block:'start'}); }
+  });
+});
+
+/* ===== Timeline data → Table & Bars ===== */
+const days = [
+  [1,'Kickoff & Accounts','Repo, Drive, tools'],
+  [2,'Data Outline','Topics & sources'],
+  [3,'Collect Data I','Admissions/Academics'],
+  [4,'Collect Data II','Dorms/Clubs/Fees'],
+  [5,'Data QA','Deduplicate & chunk'],
+  [6,'Minimal App','Hello (Gradio)'],
+  [7,'Embeddings','Ingest /data → DB'],
+  [8,'Chat Loop','Show sources'],
+  [9,'Eval I','30 test Qs'],
+  [10,'UI Polish','Logo, colors'],
+  [11,'Performance','Cache & trim context'],
+  [12,'Eval II','+50 test Qs'],
+  [13,'Docs','HOW-TO & CHANGELOG'],
+  [14,'Deploy I','HF Spaces'],
+  [15,'Bugfix','Links, encoding'],
+  [16,'Quality','Short/Long toggle'],
+  [17,'Korean Beta','Optional'],
+  [18,'Safety','Rate-limit, filters'],
+  [19,'Final QA','Invite 5 testers'],
+  [20,'Launch','v1.0 announcement']
+];
+const tbody = document.getElementById('timelineTable');
+const tBars = document.getElementById('timelineBars');
+days.forEach(([d,title,out])=>{
+  const tr = document.createElement('tr');
+  tr.innerHTML = `<td>${d}</td><td>${title}</td><td>${out}</td>`;
+  tbody.appendChild(tr);
+  const bar = document.createElement('div');
+  bar.className='bar';
+  bar.style.setProperty('--w', (d/20*100)+'%');
+  bar.innerHTML = `<div class="fill"></div><div class="label">Day ${d} — ${title}</div><div class="muted">${out}</div>`;
+  tBars.appendChild(bar);
+});
+
+/* ===== Kanban Board (LocalStorage) ===== */
+const LS_TASKS = 'woosong_tasks_v1';
+let tasks = JSON.parse(localStorage.getItem(LS_TASKS) || '[]');
+
+function renderTasks(){
+  ['todo','doing','done'].forEach(id=>document.getElementById(id).innerHTML='');
+  tasks.forEach((t,i)=>{
+    const d = document.createElement('div');
+    d.className='card-sm'; d.draggable=true;
+    d.innerHTML = `<div>${escapeHtml(t.text)} <span class="tag">${escapeHtml(t.tag||'Task')}</span></div>
+                   <div class="meta"><span>${t.status}</span>
+                   <span><a href="#" onclick="delTask(${i})">Delete</a></span></div>`;
+    d.addEventListener('dragstart', ev => ev.dataTransfer.setData('text/plain', i));
+    document.getElementById(t.status).appendChild(d);
+  });
+}
+function addTask(){
+  const text = document.getElementById('taskText').value.trim();
+  const tag = document.getElementById('taskTag').value;
+  if(!text) return;
+  tasks.push({text, tag, status:'todo'});
+  persistTasks(); document.getElementById('taskText').value='';
+}
+function delTask(i){ tasks.splice(i,1); persistTasks(); }
+function persistTasks(){ localStorage.setItem(LS_TASKS, JSON.stringify(tasks)); renderTasks(); }
+['todo','doing','done'].forEach(id=>{
+  const list = document.getElementById(id);
+  list.addEventListener('dragover', e=>e.preventDefault());
+  list.addEventListener('drop', e=>{
+    const i = +e.dataTransfer.getData('text/plain');
+    tasks[i].status = id; persistTasks();
+  });
+});
+function clearTasks(){ if(confirm('Clear all tasks?')){ tasks=[]; persistTasks(); } }
+renderTasks();
+
+/* ===== Notes / Decisions (LocalStorage) ===== */
+const LS_NOTES = 'woosong_notes_v1';
+let notes = JSON.parse(localStorage.getItem(LS_NOTES) || '[]');
+function addNote(){
+  const title = document.getElementById('noteTitle').value.trim() || 'Untitled';
+  const tag = document.getElementById('noteTag').value.trim() || 'Note';
+  const body = document.getElementById('noteBody').value.trim();
+  if(!body) return;
+  notes.unshift({title, tag, body, ts: new Date().toISOString()});
+  persistNotes(); document.getElementById('noteBody').value='';
+}
+function persistNotes(){
+  localStorage.setItem(LS_NOTES, JSON.stringify(notes));
+  renderNotes();
+}
+function renderNotes(){
+  const wrap = document.getElementById('notesList'); wrap.innerHTML='';
+  notes.forEach((n,i)=>{
+    const el = document.createElement('div');
+    el.className='card-sm';
+    el.innerHTML = `<div><strong>${escapeHtml(n.title)}</strong> <span class="tag">${escapeHtml(n.tag)}</span></div>
+                    <div class="meta"><span>${new Date(n.ts).toLocaleString()}</span>
+                    <span><a href="#" onclick="delNote(${i})">Delete</a></span></div>
+                    <div style="margin-top:6px; white-space:pre-wrap">${escapeHtml(n.body)}</div>`;
+    wrap.appendChild(el);
+  });
+}
+function delNote(i){ notes.splice(i,1); persistNotes(); }
+function clearNotes(){ if(confirm('Clear all notes?')){ notes=[]; persistNotes(); } }
+renderNotes();
+
+/* ===== Risks (LocalStorage) ===== */
+const LS_RISKS = 'woosong_risks_v1';
+let risks = JSON.parse(localStorage.getItem(LS_RISKS) || '[]');
+function addRisk(){
+  const text = document.getElementById('riskText').value.trim();
+  const level = document.getElementById('riskLevel').value;
+  const mit = document.getElementById('riskMit').value.trim();
+  if(!text) return;
+  risks.unshift({text, level, mit, ts:new Date().toISOString()});
+  persistRisks();
+  document.getElementById('riskText').value='';
+  document.getElementById('riskMit').value='';
+}
+function persistRisks(){
+  localStorage.setItem(LS_RISKS, JSON.stringify(risks));
+  renderRisks();
+}
+function renderRisks(){
+  const wrap = document.getElementById('risksList'); wrap.innerHTML='';
+  risks.forEach((r,i)=>{
+    const el = document.createElement('div');
+    el.className='card-sm';
+    let color = r.level==='High'? 'err' : (r.level==='Medium' ? 'warn' : 'ok');
+    el.innerHTML = `<div class="tag">${escapeHtml(r.level)}</div>
+      <div style="margin-top:6px; white-space:pre-wrap">${escapeHtml(r.text)}</div>
+      <div class="note ${color}" style="margin-top:8px"><strong>Mitigation:</strong> ${escapeHtml(r.mit || '—')}</div>
+      <div class="meta"><span>${new Date(r.ts).toLocaleString()}</span>
+      <span><a href="#" onclick="delRisk(${i})">Delete</a></span></div>`;
+    wrap.appendChild(el);
+  });
+}
+function delRisk(i){ risks.splice(i,1); persistRisks(); }
+function clearRisks(){ if(confirm('Clear all risks?')){ risks=[]; persistRisks(); } }
+renderRisks();
+
+/* ===== Helpers ===== */
+function escapeHtml(s){ return s.replace(/[&<>'"]/g, c=>({ '&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c])); }
+</script>
+</body>
+</html>
