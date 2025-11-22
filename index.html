@@ -1,0 +1,4854 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Tools Here | Security Solutions & Music</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <script type="text/javascript">
+        (function() {
+            emailjs.init("QNC64rgXPNYqzo-l0");
+        })();
+    </script>
+    <style>
+        :root {
+            --primary: #00ff41;
+            --primary-dark: #00cc33;
+            --secondary: #008f29;
+            --dark: #0a0a0a;
+            --darker: #000000;
+            --accent: #ff00ff;
+            --accent-light: #ff66ff;
+            --success: #00ff41;
+            --error: #ff0033;
+            --card-bg: rgba(0, 20, 0, 0.8);
+            --card-border: #003300;
+            --text-primary: #00ff41;
+            --text-secondary: #00aa33;
+            --transition: all 0.3s ease;
+            --glow: 0 0 10px var(--primary), 0 0 20px var(--primary), 0 0 30px var(--primary);
+            --accent-glow: 0 0 10px var(--accent), 0 0 20px var(--accent);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background-color: var(--darker);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(0, 40, 0, 0.4) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(0, 30, 0, 0.4) 0%, transparent 20%);
+        }
+
+        /* Terminal-style cursor */
+        .typing-cursor {
+            display: inline-block;
+            width: 10px;
+            height: 1.2em;
+            background-color: var(--primary);
+            margin-left: 5px;
+            animation: blink 1s infinite;
+            vertical-align: middle;
+        }
+
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+
+        /* Matrix background effect */
+        .matrix-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.15;
+            pointer-events: none;
+        }
+
+        /* Jelly-Scorpion Creature */
+        #creatureCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.3;
+            pointer-events: none;
+        }
+
+        /* Header */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            background: rgba(5, 15, 5, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--primary);
+            box-shadow: var(--glow);
+            padding: 1rem 0;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            text-decoration: none;
+            text-shadow: var(--glow);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-family: 'Courier New', monospace;
+            letter-spacing: 2px;
+        }
+
+        .logo i {
+            color: var(--accent);
+            text-shadow: var(--accent-glow);
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .search-icon, .menu-btn, .tools-btn, .language-btn {
+            background: none;
+            border: 1px solid var(--primary);
+            color: var(--text-primary);
+            width: 40px;
+            height: 40px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+            text-shadow: var(--glow);
+        }
+
+        .search-icon:hover, .menu-btn:hover, .tools-btn:hover, .language-btn:hover {
+            background: rgba(0, 255, 65, 0.1);
+            box-shadow: var(--glow);
+        }
+
+        .search-container, .language-container {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            width: 300px;
+            background: rgba(5, 15, 5, 0.98);
+            border: 1px solid var(--primary);
+            border-top: none;
+            padding: 1rem;
+            display: none;
+            box-shadow: var(--glow);
+        }
+
+        .search-container.active, .language-container.active {
+            display: block;
+            animation: slideDown 0.3s ease;
+        }
+
+        .search-container input {
+            width: 100%;
+            padding: 0.75rem;
+            background: rgba(0, 30, 0, 0.8);
+            border: 1px solid var(--primary);
+            color: var(--text-primary);
+            font-family: 'Courier New', monospace;
+            font-size: 1rem;
+        }
+
+        .search-container input:focus {
+            outline: none;
+            box-shadow: var(--glow);
+        }
+
+        .language-list {
+            list-style: none;
+        }
+
+        .language-item {
+            border-bottom: 1px solid rgba(0, 255, 65, 0.2);
+        }
+
+        .language-item:last-child {
+            border-bottom: none;
+        }
+
+        .language-item button {
+            display: block;
+            padding: 1rem;
+            color: var(--text-primary);
+            text-decoration: none;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            background: none;
+            border: none;
+            width: 100%;
+            text-align: left;
+            font-family: 'Courier New', monospace;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+
+        .language-item button::before {
+            content: '>';
+            margin-right: 10px;
+            color: var(--accent);
+            text-shadow: var(--accent-glow);
+        }
+
+        .language-item button:hover {
+            background: rgba(0, 255, 65, 0.1);
+            text-shadow: var(--glow);
+            padding-left: 1.5rem;
+        }
+
+        /* Menu */
+        .menu {
+            position: fixed;
+            top: 0;
+            right: -350px;
+            width: 350px;
+            height: 100vh;
+            background: rgba(5, 15, 5, 0.98);
+            border-left: 1px solid var(--primary);
+            z-index: 2000;
+            transition: var(--transition);
+            overflow-y: auto;
+            box-shadow: var(--glow);
+        }
+
+        .menu.active {
+            right: 0;
+        }
+
+        .menu-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--primary);
+            background: rgba(0, 20, 0, 0.9);
+        }
+
+        .close-menu {
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .close-menu:hover {
+            color: var(--accent);
+            text-shadow: var(--accent-glow);
+        }
+
+        .menu-items {
+            list-style: none;
+            padding: 1rem 0;
+        }
+
+        .menu-item {
+            border-bottom: 1px solid rgba(0, 255, 65, 0.2);
+        }
+
+        .menu-item a {
+            display: block;
+            padding: 1.25rem 1.5rem;
+            color: var(--text-primary);
+            text-decoration: none;
+            transition: var(--transition);
+            font-size: 1.1rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .menu-item a::before {
+            content: '>';
+            margin-right: 10px;
+            color: var(--accent);
+            text-shadow: var(--accent-glow);
+        }
+
+        .menu-item a:hover {
+            background: rgba(0, 255, 65, 0.1);
+            text-shadow: var(--glow);
+            padding-left: 2rem;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-top: 80px;
+            min-height: calc(100vh - 160px);
+            padding: 2rem 20px;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Page Sections */
+        .page-section {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .page-section.active {
+            display: block;
+        }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            padding: 4rem 2rem;
+            border: 1px solid var(--primary);
+            margin-bottom: 3rem;
+            background: var(--card-bg);
+            box-shadow: var(--glow);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent 30%, rgba(0, 255, 65, 0.05) 50%, transparent 70%);
+            animation: scan 4s linear infinite;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+            text-shadow: var(--glow);
+            font-weight: 700;
+            letter-spacing: 3px;
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            margin-bottom: 2.5rem;
+            color: var(--text-secondary);
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .social-link {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 55px;
+            height: 55px;
+            border: 1px solid var(--primary);
+            border-radius: 4px;
+            color: var(--text-primary);
+            text-decoration: none;
+            transition: var(--transition);
+            font-size: 1.3rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .social-link::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 255, 65, 0.2), transparent);
+            transition: var(--transition);
+        }
+
+        .social-link:hover {
+            background: rgba(0, 255, 65, 0.1);
+            box-shadow: var(--glow);
+            transform: translateY(-5px);
+        }
+
+        .social-link:hover::before {
+            left: 100%;
+        }
+
+        .hire-btn {
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--text-primary);
+            padding: 1rem 2.5rem;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: var(--transition);
+            font-family: 'Courier New', monospace;
+            text-shadow: var(--glow);
+            letter-spacing: 2px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hire-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 255, 65, 0.2), transparent);
+            transition: var(--transition);
+        }
+
+        .hire-btn:hover {
+            background: rgba(0, 255, 65, 0.1);
+            box-shadow: var(--glow);
+            letter-spacing: 3px;
+        }
+
+        .hire-btn:hover::before {
+            left: 100%;
+        }
+
+        /* Projects Section */
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--primary);
+        }
+
+        .section-title {
+            font-size: 2.2rem;
+            text-shadow: var(--glow);
+            font-weight: 700;
+            letter-spacing: 2px;
+        }
+
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .project-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 4px;
+            overflow: hidden;
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .project-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, transparent 30%, rgba(0, 255, 65, 0.05) 50%, transparent 70%);
+            opacity: 0;
+            transition: var(--transition);
+        }
+
+        .project-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--glow);
+            border-color: var(--primary);
+        }
+
+        .project-card:hover::before {
+            opacity: 1;
+        }
+
+        .project-image {
+            height: 200px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .project-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: var(--transition);
+        }
+
+        .project-card:hover .project-image img {
+            transform: scale(1.1);
+        }
+
+        .project-info {
+            padding: 1.5rem;
+        }
+
+        .project-title {
+            font-size: 1.4rem;
+            margin-bottom: 0.75rem;
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .project-description {
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .project-price {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: var(--accent);
+            margin-bottom: 1rem;
+            text-shadow: var(--accent-glow);
+        }
+
+        .project-actions {
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: 1px solid var(--primary);
+            background: transparent;
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: var(--transition);
+            font-family: 'Courier New', monospace;
+            flex: 1;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 0.95rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 255, 65, 0.2), transparent);
+            transition: var(--transition);
+        }
+
+        .btn:hover {
+            background: rgba(0, 255, 65, 0.1);
+            box-shadow: var(--glow);
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary {
+            background: rgba(0, 255, 65, 0.1);
+        }
+
+        .see-more-container {
+            text-align: center;
+            margin-top: 3rem;
+        }
+
+        /* Music Section */
+        .music-container {
+            background: var(--card-bg);
+            border: 1px solid var(--primary);
+            padding: 2rem;
+            box-shadow: var(--glow);
+        }
+
+        .music-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+
+        .music-card {
+            background: rgba(0, 25, 0, 0.7);
+            border: 1px solid var(--card-border);
+            border-radius: 4px;
+            overflow: hidden;
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .music-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100%;
+            background: var(--accent);
+            transition: var(--transition);
+        }
+
+        .music-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--glow);
+            border-color: var(--primary);
+        }
+
+        .music-card:hover::before {
+            width: 10px;
+            background: var(--primary);
+        }
+
+        .music-image {
+            height: 200px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .music-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: var(--transition);
+        }
+
+        .music-card:hover .music-image img {
+            transform: scale(1.05);
+        }
+
+        .music-info {
+            padding: 1.5rem;
+        }
+
+        .music-title {
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .music-description {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+
+        .music-link {
+            color: var(--accent);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            transition: var(--transition);
+            font-weight: 600;
+        }
+
+        .music-link:hover {
+            text-shadow: var(--accent-glow);
+            gap: 1rem;
+        }
+
+        /* Music video player */
+        .music-video-section {
+            margin-top: 3rem;
+            background: rgba(0, 20, 0, 0.6);
+            border: 1px solid var(--primary);
+            border-radius: 6px;
+            padding: 1.5rem;
+            box-shadow: var(--glow);
+        }
+
+        .music-video-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+            margin-bottom: 1rem;
+        }
+
+        .music-video-header h3 {
+            color: var(--text-primary);
+        }
+
+        .video-frame {
+            position: relative;
+            width: 100%;
+            padding-top: 56.25%; /* 16:9 */
+            overflow: hidden;
+            border-radius: 6px;
+            border: 1px solid var(--card-border);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+            margin-bottom: 1.25rem;
+            background: rgba(0, 0, 0, 0.6);
+        }
+
+        .video-frame iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+            display: none;
+        }
+
+        .video-overlay {
+            position: absolute;
+            inset: 0;
+            display: grid;
+            place-items: center;
+            background: linear-gradient(135deg, rgba(0,0,0,0.6), rgba(0,0,0,0.75));
+            cursor: pointer;
+            color: var(--text-primary);
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            transition: var(--transition);
+        }
+
+        .video-overlay i {
+            font-size: 2rem;
+            color: var(--accent);
+            margin-bottom: 0.35rem;
+        }
+
+        .video-overlay:hover {
+            background: linear-gradient(135deg, rgba(0,0,0,0.55), rgba(0,0,0,0.7));
+            text-shadow: var(--accent-glow);
+        }
+
+        .video-frame.playing iframe {
+            display: block;
+        }
+
+        .video-skeleton {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(90deg, rgba(0,0,0,0.25), rgba(0,255,65,0.08), rgba(0,0,0,0.25));
+            animation: skeleton 1.5s ease-in-out infinite;
+        }
+
+        @keyframes skeleton {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .open-yt-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-size: 0.95rem;
+            color: var(--accent);
+            text-decoration: none;
+            margin-top: 0.5rem;
+        }
+
+        .open-yt-link:hover {
+            text-shadow: var(--accent-glow);
+        }
+
+        .lyrics-box {
+            background: rgba(0, 0, 0, 0.45);
+            border: 1px dashed var(--card-border);
+            border-radius: 6px;
+            padding: 1rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            white-space: pre-line;
+            box-shadow: inset 0 0 10px rgba(0, 255, 65, 0.05);
+        }
+
+        /* About Section */
+        .about-container {
+            background: var(--card-bg);
+            border: 1px solid var(--primary);
+            padding: 3rem;
+            box-shadow: var(--glow);
+            position: relative;
+            overflow: hidden;
+            animation: fadeIn 0.8s ease both;
+        }
+
+        .about-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                linear-gradient(90deg, transparent 49%, rgba(0, 255, 65, 0.03) 50%, transparent 51%),
+                linear-gradient(transparent 49%, rgba(0, 255, 65, 0.03) 50%, transparent 51%);
+            background-size: 20px 20px;
+            pointer-events: none;
+        }
+
+        .about-content {
+            display: grid;
+            grid-template-columns: 1.1fr 1.9fr;
+            gap: 2.75rem;
+            align-items: start;
+        }
+
+        .about-image {
+            text-align: center;
+            position: relative;
+            width: 100%;
+            animation: floatUp 0.9s ease both;
+        }
+
+        .about-image::before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            right: -10px;
+            bottom: -10px;
+            border: 1px solid var(--primary);
+            border-radius: 4px;
+            box-shadow: var(--glow);
+            opacity: 0.7;
+            z-index: -1;
+        }
+
+        .about-image img {
+            width: 100%;
+            max-width: 100%;
+            border-radius: 4px;
+            border: 1px solid var(--primary);
+            box-shadow: var(--glow);
+            object-fit: cover;
+        }
+
+        .contact-card {
+            background: var(--card-bg);
+            border: 1px solid var(--primary);
+            border-radius: 4px;
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+            box-shadow: var(--glow);
+        }
+
+        .contact-card h4 {
+            color: var(--accent);
+            margin-bottom: 1rem;
+            text-align: center;
+            border-bottom: 1px solid var(--primary);
+            padding-bottom: 0.5rem;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            color: var(--text-secondary);
+        }
+
+        .contact-item i {
+            color: var(--accent);
+            width: 20px;
+            text-align: center;
+        }
+
+        .contact-btn {
+            width: 100%;
+            margin-top: 1rem;
+        }
+
+        .about-roles {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            margin: 0.5rem 0 1.5rem;
+        }
+
+        .role-badge {
+            background: rgba(0, 255, 65, 0.15);
+            border: 1px solid var(--primary);
+            padding: 0.5rem 0.9rem;
+            border-radius: 999px;
+            font-size: 0.95rem;
+            letter-spacing: 0.5px;
+        }
+
+        .about-text h2 {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            color: var(--text-primary);
+            text-shadow: var(--glow);
+            animation: floatUp 0.9s ease both;
+        }
+
+        .about-text p {
+            margin-bottom: 1.5rem;
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            line-height: 1.7;
+        }
+
+        .typing-container {
+            position: relative;
+            margin-bottom: 2rem;
+        }
+
+        .about-meta {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-bottom: 1.25rem;
+        }
+
+        .about-meta .chip {
+            border: 1px solid var(--card-border);
+            background: rgba(0, 255, 65, 0.08);
+            color: var(--text-primary);
+            padding: 0.45rem 0.75rem;
+            border-radius: 999px;
+            font-size: 0.95rem;
+            display: inline-flex;
+            gap: 0.4rem;
+            align-items: center;
+        }
+
+        .typing-text {
+            min-height: 200px;
+            border: 1px solid var(--primary);
+            padding: 1.5rem;
+            background: linear-gradient(135deg, rgba(0,20,0,0.55), rgba(0,40,0,0.35));
+            box-shadow: inset 0 0 10px rgba(0, 255, 65, 0.1), 0 0 12px rgba(0,255,65,0.1);
+            font-family: 'Courier New', monospace;
+            line-height: 1.6;
+            overflow-y: auto;
+            max-height: 300px;
+            position: relative;
+            transition: box-shadow 0.3s ease, border-color 0.3s ease;
+        }
+
+        .typing-text::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            background: linear-gradient(90deg, transparent, rgba(0,255,65,0.08), transparent);
+            animation: scan 3s linear infinite;
+        }
+
+        @keyframes scan {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .typing-text.user-typing-active {
+            box-shadow: inset 0 0 12px rgba(0,255,65,0.25), 0 0 16px rgba(0,255,65,0.2);
+            border-color: #00ff41;
+        }
+
+        .hover-highlight {
+            transition: color 0.25s ease, text-shadow 0.25s ease;
+            cursor: pointer;
+        }
+
+        .hover-highlight:hover {
+            color: var(--accent);
+            text-shadow: var(--accent-glow);
+        }
+
+        .spark-word {
+            display: inline-block;
+            position: relative;
+            transition: color 0.2s ease, text-shadow 0.2s ease, transform 0.2s ease;
+        }
+
+        .spark-word::after {
+            content: '';
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--accent);
+            top: -6px;
+            left: 50%;
+            transform: translateX(-50%) scale(0);
+            opacity: 0;
+            transition: transform 0.2s ease, opacity 0.2s ease;
+            box-shadow: 0 0 12px rgba(255, 0, 255, 0.45), 0 0 24px rgba(0, 255, 65, 0.35);
+        }
+
+        .spark-word:hover {
+            color: var(--accent);
+            text-shadow: var(--accent-glow);
+            transform: translateY(-1px);
+        }
+
+        .spark-word:hover::after {
+            transform: translateX(-50%) scale(1);
+            opacity: 1;
+        }
+
+        .typing-hint {
+            color: var(--text-secondary);
+            display: block;
+            margin-bottom: 0.25rem;
+            opacity: 0.85;
+        }
+
+        .typing-controls {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            display: flex;
+            gap: 0.5rem;
+            display: none;
+        }
+
+        .typing-control-btn {
+            background: rgba(0, 255, 65, 0.1);
+            border: 1px solid var(--primary);
+            color: var(--text-primary);
+            width: 30px;
+            height: 30px;
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+
+        .typing-control-btn:hover {
+            background: rgba(0, 255, 65, 0.2);
+            box-shadow: var(--glow);
+        }
+
+        .professional-summary {
+            background: rgba(0, 255, 65, 0.05);
+            border: 1px solid var(--card-border);
+            border-radius: 4px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .professional-summary h3 {
+            color: var(--accent);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .skills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            margin-top: 2rem;
+        }
+
+        .skill {
+            background: rgba(0, 255, 65, 0.1);
+            border: 1px solid var(--primary);
+            padding: 0.75rem 1.25rem;
+            border-radius: 4px;
+            font-size: 0.95rem;
+            transition: var(--transition);
+        }
+
+        .skill:hover {
+            background: rgba(0, 255, 65, 0.2);
+            box-shadow: var(--glow);
+            transform: translateY(-3px);
+        }
+
+        .certifications {
+            margin-top: 2rem;
+        }
+
+        .certifications h3 {
+            color: var(--accent);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .cert-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .cert-item {
+            background: rgba(0, 255, 65, 0.1);
+            border: 1px solid var(--primary);
+            border-radius: 4px;
+            padding: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            transition: var(--transition);
+        }
+
+        .cert-item:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--glow);
+        }
+
+        .cert-item i {
+            color: var(--accent);
+            font-size: 1.5rem;
+        }
+
+        .about-gallery {
+            margin: 2.5rem 0;
+            width: 100%;
+            align-self: stretch;
+            animation: floatUp 0.9s ease both;
+        }
+
+        .about-gallery-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .about-gallery-header h3 {
+            color: var(--accent);
+            display: flex;
+            gap: 0.6rem;
+            align-items: center;
+        }
+
+        .about-gallery-header p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1rem;
+            width: 100%;
+            align-items: stretch;
+        }
+
+        .gallery-card {
+            position: relative;
+            border: none;
+            border-radius: 10px;
+            overflow: hidden;
+            background: linear-gradient(135deg, rgba(0, 40, 0, 0.6), rgba(0, 0, 0, 0.75));
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            padding: 0;
+            width: 100%;
+            animation: floatUp 0.9s ease both;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+        }
+
+        .gallery-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 35px rgba(0, 255, 65, 0.18);
+        }
+
+        .gallery-card::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 30% 30%, rgba(0,255,65,0.18), transparent 45%), radial-gradient(circle at 70% 70%, rgba(255,0,255,0.15), transparent 45%);
+            opacity: 0;
+            transition: var(--transition);
+        }
+
+        .gallery-card:hover::after {
+            opacity: 1;
+        }
+
+        .gallery-cover {
+            width: 100%;
+            height: 190px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .gallery-meta {
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            background: rgba(0, 0, 0, 0.35);
+            border-top: 1px solid rgba(0, 255, 65, 0.15);
+            letter-spacing: 0.2px;
+        }
+
+        .gallery-meta strong {
+            color: var(--text-primary);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+        }
+
+        .animate-up { animation: floatUp 0.9s ease both; }
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+        .delay-3 { animation-delay: 0.3s; }
+
+        @keyframes floatUp {
+            from { opacity: 0; transform: translateY(18px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .gallery-card .gallery-meta {
+            padding: 0.9rem 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        .gallery-card .gallery-meta strong {
+            color: var(--text-primary);
+        }
+
+        .about-gallery-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            padding: 1rem;
+        }
+
+        .about-gallery-modal.active {
+            display: flex;
+        }
+
+        .gallery-modal-content {
+            background: var(--card-bg);
+            border: 1px solid var(--primary);
+            border-radius: 8px;
+            padding: 1.5rem;
+            max-width: 1000px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: var(--glow);
+        }
+
+        .gallery-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .gallery-modal-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1rem;
+        }
+
+        .gallery-modal-grid img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 6px;
+            border: 1px solid var(--card-border);
+            background: rgba(0, 20, 0, 0.5);
+        }
+
+        .close-gallery {
+            background: none;
+            border: 1px solid var(--primary);
+            color: var(--text-primary);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .close-gallery:hover {
+            box-shadow: var(--glow);
+            background: rgba(0, 255, 65, 0.1);
+        }
+
+        .about-forms {
+            margin-top: 2rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.25rem;
+        }
+
+        .about-forms.form-focus {
+            box-shadow: 0 0 0 1px var(--primary), 0 0 20px rgba(0,255,65,0.25);
+            border-radius: 8px;
+            padding: 0.1px; /* subtle nudge to show outline */
+        }
+
+        .form-card {
+            background: rgba(0, 20, 0, 0.7);
+            border: 1px solid var(--primary);
+            border-radius: 6px;
+            padding: 1.25rem;
+            box-shadow: var(--glow);
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .form-card h4 {
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .form-card p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 0.75rem;
+        }
+
+        .form-card .form-group {
+            margin-bottom: 0.75rem;
+        }
+
+        .intent-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            background: rgba(0, 255, 65, 0.1);
+            border: 1px solid var(--primary);
+            padding: 0.2rem 0.6rem;
+            border-radius: 999px;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .form-card .btn {
+            margin-top: auto;
+        }
+
+        .intent-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 2500;
+            padding: 1rem;
+        }
+
+        .intent-modal.active {
+            display: flex;
+        }
+
+        .intent-modal .modal-card {
+            width: min(960px, 95vw);
+            background: linear-gradient(135deg, rgba(0, 30, 0, 0.9), rgba(0, 0, 0, 0.9));
+            border: 1px solid var(--primary);
+            box-shadow: var(--glow);
+            border-radius: 8px;
+            padding: 1.5rem;
+            position: relative;
+        }
+
+        .intent-modal.hire .modal-card { border-color: #00ff41; box-shadow: 0 0 20px rgba(0,255,65,0.25); }
+        .intent-modal.music .modal-card { border-color: #ff00ff; box-shadow: 0 0 20px rgba(255,0,255,0.25); }
+        .intent-modal.call .modal-card { border-color: #00c2ff; box-shadow: 0 0 20px rgba(0,194,255,0.25); }
+
+        .intent-close {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            border: 1px solid var(--primary);
+            background: rgba(0,0,0,0.4);
+            color: var(--text-primary);
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            display: grid;
+            place-items: center;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .intent-close:hover { box-shadow: var(--glow); }
+
+        .intent-modal h3 { margin-bottom: 0.25rem; }
+        .intent-modal small { color: var(--text-secondary); display: block; margin-bottom: 0.75rem; }
+
+        .photo-lightbox {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.92);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 2600;
+            padding: 1rem;
+        }
+
+        .photo-lightbox.active {
+            display: flex;
+        }
+
+        .photo-lightbox img {
+            max-width: 95vw;
+            max-height: 90vh;
+            object-fit: contain;
+            border: 1px solid var(--primary);
+            box-shadow: var(--glow);
+            background: rgba(0,0,0,0.3);
+        }
+
+        /* Stats Section */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .stat-card {
+            text-align: center;
+            padding: 2rem 1.5rem;
+            border: 1px solid var(--primary);
+            border-radius: 4px;
+            background: rgba(0, 25, 0, 0.7);
+            transition: var(--transition);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--glow);
+        }
+
+        .stat-icon {
+            font-size: 2rem;
+            color: var(--accent);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: bold;
+            color: var(--accent);
+            text-shadow: var(--accent-glow);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 1rem;
+        }
+
+        .cta-section {
+            text-align: center;
+            background: var(--card-bg);
+            border: 1px solid var(--primary);
+            border-radius: 4px;
+            padding: 3rem 2rem;
+            margin-top: 3rem;
+            box-shadow: var(--glow);
+        }
+
+        .cta-section h3 {
+            color: var(--accent);
+            margin-bottom: 1rem;
+            font-size: 1.8rem;
+        }
+
+        .cta-section p {
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+        }
+
+        .cta-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .cta-buttons .btn {
+            min-width: 160px;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            justify-content: center;
+        }
+
+        /* Project Search Header */
+        .project-search-header {
+            display: none;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding: 1rem;
+            background: var(--card-bg);
+            border: 1px solid var(--primary);
+            box-shadow: var(--glow);
+        }
+
+        .project-search-header.active {
+            display: flex;
+        }
+
+        .project-search-box {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex: 1;
+            max-width: 500px;
+        }
+
+        .project-search-box input {
+            flex: 1;
+            padding: 0.75rem 1rem;
+            background: rgba(0, 30, 0, 0.8);
+            border: 1px solid var(--primary);
+            color: var(--text-primary);
+            font-family: 'Courier New', monospace;
+        }
+
+        .project-search-box input:focus {
+            outline: none;
+            box-shadow: var(--glow);
+        }
+
+        /* Modals */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 3000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--card-bg);
+            border: 1px solid var(--primary);
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: var(--glow);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--primary);
+            background: rgba(0, 20, 0, 0.9);
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .close-modal:hover {
+            color: var(--accent);
+            text-shadow: var(--accent-glow);
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 0.75rem;
+            background: rgba(0, 30, 0, 0.8);
+            border: 1px solid var(--primary);
+            color: var(--text-primary);
+            font-family: 'Courier New', monospace;
+            transition: var(--transition);
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            box-shadow: var(--glow);
+        }
+
+        .form-message {
+            padding: 1rem;
+            margin-top: 1rem;
+            display: none;
+            border-radius: 4px;
+        }
+
+        .form-message.success {
+            background: rgba(0, 255, 65, 0.1);
+            color: var(--success);
+            border: 1px solid var(--success);
+            display: block;
+        }
+
+        .form-message.error {
+            background: rgba(255, 0, 51, 0.1);
+            color: var(--error);
+            border: 1px solid var(--error);
+            display: block;
+        }
+
+        /* Footer */
+        footer {
+            background: rgba(5, 15, 5, 0.95);
+            border-top: 1px solid var(--primary);
+            padding: 2rem 0;
+            text-align: center;
+            margin-top: 3rem;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .footer-logo {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            text-shadow: var(--glow);
+            letter-spacing: 2px;
+        }
+
+        .copyright {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* Animations */
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes scan {
+            0% {
+                transform: translateY(-100%);
+            }
+            100% {
+                transform: translateY(100%);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+
+        /* Matrix effect */
+        .matrix-char {
+            position: absolute;
+            color: var(--primary);
+            font-family: 'Courier New', monospace;
+            font-size: 16px;
+            opacity: 0;
+            animation: matrix-fall linear infinite;
+            text-shadow: 0 0 5px var(--primary);
+        }
+
+        @keyframes matrix-fall {
+            0% {
+                transform: translateY(-100px);
+                opacity: 0;
+            }
+            5% {
+                opacity: 1;
+            }
+            95% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh);
+                opacity: 0;
+            }
+        }
+
+        /* New Features */
+        .language-indicator {
+            font-size: 0.8rem;
+            color: var(--accent);
+            text-shadow: var(--accent-glow);
+            margin-left: 5px;
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: var(--accent);
+            color: var(--darker);
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 0.7rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .featured-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: var(--accent);
+            color: var(--darker);
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            z-index: 10;
+        }
+
+        .tool-tip {
+            position: relative;
+        }
+
+        .tool-tip:hover::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 20, 0, 0.9);
+            color: var(--text-primary);
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            white-space: nowrap;
+            border: 1px solid var(--primary);
+            z-index: 100;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .projects-grid, .music-grid {
+                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            }
+            
+            .hero h1 {
+                font-size: 2.2rem;
+            }
+            
+            .menu {
+                width: 280px;
+            }
+            
+            .about-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .section-header {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
+            }
+            
+            .project-search-header {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .project-search-box {
+                max-width: 100%;
+            }
+            
+            .cert-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .cta-buttons .btn {
+                width: 100%;
+                max-width: 250px;
+            }
+            
+            .typing-controls {
+                position: static;
+                justify-content: center;
+                margin-top: 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .projects-grid, .music-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .project-actions {
+                flex-direction: column;
+            }
+            
+            .stats {
+                grid-template-columns: 1fr;
+            }
+            
+            .hero {
+                padding: 2rem 1rem;
+            }
+            
+            .hero h1 {
+                font-size: 1.8rem;
+            }
+        }
+
+        /* Offer Banner Styles */
+        .offer-banner {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: linear-gradient(45deg, var(--accent), #ff00aa, #00ffaa);
+            color: var(--darker);
+            padding: 15px 0;
+            text-align: center;
+            z-index: 9999;
+            font-weight: bold;
+            font-size: 1.1rem;
+            box-shadow: 0 5px 20px rgba(255, 0, 255, 0.5);
+            animation: pulse-glow 2s infinite;
+            cursor: pointer;
+            border-bottom: 2px solid var(--primary);
+        }
+
+        .offer-banner-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .offer-text {
+            flex: 1;
+            text-align: center;
+            font-family: 'Courier New', monospace;
+            letter-spacing: 1px;
+        }
+
+        .close-offer {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--darker);
+            color: var(--darker);
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-weight: bold;
+            transition: var(--transition);
+        }
+
+        .close-offer:hover {
+            background: rgba(0, 0, 0, 0.6);
+            color: white;
+            transform: scale(1.1);
+        }
+
+        @keyframes pulse-glow {
+            0%, 100% { 
+                box-shadow: 0 5px 20px rgba(255, 0, 255, 0.5);
+            }
+            50% { 
+                box-shadow: 0 5px 30px rgba(255, 0, 255, 0.8), 0 0 40px rgba(255, 0, 255, 0.4);
+            }
+        }
+
+        /* Adjust header margin when banner is visible */
+        body.has-offer-banner header {
+            margin-top: 60px;
+        }
+
+        /* New improvements */
+        .tools-btn {
+            position: relative;
+        }
+        
+        .tools-btn:hover::after {
+            content: "View All Tools";
+            position: absolute;
+            bottom: -40px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 20, 0, 0.9);
+            color: var(--text-primary);
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            white-space: nowrap;
+            border: 1px solid var(--primary);
+            z-index: 100;
+        }
+        
+        .quick-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-top: 2rem;
+            justify-content: center;
+        }
+        
+        .quick-link {
+            background: rgba(0, 255, 65, 0.1);
+            border: 1px solid var(--primary);
+            padding: 1rem 1.5rem;
+            border-radius: 4px;
+            text-decoration: none;
+            color: var(--text-primary);
+            transition: var(--transition);
+            text-align: center;
+            min-width: 150px;
+        }
+        
+        .quick-link:hover {
+            background: rgba(0, 255, 65, 0.2);
+            box-shadow: var(--glow);
+            transform: translateY(-3px);
+        }
+        
+        .quick-link i {
+            display: block;
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: var(--accent);
+        }
+        
+        .loading-bar {
+            height: 3px;
+            background: var(--primary);
+            width: 0%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 10000;
+            transition: width 0.3s ease;
+            box-shadow: var(--glow);
+        }
+        
+        .scroll-to-top {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(0, 255, 65, 0.1);
+            border: 1px solid var(--primary);
+            color: var(--text-primary);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+            z-index: 100;
+            opacity: 0;
+            visibility: hidden;
+        }
+        
+        .scroll-to-top.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .scroll-to-top:hover {
+            background: rgba(0, 255, 65, 0.2);
+            box-shadow: var(--glow);
+        }
+        
+        .category-filter {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .category-btn {
+            background: rgba(0, 255, 65, 0.1);
+            border: 1px solid var(--primary);
+            color: var(--text-primary);
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .category-btn.active {
+            background: rgba(0, 255, 65, 0.3);
+            box-shadow: var(--glow);
+        }
+        
+        .category-btn:hover {
+            background: rgba(0, 255, 65, 0.2);
+        }
+
+        /* Music Player */
+        .music-player {
+            background: rgba(0, 25, 0, 0.8);
+            border: 1px solid var(--primary);
+            border-radius: 4px;
+            padding: 1.5rem;
+            margin-top: 2rem;
+            box-shadow: var(--glow);
+        }
+
+        .player-controls {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .play-btn {
+            background: var(--accent);
+            color: var(--darker);
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: var(--transition);
+        }
+
+        .play-btn:hover {
+            background: var(--accent-light);
+            box-shadow: var(--accent-glow);
+        }
+
+        .progress-bar {
+            flex: 1;
+            height: 6px;
+            background: rgba(0, 255, 65, 0.2);
+            border-radius: 3px;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .progress {
+            height: 100%;
+            background: var(--accent);
+            width: 30%;
+            transition: width 0.1s linear;
+        }
+
+        .time-display {
+            display: flex;
+            justify-content: space-between;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Bar -->
+    <div class="loading-bar" id="loadingBar"></div>
+    
+    <!-- Scroll to Top Button -->
+    <div class="scroll-to-top" id="scrollToTop">
+        <i class="fas fa-arrow-up"></i>
+    </div>
+    
+    <!-- Matrix Background -->
+    <div class="matrix-bg" id="matrixBg"></div>
+
+    <!-- Jelly-Scorpion Creature -->
+    <canvas id="creatureCanvas"></canvas>
+
+    <!-- Header -->
+    <header>
+        <div class="header-content">
+            <a href="#" class="logo" id="homeLogo">
+                <i class="fas fa-terminal"></i>
+                <span id="logoText">All Tools Here</span>
+            </a>
+            <div class="header-right">
+                <button class="search-icon tool-tip" id="searchToggle" data-tooltip="Search">
+                    <i class="fas fa-search"></i>
+                </button>
+                <a href="./ToolStore/index.html" class="tools-btn tool-tip" id="toolsBtn" data-tooltip="Tools">
+                    <i class="fas fa-tools"></i>
+                </a>
+                <button class="language-btn tool-tip" id="languageToggle" data-tooltip="Language">
+                    <i class="fas fa-globe"></i>
+                    <span class="language-indicator" id="languageIndicator">EN</span>
+                </button>
+                <button class="menu-btn tool-tip" id="menuToggle" data-tooltip="Menu">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Search Container -->
+        <div class="search-container" id="searchContainer">
+            <input type="text" id="searchInput" placeholder="Search tools, projects, and resources...">
+        </div>
+        
+        <!-- Language Container -->
+        <div class="language-container" id="languageContainer">
+            <ul class="language-list">
+                <li class="language-item">
+                    <button data-lang="en">
+                        <i class="fas fa-language"></i> English
+                    </button>
+                </li>
+                <li class="language-item">
+                    <button data-lang="ko">
+                        <i class="fas fa-language"></i> 한국어 (Korean)
+                    </button>
+                </li>
+            </ul>
+        </div>
+    </header>
+
+    <!-- Menu -->
+    <div class="menu" id="menu">
+        <div class="menu-header">
+            <h3 id="menuTitle">System Navigation</h3>
+            <button class="close-menu" id="closeMenu">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <ul class="menu-items">
+            <li class="menu-item"><a href="#" data-section="home">> <span data-i18n="home">Home</span></a></li>
+            <li class="menu-item"><a href="#" data-section="projects">> <span data-i18n="projects">My Projects</span></a></li>
+            <li class="menu-item"><a href="#" data-section="music">> <span>My Music</span></a></li>
+            <li class="menu-item"><a href="#" data-section="about">> <span data-i18n="about">About Me</span></a></li>
+            <li class="menu-item"><a href="Freecourse.html">> <span data-i18n="freeCourses">Free Courses</span></a></li>
+            <li class="menu-item"><a href="EarnMoney.html">> <span data-i18n="earnMoney">Earn Money</span></a></li>
+            <li class="menu-item"><a href="./ToolStore/index.html">> <span data-i18n="allTools">All Tools</span></a></li>
+        </ul>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Home Section -->
+        <section id="home" class="page-section active">
+            <div class="hero">
+                <h1 id="heroTitle">SECURITY SOLUTIONS & MUSIC</h1>
+                <p id="heroSubtitle">Cybersecurity expert by day, passionate rapper by night</p>
+                
+                <div class="social-links">
+                    <a href="https://github.com/parashkarki" class="social-link"><i class="fab fa-github"></i></a>
+                    <a href="https://www.youtube.com/@kosaymusic" class="social-link"><i class="fab fa-youtube"></i></a>
+                    <a href="https://www.instagram.com/ho_zun.0?igsh=MWZ6a3E0MWk2Mm9kMA==" class="social-link"><i class="fab fa-instagram"></i></a>
+                    <a href="https://www.tiktok.com/@ho_zun?_r=1&_t=ZS-91H2bmFrqVw" class="social-link"><i class="fab fa-tiktok"></i></a>
+                    <a href="https://open.spotify.com/artist/your-profile" class="social-link"><i class="fab fa-spotify"></i></a>
+                </div>
+                
+                <button class="hire-btn" id="hireBtn" data-i18n="hireMe">HIRE ME</button>
+                
+                <!-- Quick Links -->
+                <div class="quick-links">
+                    <a href="Freecourse.html" class="quick-link">
+                        <i class="fas fa-graduation-cap"></i>
+                        <span>Free Courses</span>
+                    </a>
+                    <a href="EarnMoney.html" class="quick-link">
+                        <i class="fas fa-money-bill-wave"></i>
+                        <span>Earn Money</span>
+                    </a>
+                    <a href="#" data-section="music" class="quick-link">
+                        <i class="fas fa-music"></i>
+                        <span>My Music</span>
+                    </a>
+                    <a href="./ToolStore/index.html" class="quick-link">
+                        <i class="fas fa-tools"></i>
+                        <span>All Tools</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Featured Projects on Home -->
+            <div class="section-header">
+                <h2 class="section-title" data-i18n="featuredProjects">Featured Projects</h2>
+            </div>
+            <div class="projects-grid" id="featuredProjectsContainer">
+                <!-- Featured projects will be dynamically added here -->
+            </div>
+            <div class="see-more-container">
+                <button class="btn btn-primary" id="seeMoreBtn" data-i18n="viewAllProjects">VIEW ALL PROJECTS</button>
+            </div>
+            
+            <!-- Latest Music Section -->
+            <div class="section-header" style="margin-top: 4rem;">
+                <h2 class="section-title">Latest Music Release</h2>
+            </div>
+            <div class="music-player">
+                <h3 style="color: var(--accent); margin-bottom: 1rem;">"Cyber Flow" - Latest Single</h3>
+                <div class="player-controls">
+                    <button class="play-btn" id="playBtn">
+                        <i class="fas fa-play"></i>
+                    </button>
+                    <div class="progress-bar" id="progressBar">
+                        <div class="progress" id="progress"></div>
+                    </div>
+                </div>
+                <div class="time-display">
+                    <span id="currentTime">0:00</span>
+                    <span id="duration">3:45</span>
+                </div>
+                <p style="color: var(--text-secondary); margin-top: 1rem; text-align: center;">
+                    Listen to my latest track blending tech themes with hip-hop beats
+                </p>
+            </div>
+        </section>
+
+        <!-- Projects Section -->
+        <section id="projects" class="page-section">
+            <div class="project-search-header" id="projectSearchHeader">
+                <h2 class="section-title" data-i18n="allProjects">All Projects</h2>
+                <div class="project-search-box">
+                    <input type="text" id="projectSearchInput" placeholder="Search projects...">
+                    <button class="search-icon">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Category Filter -->
+            <div class="category-filter" id="categoryFilter">
+                <!-- Categories will be dynamically added here -->
+            </div>
+            
+            <div class="projects-grid" id="allProjectsContainer">
+                <!-- All projects will be dynamically added here -->
+            </div>
+        </section>
+
+        <!-- Music Section -->
+        <section id="music" class="page-section">
+            <div class="section-header">
+                <h2 class="section-title">My Music Journey</h2>
+            </div>
+            <div class="music-container">
+                <div class="music-grid">
+                    <div class="music-card">
+                        <div class="music-image">
+                            <img src="Photos/vdrecord.JPG" alt="Music Performance">
+                        </div>
+                        <div class="music-info">
+                            <h3 class="music-title">Live Performances</h3>
+                            <p class="music-description">Experience the energy of my live shows where tech meets hip-hop in an unforgettable performance.</p>
+                            <a href="https://www.youtube.com/@kosaymusic" class="music-link" target="_blank">
+                                Watch Videos <i class="fas fa-external-link-alt"></i>
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <div class="music-card">
+                        <div class="music-image">
+                            <img src="Photos/shooting.JPG" alt="Studio Session">
+                        </div>
+                        <div class="music-info">
+                            <h3 class="music-title">Studio Sessions</h3>
+                            <p class="music-description">Behind the scenes of my creative process in the studio, crafting beats and writing lyrics.</p>
+                            <a href="https://www.instagram.com/ho_zun.0?igsh=MWZ6a3E0MWk2Mm9kMA==" class="music-link" target="_blank">
+                                View Photos <i class="fas fa-external-link-alt"></i>
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <div class="music-card">
+                        <div class="music-image">
+                            <img src="Photos/professional.png" alt="Music Collaboration">
+                        </div>
+                        <div class="music-info">
+                            <h3 class="music-title">Collaborations</h3>
+                            <p class="music-description">Working with other artists to create unique fusion tracks that blend different styles and cultures.</p>
+                            <a href="#" class="music-link">
+                                Explore Projects <i class="fas fa-external-link-alt"></i>
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <div class="music-card">
+                        <div class="music-image">
+                            <img src="Photos/Look.JPG" alt="Music Production">
+                        </div>
+                        <div class="music-info">
+                            <h3 class="music-title">Music Production</h3>
+                            <p class="music-description">From beat making to mixing and mastering - the technical side of creating professional music.</p>
+                            <a href="#" class="music-link">
+                                Learn More <i class="fas fa-external-link-alt"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Upcoming Events -->
+                <div class="professional-summary" style="margin-top: 3rem;">
+                    <h3><i class="fas fa-calendar-alt"></i> Upcoming & Fresh Drops</h3>
+                    <div class="skills" style="margin-top: 1rem;">
+                        <span class="skill">New Single: "Har Har Mahadev" - Just Released</span>
+                        <span class="skill">BreakUp Song - Out now</span>
+                        <span class="skill">"KO Aaayo" - Live on YouTube</span>
+                        <span class="skill">"Oee Kanchi" - Streaming on channel</span>
+                    </div>
+                </div>
+
+                <div class="music-video-section animate-up delay-2">
+                    <div class="music-video-header">
+                        <h3><i class="fas fa-play-circle"></i> Watch & Listen</h3>
+                        <a class="music-link" href="https://www.youtube.com/@kosaymusic" target="_blank" rel="noopener">
+                            View full channel <i class="fas fa-external-link-alt"></i>
+                        </a>
+                    </div>
+                    <div class="music-grid">
+                        <div class="music-card" style="padding:0; overflow:hidden;">
+                            <div class="video-frame" style="margin-bottom:0;">
+                                <div class="video-overlay" data-src="https://www.youtube-nocookie.com/embed/W7g1mTogKLM?rel=0&modestbranding=1&playsinline=1">
+                                    <div style="text-align:center;">
+                                        <i class="fas fa-play-circle"></i>
+                                        <div>Play Oee Kanchi</div>
+                                    </div>
+                                </div>
+                                <iframe data-src="https://www.youtube-nocookie.com/embed/W7g1mTogKLM?rel=0&modestbranding=1&playsinline=1"
+                                    title="Oee Kanchi"
+                                    referrerpolicy="strict-origin-when-cross-origin"
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                    loading="lazy"
+                                    allowfullscreen></iframe>
+                            </div>
+                            <div class="music-info">
+                                <h3 class="music-title">Oee Kanchi</h3>
+                                <a class="open-yt-link" href="https://youtu.be/W7g1mTogKLM" target="_blank" rel="noopener">
+                                    Open on YouTube <i class="fas fa-external-link-alt"></i>
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="music-card" style="padding:0; overflow:hidden;">
+                            <div class="video-frame" style="margin-bottom:0;">
+                                <div class="video-overlay" data-src="https://www.youtube-nocookie.com/embed/7NnUhprWOKA?rel=0&modestbranding=1&playsinline=1">
+                                    <div style="text-align:center;">
+                                        <i class="fas fa-play-circle"></i>
+                                        <div>Play KO Aaayo</div>
+                                    </div>
+                                </div>
+                                <iframe data-src="https://www.youtube-nocookie.com/embed/7NnUhprWOKA?rel=0&modestbranding=1&playsinline=1"
+                                    title="KO Aaayo"
+                                    referrerpolicy="strict-origin-when-cross-origin"
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                    loading="lazy"
+                                    allowfullscreen></iframe>
+                            </div>
+                            <div class="music-info">
+                                <h3 class="music-title">KO Aaayo</h3>
+                                <a class="open-yt-link" href="https://youtu.be/7NnUhprWOKA" target="_blank" rel="noopener">
+                                    Open on YouTube <i class="fas fa-external-link-alt"></i>
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="music-card" style="padding:0; overflow:hidden;">
+                            <div class="video-frame" style="margin-bottom:0;">
+                                <div class="video-overlay" data-src="https://www.youtube-nocookie.com/embed/9s2cPPjx-xI?rel=0&modestbranding=1&playsinline=1">
+                                    <div style="text-align:center;">
+                                        <i class="fas fa-play-circle"></i>
+                                        <div>Play BreakUp Song</div>
+                                    </div>
+                                </div>
+                                <iframe data-src="https://www.youtube-nocookie.com/embed/9s2cPPjx-xI?rel=0&modestbranding=1&playsinline=1"
+                                    title="BreakUp Song"
+                                    referrerpolicy="strict-origin-when-cross-origin"
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                    loading="lazy"
+                                    allowfullscreen></iframe>
+                            </div>
+                            <div class="music-info">
+                                <h3 class="music-title">BreakUp Song</h3>
+                                <a class="open-yt-link" href="https://youtu.be/9s2cPPjx-xI" target="_blank" rel="noopener">
+                                    Open on YouTube <i class="fas fa-external-link-alt"></i>
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="music-card" style="padding:0; overflow:hidden;">
+                            <div class="video-frame" style="margin-bottom:0;">
+                                <div class="video-overlay" data-src="https://www.youtube-nocookie.com/embed/RIUdiwMjb_M?rel=0&modestbranding=1&playsinline=1">
+                                    <div style="text-align:center;">
+                                        <i class="fas fa-play-circle"></i>
+                                        <div>Play Har Har Mahadev</div>
+                                    </div>
+                                </div>
+                                <iframe data-src="https://www.youtube-nocookie.com/embed/RIUdiwMjb_M?rel=0&modestbranding=1&playsinline=1"
+                                    title="Har Har Mahadev"
+                                    referrerpolicy="strict-origin-when-cross-origin"
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                    loading="lazy"
+                                    allowfullscreen></iframe>
+                            </div>
+                            <div class="music-info">
+                                <h3 class="music-title">Har Har Mahadev</h3>
+                                <a class="open-yt-link" href="https://youtu.be/RIUdiwMjb_M" target="_blank" rel="noopener">
+                                    Open on YouTube <i class="fas fa-external-link-alt"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- About Section -->
+        <section id="about" class="page-section">
+            <div class="section-header">
+                <h2 class="section-title" data-i18n="aboutMe">About Me</h2>
+            </div>
+            <div class="about-container">
+                <div class="about-content">
+                    <div class="about-image animate-up delay-1">
+                        <img src="Photos/professional.png" alt="Paras Karki">
+                        <!-- Contact Info Card -->
+                        <div class="contact-card">
+                            <h4>Contact Information</h4>
+                            <div class="contact-item">
+                                <i class="fas fa-envelope"></i>
+                                <span>parashkarki782@gmail.com</span>
+                            </div>
+                            <div class="contact-item">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span>Kathmandu, Nepal</span>
+                            </div>
+                            <div class="contact-item">
+                                <i class="fas fa-phone"></i>
+                                <span>+977 98XXXXXXX</span>
+                            </div>
+                            <div class="contact-item">
+                                <i class="fas fa-globe"></i>
+                                <span>Available Worldwide</span>
+                            </div>
+                            <button class="btn btn-primary contact-btn" id="contactBtn">
+                                <i class="fas fa-paper-plane"></i> Send Message
+                            </button>
+                        </div>
+                    </div>
+                    <div class="about-text animate-up delay-2">
+                        <h2 class="hover-highlight">Software & Web Developer | Rapper | Video Editor</h2>
+                        <div class="about-meta">
+                            <span class="chip hover-highlight"><i class="fas fa-map-marker-alt"></i> Kathmandu, Nepal</span>
+                            <span class="chip hover-highlight"><i class="fas fa-globe"></i> Available Worldwide</span>
+                            <span class="chip hover-highlight"><i class="fas fa-bolt"></i> Fast shipping & iteration</span>
+                        </div>
+                        <div class="about-roles">
+                            <span class="role-badge hover-highlight"><i class="fas fa-code"></i> Software Developer</span>
+                            <span class="role-badge hover-highlight"><i class="fas fa-globe"></i> Web Developer</span>
+                            <span class="role-badge hover-highlight"><i class="fas fa-microphone-alt"></i> Rapper</span>
+                            <span class="role-badge hover-highlight"><i class="fas fa-video"></i> Video Editor</span>
+                        </div>
+                        
+                        <!-- Enhanced Typing Text Container -->
+                        <div class="typing-container">
+                            <div class="typing-text" id="typingText">
+                                <!-- Text will be typed here -->
+                            </div>
+                        </div>
+                        
+                        <!-- Professional Summary -->
+                        <div class="professional-summary">
+                            <h3 class="hover-highlight"><i class="fas fa-user-secret"></i> Builder, Storyteller, Performer</h3>
+                            <p class="spark-words">I craft secure, high-performing web experiences by day, and write rhymes plus edit visuals by night. My mix of software development, full-stack web builds, rap performance, and video storytelling lets me ship products that look good, work fast, and still carry creative energy.</p>
+                        </div>
+
+                        <h3 style="margin-top: 2rem;" data-i18n="skillsExpertise">Skills & Expertise</h3>
+                        <div class="skills">
+                            <span class="skill hover-highlight">Full-Stack Web Development</span>
+                            <span class="skill hover-highlight">API Design & Integrations</span>
+                            <span class="skill hover-highlight">Automation & Scripting</span>
+                            <span class="skill hover-highlight">Frontend UX & Animations</span>
+                            <span class="skill hover-highlight">Rap Writing & Vocal Performance</span>
+                            <span class="skill hover-highlight">Music Production & Recording</span>
+                            <span class="skill hover-highlight">Video Editing & Motion</span>
+                            <span class="skill hover-highlight">Content Strategy</span>
+                        </div>
+
+                        <!-- Life in Frames gallery moved below contact block -->
+
+                        <!-- Certifications Section -->
+                        <div class="certifications">
+                        <h3 class="hover-highlight"><i class="fas fa-award"></i> Wins I’m proud of</h3>
+                        <div class="cert-grid">
+                            <div class="cert-item">
+                                <i class="fas fa-rocket"></i>
+                                <span class="hover-highlight">Web apps shipped for clients</span>
+                            </div>
+                            <div class="cert-item">
+                                <i class="fas fa-microphone-alt"></i>
+                                <span class="hover-highlight">Rap performances & releases</span>
+                            </div>
+                            <div class="cert-item">
+                                <i class="fas fa-film"></i>
+                                <span class="hover-highlight">Video edits & promo cuts</span>
+                            </div>
+                            <div class="cert-item">
+                                <i class="fas fa-users"></i>
+                                <span class="hover-highlight">Collabs across tech & music</span>
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="about-gallery animate-up delay-3" id="aboutGallery">
+                    <div class="about-gallery-header">
+                        <h3><i class="fas fa-images"></i> Life in Frames</h3>
+                        <p>Click a category to open the gallery. Covers stay minimal until you interact.</p>
+                    </div>
+                    <div class="gallery-grid">
+                        <button class="gallery-card" data-category="builder">
+                            <img class="gallery-cover" src="Photos/professional.png" alt="Builder mode cover">
+                            <div class="gallery-meta">
+                                <strong>Builder Mode</strong>
+                                <span>Software/Web · 5 photos</span>
+                            </div>
+                        </button>
+                        <button class="gallery-card" data-category="music">
+                            <img class="gallery-cover" src="Photos/vdrecord.JPG" alt="Music life cover">
+                            <div class="gallery-meta">
+                                <strong>Rap & Music</strong>
+                                <span>Shows & studio · 5 photos</span>
+                            </div>
+                        </button>
+                        <button class="gallery-card" data-category="video">
+                            <img class="gallery-cover" src="Photos/shooting.JPG" alt="Video editing cover">
+                            <div class="gallery-meta">
+                                <strong>Video & Visuals</strong>
+                                <span>Edits & b-roll · 5 photos</span>
+                            </div>
+                        </button>
+                        <button class="gallery-card" data-category="life">
+                            <img class="gallery-cover" src="Photos/kl tower.jpg" alt="Life moments cover">
+                            <div class="gallery-meta">
+                                <strong>Life & Travel</strong>
+                                <span>Grounded roots · 6 photos</span>
+                            </div>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Enhanced Stats Section -->
+                <div class="stats">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-tools"></i>
+                        </div>
+                        <div class="stat-number">40+</div>
+                        <div class="stat-label">Projects Shipped</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-project-diagram"></i>
+                        </div>
+                        <div class="stat-number">25+</div>
+                        <div class="stat-label">Happy Clients & Teams</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-music"></i>
+                        </div>
+                        <div class="stat-number">20+</div>
+                        <div class="stat-label">Tracks & Performances</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-video"></i>
+                        </div>
+                        <div class="stat-number">30+</div>
+                        <div class="stat-label">Videos Edited</div>
+                    </div>
+                </div>
+
+                <!-- Call to Action -->
+                <div class="cta-section">
+                    <h3>Ready to collaborate?</h3>
+                    <p>Pick a lane above - build a product, drop a verse together, or book a call to align fast.</p>
+                    <div class="cta-buttons">
+                        <button class="btn btn-primary" id="aboutHireBtn">
+                            <i class="fas fa-briefcase"></i> Hire for Software/Web
+                        </button>
+                        <button class="btn" id="musicCollabBtn">
+                            <i class="fas fa-music"></i> Music Collaboration
+                        </button>
+                        <button class="btn" id="scheduleCallBtn">
+                            <i class="fas fa-calendar-check"></i> Schedule Call
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <div class="about-gallery-modal" id="aboutGalleryModal">
+            <div class="gallery-modal-content">
+                <div class="gallery-modal-header">
+                    <div>
+                        <h3 id="galleryModalTitle">Gallery</h3>
+                        <p id="galleryModalDesc" style="color: var(--text-secondary); font-size: 0.95rem;">Click any category to view the full set.</p>
+                    </div>
+                    <button class="close-gallery" id="closeGalleryModal" aria-label="Close gallery">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="gallery-modal-grid" id="galleryModalGrid"></div>
+            </div>
+        </div>
+
+        <div class="intent-modal hire" id="hireIntentModal">
+            <div class="modal-card">
+                <button class="intent-close" data-close-modal="hireIntentModal"><i class="fas fa-times"></i></button>
+                <div class="intent-tag"><i class="fas fa-briefcase"></i> Hire for software/web</div>
+                <h3>Build or level up your product</h3>
+                <small>Full-stack builds, features, automation, performance & polish</small>
+                <form class="about-intent-form" id="aboutHireForm" data-type="hire">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="aboutHireName">Name</label>
+                            <input type="text" id="aboutHireName" name="name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="aboutHireEmail">Email</label>
+                            <input type="email" id="aboutHireEmail" name="email" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="aboutHireScope">Project type</label>
+                        <select id="aboutHireScope" name="service" required>
+                            <option value="">Select</option>
+                            <option value="web-app">Web app or dashboard</option>
+                            <option value="frontend">Frontend polish/UX</option>
+                            <option value="automation">Automation/scripts</option>
+                            <option value="security-tune">Hardening & performance</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="aboutHireMessage">What do you need?</label>
+                        <textarea id="aboutHireMessage" name="message" rows="4" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">Send hire request</button>
+                    <div class="form-message" id="aboutHireMessageEl"></div>
+                </form>
+            </div>
+        </div>
+
+        <div class="intent-modal music" id="musicIntentModal">
+            <div class="modal-card">
+                <button class="intent-close" data-close-modal="musicIntentModal"><i class="fas fa-times"></i></button>
+                <div class="intent-tag"><i class="fas fa-music"></i> Music collaboration</div>
+                <h3>Bars, beats, hooks</h3>
+                <small>Verses, co-writing, feedback, or live performance</small>
+                <form class="about-intent-form" id="musicCollabForm" data-type="music">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="musicCollabName">Name / Stage name</label>
+                            <input type="text" id="musicCollabName" name="name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="musicCollabEmail">Email</label>
+                            <input type="email" id="musicCollabEmail" name="email" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="musicCollabType">Collab type</label>
+                        <select id="musicCollabType" name="service" required>
+                            <option value="">Select</option>
+                            <option value="feature-verse">Feature verse</option>
+                            <option value="co-write">Co-writing</option>
+                            <option value="mix-feedback">Mix/creative feedback</option>
+                            <option value="performance">Performance/appearance</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="musicCollabMessage">Project link or idea</label>
+                        <textarea id="musicCollabMessage" name="message" rows="4" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">Send collab idea</button>
+                    <div class="form-message" id="musicCollabMessageEl"></div>
+                </form>
+            </div>
+        </div>
+
+        <div class="intent-modal call" id="callIntentModal">
+            <div class="modal-card">
+                <button class="intent-close" data-close-modal="callIntentModal"><i class="fas fa-times"></i></button>
+                <div class="intent-tag"><i class="fas fa-calendar-check"></i> Schedule a call</div>
+                <h3>Quick alignment call</h3>
+                <small>Pick a slot, share your agenda, and we’ll plan fast.</small>
+                <form class="about-intent-form" id="scheduleCallForm" data-type="call">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="scheduleCallName">Name</label>
+                            <input type="text" id="scheduleCallName" name="name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="scheduleCallEmail">Email</label>
+                            <input type="email" id="scheduleCallEmail" name="email" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="scheduleCallDay">Preferred day</label>
+                            <input type="text" id="scheduleCallDay" name="service" placeholder="e.g., This Friday" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="scheduleCallTime">Preferred time & timezone</label>
+                            <input type="text" id="scheduleCallTime" name="time" placeholder="e.g., 3 PM GMT+5:45" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="scheduleCallMessage">Agenda</label>
+                        <textarea id="scheduleCallMessage" name="message" rows="3" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">Request call</button>
+                    <div class="form-message" id="scheduleCallMessageEl"></div>
+                </form>
+            </div>
+        </div>
+
+        <div class="photo-lightbox" id="photoLightbox">
+            <img id="photoLightboxImg" alt="Preview">
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-logo" data-i18n="footerLogo">Paras Karki - Security & Music</div>
+            <div class="copyright" data-i18n="copyright">
+                &copy; 2025 Paras Karki. All rights reserved. | Secure. Creative. Professional.
+            </div>
+        </div>
+    </footer>
+
+    <!-- Hire Me Modal -->
+    <div class="modal" id="hireModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 data-i18n="hireMe">Hire Me</h3>
+                <button class="close-modal" id="closeHireModal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="hireForm">
+                    <div class="form-group">
+                        <label for="hireName" data-i18n="yourName">Your Name</label>
+                        <input type="text" id="hireName" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="hireEmail" data-i18n="yourEmail">Your Email</label>
+                        <input type="email" id="hireEmail" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="hireService" data-i18n="serviceNeeded">Service Needed</label>
+                        <select id="hireService" name="service" required>
+                            <option value="" data-i18n="selectService">Select a service</option>
+                            <option value="penetration-testing" data-i18n="penetrationTesting">Penetration Testing</option>
+                            <option value="security-audit" data-i18n="securityAudit">Security Audit</option>
+                            <option value="tool-development" data-i18n="toolDevelopment">Tool Development</option>
+                            <option value="consultation" data-i18n="consultation">Consultation</option>
+                            <option value="music-collab">Music Collaboration</option>
+                            <option value="other" data-i18n="other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="hireMessage" data-i18n="projectDetails">Project Details</label>
+                        <textarea id="hireMessage" name="message" rows="5" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width: 100%;" data-i18n="sendRequest">Send Request</button>
+                    <div class="form-message" id="hireMessageEl"></div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Purchase Modal -->
+    <div class="modal" id="purchaseModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="purchaseTitle" data-i18n="purchaseProject">Purchase Project</h3>
+                <button class="close-modal" id="closePurchaseModal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div id="purchaseContent">
+                    <!-- Purchase form will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Offer Banner -->
+    <div class="offer-banner" id="offerBanner">
+        <div class="offer-banner-content">
+            <div class="offer-text">
+                Create your full static website for 5,000 Won. Delivered in 1 day. Limited time offer!
+            </div>
+            <button class="close-offer" id="closeOffer">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Jelly-Scorpion Creature Code
+        const creatureCanvas = document.getElementById('creatureCanvas');
+        const creatureCtx = creatureCanvas.getContext('2d');
+        
+        // Set canvas size to window size
+        function resizeCreatureCanvas() {
+            creatureCanvas.width = window.innerWidth;
+            creatureCanvas.height = window.innerHeight;
+        }
+        
+        resizeCreatureCanvas();
+        window.addEventListener('resize', resizeCreatureCanvas);
+        
+        // Mouse position for creature
+        const creatureMouse = {
+            x: creatureCanvas.width / 2,
+            y: creatureCanvas.height / 2
+        };
+        
+        // Update mouse position on mouse move
+        document.addEventListener('mousemove', (e) => {
+            creatureMouse.x = e.clientX;
+            creatureMouse.y = e.clientY;
+        });
+        
+        // Particle system for background effects
+        class Particle {
+            constructor() {
+                this.x = Math.random() * creatureCanvas.width;
+                this.y = Math.random() * creatureCanvas.height;
+                this.size = Math.random() * 3 + 1;
+                this.speedX = Math.random() * 0.5 - 0.25;
+                this.speedY = Math.random() * 0.5 - 0.25;
+                this.color = `rgba(${Math.floor(Math.random() * 100 + 155)}, ${Math.floor(Math.random() * 100 + 155)}, 255, ${Math.random() * 0.5 + 0.1})`;
+            }
+            
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                
+                if (this.x > creatureCanvas.width) this.x = 0;
+                if (this.x < 0) this.x = creatureCanvas.width;
+                if (this.y > creatureCanvas.height) this.y = 0;
+                if (this.y < 0) this.y = creatureCanvas.height;
+            }
+            
+            draw() {
+                creatureCtx.fillStyle = this.color;
+                creatureCtx.beginPath();
+                creatureCtx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                creatureCtx.fill();
+            }
+        }
+        
+        // Create background particles
+        const creatureParticles = [];
+        for (let i = 0; i < 50; i++) {
+            creatureParticles.push(new Particle());
+        }
+        
+        // JellyScorpion class - a hybrid creature
+        class JellyScorpion {
+            constructor(x, y) {
+                // Head position (this is what follows the mouse)
+                this.headX = x;
+                this.headY = y;
+                
+                // Body segments (tail follows head)
+                this.segments = [];
+                this.numSegments = 12;
+                this.segmentLength = 15;
+                
+                // Initialize segments
+                for (let i = 0; i < this.numSegments; i++) {
+                    this.segments.push({
+                        x: x - i * this.segmentLength,
+                        y: y,
+                        angle: 0
+                    });
+                }
+                
+                this.size = 25;
+                this.tentacles = [];
+                this.speed = 0.08;
+                this.angle = 0;
+                this.pulsePhase = 0;
+                this.glowIntensity = 0;
+                
+                // Initialize tentacles
+                this.initTentacles();
+            }
+            
+            initTentacles() {
+                // Create multiple tentacles attached to head
+                for (let i = 0; i < 8; i++) {
+                    const angle = (i / 8) * Math.PI * 2;
+                    this.tentacles.push({
+                        angle: angle,
+                        segments: [],
+                        length: 60 + Math.random() * 30,
+                        phase: Math.random() * Math.PI * 2
+                    });
+                    
+                    // Create segments for each tentacle
+                    for (let j = 0; j < 6; j++) {
+                        this.tentacles[i].segments.push({
+                            length: 10,
+                            angle: 0,
+                            width: 6 - j * 0.7
+                        });
+                    }
+                }
+            }
+            
+            update() {
+                // Calculate angle to mouse
+                const dx = creatureMouse.x - this.headX;
+                const dy = creatureMouse.y - this.headY;
+                this.angle = Math.atan2(dy, dx);
+                
+                // Move HEAD towards mouse with easing
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                if (distance > 5) {
+                    this.headX += Math.cos(this.angle) * Math.min(distance * this.speed, 6);
+                    this.headY += Math.sin(this.angle) * Math.min(distance * this.speed, 6);
+                }
+                
+                // Update body segments to follow the head
+                this.updateBodySegments();
+                
+                // Update pulse phase for jellyfish-like movement
+                this.pulsePhase += 0.05;
+                this.glowIntensity = 0.5 + Math.sin(this.pulsePhase) * 0.3;
+                
+                // Update tentacles
+                this.updateTentacles();
+            }
+            
+            updateBodySegments() {
+                // First segment follows head directly
+                this.segments[0].x = this.headX - Math.cos(this.angle) * this.size * 0.8;
+                this.segments[0].y = this.headY - Math.sin(this.angle) * this.size * 0.8;
+                this.segments[0].angle = this.angle;
+                
+                // Remaining segments follow the previous one
+                for (let i = 1; i < this.segments.length; i++) {
+                    const prevSegment = this.segments[i - 1];
+                    const segment = this.segments[i];
+                    
+                    const dx = prevSegment.x - segment.x;
+                    const dy = prevSegment.y - segment.y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    
+                    // Move segment toward previous segment
+                    if (dist > this.segmentLength) {
+                        segment.x = prevSegment.x - (dx / dist) * this.segmentLength;
+                        segment.y = prevSegment.y - (dy / dist) * this.segmentLength;
+                    }
+                    
+                    segment.angle = Math.atan2(dy, dx);
+                }
+            }
+            
+            updateTentacles() {
+                const time = Date.now() * 0.002;
+                
+                this.tentacles.forEach(tentacle => {
+                    // Base angle for the tentacle (attached to head)
+                    const baseAngle = tentacle.angle + this.angle;
+                    
+                    // Update each segment
+                    tentacle.segments.forEach((segment, index) => {
+                        // Create flowing motion
+                        const wave = Math.sin(time + tentacle.phase + index * 0.7) * 0.8;
+                        segment.angle = baseAngle + wave;
+                    });
+                });
+            }
+            
+            draw() {
+                // Draw glow effect
+                this.drawGlow();
+                
+                // Draw body segments (tail)
+                this.drawBody();
+                
+                // Draw head
+                this.drawHead();
+                
+                // Draw tentacles
+                this.drawTentacles();
+            }
+            
+            drawGlow() {
+                const gradient = creatureCtx.createRadialGradient(
+                    this.headX, this.headY, 0,
+                    this.headX, this.headY, this.size * 2.5
+                );
+                gradient.addColorStop(0, `rgba(100, 200, 255, ${this.glowIntensity * 0.4})`);
+                gradient.addColorStop(1, 'rgba(100, 200, 255, 0)');
+                
+                creatureCtx.fillStyle = gradient;
+                creatureCtx.beginPath();
+                creatureCtx.arc(this.headX, this.headY, this.size * 2.5, 0, Math.PI * 2);
+                creatureCtx.fill();
+            }
+            
+            drawBody() {
+                // Draw the connecting body between segments
+                creatureCtx.strokeStyle = 'rgba(180, 220, 255, 0.8)';
+                creatureCtx.lineWidth = 8;
+                creatureCtx.lineCap = 'round';
+                creatureCtx.lineJoin = 'round';
+                
+                creatureCtx.beginPath();
+                creatureCtx.moveTo(this.headX, this.headY);
+                
+                // Draw curve through all segments
+                for (let i = 0; i < this.segments.length; i++) {
+                    creatureCtx.lineTo(this.segments[i].x, this.segments[i].y);
+                }
+                
+                creatureCtx.stroke();
+                
+                // Draw individual segment highlights
+                for (let i = 0; i < this.segments.length; i++) {
+                    const segment = this.segments[i];
+                    const gradient = creatureCtx.createRadialGradient(
+                        segment.x, segment.y, 0,
+                        segment.x, segment.y, 6
+                    );
+                    gradient.addColorStop(0, 'rgba(200, 230, 255, 0.9)');
+                    gradient.addColorStop(1, 'rgba(150, 200, 255, 0.4)');
+                    
+                    creatureCtx.fillStyle = gradient;
+                    creatureCtx.beginPath();
+                    creatureCtx.arc(segment.x, segment.y, 6, 0, Math.PI * 2);
+                    creatureCtx.fill();
+                }
+            }
+            
+            drawHead() {
+                // Draw head as main body
+                const headGradient = creatureCtx.createRadialGradient(
+                    this.headX, this.headY, 0,
+                    this.headX, this.headY, this.size
+                );
+                headGradient.addColorStop(0, 'rgba(220, 240, 255, 0.95)');
+                headGradient.addColorStop(0.7, 'rgba(180, 220, 255, 0.8)');
+                headGradient.addColorStop(1, 'rgba(150, 200, 255, 0.6)');
+                
+                creatureCtx.fillStyle = headGradient;
+                creatureCtx.beginPath();
+                creatureCtx.arc(this.headX, this.headY, this.size, 0, Math.PI * 2);
+                creatureCtx.fill();
+                
+                // Draw simple eyes
+                const eyeOffset = 8;
+                const eyeX1 = this.headX + Math.cos(this.angle - Math.PI/4) * eyeOffset;
+                const eyeY1 = this.headY + Math.sin(this.angle - Math.PI/4) * eyeOffset;
+                const eyeX2 = this.headX + Math.cos(this.angle + Math.PI/4) * eyeOffset;
+                const eyeY2 = this.headY + Math.sin(this.angle + Math.PI/4) * eyeOffset;
+                
+                creatureCtx.fillStyle = 'rgba(40, 60, 120, 0.9)';
+                creatureCtx.beginPath();
+                creatureCtx.arc(eyeX1, eyeY1, 5, 0, Math.PI * 2);
+                creatureCtx.arc(eyeX2, eyeY2, 5, 0, Math.PI * 2);
+                creatureCtx.fill();
+                
+                // Eye highlights
+                creatureCtx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+                creatureCtx.beginPath();
+                creatureCtx.arc(eyeX1 - 1, eyeY1 - 1, 2, 0, Math.PI * 2);
+                creatureCtx.arc(eyeX2 - 1, eyeY2 - 1, 2, 0, Math.PI * 2);
+                creatureCtx.fill();
+            }
+            
+            drawTentacles() {
+                const time = Date.now() * 0.002;
+                
+                this.tentacles.forEach(tentacle => {
+                    const baseAngle = tentacle.angle + this.angle;
+                    let x = this.headX + Math.cos(baseAngle) * this.size * 0.8;
+                    let y = this.headY + Math.sin(baseAngle) * this.size * 0.8;
+                    
+                    // Draw tentacle with gradient and glow
+                    creatureCtx.strokeStyle = 'rgba(200, 230, 255, 0.7)';
+                    creatureCtx.lineWidth = tentacle.segments[0].width;
+                    creatureCtx.lineCap = 'round';
+                    creatureCtx.lineJoin = 'round';
+                    
+                    creatureCtx.beginPath();
+                    creatureCtx.moveTo(x, y);
+                    
+                    // Draw each segment
+                    tentacle.segments.forEach((segment, index) => {
+                        const wave = Math.sin(time + tentacle.phase + index * 0.7) * 0.8;
+                        const segmentAngle = baseAngle + wave;
+                        
+                        x += Math.cos(segmentAngle) * segment.length;
+                        y += Math.sin(segmentAngle) * segment.length;
+                        
+                        creatureCtx.lineTo(x, y);
+                        
+                        // Reduce line width for taper effect
+                        creatureCtx.lineWidth = segment.width;
+                    });
+                    
+                    creatureCtx.stroke();
+                });
+            }
+        }
+        
+        // Create the creature
+        const creature = new JellyScorpion(creatureCanvas.width / 2, creatureCanvas.height / 2);
+        
+        // Animation loop for creature
+        function animateCreature() {
+            // Clear canvas with dark blue for depth
+            creatureCtx.fillStyle = 'rgba(15, 12, 41, 0.1)';
+            creatureCtx.fillRect(0, 0, creatureCanvas.width, creatureCanvas.height);
+            
+            // Update and draw particles
+            creatureParticles.forEach(particle => {
+                particle.update();
+                particle.draw();
+            });
+            
+            // Update and draw creature
+            creature.update();
+            creature.draw();
+            
+            // Continue animation
+            requestAnimationFrame(animateCreature);
+        }
+        
+        // Start creature animation
+        animateCreature();
+
+        // Original website code continues below...
+        // Language data
+        const translations = {
+            en: {
+                // Header
+                logoText: "All Tools Here",
+                search: "Search",
+                tools: "Tools",
+                language: "Language",
+                menu: "Menu",
+                
+                // Menu
+                menuTitle: "System Navigation",
+                home: "Home",
+                projects: "My Projects",
+                resources: "Security Resources",
+                about: "About Me",
+                freeCourses: "Free Courses",
+                earnMoney: "Earn Money",
+                allTools: "All Tools",
+                
+                // Hero Section
+                heroTitle: "SECURITY SOLUTIONS & TOOLS",
+                heroSubtitle: "Advanced cybersecurity tools and resources for professionals",
+                hireMe: "HIRE ME",
+                
+                // Sections
+                featuredProjects: "Featured Projects",
+                viewAllProjects: "VIEW ALL PROJECTS",
+                allProjects: "All Projects",
+                securityResources: "Security Resources",
+                aboutMe: "About Me",
+                securityResearcher: "Security Researcher & Developer",
+                skillsExpertise: "Skills & Expertise",
+                
+                // Skills
+                penetrationTesting: "Penetration Testing",
+                webSecurity: "Web Security",
+                networkSecurity: "Network Security",
+                malwareAnalysis: "Malware Analysis",
+                pythonDevelopment: "Python Development",
+                cryptography: "Cryptography",
+                digitalForensics: "Digital Forensics",
+                incidentResponse: "Incident Response",
+                
+                // Stats
+                toolsDeveloped: "Tools Developed",
+                projectsCompleted: "Projects Completed",
+                yearsExperience: "Years Experience",
+                supportAvailable: "Support Available",
+                
+                // Forms
+                yourName: "Your Name",
+                yourEmail: "Your Email",
+                serviceNeeded: "Service Needed",
+                selectService: "Select a service",
+                securityAudit: "Security Audit",
+                toolDevelopment: "Tool Development",
+                consultation: "Consultation",
+                other: "Other",
+                projectDetails: "Project Details",
+                sendRequest: "Send Request",
+                purchaseProject: "Purchase Project",
+                
+                // Footer
+                footerLogo: "All Tools Here",
+                copyright: "© 2023 All Tools Here. All rights reserved. | Secure. Reliable. Professional."
+            },
+            ko: {
+                // Header
+                logoText: "모든 도구 여기",
+                search: "검색",
+                tools: "도구",
+                language: "언어",
+                menu: "메뉴",
+                
+                // Menu
+                menuTitle: "시스템 네비게이션",
+                home: "홈",
+                projects: "내 프로젝트",
+                resources: "보안 리소스",
+                about: "내 정보",
+                freeCourses: "무료 강의",
+                earnMoney: "수익 창출",
+                allTools: "모든 도구",
+                
+                // Hero Section
+                heroTitle: "보안 솔루션 및 도구",
+                heroSubtitle: "전문가를 위한 고급 사이버 보안 도구 및 리소스",
+                hireMe: "고용하기",
+                
+                // Sections
+                featuredProjects: "주요 프로젝트",
+                viewAllProjects: "모든 프로젝트 보기",
+                allProjects: "모든 프로젝트",
+                securityResources: "보안 리소스",
+                aboutMe: "내 정보",
+                securityResearcher: "보안 연구원 및 개발자",
+                skillsExpertise: "기술 및 전문 분야",
+                
+                // Skills
+                penetrationTesting: "침투 테스트",
+                webSecurity: "웹 보안",
+                networkSecurity: "네트워크 보안",
+                malwareAnalysis: "멀웨어 분석",
+                pythonDevelopment: "파이썬 개발",
+                cryptography: "암호화",
+                digitalForensics: "디지털 포렌식",
+                incidentResponse: "사고 대응",
+                
+                // Stats
+                toolsDeveloped: "개발된 도구",
+                projectsCompleted: "완료된 프로젝트",
+                yearsExperience: "경력 연수",
+                supportAvailable: "지원 가능",
+                
+                // Forms
+                yourName: "이름",
+                yourEmail: "이메일",
+                serviceNeeded: "필요한 서비스",
+                selectService: "서비스 선택",
+                securityAudit: "보안 감사",
+                toolDevelopment: "도구 개발",
+                consultation: "컨설팅",
+                other: "기타",
+                projectDetails: "프로젝트 상세 정보",
+                sendRequest: "요청 보내기",
+                purchaseProject: "프로젝트 구매",
+                
+                // Footer
+                footerLogo: "모든 도구 여기",
+                copyright: "© 2023 모든 도구 여기. 모든 권리 보유. | 안전함. 신뢰할 수 있음. 전문적."
+            }
+        };
+
+        // Current language
+        let currentLanguage = 'en';
+
+        // Project data (real projects)
+        const projectsData = [
+            {
+                id: 1,
+                title: "CM Midterm",
+                description: "CM midterm project",
+                image: "Photos/1760288192378.jpg",
+                price: "$0 (Free)",
+                previewUrl: "My projects/cmidterm.html",
+                category: "Student"
+            },
+            {
+                id: 2,
+                title: "E-Commerce Website",
+                description: "Complete ecommerce layout demo",
+                image: "Photos/ecommerce website.png",
+                price: "$150 (Paid)",
+                previewUrl: "My projects/E-commerce website.html",
+                category: "E-Commerce"
+            },
+            {
+                id: 3,
+                title: "FreeTik",
+                description: "Landing page for FreeTik concept",
+                image: "Photos/freetik.png",
+                price: "$0 (Free)",
+                previewUrl: "My projects/freetik.html",
+                category: "Web"
+            },
+            {
+                id: 4,
+                title: "Life Organizer",
+                description: "Productivity planner app UI",
+                image: "Photos/lifeorganizer.png",
+                price: "$120 (Paid)",
+                previewUrl: "My projects/LifeOrganizer.html",
+                category: "Productivity"
+            },
+            {
+                id: 5,
+                title: "Network Scanner",
+                description: "Network scanning utility page",
+                image: "Photos/professional.png",
+                price: "$90 (Paid)",
+                previewUrl: "My projects/network-scanner.html",
+                category: "Security"
+            },
+            {
+                id: 6,
+                title: "Heaven Cafe",
+                description: "Cafe website concept",
+                image: "Photos/heaven cafe.png",
+                price: "$80 (Paid)",
+                previewUrl: "My projects/Heaven Cafe/Heaven Cafe.html",
+                category: "Food & Beverage"
+            },
+            {
+                id: 7,
+                title: "Himalayen Store (Full Project)",
+                description: "End-to-end Himalayen ecommerce experience",
+                image: "Photos/Himalayen store.png",
+                price: "$250 (Paid)",
+                previewUrl: "My projects/Himalayen/index.html",
+                category: "E-Commerce"
+            }
+        ];
+
+        // Tools data
+        const toolsData = [
+            {
+                name: "ToolStore Hub",
+                url: "ToolStore/index.html",
+                category: "Store"
+            },
+            {
+                name: "Fake Chat Generator",
+                url: "ToolStore/Tools/fake chat generator.html",
+                category: "Automation"
+            },
+            {
+                name: "Hacker Theme Page",
+                url: "ToolStore/Tools/hacker.html",
+                category: "Fun"
+            },
+            {
+                name: "Life Organizer App",
+                url: "ToolStore/Tools/LifeOrganizer.html",
+                category: "Productivity"
+            },
+            {
+                name: "Pro Calculator",
+                url: "ToolStore/Tools/Pro Calculator.html",
+                category: "Utility"
+            },
+            {
+                name: "Randomizer",
+                url: "ToolStore/Tools/Randomizer.html",
+                category: "Utility"
+            },
+            {
+                name: "Universal File Converter",
+                url: "ToolStore/Tools/universal file converter.html",
+                category: "Files"
+            },
+            {
+                name: "ExpenseShare App",
+                url: "ToolStore/Tools/Expenseshare/index.html",
+                category: "Finance"
+            },
+            {
+                name: "ExpenseShare Analytics",
+                url: "ToolStore/Tools/Expenseshare/analytics.html",
+                category: "Finance"
+            },
+            {
+                name: "ExpenseShare Friends",
+                url: "ToolStore/Tools/Expenseshare/friends.html",
+                category: "Finance"
+            },
+            {
+                name: "Learn Programming eBook",
+                url: "ToolStore/Books/learnprogramming.html",
+                category: "Book"
+            },
+            {
+                name: "Scorpion Game",
+                url: "ToolStore/Games/scorpiongame.html",
+                category: "Games"
+            },
+            {
+                name: "Tic Tac Toe",
+                url: "ToolStore/Games/Tic Tac Toe.html",
+                category: "Games"
+            }
+        ];
+
+        // Additional pages data
+        const additionalPages = [
+            {
+                name: "Free Courses",
+                url: "Freecourse.html",
+                category: "Learning"
+            },
+            {
+                name: "Earn Money",
+                url: "EarnMoney.html",
+                category: "Opportunities"
+            }
+        ];
+
+        // Music data
+        const musicData = [
+            {
+                id: 1,
+                title: "Live Performances",
+                description: "Experience the energy of my live shows where tech meets hip-hop in an unforgettable performance.",
+                image: "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+                link: "https://www.youtube.com/@kosaymusic",
+                category: "Videos"
+            },
+            {
+                id: 2,
+                title: "Studio Sessions",
+                description: "Behind the scenes of my creative process in the studio, crafting beats and writing lyrics.",
+                image: "https://images.unsplash.com/photo-1571330735066-03aaa9429d89?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+                link: "https://www.instagram.com/ho_zun.0?igsh=MWZ6a3E0MWk2Mm9kMA==",
+                category: "Photos"
+            },
+            {
+                id: 3,
+                title: "Collaborations",
+                description: "Working with other artists to create unique fusion tracks that blend different styles and cultures.",
+                image: "https://images.unsplash.com/photo-1514320291840-2e0a9bf2a9ae?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+                link: "#",
+                category: "Projects"
+            },
+            {
+                id: 4,
+                title: "Music Production",
+                description: "From beat making to mixing and mastering - the technical side of creating professional music.",
+                image: "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+                link: "#",
+                category: "Production"
+            }
+        ];
+
+        // About me text for typing effect
+        const aboutText = {
+            en: `> INITIALIZING USER PROFILE...
+> 
+> NAME: Paras Karki
+> TITLES: Software Developer | Web Developer | Rapper | Video Editor
+> LOCATION: Kathmandu, Nepal
+> 
+> > BUILDER MODE:
+> - Full-stack web builds & dashboards
+> - API design, automation, performance tweaks
+> - UI polish, micro-animations, fast shipping
+> 
+> > MUSIC & RAP:
+> - Writing verses that blend tech & story
+> - Studio + live performance energy
+> - Open to features, feedback, and collabs
+> 
+> > VIDEO & EDITING:
+> - Storyboarding, cutting, pacing
+> - Social-ready promos & b-roll
+> - Visuals that match the sound
+> 
+> > CURRENT STATUS:
+> - Available for software/web work
+> - Open for music collaborations
+> - Book a call to plan your build or track
+> 
+> > CONTACT: parashkarki782@gmail.com
+> > MISSION: Ship impactful products and art that feel fast, intentional, and human.`,
+            ko: `> INITIALIZING USER PROFILE...
+> 
+> NAME: Paras Karki
+> TITLES: Software Developer | Web Developer | Rapper | Video Editor
+> LOCATION: Kathmandu, Nepal
+> 
+> STATUS: Let's collaborate!`
+        };
+
+        // About gallery data
+        const aboutGalleryData = {
+            builder: {
+                title: 'Builder Mode',
+                description: 'Shipping software and web experiences with clean code and fast UX.',
+                photos: [
+                    'Photos/professional.png',
+                    'Photos/parashme.jpg',
+                    'Photos/me.jpg',
+                    'Photos/mee.jpg',
+                    'Photos/Look.JPG'
+                ]
+            },
+            music: {
+                title: 'Rap & Music',
+                description: 'Studio sessions, live energy, and collaborative moments.',
+                photos: [
+                    'Photos/vdrecord.JPG',
+                    'Photos/nice.jpg',
+                    'Photos/collage1.jpg',
+                    'Photos/collage2.jpg',
+                    'Photos/once.jpg'
+                ]
+            },
+            video: {
+                title: 'Video & Visuals',
+                description: 'Capturing scenes, framing stories, and cutting visuals.',
+                photos: [
+                    'Photos/shooting.JPG',
+                    'Photos/DSCF0333.JPG',
+                    'Photos/collage 3.jpg',
+                    'Photos/caot.webp',
+                    'Photos/Look.JPG'
+                ]
+            },
+            life: {
+                title: 'Life & Travel',
+                description: 'Roots, culture, and places that shaped my perspective.',
+                photos: [
+                    'Photos/kl tower.jpg',
+                    'Photos/temple.jpg',
+                    'Photos/gumba.jpg',
+                    'Photos/korean.jpg',
+                    'Photos/childhood.jpg',
+                    'Photos/school.jpg'
+                ]
+            }
+        };
+
+        function openIntentModal(type) {
+            const modal = document.getElementById(`${type}IntentModal`);
+            if (modal) modal.classList.add('active');
+        }
+
+        function closeIntentModal(id) {
+            document.getElementById(id)?.classList.remove('active');
+        }
+
+        let typingPaused = false;
+        let typingObserver;
+        let typingTimer;
+        let typingKeyHandler;
+        const lazyElements = [];
+        
+        function applySparkWords() {
+            document.querySelectorAll('.spark-words').forEach(el => {
+                const words = el.textContent.trim().split(/(\s+)/);
+                el.innerHTML = '';
+                words.forEach(part => {
+                    if (part.trim() === '') {
+                        el.append(part);
+                    } else {
+                        const span = document.createElement('span');
+                        span.className = 'spark-word';
+                        span.textContent = part;
+                        el.append(span);
+                    }
+                });
+            });
+        }
+
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', function() {
+            renderFeaturedProjects();
+            renderAllProjects();
+            renderMusic();
+            setupEventListeners();
+            createMatrixEffect();
+            startTypingEffect();
+            setupScrollToTop();
+            setupLoadingBar();
+            setupCategoryFilter();
+            setupAboutSection();
+            setupMusicPlayer();
+            applySparkWords();
+            setupVideoEmbeds();
+            setupLazyObserver();
+            
+            // Load saved language preference
+            const savedLanguage = localStorage.getItem('preferredLanguage');
+            if (savedLanguage) {
+                changeLanguage(savedLanguage);
+            }
+            
+            // Setup offer banner
+            setupOfferBanner();
+        });
+
+        // Change language function
+        function changeLanguage(lang) {
+            currentLanguage = lang;
+            localStorage.setItem('preferredLanguage', lang);
+            
+            // Update language indicator
+            document.getElementById('languageIndicator').textContent = lang.toUpperCase();
+            
+            // Update all elements with data-i18n attribute
+            document.querySelectorAll('[data-i18n]').forEach(element => {
+                const key = element.getAttribute('data-i18n');
+                if (translations[lang][key]) {
+                    element.textContent = translations[lang][key];
+                }
+            });
+            
+            // Update tooltips
+            document.querySelectorAll('.tool-tip').forEach(element => {
+                const key = element.getAttribute('data-tooltip').toLowerCase();
+                if (translations[lang][key]) {
+                    element.setAttribute('data-tooltip', translations[lang][key]);
+                }
+            });
+            
+            // Update search placeholder
+            document.getElementById('searchInput').placeholder = translations[lang].search + " tools, projects, and resources...";
+            
+            // Update project search placeholder
+            document.getElementById('projectSearchInput').placeholder = translations[lang].search + " projects...";
+            
+            // Update about text for typing effect
+            if (document.getElementById('about').classList.contains('active')) {
+                startTypingEffect();
+            }
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            // Search toggle
+            document.getElementById('searchToggle').addEventListener('click', function() {
+                const searchContainer = document.getElementById('searchContainer');
+                const languageContainer = document.getElementById('languageContainer');
+                
+                searchContainer.classList.toggle('active');
+                languageContainer.classList.remove('active');
+                
+                if (searchContainer.classList.contains('active')) {
+                    document.getElementById('searchInput').focus();
+                }
+            });
+
+            // Language toggle
+            document.getElementById('languageToggle').addEventListener('click', function() {
+                const languageContainer = document.getElementById('languageContainer');
+                const searchContainer = document.getElementById('searchContainer');
+                
+                languageContainer.classList.toggle('active');
+                searchContainer.classList.remove('active');
+            });
+
+            // Language selection
+            document.querySelectorAll('.language-item button').forEach(button => {
+                button.addEventListener('click', function() {
+                    const lang = this.getAttribute('data-lang');
+                    changeLanguage(lang);
+                    document.getElementById('languageContainer').classList.remove('active');
+                });
+            });
+
+            // Menu toggle
+            document.getElementById('menuToggle').addEventListener('click', function() {
+                document.getElementById('menu').classList.add('active');
+            });
+
+            document.getElementById('closeMenu').addEventListener('click', function() {
+                document.getElementById('menu').classList.remove('active');
+            });
+
+            // Home logo
+            document.getElementById('homeLogo').addEventListener('click', function(e) {
+                e.preventDefault();
+                showSection('home');
+            });
+
+            // Menu item clicks
+            document.querySelectorAll('.menu-item a').forEach(item => {
+                item.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const section = this.getAttribute('data-section');
+                    const href = this.getAttribute('href');
+                    
+                    if (section) {
+                        showSection(section);
+                    } else if (href && href.endsWith('.html')) {
+                        // Handle external page links
+                        window.location.href = href;
+                    }
+                    
+                    document.getElementById('menu').classList.remove('active');
+                });
+            });
+
+            // Quick link clicks
+            document.querySelectorAll('.quick-link').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    const section = this.getAttribute('data-section');
+                    if (section) {
+                        e.preventDefault();
+                        showSection(section);
+                    }
+                });
+            });
+
+            // Search functionality
+            document.getElementById('searchInput').addEventListener('input', function() {
+                filterEverything(this.value);
+            });
+
+            // Project search functionality
+            document.getElementById('projectSearchInput').addEventListener('input', function() {
+                filterAllProjects(this.value);
+            });
+
+            // Hire button
+            document.getElementById('hireBtn').addEventListener('click', function() {
+                document.getElementById('hireModal').classList.add('active');
+            });
+
+            // See more button
+            document.getElementById('seeMoreBtn').addEventListener('click', function() {
+                showSection('projects');
+            });
+
+            // Close modals
+            document.getElementById('closeHireModal').addEventListener('click', function() {
+                document.getElementById('hireModal').classList.remove('active');
+            });
+
+            document.getElementById('closePurchaseModal').addEventListener('click', function() {
+                document.getElementById('purchaseModal').classList.remove('active');
+            });
+
+            // Form submissions
+            document.getElementById('hireForm').addEventListener('submit', handleHireForm);
+
+            // Close modals when clicking outside
+            document.querySelectorAll('.modal').forEach(modal => {
+                modal.addEventListener('click', function(e) {
+                    if (e.target === this) {
+                        this.classList.remove('active');
+                    }
+                });
+            });
+
+            // Close search and language containers when clicking outside
+            document.addEventListener('click', function(e) {
+                const searchContainer = document.getElementById('searchContainer');
+                const languageContainer = document.getElementById('languageContainer');
+                const searchToggle = document.getElementById('searchToggle');
+                const languageToggle = document.getElementById('languageToggle');
+                
+                if (!searchContainer.contains(e.target) && !searchToggle.contains(e.target)) {
+                    searchContainer.classList.remove('active');
+                }
+                
+                if (!languageContainer.contains(e.target) && !languageToggle.contains(e.target)) {
+                    languageContainer.classList.remove('active');
+                }
+            });
+        }
+
+        // Show specific section
+        function showSection(sectionName) {
+            // Hide all sections
+            document.querySelectorAll('.page-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Show target section
+            document.getElementById(sectionName).classList.add('active');
+            
+            // Special handling for projects section
+            if (sectionName === 'projects') {
+                document.getElementById('projectSearchHeader').classList.add('active');
+            } else {
+                document.getElementById('projectSearchHeader').classList.remove('active');
+            }
+            
+            // Update typing effect for about section
+            if (sectionName === 'about') {
+                startTypingEffect();
+            }
+            
+            // Scroll to top
+            window.scrollTo(0, 0);
+        }
+
+        // Render featured projects (first 4)
+        function renderFeaturedProjects() {
+            const container = document.getElementById('featuredProjectsContainer');
+            container.innerHTML = '';
+            
+            const featuredProjects = projectsData.slice(0, 4);
+            
+            featuredProjects.forEach(project => {
+                const projectElement = createProjectElement(project);
+                container.appendChild(projectElement);
+            });
+        }
+
+        // Render all projects
+        function renderAllProjects(projects = projectsData) {
+            const container = document.getElementById('allProjectsContainer');
+            container.innerHTML = '';
+            
+            if (projects.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align: center; grid-column: 1 / -1; color: var(--text-secondary); padding: 2rem;">
+                        <i class="fas fa-search" style="font-size: 3rem; margin-bottom: 1rem;"></i>
+                        <p>No projects found matching your search.</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            projects.forEach(project => {
+                const projectElement = createProjectElement(project);
+                container.appendChild(projectElement);
+            });
+        }
+
+        // Create project element
+        function createProjectElement(project) {
+            const projectElement = document.createElement('div');
+            projectElement.className = 'project-card';
+            
+            projectElement.innerHTML = `
+                <div class="project-image">
+                    <img src="${project.image}" alt="${project.title}">
+                </div>
+                <div class="project-info">
+                    <h3 class="project-title">${project.title}</h3>
+                    <p class="project-description">${project.description}</p>
+                    <div class="project-price">${project.price}</div>
+                    <div class="project-actions">
+                        <a href="${project.previewUrl}" class="btn" target="_blank">Preview</a>
+                        <button class="btn btn-primary purchase-btn" data-id="${project.id}">Purchase</button>
+                    </div>
+                </div>
+            `;
+            
+            // Add event listener to purchase button
+            const purchaseBtn = projectElement.querySelector('.purchase-btn');
+            purchaseBtn.addEventListener('click', function() {
+                const projectId = this.getAttribute('data-id');
+                openPurchaseModal(projectId);
+            });
+            
+            return projectElement;
+        }
+
+        // Render music section
+        function renderMusic() {
+            const container = document.getElementById('musicContainer');
+            if (!container) return;
+            
+            container.innerHTML = '';
+            
+            musicData.forEach(music => {
+                const musicElement = createMusicElement(music);
+                container.appendChild(musicElement);
+            });
+        }
+
+        // Create music element
+        function createMusicElement(music) {
+            const musicElement = document.createElement('div');
+            musicElement.className = 'music-card';
+            
+            musicElement.innerHTML = `
+                <div class="music-image">
+                    <img src="${music.image}" alt="${music.title}">
+                </div>
+                <div class="music-info">
+                    <h3 class="music-title">${music.title}</h3>
+                    <p class="music-description">${music.description}</p>
+                    <a href="${music.link}" class="music-link" target="_blank">
+                        ${music.category === 'Videos' ? 'Watch Videos' : music.category === 'Photos' ? 'View Photos' : 'Learn More'} <i class="fas fa-external-link-alt"></i>
+                    </a>
+                </div>
+            `;
+            
+            return musicElement;
+        }
+
+        // Filter everything based on search (home page)
+        function filterEverything(searchTerm) {
+            if (!searchTerm) {
+                renderFeaturedProjects();
+                return;
+            }
+            
+            // Filter projects
+            const filteredProjects = projectsData.filter(project => {
+                return (
+                    project.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                    project.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                    project.category.toLowerCase().includes(searchTerm.toLowerCase())
+                );
+            }).slice(0, 4); // Only show first 4 results on home page
+            
+            // Filter tools
+            const filteredTools = toolsData.filter(tool => {
+                return (
+                    tool.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                    tool.category.toLowerCase().includes(searchTerm.toLowerCase())
+                );
+            }).slice(0, 4); // Only show first 4 results on home page
+            
+            // Filter additional pages
+            const filteredPages = additionalPages.filter(page => {
+                return (
+                    page.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                    page.category.toLowerCase().includes(searchTerm.toLowerCase())
+                );
+            }).slice(0, 2); // Only show first 2 results on home page
+            
+            // Filter music
+            const filteredMusic = musicData.filter(music => {
+                return (
+                    music.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                    music.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                    music.category.toLowerCase().includes(searchTerm.toLowerCase())
+                );
+            }).slice(0, 2); // Only show first 2 results on home page
+            
+            const container = document.getElementById('featuredProjectsContainer');
+            container.innerHTML = '';
+            
+            if (filteredProjects.length === 0 && filteredTools.length === 0 && 
+                filteredPages.length === 0 && filteredMusic.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align: center; grid-column: 1 / -1; color: var(--text-secondary); padding: 2rem;">
+                        <i class="fas fa-search" style="font-size: 3rem; margin-bottom: 1rem;"></i>
+                        <p>No results found matching your search.</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            // Show matching projects
+            filteredProjects.forEach(project => {
+                const projectElement = createProjectElement(project);
+                container.appendChild(projectElement);
+            });
+            
+            // Show matching tools
+            filteredTools.forEach(tool => {
+                const toolElement = createToolElement(tool);
+                container.appendChild(toolElement);
+            });
+            
+            // Show matching pages
+            filteredPages.forEach(page => {
+                const pageElement = createPageElement(page);
+                container.appendChild(pageElement);
+            });
+            
+            // Show matching music
+            filteredMusic.forEach(music => {
+                const musicElement = createMusicElement(music);
+                container.appendChild(musicElement);
+            });
+        }
+
+        // Create tool element for search results
+        function createToolElement(tool) {
+            const toolElement = document.createElement('div');
+            toolElement.className = 'project-card';
+            
+            toolElement.innerHTML = `
+                <div class="project-image">
+                    <img src="https://images.unsplash.com/photo-1581094794329-c8112a89af12?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="${tool.name}">
+                </div>
+                <div class="project-info">
+                    <h3 class="project-title">${tool.name}</h3>
+                    <p class="project-description">Utility tool for ${tool.category.toLowerCase()}.</p>
+                    <div class="project-actions">
+                        <a href="${tool.url}" class="btn btn-primary" target="_blank">Use Tool</a>
+                    </div>
+                </div>
+            `;
+            
+            return toolElement;
+        }
+
+        // Create page element for search results
+        function createPageElement(page) {
+            const pageElement = document.createElement('div');
+            pageElement.className = 'project-card';
+            
+            pageElement.innerHTML = `
+                <div class="project-image">
+                    <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="${page.name}">
+                </div>
+                <div class="project-info">
+                    <h3 class="project-title">${page.name}</h3>
+                    <p class="project-description">Explore ${page.category.toLowerCase()} resources.</p>
+                    <div class="project-actions">
+                        <a href="${page.url}" class="btn btn-primary" target="_blank">Visit Page</a>
+                    </div>
+                </div>
+            `;
+            
+            return pageElement;
+        }
+
+        // Filter all projects (projects page)
+        function filterAllProjects(searchTerm) {
+            if (!searchTerm) {
+                renderAllProjects();
+                return;
+            }
+            
+            const filteredProjects = projectsData.filter(project => {
+                return (
+                    project.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                    project.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                    project.category.toLowerCase().includes(searchTerm.toLowerCase())
+                );
+            });
+            
+            renderAllProjects(filteredProjects);
+        }
+
+        // Open purchase modal
+        function openPurchaseModal(projectId) {
+            const project = projectsData.find(p => p.id == projectId);
+            if (!project) return;
+            
+                const purchaseContent = document.getElementById('purchaseContent');
+                const purchaseTitle = document.getElementById('purchaseTitle');
+                
+                purchaseTitle.textContent = translations[currentLanguage].purchaseProject + `: ${project.title}`;
+                
+            purchaseContent.innerHTML = `
+                    <div class="form-group">
+                        <label>Project: <strong>${project.title}</strong></label>
+                    </div>
+                    <div class="form-group">
+                        <label>Price: <strong>${project.price}</strong></label>
+                    </div>
+                    <div class="form-group">
+                        <label>Preview:</label>
+                        <a href="${project.previewUrl}" target="_blank" class="open-yt-link">Open project <i class="fas fa-external-link-alt"></i></a>
+                        <input type="hidden" id="purchasePreviewUrl" value="${project.previewUrl}">
+                    </div>
+                    <form id="purchaseForm">
+                        <div class="form-group">
+                            <label for="purchaseName" data-i18n="yourName">Your Name</label>
+                            <input type="text" id="purchaseName" name="name" required>
+                    </div>
+                        <div class="form-group">
+                            <label for="purchaseEmail" data-i18n="yourEmail">Your Email</label>
+                            <input type="email" id="purchaseEmail" name="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="purchasePhone">Phone / WhatsApp</label>
+                            <input type="text" id="purchasePhone" name="phone" placeholder="+977 ..." required>
+                        </div>
+                        <div class="form-group">
+                            <label for="purchaseBudget">Budget (USD/NPR)</label>
+                            <input type="text" id="purchaseBudget" name="budget" placeholder="e.g., $3000 or NPR 1,20,000" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="purchaseTimeline">Timeline</label>
+                            <input type="text" id="purchaseTimeline" name="timeline" placeholder="e.g., 3 weeks" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="purchaseMessage" data-i18n="projectDetails">Project Details</label>
+                            <textarea id="purchaseMessage" name="message" rows="3" placeholder="Any specific requirements..."></textarea>
+                        </div>
+                    <button type="submit" class="btn btn-primary" style="width: 100%;" data-i18n="sendRequest">Send Request</button>
+                    <div class="form-message" id="purchaseMessageEl"></div>
+                </form>
+            `;
+            
+            // Update form labels with current language
+            document.querySelectorAll('#purchaseForm [data-i18n]').forEach(element => {
+                const key = element.getAttribute('data-i18n');
+                if (translations[currentLanguage][key]) {
+                    if (element.tagName === 'LABEL') {
+                        element.textContent = translations[currentLanguage][key];
+                    } else if (element.tagName === 'BUTTON') {
+                        element.textContent = translations[currentLanguage][key];
+                    }
+                }
+            });
+            
+            document.getElementById('purchaseModal').classList.add('active');
+            
+            // Add event listener to purchase form
+            document.getElementById('purchaseForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                submitPurchase(project);
+            });
+        }
+
+
+        function openAboutGallery(category) {
+            const modal = document.getElementById('aboutGalleryModal');
+            const modalTitle = document.getElementById('galleryModalTitle');
+            const modalDesc = document.getElementById('galleryModalDesc');
+            const modalGrid = document.getElementById('galleryModalGrid');
+            const gallery = aboutGalleryData[category];
+
+            if (!modal || !modalTitle || !modalDesc || !modalGrid || !gallery) return;
+
+            modalTitle.textContent = gallery.title;
+            modalDesc.textContent = gallery.description;
+
+            modalGrid.innerHTML = '';
+            gallery.photos.forEach(src => {
+                const img = document.createElement('img');
+                img.src = src;
+                img.alt = gallery.title;
+                img.addEventListener('click', function() {
+                    openPhotoLightbox(src);
+                });
+                modalGrid.appendChild(img);
+            });
+
+            modal.classList.add('active');
+        }
+
+        function closeAboutGallery() {
+            document.getElementById('aboutGalleryModal')?.classList.remove('active');
+        }
+
+        function openPhotoLightbox(src) {
+            const lightbox = document.getElementById('photoLightbox');
+            const img = document.getElementById('photoLightboxImg');
+            if (!lightbox || !img) return;
+            img.src = src;
+            lightbox.classList.add('active');
+        }
+
+        function closePhotoLightbox() {
+            document.getElementById('photoLightbox')?.classList.remove('active');
+        }
+
+        // Lazy load and play YouTube embeds on click
+        function setupVideoEmbeds() {
+            document.querySelectorAll('.video-frame').forEach(frame => {
+                const overlay = frame.querySelector('.video-overlay');
+                const iframe = frame.querySelector('iframe');
+                const src = iframe?.getAttribute('data-src') || overlay?.getAttribute('data-src');
+
+                if (!overlay || !iframe || !src) return;
+
+                overlay.addEventListener('click', () => {
+                    iframe.src = src;
+                    frame.classList.add('playing');
+                    overlay.remove();
+                });
+            });
+        }
+
+        // Lazy observer for iframes and gallery images
+        function setupLazyObserver() {
+            const targets = document.querySelectorAll('.video-frame iframe, .gallery-cover');
+            if (!('IntersectionObserver' in window)) {
+                targets.forEach(el => {
+                    const dataSrc = el.getAttribute('data-src');
+                    if (dataSrc) el.src = dataSrc;
+                });
+                return;
+            }
+
+            const io = new IntersectionObserver((entries, obs) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const el = entry.target;
+                        const dataSrc = el.getAttribute('data-src');
+                        if (dataSrc) {
+                            el.src = dataSrc;
+                        }
+                        obs.unobserve(el);
+                    }
+                });
+            }, { rootMargin: '200px 0px' });
+
+            targets.forEach(el => io.observe(el));
+        }
+
+        // Handle hire form submission with EmailJS
+        function handleHireForm(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const name = formData.get('name');
+            const email = formData.get('email');
+            const service = formData.get('service');
+            const message = formData.get('message');
+            
+            // Show loading state
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> ' + translations[currentLanguage].sendRequest + '...';
+            submitBtn.disabled = true;
+            
+            // Prepare template parameters
+            const templateParams = {
+                from_name: name,
+                from_email: email,
+                service: service,
+                message: message,
+                to_email: 'parashkarki782@gmail.com'
+            };
+            
+            // Send email using EmailJS
+            emailjs.send('service_uic2fq4', 'template_c6gkk2k', templateParams)
+                .then(function(response) {
+                    // Show success message
+                    const messageElement = document.getElementById('hireMessageEl');
+                    messageElement.textContent = 'Thank you for your request! I will get back to you soon.';
+                    messageElement.className = 'form-message success';
+                    
+                    // Reset form
+                    e.target.reset();
+                    submitBtn.innerHTML = originalText;
+                    submitBtn.disabled = false;
+                }, function(error) {
+                    // Show error message
+                    const messageElement = document.getElementById('hireMessageEl');
+                    messageElement.textContent = 'Sorry, there was an error sending your request. Please try again.';
+                    messageElement.className = 'form-message error';
+                    
+                    submitBtn.innerHTML = originalText;
+                    submitBtn.disabled = false;
+                    
+                    console.error('EmailJS Error:', error);
+                });
+        }
+
+        function handleAboutFormSubmit(e) {
+            e.preventDefault();
+
+            const form = e.target;
+            const formData = new FormData(form);
+            const name = formData.get('name');
+            const email = formData.get('email');
+            const service = formData.get('service') || form.dataset.type;
+            const timePreference = formData.get('time');
+            const message = formData.get('message') || '';
+            const messageElement = form.querySelector('.form-message');
+
+            const submitBtn = form.querySelector('button[type=\"submit\"]');
+            const originalText = submitBtn.innerHTML;
+
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+            submitBtn.disabled = true;
+
+            const compiledMessage = [
+                message,
+                timePreference ? `Preferred time: ${timePreference}` : '',
+                form.dataset.type ? `Form type: ${form.dataset.type}` : ''
+            ].filter(Boolean).join('\n');
+
+            const templateParams = {
+                from_name: name,
+                from_email: email,
+                service: service,
+                message: compiledMessage,
+                to_email: 'parashkarki782@gmail.com'
+            };
+
+            emailjs.send('service_uic2fq4', 'template_c6gkk2k', templateParams)
+                .then(function() {
+                    if (messageElement) {
+                        messageElement.textContent = 'Thank you! I will reach out shortly.';
+                        messageElement.className = 'form-message success';
+                    }
+                    form.reset();
+                })
+                .catch(function(error) {
+                    if (messageElement) {
+                        messageElement.textContent = 'Something went wrong. Please try again or email me directly.';
+                        messageElement.className = 'form-message error';
+                    }
+                    console.error('EmailJS Error:', error);
+                })
+                .finally(function() {
+                    submitBtn.innerHTML = originalText;
+                    submitBtn.disabled = false;
+                });
+        }
+
+        // Submit purchase request
+        function submitPurchase(project) {
+            const name = document.getElementById('purchaseName').value;
+            const email = document.getElementById('purchaseEmail').value;
+            const phone = document.getElementById('purchasePhone').value;
+            const budget = document.getElementById('purchaseBudget').value;
+            const timeline = document.getElementById('purchaseTimeline').value;
+            const message = document.getElementById('purchaseMessage').value;
+            const previewUrl = document.getElementById('purchasePreviewUrl')?.value || project.previewUrl;
+            
+            if (!name || !email || !phone || !budget || !timeline) {
+                alert('Please fill in all required fields');
+                return;
+            }
+            
+            // Show loading state
+            const submitBtn = document.querySelector('#purchaseForm button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+            submitBtn.disabled = true;
+            
+            // Prepare template parameters
+            const templateParams = {
+                from_name: name,
+                from_email: email,
+                project_name: project.title,
+                project_price: project.price,
+                project_url: previewUrl,
+                phone: phone,
+                budget: budget,
+                timeline: timeline,
+                message: message || 'No additional requirements',
+                to_email: 'parashkarki782@gmail.com'
+            };
+            
+            // Send email using EmailJS
+            emailjs.send('service_uic2fq4', 'template_c6gkk2k', templateParams)
+                .then(function(response) {
+                    // Show success message
+                    const messageElement = document.getElementById('purchaseMessageEl');
+                    messageElement.textContent = 'Purchase request sent successfully! I will contact you with payment details.';
+                    messageElement.className = 'form-message success';
+                    
+                    submitBtn.innerHTML = originalText;
+                    submitBtn.disabled = false;
+                    
+                    // Close modal after 3 seconds
+                    setTimeout(() => {
+                        document.getElementById('purchaseModal').classList.remove('active');
+                    }, 3000);
+                }, function(error) {
+                    // Show error message
+                    const messageElement = document.getElementById('purchaseMessageEl');
+                    messageElement.textContent = 'Sorry, there was an error processing your request. Please try again.';
+                    messageElement.className = 'form-message error';
+                    
+                    submitBtn.innerHTML = originalText;
+                    submitBtn.disabled = false;
+                    
+                    console.error('EmailJS Error:', error);
+                });
+        }
+
+        // Create matrix background effect
+        function createMatrixEffect() {
+            const matrixBg = document.getElementById('matrixBg');
+            const chars = '01アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン';
+            
+            for (let i = 0; i < 80; i++) {
+                const char = document.createElement('div');
+                char.className = 'matrix-char';
+                char.textContent = chars.charAt(Math.floor(Math.random() * chars.length));
+                char.style.left = Math.random() * 100 + 'vw';
+                char.style.animationDuration = (Math.random() * 10 + 5) + 's';
+                char.style.animationDelay = (Math.random() * 5) + 's';
+                char.style.fontSize = (Math.random() * 10 + 14) + 'px';
+                matrixBg.appendChild(char);
+            }
+        }
+
+        // Start typing effect for about section
+        function startTypingEffect() {
+            const typingText = document.getElementById('typingText');
+            if (!typingText) return;
+
+            const languageKey = aboutText[currentLanguage] ? currentLanguage : 'en';
+            const fullText = aboutText[languageKey];
+            
+            if (typingTimer) clearTimeout(typingTimer);
+            if (typingKeyHandler) window.removeEventListener('keydown', typingKeyHandler);
+            typingPaused = false;
+            typingText.innerHTML = '<span class="typing-hint">Tap any key to reveal my story...</span><span class="typing-cursor"></span>';
+
+            const words = fullText.trim().split(/\s+/);
+            let wordIndex = 0;
+            const typedWords = [];
+
+            typingKeyHandler = function(e) {
+                const activeElement = document.activeElement;
+                if (activeElement && ['INPUT', 'TEXTAREA', 'SELECT'].includes(activeElement.tagName)) return;
+                if (!document.getElementById('about').classList.contains('active')) return;
+                if (words.length === 0) return;
+                if (wordIndex >= words.length) return;
+
+                // skip pure modifier keys
+                const skipKeys = ['Shift','Control','Alt','Meta','CapsLock','Tab','Escape'];
+                if (skipKeys.includes(e.key)) return;
+
+                typingText.querySelector('.typing-hint')?.remove();
+                typingText.classList.add('user-typing-active');
+
+                typedWords.push(words[wordIndex]);
+                wordIndex++;
+
+                const display = typedWords.join(' ');
+                typingText.innerHTML = display + '<span class="typing-cursor"></span>';
+
+                if (wordIndex >= words.length) {
+                    typingText.innerHTML = fullText + '<span class="typing-cursor"></span>';
+                }
+            };
+
+            window.addEventListener('keydown', typingKeyHandler);
+        }
+
+        // Setup scroll to top button
+        function setupScrollToTop() {
+            const scrollToTopBtn = document.getElementById('scrollToTop');
+            
+            window.addEventListener('scroll', function() {
+                if (window.pageYOffset > 300) {
+                    scrollToTopBtn.classList.add('active');
+                } else {
+                    scrollToTopBtn.classList.remove('active');
+                }
+            });
+            
+            scrollToTopBtn.addEventListener('click', function() {
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            });
+        }
+
+        // Setup loading bar
+        function setupLoadingBar() {
+            const loadingBar = document.getElementById('loadingBar');
+            
+            window.addEventListener('beforeunload', function() {
+                loadingBar.style.width = '100%';
+            });
+            
+            window.addEventListener('load', function() {
+                loadingBar.style.width = '100%';
+                setTimeout(function() {
+                    loadingBar.style.width = '0%';
+                }, 500);
+            });
+        }
+
+        // Setup category filter for projects
+        function setupCategoryFilter() {
+            const categoryFilter = document.getElementById('categoryFilter');
+            const categories = [...new Set(projectsData.map(project => project.category))];
+            
+            // Add "All" category
+            categories.unshift('All');
+            
+            categories.forEach(category => {
+                const button = document.createElement('button');
+                button.className = 'category-btn';
+                if (category === 'All') button.classList.add('active');
+                button.textContent = category;
+                button.addEventListener('click', function() {
+                    // Remove active class from all buttons
+                    document.querySelectorAll('.category-btn').forEach(btn => {
+                        btn.classList.remove('active');
+                    });
+                    
+                    // Add active class to clicked button
+                    this.classList.add('active');
+                    
+                    // Filter projects
+                    if (category === 'All') {
+                        renderAllProjects();
+                    } else {
+                        const filteredProjects = projectsData.filter(project => project.category === category);
+                        renderAllProjects(filteredProjects);
+                    }
+                });
+                
+                categoryFilter.appendChild(button);
+            });
+        }
+
+        // Enhanced About Section Functionality
+        function setupAboutSection() {
+            document.getElementById('contactBtn')?.addEventListener('click', function() {
+                openIntentModal('hire');
+            });
+            document.getElementById('aboutHireBtn')?.addEventListener('click', function() {
+                openIntentModal('hire');
+            });
+            document.getElementById('musicCollabBtn')?.addEventListener('click', function() {
+                openIntentModal('music');
+            });
+            document.getElementById('scheduleCallBtn')?.addEventListener('click', function() {
+                openIntentModal('call');
+            });
+
+            document.querySelectorAll('.gallery-card').forEach(card => {
+                card.addEventListener('click', function() {
+                    openAboutGallery(this.getAttribute('data-category'));
+                });
+            });
+
+            const galleryModal = document.getElementById('aboutGalleryModal');
+            document.getElementById('closeGalleryModal')?.addEventListener('click', closeAboutGallery);
+            galleryModal?.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    closeAboutGallery();
+                }
+            });
+
+            document.querySelectorAll('.about-intent-form').forEach(form => {
+                form.addEventListener('submit', handleAboutFormSubmit);
+            });
+            
+            document.getElementById('photoLightbox')?.addEventListener('click', closePhotoLightbox);
+
+            document.querySelectorAll('.intent-close').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const target = this.getAttribute('data-close-modal');
+                    if (target) closeIntentModal(target);
+                });
+            });
+
+            document.querySelectorAll('.intent-modal').forEach(modal => {
+                modal.addEventListener('click', function(e) {
+                    if (e.target === this) {
+                        this.classList.remove('active');
+                    }
+                });
+            });
+        }
+
+        // Setup music player
+        function setupMusicPlayer() {
+            const playBtn = document.getElementById('playBtn');
+            const progressBar = document.getElementById('progressBar');
+            const progress = document.getElementById('progress');
+            const currentTime = document.getElementById('currentTime');
+            const duration = document.getElementById('duration');
+            
+            let isPlaying = false;
+            
+            playBtn.addEventListener('click', function() {
+                isPlaying = !isPlaying;
+                if (isPlaying) {
+                    playBtn.innerHTML = '<i class="fas fa-pause"></i>';
+                    // Simulate music playing
+                    simulatePlayback();
+                } else {
+                    playBtn.innerHTML = '<i class="fas fa-play"></i>';
+                }
+            });
+            
+            progressBar.addEventListener('click', function(e) {
+                const rect = progressBar.getBoundingClientRect();
+                const percent = (e.clientX - rect.left) / rect.width;
+                progress.style.width = (percent * 100) + '%';
+                updateTimeDisplay(percent * 225); // 3:45 in seconds
+            });
+            
+            function simulatePlayback() {
+                let currentSeconds = 0;
+                const totalSeconds = 225; // 3:45
+                
+                const interval = setInterval(function() {
+                    if (!isPlaying) {
+                        clearInterval(interval);
+                        return;
+                    }
+                    
+                    currentSeconds += 1;
+                    if (currentSeconds > totalSeconds) {
+                        currentSeconds = 0;
+                        isPlaying = false;
+                        playBtn.innerHTML = '<i class="fas fa-play"></i>';
+                        clearInterval(interval);
+                    }
+                    
+                    const percent = (currentSeconds / totalSeconds) * 100;
+                    progress.style.width = percent + '%';
+                    updateTimeDisplay(currentSeconds);
+                }, 1000);
+            }
+            
+            function updateTimeDisplay(seconds) {
+                const mins = Math.floor(seconds / 60);
+                const secs = Math.floor(seconds % 60);
+                currentTime.textContent = `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+            }
+            
+            // Initialize time display
+            updateTimeDisplay(0);
+            duration.textContent = '3:45';
+        }
+
+        // Setup offer banner
+        function setupOfferBanner() {
+            const offerBanner = document.getElementById('offerBanner');
+            const closeOfferBtn = document.getElementById('closeOffer');
+            
+            // Check if user has previously closed the banner
+            const offerClosed = localStorage.getItem('offerBannerClosed');
+            
+            if (!offerClosed) {
+                // Show banner if not previously closed
+                offerBanner.style.display = 'block';
+                document.body.classList.add('has-offer-banner');
+            } else {
+                offerBanner.style.display = 'none';
+                document.body.classList.remove('has-offer-banner');
+            }
+            
+            // Close banner when X is clicked
+            closeOfferBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                closeOfferBanner();
+            });
+            
+            // Show offer details when banner is clicked
+            offerBanner.addEventListener('click', function(e) {
+                if (e.target !== closeOfferBtn && !closeOfferBtn.contains(e.target)) {
+                    showOfferModal();
+                }
+            });
+            
+            function closeOfferBanner() {
+                offerBanner.style.display = 'none';
+                document.body.classList.remove('has-offer-banner');
+                localStorage.setItem('offerBannerClosed', 'true');
+            }
+            
+            function showOfferModal() {
+                // Create offer modal
+                const modal = document.createElement('div');
+                modal.className = 'modal active';
+                modal.innerHTML = `
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h3>Special Website Offer</h3>
+                            <button class="close-modal" id="closeOfferModal">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div style="text-align: center; padding: 2rem;">
+                                <div style="font-size: 3rem; margin-bottom: 1rem;">5,000 Won</div>
+                                <h2 style="color: var(--accent); margin-bottom: 1rem;">Create Your Full Static Website</h2>
+                                <div style="font-size: 2rem; color: var(--primary); font-weight: bold; margin-bottom: 1.5rem;">
+                                    Just 5,000 Won
+                                </div>
+                                <div style="background: var(--card-bg); padding: 1.5rem; border-radius: 4px; border: 1px solid var(--primary); margin-bottom: 1.5rem;">
+                                    <h4 style="color: var(--text-primary); margin-bottom: 1rem;">What's included:</h4>
+                                    <ul style="text-align: left; color: var(--text-secondary); line-height: 1.8;">
+                                        <li>Fully responsive design</li>
+                                        <li>Up to 5 pages</li>
+                                        <li>Contact form integration</li>
+                                        <li>SEO optimized</li>
+                                        <li>Fast loading speed</li>
+                                        <li>Mobile-friendly</li>
+                                        <li>1 year technical support</li>
+                                    </ul>
+                                </div>
+                                <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">
+                                    <strong>Delivery Time:</strong> Just 1 day!
+                                </p>
+                                <button class="btn btn-primary" id="hireFromOffer" style="font-size: 1.2rem; padding: 1rem 2rem;">
+                                    Get Your Website Now
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                document.body.appendChild(modal);
+                
+                // Add event listeners for the modal
+                document.getElementById('closeOfferModal').addEventListener('click', function() {
+                    document.body.removeChild(modal);
+                });
+                
+                modal.addEventListener('click', function(e) {
+                    if (e.target === modal) {
+                        document.body.removeChild(modal);
+                    }
+                });
+                
+                document.getElementById('hireFromOffer').addEventListener('click', function() {
+                    document.body.removeChild(modal);
+                    document.getElementById('hireModal').classList.add('active');
+                });
+            }
+        }
+    </script>
+</body>
+</html>
+
+
+
+
+
+
+
