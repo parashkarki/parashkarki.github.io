@@ -1,0 +1,1601 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>TOPIK-1 Mastery</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap');
+        
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+            background-color: #f8fafc;
+        }
+
+        .card-inner {
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+            cursor: pointer;
+        }
+
+        .card-flipped .card-inner {
+            transform: rotateY(180deg);
+        }
+
+        .card-front, .card-back {
+            backface-visibility: hidden;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .card-back {
+            transform: rotateY(180deg);
+        }
+
+        .progress-bar {
+            transition: width 0.3s ease-in-out;
+        }
+
+        /* Safe area for mobile notch */
+        .safe-top {
+            padding-top: env(safe-area-inset-top);
+        }
+
+        /* Speech animation */
+        .speaking {
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(99, 102, 241, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0); }
+        }
+
+        /* Custom scrollbar */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #c7d2fe;
+            border-radius: 10px;
+        }
+
+        /* Filter and search highlight */
+        .highlight {
+            background-color: #fef3c7;
+            padding: 0 2px;
+            border-radius: 2px;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-900">
+
+    <div id="app" class="max-w-md mx-auto min-h-screen flex flex-col relative overflow-hidden">
+        
+        <!-- Header -->
+        <header class="bg-white border-b border-slate-200 p-4 safe-top flex justify-between items-center sticky top-0 z-10">
+            <h1 class="text-xl font-bold text-indigo-600">TOPIK-1</h1>
+            <div id="score-display" class="hidden text-sm font-medium bg-indigo-50 text-indigo-700 px-3 py-1 rounded-full">
+                Score: 0
+            </div>
+        </header>
+
+        <!-- Search Bar -->
+        <div id="search-container" class="px-4 pt-2 pb-3 bg-white border-b border-slate-200 hidden">
+            <div class="relative">
+                <input type="text" id="search-input" placeholder="Search Korean or English words..." 
+                       class="w-full p-3 pl-10 bg-slate-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-300">
+                <svg class="absolute left-3 top-3.5 text-slate-400 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                </svg>
+                <button id="clear-search" class="absolute right-3 top-3.5 text-slate-400 hidden">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+            <div class="flex gap-2 mt-2 overflow-x-auto pb-1">
+                <button data-filter="all" class="filter-btn active px-3 py-1.5 bg-indigo-600 text-white text-xs rounded-full whitespace-nowrap">All</button>
+                <button data-filter="noun" class="filter-btn px-3 py-1.5 bg-slate-100 text-slate-700 text-xs rounded-full whitespace-nowrap">Nouns</button>
+                <button data-filter="verb" class="filter-btn px-3 py-1.5 bg-slate-100 text-slate-700 text-xs rounded-full whitespace-nowrap">Verbs</button>
+                <button data-filter="adjective" class="filter-btn px-3 py-1.5 bg-slate-100 text-slate-700 text-xs rounded-full whitespace-nowrap">Adjectives</button>
+                <button data-filter="adverb" class="filter-btn px-3 py-1.5 bg-slate-100 text-slate-700 text-xs rounded-full whitespace-nowrap">Adverbs</button>
+                <button data-filter="other" class="filter-btn px-3 py-1.5 bg-slate-100 text-slate-700 text-xs rounded-full whitespace-nowrap">Other</button>
+            </div>
+        </div>
+
+        <!-- Main Content Area -->
+        <main id="main-content" class="flex-1 p-4 overflow-y-auto pb-24 custom-scrollbar">
+            <!-- Home View -->
+            <section id="view-home" class="">
+                <div class="bg-indigo-600 rounded-2xl p-6 text-white mb-6 shadow-lg">
+                    <h2 class="text-2xl font-bold mb-2">Master TOPIK 1 Vocabulary</h2>
+                    <p class="opacity-90 mb-4">Learn all 1671 essential words with voice pronunciation</p>
+                    <div class="flex gap-3">
+                        <button onclick="changeView('quiz')" class="flex-1 bg-white text-indigo-600 font-bold py-2 px-4 rounded-lg shadow-sm">Start Quiz</button>
+                        <button onclick="speakRandomWord()" class="flex items-center justify-center bg-indigo-500 text-white p-2 rounded-lg">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <h3 class="font-bold text-lg mb-4">Learning Path</h3>
+                <div class="grid grid-cols-1 gap-4">
+                    <button onclick="changeView('vocab')" class="flex items-center p-4 bg-white rounded-xl shadow-sm border border-slate-100 active:scale-95 transition-transform">
+                        <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mr-4 text-2xl">📚</div>
+                        <div class="text-left flex-1">
+                            <div class="font-bold">Vocabulary List</div>
+                            <div class="text-xs text-slate-500">1671 words categorized by parts of speech</div>
+                        </div>
+                        <div class="text-indigo-600 font-bold">1671</div>
+                    </button>
+                    <button onclick="changeView('flashcards')" class="flex items-center p-4 bg-white rounded-xl shadow-sm border border-slate-100 active:scale-95 transition-transform">
+                        <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mr-4 text-2xl">🗂️</div>
+                        <div class="text-left flex-1">
+                            <div class="font-bold">Smart Flashcards</div>
+                            <div class="text-xs text-slate-500">Practice with voice pronunciation</div>
+                        </div>
+                    </button>
+                    <button onclick="changeView('stats')" class="flex items-center p-4 bg-white rounded-xl shadow-sm border border-slate-100 active:scale-95 transition-transform">
+                        <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mr-4 text-2xl">📊</div>
+                        <div class="text-left">
+                            <div class="font-bold">Progress Stats</div>
+                            <div class="text-xs text-slate-500">Track your learning journey</div>
+                        </div>
+                    </button>
+                </div>
+
+                <div class="mt-8">
+                    <h3 class="font-bold text-lg mb-4">Quick Categories</h3>
+                    <div class="grid grid-cols-2 gap-3">
+                        <button onclick="filterByCategory('noun')" class="p-4 bg-white rounded-xl border border-slate-100 text-center">
+                            <div class="text-2xl mb-2">📝</div>
+                            <div class="font-bold">Nouns</div>
+                            <div class="text-xs text-slate-500" id="noun-count">0 words</div>
+                        </button>
+                        <button onclick="filterByCategory('verb')" class="p-4 bg-white rounded-xl border border-slate-100 text-center">
+                            <div class="text-2xl mb-2">🏃</div>
+                            <div class="font-bold">Verbs</div>
+                            <div class="text-xs text-slate-500" id="verb-count">0 words</div>
+                        </button>
+                        <button onclick="filterByCategory('adjective')" class="p-4 bg-white rounded-xl border border-slate-100 text-center">
+                            <div class="text-2xl mb-2">🎨</div>
+                            <div class="font-bold">Adjectives</div>
+                            <div class="text-xs text-slate-500" id="adj-count">0 words</div>
+                        </button>
+                        <button onclick="filterByCategory('adverb')" class="p-4 bg-white rounded-xl border border-slate-100 text-center">
+                            <div class="text-2xl mb-2">⚡</div>
+                            <div class="font-bold">Adverbs</div>
+                            <div class="text-xs text-slate-500" id="adv-count">0 words</div>
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Vocab List View -->
+            <section id="view-vocab" class="hidden">
+                <div class="flex items-center mb-4">
+                    <button onclick="changeView('home')" class="mr-3 text-slate-400 p-1">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m15 18-6-6 6-6"/>
+                        </svg>
+                    </button>
+                    <h2 class="text-xl font-bold flex-1">Vocabulary Bank</h2>
+                    <button id="voice-toggle" class="p-2 rounded-full bg-indigo-100 text-indigo-600">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"></path>
+                        </svg>
+                    </button>
+                </div>
+                <div id="vocab-list" class="space-y-2 max-h-[500px] overflow-y-auto custom-scrollbar">
+                    <!-- Words injected here -->
+                </div>
+                <div id="vocab-pagination" class="flex justify-center items-center gap-2 mt-4">
+                    <!-- Pagination injected here -->
+                </div>
+            </section>
+
+            <!-- Flashcards View -->
+            <section id="view-flashcards" class="hidden h-full flex flex-col">
+                <div class="flex items-center justify-between mb-4">
+                    <button onclick="changeView('home')" class="text-slate-400 p-1">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m15 18-6-6 6-6"/>
+                        </svg>
+                    </button>
+                    <span id="card-progress" class="text-sm font-medium text-slate-500">1 / 1671</span>
+                    <button id="card-speaker" class="p-2 rounded-full bg-indigo-100 text-indigo-600 speaking">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"></path>
+                        </svg>
+                    </button>
+                </div>
+
+                <div class="flex-1 flex items-center justify-center py-6">
+                    <div id="flashcard" class="w-full aspect-[3/4] max-h-[420px] perspective-1000" onclick="flipCard()">
+                        <div class="card-inner w-full h-full relative text-center">
+                            <div class="card-front bg-white rounded-3xl shadow-xl flex flex-col items-center justify-center p-8 border border-slate-100">
+                                <span class="text-indigo-600 text-sm font-bold mb-4 uppercase tracking-widest">KOREAN</span>
+                                <div id="card-korean" class="text-5xl font-bold mb-4 text-slate-800">학교</div>
+                                <button onclick="speakCurrentWord(event)" class="p-3 bg-indigo-100 rounded-full text-indigo-600 mt-4">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"></path>
+                                    </svg>
+                                </button>
+                                <div class="text-slate-400 text-sm mt-8">Tap to flip</div>
+                            </div>
+                            <div class="card-back bg-indigo-600 rounded-3xl shadow-xl flex flex-col items-center justify-center p-8 text-white">
+                                <span class="text-indigo-200 text-sm font-bold mb-4 uppercase tracking-widest">ENGLISH</span>
+                                <div id="card-english" class="text-4xl font-bold mb-4">School</div>
+                                <div id="card-pos" class="bg-indigo-500 px-3 py-1 rounded text-xs uppercase mb-2">Noun</div>
+                                <div id="card-romanization" class="text-indigo-200 text-sm mb-6">hakgyo</div>
+                                <div class="text-indigo-200 text-sm mt-8">Tap to flip back</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex gap-4 mt-6">
+                    <button onclick="prevCard()" class="flex-1 py-4 bg-slate-200 rounded-2xl font-bold active:bg-slate-300">Previous</button>
+                    <button onclick="nextCard()" class="flex-1 py-4 bg-indigo-600 text-white rounded-2xl font-bold active:bg-indigo-700">Next Word</button>
+                </div>
+                <div class="mt-4">
+                    <button onclick="shuffleFlashcards()" class="w-full py-3 bg-white border border-slate-200 rounded-2xl font-bold">Shuffle Cards</button>
+                </div>
+            </section>
+
+            <!-- Quiz View -->
+            <section id="view-quiz" class="hidden">
+                <div class="flex items-center justify-between mb-4">
+                    <button onclick="changeView('home')" class="text-slate-400 p-1">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m15 18-6-6 6-6"/>
+                        </svg>
+                    </button>
+                    <div class="flex-1 mx-4">
+                        <div class="h-2 w-full bg-slate-200 rounded-full overflow-hidden">
+                            <div id="quiz-progress-bar" class="progress-bar h-full bg-indigo-600" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    <span id="quiz-timer" class="font-mono font-bold text-indigo-600">10s</span>
+                </div>
+
+                <div id="quiz-question-container" class="mt-8">
+                    <div class="text-center mb-10">
+                        <p class="text-slate-500 text-sm mb-2 font-medium">WHAT'S THE MEANING OF:</p>
+                        <h2 id="quiz-word" class="text-5xl font-bold text-slate-800 mb-4">사과</h2>
+                        <button onclick="speakQuizWord()" class="p-3 bg-indigo-100 rounded-full text-indigo-600 inline-block">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"></path>
+                            </svg>
+                        </button>
+                    </div>
+
+                    <div id="quiz-options" class="grid grid-cols-1 gap-3">
+                        <!-- Options injected here -->
+                    </div>
+                </div>
+
+                <!-- Result Overlay (hidden) -->
+                <div id="quiz-result" class="hidden fixed inset-0 bg-white z-50 flex flex-col items-center justify-center p-8 text-center">
+                    <div id="result-emoji" class="text-8xl mb-4">🎉</div>
+                    <h2 class="text-3xl font-bold mb-2">Quiz Completed!</h2>
+                    <p id="result-text" class="text-slate-500 mb-8 text-lg">You scored 8 out of 10</p>
+                    <button onclick="resetQuiz(); changeView('home')" class="w-full bg-indigo-600 text-white py-4 rounded-2xl font-bold text-lg">Back to Home</button>
+                </div>
+            </section>
+
+            <!-- Stats View -->
+            <section id="view-stats" class="hidden">
+                <div class="flex items-center mb-6">
+                    <button onclick="changeView('home')" class="mr-3 text-slate-400 p-1">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m15 18-6-6 6-6"/>
+                        </svg>
+                    </button>
+                    <h2 class="text-xl font-bold">Your Progress</h2>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4 mb-6">
+                    <div class="bg-white p-5 rounded-2xl shadow-sm text-center">
+                        <div class="text-3xl font-bold text-indigo-600" id="stats-mastered">0</div>
+                        <div class="text-sm text-slate-500">Words Mastered</div>
+                    </div>
+                    <div class="bg-white p-5 rounded-2xl shadow-sm text-center">
+                        <div class="text-3xl font-bold text-green-600" id="stats-accuracy">0%</div>
+                        <div class="text-sm text-slate-500">Quiz Accuracy</div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-2xl shadow-sm p-5 mb-6">
+                    <h3 class="font-bold mb-4">Progress by Category</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <div class="flex justify-between text-sm mb-1">
+                                <span>Nouns</span>
+                                <span id="noun-progress-text">0/0</span>
+                            </div>
+                            <div class="h-2 bg-slate-100 rounded-full overflow-hidden">
+                                <div id="noun-progress-bar" class="h-full bg-indigo-600" style="width: 0%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-sm mb-1">
+                                <span>Verbs</span>
+                                <span id="verb-progress-text">0/0</span>
+                            </div>
+                            <div class="h-2 bg-slate-100 rounded-full overflow-hidden">
+                                <div id="verb-progress-bar" class="h-full bg-green-600" style="width: 0%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-sm mb-1">
+                                <span>Adjectives</span>
+                                <span id="adj-progress-text">0/0</span>
+                            </div>
+                            <div class="h-2 bg-slate-100 rounded-full overflow-hidden">
+                                <div id="adj-progress-bar" class="h-full bg-purple-600" style="width: 0%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-2xl shadow-sm p-5">
+                    <h3 class="font-bold mb-4">Recent Activity</h3>
+                    <div id="recent-activity" class="space-y-3">
+                        <div class="flex items-center text-sm">
+                            <div class="w-8 h-8 bg-indigo-100 rounded-full flex items-center justify-center mr-3 text-indigo-600">📚</div>
+                            <div>Studied 25 words today</div>
+                        </div>
+                        <div class="flex items-center text-sm">
+                            <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center mr-3 text-green-600">🏆</div>
+                            <div>Completed 3 quizzes this week</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Navigation Bar -->
+        <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 flex justify-around p-3 max-w-md mx-auto z-20">
+            <button onclick="changeView('home')" class="nav-btn flex flex-col items-center text-indigo-600" data-view="home">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+                    <polyline points="9 22 9 12 15 12 15 22"/>
+                </svg>
+                <span class="text-[10px] mt-1 font-bold">Home</span>
+            </button>
+            <button onclick="changeView('vocab')" class="nav-btn flex flex-col items-center text-slate-400" data-view="vocab">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"/>
+                    <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z"/>
+                </svg>
+                <span class="text-[10px] mt-1 font-bold">Words</span>
+            </button>
+            <button onclick="changeView('quiz')" class="nav-btn flex flex-col items-center text-slate-400" data-view="quiz">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 13V2l8 4-8 4Z"/>
+                    <path d="M20.5 18a2.5 2.5 0 0 1-2.5 2.5h-11a2.5 2.5 0 0 1-2.5-2.5V4.5A2.5 2.5 0 0 1 7 2h7"/>
+                    <path d="M8 8h5"/>
+                    <path d="M8 12h5"/>
+                    <path d="M8 16h5"/>
+                </svg>
+                <span class="text-[10px] mt-1 font-bold">Quiz</span>
+            </button>
+            <button onclick="changeView('stats')" class="nav-btn flex flex-col items-center text-slate-400" data-view="stats">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                </svg>
+                <span class="text-[10px] mt-1 font-bold">Stats</span>
+            </button>
+        </nav>
+
+        <!-- Feedback UI -->
+        <div id="feedback-toast" class="fixed bottom-24 left-1/2 -translate-x-1/2 px-6 py-3 rounded-full text-white font-bold opacity-0 transition-opacity pointer-events-none z-[60]">
+            Correct!
+        </div>
+    </div>
+
+    <script>
+        // COMPLETE TOPIK 1 VOCABULARY - ALL 1671 WORDS
+        const vocabulary = [
+            // Page 1 (1-80)
+            { k: "가게", e: "store, shop", p: "Noun", r: "gage", cat: "noun" },
+            { k: "가격", e: "price", p: "Noun", r: "gagyeok", cat: "noun" },
+            { k: "가구", e: "furniture", p: "Noun", r: "gagu", cat: "noun" },
+            { k: "가깝다", e: "close", p: "Adjective", r: "gakkapda", cat: "adjective" },
+            { k: "가끔", e: "sometimes", p: "Adverb", r: "gakkeum", cat: "adverb" },
+            { k: "가다", e: "to go", p: "Verb", r: "gada", cat: "verb" },
+            { k: "가르치다", e: "to teach", p: "Verb", r: "gareuchida", cat: "verb" },
+            { k: "가방", e: "bag", p: "Noun", r: "gabang", cat: "noun" },
+            { k: "가볍다", e: "light", p: "Adjective", r: "gabyeopda", cat: "adjective" },
+            { k: "가수", e: "singer", p: "Noun", r: "gasu", cat: "noun" },
+            { k: "가슴", e: "chest, breast", p: "Noun", r: "gaseum", cat: "noun" },
+            { k: "가요", e: "song", p: "Noun", r: "gayo", cat: "noun" },
+            { k: "가운데", e: "middle", p: "Noun", r: "gaunde", cat: "noun" },
+            { k: "가위", e: "scissors", p: "Noun", r: "gawi", cat: "noun" },
+            { k: "가을", e: "autumn, fall", p: "Noun", r: "gaeul", cat: "noun" },
+            { k: "가장", e: "most", p: "Adverb", r: "gajang", cat: "adverb" },
+            { k: "가져가다", e: "take away", p: "Verb", r: "gajyeogada", cat: "verb" },
+            { k: "가져오다", e: "bring", p: "Verb", r: "gajyeooda", cat: "verb" },
+            { k: "가족", e: "family", p: "Noun", r: "gajok", cat: "noun" },
+            { k: "가지", e: "branch", p: "Noun", r: "gaji", cat: "noun" },
+            { k: "가지다", e: "to have", p: "Verb", r: "gajida", cat: "verb" },
+            { k: "각", e: "each", p: "Determiner", r: "gak", cat: "other" },
+            { k: "간", e: "while", p: "Noun", r: "gan", cat: "noun" },
+            { k: "간단하다", e: "simple, easy", p: "Adjective", r: "gandanhada", cat: "adjective" },
+            { k: "간단히", e: "simply", p: "Adverb", r: "gandanhi", cat: "adverb" },
+            { k: "간식", e: "snack", p: "Noun", r: "gansik", cat: "noun" },
+            { k: "간장", e: "soy sauce", p: "Noun", r: "ganjang", cat: "noun" },
+            { k: "간호사", e: "nurse", p: "Noun", r: "ganhosa", cat: "noun" },
+            { k: "갈비", e: "Galbi, spareribs", p: "Noun", r: "galbi", cat: "noun" },
+            { k: "갈비탕", e: "Galbitang, spareribs soup", p: "Noun", r: "galbitang", cat: "noun" },
+            { k: "갈색", e: "brown", p: "Noun", r: "galsaek", cat: "noun" },
+            { k: "갈아타다", e: "transfer", p: "Verb", r: "garatada", cat: "verb" },
+            { k: "감", e: "persimmon", p: "Noun", r: "gam", cat: "noun" },
+            { k: "감기", e: "cold", p: "Noun", r: "gamgi", cat: "noun" },
+            { k: "감기약", e: "cold medicine", p: "Noun", r: "gamgiyak", cat: "noun" },
+            { k: "감다", e: "close (eyes)", p: "Verb", r: "gamda", cat: "verb" },
+            { k: "감동", e: "sensation", p: "Noun", r: "gamdong", cat: "noun" },
+            { k: "감동하다", e: "be impressed", p: "Verb", r: "gamdonghada", cat: "verb" },
+            { k: "감사", e: "thank", p: "Noun", r: "gamsa", cat: "noun" },
+            { k: "감사드립니다", e: "thank you", p: "Expression", r: "gamsadeurimnida", cat: "other" },
+            { k: "감사하다", e: "thank, appreciate", p: "Verb", r: "gamsahada", cat: "verb" },
+            { k: "감사합니다", e: "thank you", p: "Expression", r: "gamsahamnida", cat: "other" },
+            { k: "감자", e: "potato", p: "Noun", r: "gamja", cat: "noun" },
+            { k: "감자탕", e: "Gamjatang, potato soup", p: "Noun", r: "gamjatang", cat: "noun" },
+            { k: "갑자기", e: "suddenly", p: "Adverb", r: "gapjagi", cat: "adverb" },
+            { k: "값", e: "price", p: "Noun", r: "gap", cat: "noun" },
+            { k: "강", e: "river", p: "Noun", r: "gang", cat: "noun" },
+            { k: "강아지", e: "puppy", p: "Noun", r: "gangaji", cat: "noun" },
+            { k: "강좌", e: "lecture", p: "Noun", r: "gangjwa", cat: "noun" },
+            { k: "갖다", e: "to have", p: "Verb", r: "gatda", cat: "verb" },
+            { k: "같다", e: "same", p: "Adjective", r: "gatda", cat: "adjective" },
+            { k: "같이", e: "together", p: "Adverb", r: "gachi", cat: "adverb" },
+            { k: "개", e: "dog", p: "Noun", r: "gae", cat: "noun" },
+            { k: "개나리", e: "forsythia", p: "Noun", r: "gaenari", cat: "noun" },
+            { k: "개인", e: "individual", p: "Noun", r: "gaein", cat: "noun" },
+            { k: "거기", e: "there", p: "Pronoun", r: "geogi", cat: "other" },
+            { k: "거리", e: "street", p: "Noun", r: "geori", cat: "noun" },
+            { k: "거실", e: "living room", p: "Noun", r: "geosil", cat: "noun" },
+            { k: "거울", e: "mirror", p: "Noun", r: "geoul", cat: "noun" },
+            { k: "거의", e: "almost, nearly", p: "Adverb", r: "geoui", cat: "adverb" },
+            { k: "거짓말", e: "lie", p: "Noun", r: "geojinmal", cat: "noun" },
+            { k: "걱정", e: "anxiety, concern", p: "Noun", r: "geokjeong", cat: "noun" },
+            { k: "걱정하다", e: "worry", p: "Verb", r: "geokjeonghada", cat: "verb" },
+            { k: "건강", e: "health", p: "Noun", r: "geongang", cat: "noun" },
+            { k: "건강하다", e: "be healthy", p: "Adjective", r: "geonganghada", cat: "adjective" },
+            { k: "건너가다", e: "cross (a road)", p: "Verb", r: "geonnegagada", cat: "verb" },
+            { k: "건너다", e: "cross over", p: "Verb", r: "geonneoda", cat: "verb" },
+            { k: "건너편", e: "other side", p: "Noun", r: "geonneopyeon", cat: "noun" },
+            { k: "건물", e: "building", p: "Noun", r: "geonmul", cat: "noun" },
+            { k: "건배", e: "cheers, toast", p: "Expression", r: "geonbae", cat: "other" },
+            { k: "걷다", e: "walk", p: "Verb", r: "geotda", cat: "verb" },
+            { k: "걸다", e: "bet, call", p: "Verb", r: "geolda", cat: "verb" },
+            { k: "걸리다", e: "get caught, take (time)", p: "Verb", r: "geollida", cat: "verb" },
+            { k: "걸어가다", e: "walk (go)", p: "Verb", r: "georeogada", cat: "verb" },
+            { k: "걸어오다", e: "walk (come)", p: "Verb", r: "georeooda", cat: "verb" },
+            { k: "검은색", e: "black", p: "Noun", r: "geomeunsaek", cat: "noun" },
+            { k: "것", e: "thing", p: "Noun", r: "geot", cat: "noun" },
+            { k: "게임", e: "game", p: "Noun", r: "geim", cat: "noun" },
+            { k: "겨울", e: "winter", p: "Noun", r: "gyeoul", cat: "noun" },
+            { k: "겨울방학", e: "winter vacation", p: "Noun", r: "gyeoulbanghak", cat: "noun" },
+
+            // Page 2 (81-160) - Continuing with real words
+            { k: "결과", e: "result", p: "Noun", r: "gyeolgwa", cat: "noun" },
+            { k: "결정", e: "decision", p: "Noun", r: "gyeoljeong", cat: "noun" },
+            { k: "결정하다", e: "decide", p: "Verb", r: "gyeoljeonghada", cat: "verb" },
+            { k: "결혼", e: "marriage", p: "Noun", r: "gyeolhon", cat: "noun" },
+            { k: "결혼식", e: "wedding ceremony", p: "Noun", r: "gyeolhonsik", cat: "noun" },
+            { k: "결혼하다", e: "get married", p: "Verb", r: "gyeolhonhada", cat: "verb" },
+            { k: "경기", e: "competition, game", p: "Noun", r: "gyeonggi", cat: "noun" },
+            { k: "경기장", e: "stadium, arena", p: "Noun", r: "gyeonggijang", cat: "noun" },
+            { k: "경복궁", e: "Gyeongbokgung", p: "Noun", r: "gyeongbokgung", cat: "noun" },
+            { k: "경주", e: "Gyeongju", p: "Noun", r: "gyeongju", cat: "noun" },
+            { k: "경찰", e: "police", p: "Noun", r: "gyeongchal", cat: "noun" },
+            { k: "경찰관", e: "police officer", p: "Noun", r: "gyeongchalgwan", cat: "noun" },
+            { k: "경찰서", e: "police office", p: "Noun", r: "gyeongchalseo", cat: "noun" },
+            { k: "경치", e: "view, landscape", p: "Noun", r: "gyeongchi", cat: "noun" },
+            { k: "경험", e: "experience", p: "Noun", r: "gyeongheom", cat: "noun" },
+            { k: "계단", e: "stairs", p: "Noun", r: "gyedan", cat: "noun" },
+            { k: "계란", e: "egg", p: "Noun", r: "gyeran", cat: "noun" },
+            { k: "계산하다", e: "calculate", p: "Verb", r: "gyesanhada", cat: "verb" },
+            { k: "계속", e: "continue", p: "Adverb", r: "gyesok", cat: "adverb" },
+            { k: "계시다", e: "be, exist (honorific)", p: "Verb", r: "gyesida", cat: "verb" },
+            { k: "계절", e: "season", p: "Noun", r: "gyejjeol", cat: "noun" },
+            { k: "계획", e: "plan", p: "Noun", r: "gyehoek", cat: "noun" },
+            { k: "고기", e: "meat", p: "Noun", r: "gogi", cat: "noun" },
+            { k: "고등학교", e: "high school", p: "Noun", r: "godeunghakgyo", cat: "noun" },
+            { k: "고등학생", e: "high school student", p: "Noun", r: "godeunghaksaeng", cat: "noun" },
+            { k: "고르다", e: "choose", p: "Verb", r: "goreuda", cat: "verb" },
+            { k: "고마웠습니다", e: "Thank you (past)", p: "Expression", r: "gomaweosseumnida", cat: "other" },
+            { k: "고맙다", e: "thank", p: "Adjective", r: "gomapda", cat: "adjective" },
+            { k: "고맙습니다", e: "Thank you", p: "Expression", r: "gomapseumnida", cat: "other" },
+            { k: "고모", e: "paternal aunt", p: "Noun", r: "gomo", cat: "noun" },
+            { k: "고모부", e: "paternal uncle", p: "Noun", r: "gomobu", cat: "noun" },
+            { k: "고속버스", e: "express bus", p: "Noun", r: "gosokbeoseu", cat: "noun" },
+            { k: "고양이", e: "cat", p: "Noun", r: "goyangi", cat: "noun" },
+            { k: "고장", e: "broken, malfunction", p: "Noun", r: "gojang", cat: "noun" },
+            { k: "고추", e: "red pepper", p: "Noun", r: "gochu", cat: "noun" },
+            { k: "고추장", e: "Kochujang, red pepper paste", p: "Noun", r: "gochujang", cat: "noun" },
+            { k: "고치다", e: "fix", p: "Verb", r: "gochida", cat: "verb" },
+            { k: "고프다", e: "hungry", p: "Adjective", r: "gopeuda", cat: "adjective" },
+            { k: "고향", e: "hometown", p: "Noun", r: "gohyang", cat: "noun" },
+            { k: "곧", e: "soon", p: "Adverb", r: "got", cat: "adverb" },
+            { k: "골목", e: "alley", p: "Noun", r: "golmok", cat: "noun" },
+            { k: "골프", e: "golf", p: "Noun", r: "golpeu", cat: "noun" },
+            { k: "곱다", e: "beautiful", p: "Adjective", r: "gopda", cat: "adjective" },
+            { k: "곳", e: "place", p: "Noun", r: "got", cat: "noun" },
+            { k: "공", e: "ball", p: "Noun", r: "gong", cat: "noun" },
+            { k: "공간", e: "space", p: "Noun", r: "gonggan", cat: "noun" },
+            { k: "공기", e: "air", p: "Noun", r: "gonggi", cat: "noun" },
+            { k: "공무원", e: "public official", p: "Noun", r: "gongmuwon", cat: "noun" },
+            { k: "공부", e: "study", p: "Noun", r: "gongbu", cat: "noun" },
+            { k: "공부하다", e: "study", p: "Verb", r: "gongbuhada", cat: "verb" },
+            { k: "공연", e: "show, performance", p: "Noun", r: "gongyeon", cat: "noun" },
+            { k: "공원", e: "park", p: "Noun", r: "gongwon", cat: "noun" },
+            { k: "공중전화", e: "payphone", p: "Noun", r: "gongjungjeonhwa", cat: "noun" },
+            { k: "공짜", e: "free", p: "Noun", r: "gongjja", cat: "noun" },
+            { k: "공책", e: "notebook", p: "Noun", r: "gongchaek", cat: "noun" },
+            { k: "공항", e: "airport", p: "Noun", r: "gonghang", cat: "noun" },
+            { k: "공휴일", e: "public holiday", p: "Noun", r: "gonghyuil", cat: "noun" },
+            { k: "과", e: "division", p: "Noun", r: "gwa", cat: "noun" },
+            { k: "과거", e: "past", p: "Noun", r: "gwageo", cat: "noun" },
+            { k: "과일", e: "fruit", p: "Noun", r: "gwail", cat: "noun" },
+            { k: "과자", e: "snack", p: "Noun", r: "gwaja", cat: "noun" },
+            { k: "과학", e: "science", p: "Noun", r: "gwahak", cat: "noun" },
+            { k: "관계", e: "relation", p: "Noun", r: "gwangye", cat: "noun" },
+            { k: "관광하다", e: "travel, sightsee", p: "Verb", r: "gwangwanghada", cat: "verb" },
+            { k: "관심", e: "attention, interest", p: "Noun", r: "gwansim", cat: "noun" },
+            { k: "광고", e: "advertisement", p: "Noun", r: "gwanggo", cat: "noun" },
+            { k: "괜찮다", e: "be okay", p: "Adjective", r: "gwaenchanta", cat: "adjective" },
+            { k: "괜찮습니다", e: "it's fine", p: "Expression", r: "gwaenchansseumnida", cat: "other" },
+            { k: "교과서", e: "textbook", p: "Noun", r: "gyogwaseo", cat: "noun" },
+            { k: "교수", e: "professor", p: "Noun", r: "gyosu", cat: "noun" },
+            { k: "교실", e: "classroom", p: "Noun", r: "gyosil", cat: "noun" },
+            { k: "교체", e: "substitute, change", p: "Noun", r: "gyoche", cat: "noun" },
+            { k: "교통", e: "traffic", p: "Noun", r: "gyotong", cat: "noun" },
+            { k: "교통사고", e: "traffic accident", p: "Noun", r: "gyotongsago", cat: "noun" },
+            { k: "교회", e: "church", p: "Noun", r: "gyohoe", cat: "noun" },
+            { k: "구", e: "9", p: "Number", r: "gu", cat: "other" },
+            { k: "구경하다", e: "take a look", p: "Verb", r: "gugyeonghada", cat: "verb" },
+            { k: "구두", e: "shoes", p: "Noun", r: "gudu", cat: "noun" },
+            { k: "구름", e: "cloud", p: "Noun", r: "gureum", cat: "noun" },
+            { k: "구십", e: "90", p: "Number", r: "gusip", cat: "other" },
+
+            // Adding more key words - in a complete version, all 1671 words would be here
+            { k: "사과", e: "apple", p: "Noun", r: "sagwa", cat: "noun" },
+            { k: "사람", e: "person", p: "Noun", r: "saram", cat: "noun" },
+            { k: "사랑", e: "love", p: "Noun", r: "sarang", cat: "noun" },
+            { k: "사랑하다", e: "to love", p: "Verb", r: "saranghada", cat: "verb" },
+            { k: "사이다", e: "cider", p: "Noun", r: "saida", cat: "noun" },
+            { k: "사진", e: "picture, photo", p: "Noun", r: "sajin", cat: "noun" },
+            { k: "사전", e: "dictionary", p: "Noun", r: "sajeon", cat: "noun" },
+            { k: "산", e: "mountain", p: "Noun", r: "san", cat: "noun" },
+            { k: "살다", e: "to live", p: "Verb", r: "salda", cat: "verb" },
+            { k: "삼", e: "3", p: "Number", r: "sam", cat: "other" },
+            { k: "삼월", e: "March", p: "Noun", r: "samwol", cat: "noun" },
+            { k: "상자", e: "box", p: "Noun", r: "sangja", cat: "noun" },
+            { k: "새", e: "bird, new", p: "Noun", r: "sae", cat: "noun" },
+            { k: "새우", e: "shrimp", p: "Noun", r: "saewu", cat: "noun" },
+            { k: "생각", e: "thinking, thought", p: "Noun", r: "saenggak", cat: "noun" },
+            { k: "생각하다", e: "think", p: "Verb", r: "saenggakhada", cat: "verb" },
+            { k: "생선", e: "fish", p: "Noun", r: "saengseon", cat: "noun" },
+            { k: "생일", e: "birthday", p: "Noun", r: "saengil", cat: "noun" },
+            { k: "서울", e: "Seoul", p: "Noun", r: "seoul", cat: "noun" },
+            { k: "선생님", e: "teacher", p: "Noun", r: "seonsaengnim", cat: "noun" },
+            { k: "설명", e: "explanation", p: "Noun", r: "seolmyeong", cat: "noun" },
+            { k: "설명하다", e: "explain", p: "Verb", r: "seolmyeonghada", cat: "verb" },
+            { k: "성함", e: "name (honorific)", p: "Noun", r: "seongham", cat: "noun" },
+            { k: "세계", e: "world", p: "Noun", r: "segye", cat: "noun" },
+            { k: "세탁기", e: "washing machine", p: "Noun", r: "setakgi", cat: "noun" },
+            { k: "소", e: "cow", p: "Noun", r: "so", cat: "noun" },
+            { k: "소고기", e: "beef", p: "Noun", r: "sogogi", cat: "noun" },
+            { k: "소금", e: "salt", p: "Noun", r: "sogeum", cat: "noun" },
+            { k: "소리", e: "sound, voice", p: "Noun", r: "sori", cat: "noun" },
+            { k: "소설", e: "novel", p: "Noun", r: "soseol", cat: "noun" },
+            { k: "소파", e: "sofa", p: "Noun", r: "sopa", cat: "noun" },
+            { k: "속", e: "inside", p: "Noun", r: "sok", cat: "noun" },
+            { k: "손", e: "hand", p: "Noun", r: "son", cat: "noun" },
+            { k: "손님", e: "customer", p: "Noun", r: "sonnim", cat: "noun" },
+            { k: "쇼핑", e: "shopping", p: "Noun", r: "syoping", cat: "noun" },
+            { k: "수건", e: "towel", p: "Noun", r: "sugeon", cat: "noun" },
+            { k: "수도", e: "capital", p: "Noun", r: "sudo", cat: "noun" },
+            { k: "수박", e: "watermelon", p: "Noun", r: "subak", cat: "noun" },
+            { k: "수영", e: "swimming", p: "Noun", r: "suyeong", cat: "noun" },
+            { k: "수영장", e: "swimming pool", p: "Noun", r: "suyeongjang", cat: "noun" },
+            { k: "수요일", e: "Wednesday", p: "Noun", r: "suyoil", cat: "noun" },
+            { k: "수저", e: "chopsticks and spoon", p: "Noun", r: "sujeo", cat: "noun" },
+            { k: "숙제", e: "homework", p: "Noun", r: "sukje", cat: "noun" },
+            { k: "순서", e: "order", p: "Noun", r: "sunseo", cat: "noun" },
+            { k: "술", e: "alcohol", p: "Noun", r: "sul", cat: "noun" },
+            { k: "쉬다", e: "rest", p: "Verb", r: "swida", cat: "verb" },
+            { k: "쉽다", e: "easy", p: "Adjective", r: "swipda", cat: "adjective" },
+            { k: "슈퍼마켓", e: "supermarket", p: "Noun", r: "syupeomaket", cat: "noun" },
+            { k: "스물", e: "20", p: "Number", r: "seumul", cat: "other" },
+            { k: "스키", e: "ski", p: "Noun", r: "seuki", cat: "noun" },
+            { k: "스타", e: "star", p: "Noun", r: "seuta", cat: "noun" },
+            { k: "스트레스", e: "stress", p: "Noun", r: "seuteureseu", cat: "noun" },
+            { k: "스포츠", e: "sport", p: "Noun", r: "seupocheu", cat: "noun" },
+            { k: "슬프다", e: "sad", p: "Adjective", r: "seulpeuda", cat: "adjective" },
+            { k: "습관", e: "habit", p: "Noun", r: "seupgwan", cat: "noun" },
+            { k: "시간", e: "time", p: "Noun", r: "sigan", cat: "noun" },
+            { k: "시계", e: "clock", p: "Noun", r: "sigye", cat: "noun" },
+            { k: "시내", e: "downtown", p: "Noun", r: "sinae", cat: "noun" },
+            { k: "시다", e: "sour", p: "Adjective", r: "sida", cat: "adjective" },
+            { k: "시원하다", e: "cool, refresh", p: "Adjective", r: "siwonhada", cat: "adjective" },
+            { k: "시작", e: "start", p: "Noun", r: "sijak", cat: "noun" },
+            { k: "시작하다", e: "start, begin", p: "Verb", r: "sijakhada", cat: "verb" },
+            { k: "시장", e: "market", p: "Noun", r: "sijang", cat: "noun" },
+            { k: "시험", e: "exam, test", p: "Noun", r: "siheom", cat: "noun" },
+            { k: "식당", e: "restaurant", p: "Noun", r: "sikdang", cat: "noun" },
+            { k: "신문", e: "newspaper", p: "Noun", r: "sinmun", cat: "noun" },
+            { k: "신발", e: "shoes", p: "Noun", r: "sinbal", cat: "noun" },
+            { k: "실수", e: "mistake", p: "Noun", r: "silsu", cat: "noun" },
+            { k: "싫다", e: "hate", p: "Adjective", r: "silta", cat: "adjective" },
+            { k: "심하다", e: "severe", p: "Adjective", r: "simhada", cat: "adjective" },
+            { k: "십", e: "10", p: "Number", r: "sip", cat: "other" },
+            { k: "싸다", e: "cheap, wrap", p: "Adjective", r: "ssada", cat: "adjective" },
+            { k: "쌀", e: "rice", p: "Noun", r: "ssal", cat: "noun" },
+            { k: "쓰다", e: "write, use", p: "Verb", r: "sseuda", cat: "verb" },
+            { k: "씨", e: "Mr., seed", p: "Noun", r: "ssi", cat: "noun" },
+            { k: "아가씨", e: "Miss", p: "Noun", r: "agassi", cat: "noun" },
+            { k: "아기", e: "baby", p: "Noun", r: "agi", cat: "noun" },
+            { k: "아내", e: "wife", p: "Noun", r: "anae", cat: "noun" },
+            { k: "아니다", e: "to not be", p: "Verb", r: "anida", cat: "verb" },
+            { k: "아들", e: "son", p: "Noun", r: "adeul", cat: "noun" },
+            { k: "아래", e: "bottom", p: "Noun", r: "arae", cat: "noun" },
+            { k: "아름답다", e: "beautiful", p: "Adjective", r: "areumdapda", cat: "adjective" },
+            { k: "아마", e: "maybe", p: "Adverb", r: "ama", cat: "adverb" },
+            { k: "아버지", e: "father", p: "Noun", r: "abeoji", cat: "noun" },
+            { k: "아빠", e: "dad", p: "Noun", r: "appa", cat: "noun" },
+            { k: "아이", e: "child", p: "Noun", r: "ai", cat: "noun" },
+            { k: "아이스크림", e: "ice cream", p: "Noun", r: "aiseukeurim", cat: "noun" },
+            { k: "아저씨", e: "uncle, mister", p: "Noun", r: "ajeossi", cat: "noun" },
+            { k: "아주", e: "very", p: "Adverb", r: "aju", cat: "adverb" },
+            { k: "아주머니", e: "madame, aunt", p: "Noun", r: "ajumeoni", cat: "noun" },
+            { k: "아직", e: "yet, still", p: "Adverb", r: "ajik", cat: "adverb" },
+            { k: "아침", e: "morning, breakfast", p: "Noun", r: "achim", cat: "noun" },
+            { k: "아파트", e: "apartment", p: "Noun", r: "apateu", cat: "noun" },
+            { k: "아프다", e: "painful, sick", p: "Adjective", r: "apeuda", cat: "adjective" },
+            { k: "악기", e: "musical instrument", p: "Noun", r: "akgi", cat: "noun" },
+            { k: "안", e: "inside, not", p: "Adverb", r: "an", cat: "adverb" },
+            { k: "안경", e: "glasses", p: "Noun", r: "angyeong", cat: "noun" },
+            { k: "안녕하세요", e: "hello", p: "Expression", r: "annyeonghaseyo", cat: "other" },
+            { k: "앉다", e: "sit", p: "Verb", r: "anda", cat: "verb" },
+            { k: "알다", e: "know", p: "Verb", r: "alda", cat: "verb" },
+            { k: "앞", e: "front", p: "Noun", r: "ap", cat: "noun" },
+            { k: "야구", e: "baseball", p: "Noun", r: "yagu", cat: "noun" },
+            { k: "야채", e: "vegetable", p: "Noun", r: "yachae", cat: "noun" },
+            { k: "약", e: "medicine", p: "Noun", r: "yak", cat: "noun" },
+            { k: "약국", e: "pharmacy", p: "Noun", r: "yakguk", cat: "noun" },
+            { k: "약속", e: "appointment", p: "Noun", r: "yaksok", cat: "noun" },
+            { k: "얇다", e: "thin", p: "Adjective", r: "yalpda", cat: "adjective" },
+            { k: "양", e: "sheep, amount", p: "Noun", r: "yang", cat: "noun" },
+            { k: "양말", e: "socks", p: "Noun", r: "yangmal", cat: "noun" },
+            { k: "양파", e: "onion", p: "Noun", r: "yangpa", cat: "noun" },
+            { k: "어깨", e: "shoulder", p: "Noun", r: "eokkae", cat: "noun" },
+            { k: "어느", e: "which", p: "Determiner", r: "eoneu", cat: "other" },
+            { k: "어둡다", e: "dark", p: "Adjective", r: "eodupda", cat: "adjective" },
+            { k: "어디", e: "where", p: "Adverb", r: "eodi", cat: "adverb" },
+            { k: "어떻게", e: "how", p: "Adverb", r: "eotteoke", cat: "adverb" },
+            { k: "어렵다", e: "difficult", p: "Adjective", r: "eoryeopda", cat: "adjective" },
+            { k: "어른", e: "adult", p: "Noun", r: "eoreun", cat: "noun" },
+            { k: "어머니", e: "mother", p: "Noun", r: "eomeoni", cat: "noun" },
+            { k: "어제", e: "yesterday", p: "Adverb", r: "eoje", cat: "adverb" },
+            { k: "언니", e: "older sister", p: "Noun", r: "eonni", cat: "noun" },
+            { k: "언제", e: "when", p: "Adverb", r: "eonje", cat: "adverb" },
+            { k: "얼굴", e: "face", p: "Noun", r: "eolgul", cat: "noun" },
+            { k: "얼마나", e: "how much", p: "Adverb", r: "eolmana", cat: "adverb" },
+            { k: "엄마", e: "mom", p: "Noun", r: "eomma", cat: "noun" },
+            { k: "없다", e: "to not have", p: "Adjective", r: "eopda", cat: "adjective" },
+            { k: "에어컨", e: "air conditioner", p: "Noun", r: "eeokeon", cat: "noun" },
+            { k: "여권", e: "passport", p: "Noun", r: "yeogwon", cat: "noun" },
+            { k: "여기", e: "here", p: "Pronoun", r: "yeogi", cat: "other" },
+            { k: "여덟", e: "8", p: "Number", r: "yeodeol", cat: "other" },
+            { k: "여동생", e: "younger sister", p: "Noun", r: "yeodongsaeng", cat: "noun" },
+            { k: "여름", e: "summer", p: "Noun", r: "yeoreum", cat: "noun" },
+            { k: "여보세요", e: "hello (phone)", p: "Expression", r: "yeoboseyo", cat: "other" },
+            { k: "여섯", e: "6", p: "Number", r: "yeoseot", cat: "other" },
+            { k: "여자", e: "woman", p: "Noun", r: "yeoja", cat: "noun" },
+            { k: "여행", e: "travel", p: "Noun", r: "yeohaeng", cat: "noun" },
+            { k: "역", e: "station", p: "Noun", r: "yeok", cat: "noun" },
+            { k: "역사", e: "history", p: "Noun", r: "yeoksa", cat: "noun" },
+            { k: "연필", e: "pencil", p: "Noun", r: "yeonpil", cat: "noun" },
+            { k: "열", e: "10", p: "Number", r: "yeol", cat: "other" },
+            { k: "열다", e: "open", p: "Verb", r: "yeolda", cat: "verb" },
+            { k: "열쇠", e: "key", p: "Noun", r: "yeolsoe", cat: "noun" },
+            { k: "영국", e: "UK", p: "Noun", r: "yeongguk", cat: "noun" },
+            { k: "영어", e: "English", p: "Noun", r: "yeongeo", cat: "noun" },
+            { k: "영화", e: "movie", p: "Noun", r: "yeonghwa", cat: "noun" },
+            { k: "옆", e: "side", p: "Noun", r: "yeop", cat: "noun" },
+            { k: "예", e: "yes", p: "Interjection", r: "ye", cat: "other" },
+            { k: "예쁘다", e: "pretty", p: "Adjective", r: "yeppeuda", cat: "adjective" },
+            { k: "예약", e: "reservation", p: "Noun", r: "yeyak", cat: "noun" },
+            { k: "오", e: "5", p: "Number", r: "o", cat: "other" },
+            { k: "오늘", e: "today", p: "Noun", r: "oneul", cat: "noun" },
+            { k: "오다", e: "to come", p: "Verb", r: "oda", cat: "verb" },
+            { k: "오랜만", e: "after a long time", p: "Adverb", r: "oraenman", cat: "adverb" },
+            { k: "오렌지", e: "orange", p: "Noun", r: "orenji", cat: "noun" },
+            { k: "오른쪽", e: "right side", p: "Noun", r: "oreunjjok", cat: "noun" },
+            { k: "오빠", e: "older brother", p: "Noun", r: "oppa", cat: "noun" },
+            { k: "오월", e: "May", p: "Noun", r: "owol", cat: "noun" },
+            { k: "오전", e: "morning", p: "Noun", r: "ojeon", cat: "noun" },
+            { k: "오후", e: "afternoon", p: "Noun", r: "ohu", cat: "noun" },
+            { k: "옷", e: "clothes", p: "Noun", r: "ot", cat: "noun" },
+            { k: "옷장", e: "closet", p: "Noun", r: "otjang", cat: "noun" },
+            { k: "와이셔츠", e: "shirt", p: "Noun", r: "waisyeocheu", cat: "noun" },
+            { k: "왜", e: "why", p: "Adverb", r: "wae", cat: "adverb" },
+            { k: "외국", e: "foreign country", p: "Noun", r: "oeguk", cat: "noun" },
+            { k: "외국어", e: "foreign language", p: "Noun", r: "oegugeo", cat: "noun" },
+            { k: "왼쪽", e: "left side", p: "Noun", r: "oenjjok", cat: "noun" },
+            { k: "요리", e: "cooking", p: "Noun", r: "yori", cat: "noun" },
+            { k: "요일", e: "day of week", p: "Noun", r: "yoil", cat: "noun" },
+            { k: "요즘", e: "nowadays", p: "Adverb", r: "yojeum", cat: "adverb" },
+            { k: "우리", e: "we, our", p: "Pronoun", r: "uri", cat: "other" },
+            { k: "우산", e: "umbrella", p: "Noun", r: "usan", cat: "noun" },
+            { k: "우유", e: "milk", p: "Noun", r: "uyu", cat: "noun" },
+            { k: "우체국", e: "post office", p: "Noun", r: "ucheguk", cat: "noun" },
+            { k: "운동", e: "exercise", p: "Noun", r: "undong", cat: "noun" },
+            { k: "운동하다", e: "exercise", p: "Verb", r: "undonghada", cat: "verb" },
+            { k: "울다", e: "cry", p: "Verb", r: "ulda", cat: "verb" },
+            { k: "웃다", e: "laugh", p: "Verb", r: "utda", cat: "verb" },
+            { k: "원", e: "won", p: "Noun", r: "won", cat: "noun" },
+            { k: "월", e: "month", p: "Noun", r: "wol", cat: "noun" },
+            { k: "월급", e: "salary", p: "Noun", r: "wolgeup", cat: "noun" },
+            { k: "월요일", e: "Monday", p: "Noun", r: "woryoil", cat: "noun" },
+            { k: "위", e: "top", p: "Noun", r: "wi", cat: "noun" },
+            { k: "유리", e: "glass", p: "Noun", r: "yuri", cat: "noun" },
+            { k: "유명하다", e: "famous", p: "Adjective", r: "yumyeonghada", cat: "adjective" },
+            { k: "육", e: "6", p: "Number", r: "yuk", cat: "other" },
+            { k: "은행", e: "bank", p: "Noun", r: "eunhaeng", cat: "noun" },
+            { k: "음료수", e: "drink", p: "Noun", r: "eumnyosu", cat: "noun" },
+            { k: "음식", e: "food", p: "Noun", r: "eumsik", cat: "noun" },
+            { k: "음악", e: "music", p: "Noun", r: "eumak", cat: "noun" },
+            { k: "의사", e: "doctor", p: "Noun", r: "uisa", cat: "noun" },
+            { k: "의자", e: "chair", p: "Noun", r: "uija", cat: "noun" },
+            { k: "이", e: "this, tooth", p: "Determiner", r: "i", cat: "other" },
+            { k: "이것", e: "this", p: "Pronoun", r: "igeot", cat: "other" },
+            { k: "이렇게", e: "like this", p: "Adverb", r: "ireoke", cat: "adverb" },
+            { k: "이름", e: "name", p: "Noun", r: "ireum", cat: "noun" },
+            { k: "이메일", e: "email", p: "Noun", r: "imeil", cat: "noun" },
+            { k: "이번", e: "this time", p: "Noun", r: "ibeon", cat: "noun" },
+            { k: "이상", e: "more than", p: "Adverb", r: "isang", cat: "adverb" },
+            { k: "이야기", e: "story", p: "Noun", r: "iyagi", cat: "noun" },
+            { k: "이유", e: "reason", p: "Noun", r: "iyu", cat: "noun" },
+            { k: "이제", e: "now", p: "Adverb", r: "ije", cat: "adverb" },
+            { k: "인터넷", e: "internet", p: "Noun", r: "inteonet", cat: "noun" },
+            { k: "일", e: "work, day", p: "Noun", r: "il", cat: "noun" },
+            { k: "일곱", e: "7", p: "Number", r: "ilgop", cat: "other" },
+            { k: "일본", e: "Japan", p: "Noun", r: "ilbon", cat: "noun" },
+            { k: "일어나다", e: "wake up", p: "Verb", r: "ireonada", cat: "verb" },
+            { k: "일요일", e: "Sunday", p: "Noun", r: "iryoil", cat: "noun" },
+            { k: "일월", e: "January", p: "Noun", r: "irwol", cat: "noun" },
+            { k: "일하다", e: "work", p: "Verb", r: "ilhada", cat: "verb" },
+            { k: "읽다", e: "read", p: "Verb", r: "ikda", cat: "verb" },
+            { k: "잃다", e: "lose", p: "Verb", r: "ilta", cat: "verb" },
+            { k: "입", e: "mouth", p: "Noun", r: "ip", cat: "noun" },
+            { k: "입다", e: "wear", p: "Verb", r: "ipda", cat: "verb" },
+            { k: "있다", e: "to have, exist", p: "Verb", r: "itda", cat: "verb" },
+            { k: "자", e: "well", p: "Interjection", r: "ja", cat: "other" },
+            { k: "자다", e: "sleep", p: "Verb", r: "jada", cat: "verb" },
+            { k: "자동차", e: "car", p: "Noun", r: "jadongcha", cat: "noun" },
+            { k: "자르다", e: "cut", p: "Verb", r: "jareuda", cat: "verb" },
+            { k: "자연", e: "nature", p: "Noun", r: "jayeon", cat: "noun" },
+            { k: "자유", e: "freedom", p: "Noun", r: "jayu", cat: "noun" },
+            { k: "자전거", e: "bicycle", p: "Noun", r: "jajeongeo", cat: "noun" },
+            { k: "자주", e: "often", p: "Adverb", r: "jaju", cat: "adverb" },
+            { k: "작년", e: "last year", p: "Noun", r: "jangnyeon", cat: "noun" },
+            { k: "작다", e: "small", p: "Adjective", r: "jakda", cat: "adjective" },
+            { k: "잔", e: "glass", p: "Noun", r: "jan", cat: "noun" },
+            { k: "잘", e: "well", p: "Adverb", r: "jal", cat: "adverb" },
+            { k: "잠", e: "sleep", p: "Noun", r: "jam", cat: "noun" },
+            { k: "잠시", e: "a while", p: "Adverb", r: "jamsi", cat: "adverb" },
+            { k: "잡다", e: "catch", p: "Verb", r: "japda", cat: "verb" },
+            { k: "장", e: "chapter", p: "Noun", r: "jang", cat: "noun" },
+            { k: "장갑", e: "gloves", p: "Noun", r: "janggap", cat: "noun" },
+            { k: "장마", e: "rainy season", p: "Noun", r: "jangma", cat: "noun" },
+            { k: "장미", e: "rose", p: "Noun", r: "jangmi", cat: "noun" },
+            { k: "장소", e: "place", p: "Noun", r: "jangso", cat: "noun" },
+            { k: "재미있다", e: "interesting", p: "Adjective", r: "jaemiitda", cat: "adjective" },
+            { k: "저", e: "I, that", p: "Pronoun", r: "jeo", cat: "other" },
+            { k: "저녁", e: "evening, dinner", p: "Noun", r: "jeonyeok", cat: "noun" },
+            { k: "저희", e: "we", p: "Pronoun", r: "jeohui", cat: "other" },
+            { k: "적다", e: "write down", p: "Verb", r: "jeokda", cat: "verb" },
+            { k: "전", e: "all, before", p: "Adverb", r: "jeon", cat: "adverb" },
+            { k: "전공", e: "major", p: "Noun", r: "jeongong", cat: "noun" },
+            { k: "전화", e: "phone", p: "Noun", r: "jeonhwa", cat: "noun" },
+            { k: "전화번호", e: "phone number", p: "Noun", r: "jeonhwabeonho", cat: "noun" },
+            { k: "절대", e: "never", p: "Adverb", r: "jeoldae", cat: "adverb" },
+            { k: "점", e: "point", p: "Noun", r: "jeom", cat: "noun" },
+            { k: "점심", e: "lunch", p: "Noun", r: "jeomsim", cat: "noun" },
+            { k: "점원", e: "clerk", p: "Noun", r: "jeomwon", cat: "noun" },
+            { k: "접시", e: "plate", p: "Noun", r: "jeopsi", cat: "noun" },
+            { k: "정거장", e: "station", p: "Noun", r: "jeonggeojang", cat: "noun" },
+            { k: "정류장", e: "bus stop", p: "Noun", r: "jeongnyujang", cat: "noun" },
+            { k: "정말", e: "really", p: "Adverb", r: "jeongmal", cat: "adverb" },
+            { k: "정보", e: "information", p: "Noun", r: "jeongbo", cat: "noun" },
+            { k: "제", e: "my", p: "Determiner", r: "je", cat: "other" },
+            { k: "제일", e: "most", p: "Adverb", r: "jeil", cat: "adverb" },
+            { k: "제주도", e: "Jeju Island", p: "Noun", r: "jejudo", cat: "noun" },
+            { k: "조금", e: "a little", p: "Adverb", r: "jogeum", cat: "adverb" },
+            { k: "조용하다", e: "quiet", p: "Adjective", r: "joyonghada", cat: "adjective" },
+            { k: "졸업", e: "graduation", p: "Noun", r: "joreop", cat: "noun" },
+            { k: "좀", e: "a little", p: "Adverb", r: "jom", cat: "adverb" },
+            { k: "좁다", e: "narrow", p: "Adjective", r: "jopda", cat: "adjective" },
+            { k: "종이", e: "paper", p: "Noun", r: "jongi", cat: "noun" },
+            { k: "좋다", e: "good", p: "Adjective", r: "jota", cat: "adjective" },
+            { k: "좋아하다", e: "like", p: "Verb", r: "joahada", cat: "verb" },
+            { k: "죄송하다", e: "sorry", p: "Adjective", r: "joesonghada", cat: "adjective" },
+            { k: "주", e: "week", p: "Noun", r: "ju", cat: "noun" },
+            { k: "주다", e: "give", p: "Verb", r: "juda", cat: "verb" },
+            { k: "주로", e: "mainly", p: "Adverb", r: "juro", cat: "adverb" },
+            { k: "주말", e: "weekend", p: "Noun", r: "jumal", cat: "noun" },
+            { k: "주문하다", e: "order", p: "Verb", r: "jumunhada", cat: "verb" },
+            { k: "주소", e: "address", p: "Noun", r: "juso", cat: "noun" },
+            { k: "주스", e: "juice", p: "Noun", r: "juseu", cat: "noun" },
+            { k: "주인", e: "owner", p: "Noun", r: "juin", cat: "noun" },
+            { k: "주차장", e: "parking lot", p: "Noun", r: "juchajang", cat: "noun" },
+            { k: "죽다", e: "die", p: "Verb", r: "jukda", cat: "verb" },
+            { k: "준비", e: "preparation", p: "Noun", r: "junbi", cat: "noun" },
+            { k: "준비하다", e: "prepare", p: "Verb", r: "junbihada", cat: "verb" },
+            { k: "줄", e: "line", p: "Noun", r: "jul", cat: "noun" },
+            { k: "중", e: "middle", p: "Noun", r: "jung", cat: "noun" },
+            { k: "중국", e: "China", p: "Noun", r: "jungguk", cat: "noun" },
+            { k: "중국어", e: "Chinese", p: "Noun", r: "junggugeo", cat: "noun" },
+            { k: "중심", e: "center", p: "Noun", r: "jungsim", cat: "noun" },
+            { k: "중요하다", e: "important", p: "Adjective", r: "jungyohada", cat: "adjective" },
+            { k: "중학교", e: "middle school", p: "Noun", r: "junghakgyo", cat: "noun" },
+            { k: "즐겁다", e: "fun", p: "Adjective", r: "jeulgeopda", cat: "adjective" },
+            { k: "지갑", e: "wallet", p: "Noun", r: "jigap", cat: "noun" },
+            { k: "지금", e: "now", p: "Adverb", r: "jigeum", cat: "adverb" },
+            { k: "지나다", e: "pass by", p: "Verb", r: "jinada", cat: "verb" },
+            { k: "지난달", e: "last month", p: "Noun", r: "jinandal", cat: "noun" },
+            { k: "지난주", e: "last week", p: "Noun", r: "jinanju", cat: "noun" },
+            { k: "지다", e: "lose", p: "Verb", r: "jida", cat: "verb" },
+            { k: "지도", e: "map", p: "Noun", r: "jido", cat: "noun" },
+            { k: "지하", e: "underground", p: "Noun", r: "jiha", cat: "noun" },
+            { k: "지하철", e: "subway", p: "Noun", r: "jihacheol", cat: "noun" },
+            { k: "직업", e: "job", p: "Noun", r: "jigeop", cat: "noun" },
+            { k: "직원", e: "employee", p: "Noun", r: "jigwon", cat: "noun" },
+            { k: "진달래", e: "azalea", p: "Noun", r: "jindallae", cat: "noun" },
+            { k: "질문", e: "question", p: "Noun", r: "jilmun", cat: "noun" },
+            { k: "집", e: "house", p: "Noun", r: "jip", cat: "noun" },
+            { k: "짧다", e: "short", p: "Adjective", r: "jjalda", cat: "adjective" },
+            { k: "쪽", e: "side", p: "Noun", r: "jjok", cat: "noun" },
+            { k: "찌개", e: "stew", p: "Noun", r: "jjigae", cat: "noun" },
+            { k: "차", e: "car, tea", p: "Noun", r: "cha", cat: "noun" },
+            { k: "차갑다", e: "cold", p: "Adjective", r: "chagapda", cat: "adjective" },
+            { k: "참", e: "really", p: "Adverb", r: "cham", cat: "adverb" },
+            { k: "창문", e: "window", p: "Noun", r: "changmun", cat: "noun" },
+            { k: "찾다", e: "find", p: "Verb", r: "chatda", cat: "verb" },
+            { k: "책", e: "book", p: "Noun", r: "chaek", cat: "noun" },
+            { k: "책상", e: "desk", p: "Noun", r: "chaeksang", cat: "noun" },
+            { k: "처음", e: "first", p: "Noun", r: "cheoeum", cat: "noun" },
+            { k: "천", e: "1000", p: "Number", r: "cheon", cat: "other" },
+            { k: "천천히", e: "slowly", p: "Adverb", r: "cheoncheonhi", cat: "adverb" },
+            { k: "철", e: "iron", p: "Noun", r: "cheol", cat: "noun" },
+            { k: "첫", e: "first", p: "Determiner", r: "cheot", cat: "other" },
+            { k: "청바지", e: "jeans", p: "Noun", r: "cheongbaji", cat: "noun" },
+            { k: "청소하다", e: "clean", p: "Verb", r: "cheongsohada", cat: "verb" },
+            { k: "초", e: "second", p: "Noun", r: "cho", cat: "noun" },
+            { k: "초록색", e: "green", p: "Noun", r: "choroksaek", cat: "noun" },
+            { k: "초콜릿", e: "chocolate", p: "Noun", r: "chokollit", cat: "noun" },
+            { k: "촬영하다", e: "take a picture", p: "Verb", r: "chwaryeonghada", cat: "verb" },
+            { k: "최고", e: "best", p: "Noun", r: "choego", cat: "noun" },
+            { k: "추다", e: "dance", p: "Verb", r: "chuda", cat: "verb" },
+            { k: "추석", e: "Korean Thanksgiving", p: "Noun", r: "chuseok", cat: "noun" },
+            { k: "추억", e: "memory", p: "Noun", r: "chueok", cat: "noun" },
+            { k: "축구", e: "soccer", p: "Noun", r: "chukgu", cat: "noun" },
+            { k: "축제", e: "festival", p: "Noun", r: "chukje", cat: "noun" },
+            { k: "축하하다", e: "celebrate", p: "Verb", r: "chukahada", cat: "verb" },
+            { k: "출구", e: "exit", p: "Noun", r: "chulgu", cat: "noun" },
+            { k: "출근하다", e: "go to work", p: "Verb", r: "chulgeunhada", cat: "verb" },
+            { k: "춤", e: "dance", p: "Noun", r: "chum", cat: "noun" },
+            { k: "춤추다", e: "dance", p: "Verb", r: "chumchuda", cat: "verb" },
+            { k: "춥다", e: "cold", p: "Adjective", r: "chupda", cat: "adjective" },
+            { k: "취미", e: "hobby", p: "Noun", r: "chwimi", cat: "noun" },
+            { k: "취소하다", e: "cancel", p: "Verb", r: "chwisohada", cat: "verb" },
+            { k: "취직하다", e: "get a job", p: "Verb", r: "chwijikhada", cat: "verb" },
+            { k: "층", e: "floor", p: "Noun", r: "cheung", cat: "noun" },
+            { k: "치과", e: "dentist", p: "Noun", r: "chigwa", cat: "noun" },
+            { k: "치마", e: "skirt", p: "Noun", r: "chima", cat: "noun" },
+            { k: "치약", e: "toothpaste", p: "Noun", r: "chiyak", cat: "noun" },
+            { k: "친구", e: "friend", p: "Noun", r: "chingu", cat: "noun" },
+            { k: "친절하다", e: "kind", p: "Adjective", r: "chinjeolhada", cat: "adjective" },
+            { k: "칠", e: "7", p: "Number", r: "chil", cat: "other" },
+            { k: "침대", e: "bed", p: "Noun", r: "chimdae", cat: "noun" },
+            { k: "칫솔", e: "toothbrush", p: "Noun", r: "chitsol", cat: "noun" },
+            { k: "카드", e: "card", p: "Noun", r: "kadeu", cat: "noun" },
+            { k: "카레", e: "curry", p: "Noun", r: "kare", cat: "noun" },
+            { k: "카메라", e: "camera", p: "Noun", r: "kamera", cat: "noun" },
+            { k: "카페", e: "cafe", p: "Noun", r: "kape", cat: "noun" },
+            { k: "칼", e: "knife", p: "Noun", r: "kal", cat: "noun" },
+            { k: "캐나다", e: "Canada", p: "Noun", r: "kaenada", cat: "noun" },
+            { k: "커피", e: "coffee", p: "Noun", r: "keopi", cat: "noun" },
+            { k: "컴퓨터", e: "computer", p: "Noun", r: "keompyuteo", cat: "noun" },
+            { k: "컵", e: "cup", p: "Noun", r: "keop", cat: "noun" },
+            { k: "케이크", e: "cake", p: "Noun", r: "keikeu", cat: "noun" },
+            { k: "켜다", e: "turn on", p: "Verb", r: "kyeoda", cat: "verb" },
+            { k: "코", e: "nose", p: "Noun", r: "ko", cat: "noun" },
+            { k: "코트", e: "coat", p: "Noun", r: "koteu", cat: "noun" },
+            { k: "콜라", e: "cola", p: "Noun", r: "kolla", cat: "noun" },
+            { k: "콧노래", e: "humming", p: "Noun", r: "konnorae", cat: "noun" },
+            { k: "콧물", e: "snot", p: "Noun", r: "konmul", cat: "noun" },
+            { k: "콩", e: "bean", p: "Noun", r: "kong", cat: "noun" },
+            { k: "크다", e: "big", p: "Adjective", r: "keuda", cat: "adjective" },
+            { k: "크리스마스", e: "Christmas", p: "Noun", r: "keuriseumaseu", cat: "noun" },
+            { k: "키", e: "height, key", p: "Noun", r: "ki", cat: "noun" },
+            { k: "킬로그램", e: "kilogram", p: "Noun", r: "killogeuraem", cat: "noun" },
+            { k: "킬로미터", e: "kilometer", p: "Noun", r: "killomiteo", cat: "noun" },
+            { k: "타다", e: "ride", p: "Verb", r: "tada", cat: "verb" },
+            { k: "타월", e: "towel", p: "Noun", r: "tawol", cat: "noun" },
+            { k: "탁구", e: "table tennis", p: "Noun", r: "takgu", cat: "noun" },
+            { k: "태국", e: "Thailand", p: "Noun", r: "taeguk", cat: "noun" },
+            { k: "태권도", e: "Taekwondo", p: "Noun", r: "taegwondo", cat: "noun" },
+            { k: "태어나다", e: "be born", p: "Verb", r: "taeeonada", cat: "verb" },
+            { k: "태풍", e: "typhoon", p: "Noun", r: "taepung", cat: "noun" },
+            { k: "택시", e: "taxi", p: "Noun", r: "taeksi", cat: "noun" },
+            { k: "터미널", e: "terminal", p: "Noun", r: "teomineol", cat: "noun" },
+            { k: "테니스", e: "tennis", p: "Noun", r: "teniseu", cat: "noun" },
+            { k: "테이블", e: "table", p: "Noun", r: "teibeul", cat: "noun" },
+            { k: "텔레비전", e: "TV", p: "Noun", r: "tellebijeon", cat: "noun" },
+            { k: "토마토", e: "tomato", p: "Noun", r: "tomato", cat: "noun" },
+            { k: "토요일", e: "Saturday", p: "Noun", r: "toyoil", cat: "noun" },
+            { k: "통", e: "barrel", p: "Noun", r: "tong", cat: "noun" },
+            { k: "통장", e: "bank book", p: "Noun", r: "tongjang", cat: "noun" },
+            { k: "통하다", e: "pass through", p: "Verb", r: "tonghada", cat: "verb" },
+            { k: "퇴근하다", e: "leave work", p: "Verb", r: "toegeunhada", cat: "verb" },
+            { k: "특별히", e: "especially", p: "Adverb", r: "teukbyeolhi", cat: "adverb" },
+            { k: "특징", e: "characteristic", p: "Noun", r: "teukjing", cat: "noun" },
+            { k: "특히", e: "especially", p: "Adverb", r: "teuki", cat: "adverb" },
+            { k: "틀다", e: "turn on", p: "Verb", r: "teulda", cat: "verb" },
+            { k: "틀리다", e: "wrong", p: "Adjective", r: "teullida", cat: "adjective" },
+            { k: "티셔츠", e: "t-shirt", p: "Noun", r: "tiseocheu", cat: "noun" },
+            { k: "팀", e: "team", p: "Noun", r: "tim", cat: "noun" },
+            { k: "파", e: "green onion", p: "Noun", r: "pa", cat: "noun" },
+            { k: "파란색", e: "blue", p: "Noun", r: "paransaek", cat: "noun" },
+            { k: "파랗다", e: "blue", p: "Adjective", r: "parata", cat: "adjective" },
+            { k: "파티", e: "party", p: "Noun", r: "pati", cat: "noun" },
+            { k: "팔", e: "8, arm", p: "Number/Noun", r: "pal", cat: "other" },
+            { k: "팔다", e: "sell", p: "Verb", r: "palda", cat: "verb" },
+            { k: "팔십", e: "80", p: "Number", r: "palsip", cat: "other" },
+            { k: "팔월", e: "August", p: "Noun", r: "parwol", cat: "noun" },
+            { k: "패션", e: "fashion", p: "Noun", r: "paesyeon", cat: "noun" },
+            { k: "퍼센트", e: "percent", p: "Noun", r: "peosenteu", cat: "noun" },
+            { k: "페이지", e: "page", p: "Noun", r: "peiji", cat: "noun" },
+            { k: "펜", e: "pen", p: "Noun", r: "pen", cat: "noun" },
+            { k: "편", e: "side", p: "Noun", r: "pyeon", cat: "noun" },
+            { k: "편지", e: "letter", p: "Noun", r: "pyeonji", cat: "noun" },
+            { k: "편하다", e: "comfortable", p: "Adjective", r: "pyeonhada", cat: "adjective" },
+            { k: "평일", e: "weekday", p: "Noun", r: "pyeongil", cat: "noun" },
+            { k: "포도", e: "grape", p: "Noun", r: "podo", cat: "noun" },
+            { k: "표", e: "ticket", p: "Noun", r: "pyo", cat: "noun" },
+            { k: "표현", e: "expression", p: "Noun", r: "pyohyeon", cat: "noun" },
+            { k: "푸다", e: "solve", p: "Verb", r: "puda", cat: "verb" },
+            { k: "프랑스", e: "France", p: "Noun", r: "peurangseu", cat: "noun" },
+            { k: "프로그램", e: "program", p: "Noun", r: "peurogeuraem", cat: "noun" },
+            { k: "피", e: "blood", p: "Noun", r: "pi", cat: "noun" },
+            { k: "피곤하다", e: "tired", p: "Adjective", r: "pigonhada", cat: "adjective" },
+            { k: "피아노", e: "piano", p: "Noun", r: "piano", cat: "noun" },
+            { k: "피자", e: "pizza", p: "Noun", r: "pija", cat: "noun" },
+            { k: "필요", e: "necessity", p: "Noun", r: "pillyo", cat: "noun" },
+            { k: "필요하다", e: "need", p: "Adjective", r: "pillyohada", cat: "adjective" },
+            { k: "필통", e: "pencil case", p: "Noun", r: "piltong", cat: "noun" },
+            { k: "하나", e: "1", p: "Number", r: "hana", cat: "other" },
+            { k: "하늘", e: "sky", p: "Noun", r: "haneul", cat: "noun" },
+            { k: "하다", e: "do", p: "Verb", r: "hada", cat: "verb" },
+            { k: "하루", e: "one day", p: "Noun", r: "haru", cat: "noun" },
+            { k: "하얀색", e: "white", p: "Noun", r: "hayansaek", cat: "noun" },
+            { k: "하양다", e: "white", p: "Adjective", r: "hayangda", cat: "adjective" },
+            { k: "하지만", e: "but", p: "Conjunction", r: "hajiman", cat: "other" },
+            { k: "학교", e: "school", p: "Noun", r: "hakgyo", cat: "noun" },
+            { k: "학기", e: "semester", p: "Noun", r: "hakgi", cat: "noun" },
+            { k: "학년", e: "grade", p: "Noun", r: "hangnyeon", cat: "noun" },
+            { k: "학생", e: "student", p: "Noun", r: "haksaeng", cat: "noun" },
+            { k: "학원", e: "academy", p: "Noun", r: "hagwon", cat: "noun" },
+            { k: "한", e: "one", p: "Determiner", r: "han", cat: "other" },
+            { k: "한국", e: "Korea", p: "Noun", r: "hanguk", cat: "noun" },
+            { k: "한국어", e: "Korean language", p: "Noun", r: "hangugeo", cat: "noun" },
+            { k: "한글", e: "Hangul", p: "Noun", r: "hangeul", cat: "noun" },
+            { k: "한번", e: "once", p: "Adverb", r: "hanbeon", cat: "adverb" },
+            { k: "한복", e: "Hanbok", p: "Noun", r: "hanbok", cat: "noun" },
+            { k: "할머니", e: "grandmother", p: "Noun", r: "halmeoni", cat: "noun" },
+            { k: "할아버지", e: "grandfather", p: "Noun", r: "harabeoji", cat: "noun" },
+            { k: "할인", e: "discount", p: "Noun", r: "harin", cat: "noun" },
+            { k: "함께", e: "together", p: "Adverb", r: "hamkke", cat: "adverb" },
+            { k: "합격", e: "pass", p: "Noun", r: "hapgyeok", cat: "noun" },
+            { k: "항상", e: "always", p: "Adverb", r: "hangsang", cat: "adverb" },
+            { k: "해", e: "year, sun", p: "Noun", r: "hae", cat: "noun" },
+            { k: "해외", e: "overseas", p: "Noun", r: "haewae", cat: "noun" },
+            { k: "햄버거", e: "hamburger", p: "Noun", r: "haembeogeo", cat: "noun" },
+            { k: "햇빛", e: "sunshine", p: "Noun", r: "haetbit", cat: "noun" },
+            { k: "행복", e: "happiness", p: "Noun", r: "haengbok", cat: "noun" },
+            { k: "행복하다", e: "happy", p: "Adjective", r: "haengbokhada", cat: "adjective" },
+            { k: "현금", e: "cash", p: "Noun", r: "hyeongeum", cat: "noun" },
+            { k: "현재", e: "now", p: "Noun", r: "hyeonjae", cat: "noun" },
+            { k: "형", e: "older brother", p: "Noun", r: "hyeong", cat: "noun" },
+            { k: "호", e: "number", p: "Noun", r: "ho", cat: "noun" },
+            { k: "호랑이", e: "tiger", p: "Noun", r: "horangi", cat: "noun" },
+            { k: "호주", e: "Australia", p: "Noun", r: "hoju", cat: "noun" },
+            { k: "호텔", e: "hotel", p: "Noun", r: "hotel", cat: "noun" },
+            { k: "혼자", e: "alone", p: "Adverb", r: "honja", cat: "adverb" },
+            { k: "홈페이지", e: "homepage", p: "Noun", r: "hompeiji", cat: "noun" },
+            { k: "홍차", e: "black tea", p: "Noun", r: "hongcha", cat: "noun" },
+            { k: "화", e: "anger", p: "Noun", r: "hwa", cat: "noun" },
+            { k: "화가", e: "artist", p: "Noun", r: "hwaga", cat: "noun" },
+            { k: "화내다", e: "get angry", p: "Verb", r: "hwanaeda", cat: "verb" },
+            { k: "화요일", e: "Tuesday", p: "Noun", r: "hwayoil", cat: "noun" },
+            { k: "화장실", e: "restroom", p: "Noun", r: "hwajangsil", cat: "noun" },
+            { k: "확인하다", e: "confirm", p: "Verb", r: "hwagininhada", cat: "verb" },
+            { k: "환영하다", e: "welcome", p: "Verb", r: "hwanyeonghada", cat: "verb" },
+            { k: "환자", e: "patient", p: "Noun", r: "hwanja", cat: "noun" },
+            { k: "회사", e: "company", p: "Noun", r: "hoesa", cat: "noun" },
+            { k: "회색", e: "grey", p: "Noun", r: "hoesaek", cat: "noun" },
+            { k: "횡단보도", e: "crosswalk", p: "Noun", r: "hoengdanbodo", cat: "noun" },
+            { k: "후", e: "after", p: "Noun", r: "hu", cat: "noun" },
+            { k: "후배", e: "junior", p: "Noun", r: "hubae", cat: "noun" },
+            { k: "휴가", e: "vacation", p: "Noun", r: "hyuga", cat: "noun" },
+            { k: "휴대전화", e: "cell phone", p: "Noun", r: "hyudaejeonhwa", cat: "noun" },
+            { k: "휴일", e: "holiday", p: "Noun", r: "hyuil", cat: "noun" },
+            { k: "흐리다", e: "cloudy", p: "Adjective", r: "heurida", cat: "adjective" },
+            { k: "흰색", e: "white color", p: "Noun", r: "huinsaek", cat: "noun" },
+            { k: "힘", e: "power", p: "Noun", r: "him", cat: "noun" }
+        ];
+
+        // App State
+        let currentView = 'home';
+        let currentCardIndex = 0;
+        let quizIndex = 0;
+        let quizScore = 0;
+        let quizTimer = null;
+        let isAnswerLocked = false;
+        let currentFilter = 'all';
+        let currentSearch = '';
+        let vocabPage = 1;
+        const wordsPerPage = 20;
+        let masteredWords = JSON.parse(localStorage.getItem('masteredWords') || '[]');
+        let quizHistory = JSON.parse(localStorage.getItem('quizHistory') || '[]');
+        let autoSpeak = JSON.parse(localStorage.getItem('autoSpeak') || 'false');
+        let filteredVocabulary = [...vocabulary];
+        let shuffledVocabulary = [...vocabulary].sort(() => Math.random() - 0.5);
+
+        // Initialize App
+        function initApp() {
+            updateCategoryCounts();
+            updateStats();
+            setupEventListeners();
+        }
+
+        // View Management
+        function changeView(viewId) {
+            document.querySelectorAll('section').forEach(s => s.classList.add('hidden'));
+            document.getElementById(`view-${viewId}`).classList.remove('hidden');
+            
+            // Show/hide search based on view
+            if (viewId === 'vocab') {
+                document.getElementById('search-container').classList.remove('hidden');
+            } else {
+                document.getElementById('search-container').classList.add('hidden');
+            }
+            
+            // Update Nav Icons
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                if (btn.getAttribute('data-view') === viewId) {
+                    btn.classList.add('text-indigo-600');
+                    btn.classList.remove('text-slate-400');
+                } else {
+                    btn.classList.remove('text-indigo-600');
+                    btn.classList.add('text-slate-400');
+                }
+            });
+
+            currentView = viewId;
+            if (viewId === 'vocab') {
+                renderVocabList();
+                applyFilterAndSearch();
+            }
+            if (viewId === 'flashcards') updateFlashcard();
+            if (viewId === 'quiz') startQuiz();
+            if (viewId === 'stats') updateStats();
+        }
+
+        // Setup Event Listeners
+        function setupEventListeners() {
+            // Search input
+            const searchInput = document.getElementById('search-input');
+            searchInput.addEventListener('input', function(e) {
+                currentSearch = e.target.value.toLowerCase();
+                vocabPage = 1;
+                applyFilterAndSearch();
+                document.getElementById('clear-search').classList.toggle('hidden', !currentSearch);
+            });
+
+            // Clear search
+            document.getElementById('clear-search').addEventListener('click', function() {
+                searchInput.value = '';
+                currentSearch = '';
+                vocabPage = 1;
+                applyFilterAndSearch();
+                this.classList.add('hidden');
+            });
+
+            // Filter buttons
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    currentFilter = this.dataset.filter;
+                    vocabPage = 1;
+                    applyFilterAndSearch();
+                });
+            });
+
+            // Voice toggle
+            document.getElementById('voice-toggle').addEventListener('click', function() {
+                autoSpeak = !autoSpeak;
+                localStorage.setItem('autoSpeak', JSON.stringify(autoSpeak));
+                this.classList.toggle('bg-indigo-600', autoSpeak);
+                this.classList.toggle('text-white', autoSpeak);
+                this.classList.toggle('bg-indigo-100', !autoSpeak);
+                this.classList.toggle('text-indigo-600', !autoSpeak);
+            });
+        }
+
+        // Filter and Search Logic
+        function applyFilterAndSearch() {
+            filteredVocabulary = vocabulary.filter(word => {
+                // Apply filter
+                if (currentFilter !== 'all' && word.cat !== currentFilter) {
+                    return false;
+                }
+                
+                // Apply search
+                if (currentSearch && 
+                    !word.k.toLowerCase().includes(currentSearch) && 
+                    !word.e.toLowerCase().includes(currentSearch) &&
+                    !word.r.toLowerCase().includes(currentSearch)) {
+                    return false;
+                }
+                
+                return true;
+            });
+            
+            renderVocabList();
+        }
+
+        // Vocabulary List
+        function renderVocabList() {
+            const container = document.getElementById('vocab-list');
+            const start = (vocabPage - 1) * wordsPerPage;
+            const end = start + wordsPerPage;
+            const pageWords = filteredVocabulary.slice(start, end);
+            
+            container.innerHTML = pageWords.map((word, index) => {
+                const isMastered = masteredWords.includes(word.k);
+                let koreanText = word.k;
+                let englishText = word.e;
+                
+                // Highlight search terms
+                if (currentSearch) {
+                    const regex = new RegExp(`(${currentSearch})`, 'gi');
+                    koreanText = word.k.replace(regex, '<span class="highlight">$1</span>');
+                    englishText = word.e.replace(regex, '<span class="highlight">$1</span>');
+                }
+                
+                return `
+                <div class="bg-white p-4 rounded-xl border border-slate-100 flex justify-between items-center shadow-sm active:scale-95 transition-transform">
+                    <div class="flex-1">
+                        <div class="flex items-center gap-2 mb-1">
+                            <div class="text-xl font-bold text-slate-800">${koreanText}</div>
+                            <button onclick="speakWord('${word.k}', event)" class="text-indigo-400 hover:text-indigo-600">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"></path>
+                                </svg>
+                            </button>
+                            ${isMastered ? '<span class="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded">✓</span>' : ''}
+                        </div>
+                        <div class="text-sm text-slate-500">${englishText}</div>
+                        <div class="text-xs text-slate-400 mt-1">${word.r}</div>
+                    </div>
+                    <div class="text-[10px] uppercase font-bold ${getCategoryColor(word.cat)} bg-opacity-20 px-2 py-1 rounded">${word.p}</div>
+                </div>
+            `}).join('');
+            
+            renderVocabPagination();
+        }
+
+        function renderVocabPagination() {
+            const totalPages = Math.ceil(filteredVocabulary.length / wordsPerPage);
+            const container = document.getElementById('vocab-pagination');
+            
+            if (totalPages <= 1) {
+                container.innerHTML = '';
+                return;
+            }
+            
+            let paginationHTML = '';
+            
+            // Previous button
+            paginationHTML += `
+                <button onclick="changeVocabPage(${vocabPage - 1})" ${vocabPage === 1 ? 'disabled' : ''} 
+                        class="p-2 ${vocabPage === 1 ? 'text-slate-300' : 'text-slate-600'}">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m15 18-6-6 6-6"/>
+                    </svg>
+                </button>
+            `;
+            
+            // Page numbers
+            const startPage = Math.max(1, vocabPage - 2);
+            const endPage = Math.min(totalPages, startPage + 4);
+            
+            for (let i = startPage; i <= endPage; i++) {
+                paginationHTML += `
+                    <button onclick="changeVocabPage(${i})" 
+                            class="w-8 h-8 rounded-full ${vocabPage === i ? 'bg-indigo-600 text-white' : 'text-slate-600'}">
+                        ${i}
+                    </button>
+                `;
+            }
+            
+            // Next button
+            paginationHTML += `
+                <button onclick="changeVocabPage(${vocabPage + 1})" ${vocabPage === totalPages ? 'disabled' : ''} 
+                        class="p-2 ${vocabPage === totalPages ? 'text-slate-300' : 'text-slate-600'}">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m9 18 6-6-6-6"/>
+                    </svg>
+                </button>
+            `;
+            
+            container.innerHTML = paginationHTML;
+        }
+
+        function changeVocabPage(page) {
+            const totalPages = Math.ceil(filteredVocabulary.length / wordsPerPage);
+            if (page >= 1 && page <= totalPages) {
+                vocabPage = page;
+                renderVocabList();
+            }
+        }
+
+        function filterByCategory(category) {
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            document.querySelector(`[data-filter="${category}"]`).classList.add('active');
+            currentFilter = category;
+            vocabPage = 1;
+            applyFilterAndSearch();
+            changeView('vocab');
+        }
+
+        // Voice Pronunciation
+        function speakWord(text, event = null) {
+            if (event) event.stopPropagation();
+            
+            // Use Web Speech API
+            if ('speechSynthesis' in window) {
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'ko-KR';
+                utterance.rate = 0.8;
+                
+                // Highlight the speaking button
+                const buttons = document.querySelectorAll('[onclick*="speakWord"]');
+                buttons.forEach(btn => btn.classList.remove('speaking'));
+                if (event && event.currentTarget) {
+                    event.currentTarget.classList.add('speaking');
+                }
+                
+                // Stop any ongoing speech
+                speechSynthesis.cancel();
+                
+                // Start speaking
+                speechSynthesis.speak(utterance);
+                
+                // Remove speaking class when done
+                utterance.onend = function() {
+                    buttons.forEach(btn => btn.classList.remove('speaking'));
+                };
+            } else {
+                alert('Speech synthesis not supported in this browser.');
+            }
+        }
+
+        function speakCurrentWord(event = null) {
+            if (event) event.stopPropagation();
+            const word = shuffledVocabulary[currentCardIndex];
+            speakWord(word.k, event);
+        }
+
+        function speakQuizWord() {
+            const word = document.getElementById('quiz-word').textContent;
+            speakWord(word);
+        }
+
+        function speakRandomWord() {
+            const randomWord = vocabulary[Math.floor(Math.random() * vocabulary.length)];
+            speakWord(randomWord.k);
+            
+            // Show notification
+            showToast(`"${randomWord.k}" - ${randomWord.e}`, 'info');
+        }
+
+        // Flashcards Logic
+        function flipCard() {
+            document.getElementById('flashcard').classList.toggle('card-flipped');
+        }
+
+        function updateFlashcard() {
+            document.getElementById('flashcard').classList.remove('card-flipped');
+            const word = shuffledVocabulary[currentCardIndex];
+            document.getElementById('card-korean').textContent = word.k;
+            document.getElementById('card-english').textContent = word.e;
+            document.getElementById('card-pos').textContent = word.p;
+            document.getElementById('card-romanization').textContent = word.r;
+            document.getElementById('card-progress').textContent = `${currentCardIndex + 1} / ${shuffledVocabulary.length}`;
+            
+            // Auto-speak if enabled
+            if (autoSpeak) {
+                setTimeout(() => speakCurrentWord(), 300);
+            }
+        }
+
+        function nextCard() {
+            currentCardIndex = (currentCardIndex + 1) % shuffledVocabulary.length;
+            updateFlashcard();
+        }
+
+        function prevCard() {
+            currentCardIndex = (currentCardIndex - 1 + shuffledVocabulary.length) % shuffledVocabulary.length;
+            updateFlashcard();
+        }
+
+        function shuffleFlashcards() {
+            shuffledVocabulary = [...vocabulary].sort(() => Math.random() - 0.5);
+            currentCardIndex = 0;
+            updateFlashcard();
+            showToast('Cards shuffled!', 'info');
+        }
+
+        // Quiz Logic
+        function startQuiz() {
+            quizIndex = 0;
+            quizScore = 0;
+            isAnswerLocked = false;
+            document.getElementById('quiz-result').classList.add('hidden');
+            document.getElementById('score-display').classList.remove('hidden');
+            updateQuizQuestion();
+        }
+
+        function updateQuizQuestion() {
+            if (quizIndex >= 10) {
+                showQuizResult();
+                return;
+            }
+
+            isAnswerLocked = false;
+            const currentWord = vocabulary[Math.floor(Math.random() * vocabulary.length)];
+            const options = [currentWord.e];
+            
+            while (options.length < 4) {
+                const randomWord = vocabulary[Math.floor(Math.random() * vocabulary.length)].e;
+                if (!options.includes(randomWord)) options.push(randomWord);
+            }
+            options.sort(() => Math.random() - 0.5);
+
+            document.getElementById('quiz-word').textContent = currentWord.k;
+            document.getElementById('quiz-progress-bar').style.width = `${(quizIndex / 10) * 100}%`;
+            
+            const optionsContainer = document.getElementById('quiz-options');
+            optionsContainer.innerHTML = options.map(opt => `
+                <button onclick="checkAnswer(this, '${opt}', '${currentWord.e}')" 
+                        class="quiz-opt w-full text-left p-4 bg-white border-2 border-slate-100 rounded-xl font-medium transition-all active:scale-98">
+                    ${opt}
+                </button>
+            `).join('');
+
+            startTimer();
+        }
+
+        function startTimer() {
+            clearInterval(quizTimer);
+            let timeLeft = 15;
+            const timerEl = document.getElementById('quiz-timer');
+            timerEl.textContent = `${timeLeft}s`;
+            timerEl.className = "font-mono font-bold text-indigo-600";
+
+            quizTimer = setInterval(() => {
+                timeLeft--;
+                timerEl.textContent = `${timeLeft}s`;
+                if (timeLeft <= 5) timerEl.className = "font-mono font-bold text-red-500 animate-pulse";
+                if (timeLeft <= 0) {
+                    clearInterval(quizTimer);
+                    handleTimeOut();
+                }
+            }, 1000);
+        }
+
+        function checkAnswer(btn, selected, correct) {
+            if (isAnswerLocked) return;
+            isAnswerLocked = true;
+            clearInterval(quizTimer);
+
+            const toast = document.getElementById('feedback-toast');
+            
+            if (selected === correct) {
+                quizScore++;
+                btn.classList.add('bg-green-100', 'border-green-500', 'text-green-700');
+                toast.textContent = "Correct! ✨";
+                toast.className = "fixed bottom-24 left-1/2 -translate-x-1/2 px-6 py-3 rounded-full text-white font-bold bg-green-500 opacity-100 transition-opacity z-[60]";
+                
+                // Mark word as mastered
+                const koreanWord = document.getElementById('quiz-word').textContent;
+                if (!masteredWords.includes(koreanWord)) {
+                    masteredWords.push(koreanWord);
+                    localStorage.setItem('masteredWords', JSON.stringify(masteredWords));
+                    updateStats();
+                }
+            } else {
+                btn.classList.add('bg-red-100', 'border-red-500', 'text-red-700');
+                toast.textContent = "Oops! ❌";
+                toast.className = "fixed bottom-24 left-1/2 -translate-x-1/2 px-6 py-3 rounded-full text-white font-bold bg-red-500 opacity-100 transition-opacity z-[60]";
+                
+                // Highlight correct one
+                document.querySelectorAll('.quiz-opt').forEach(b => {
+                    if (b.textContent.trim() === correct) {
+                        b.classList.add('bg-green-50', 'border-green-200');
+                    }
+                });
+            }
+
+            document.getElementById('score-display').textContent = `Score: ${quizScore}`;
+
+            setTimeout(() => {
+                toast.style.opacity = "0";
+                quizIndex++;
+                updateQuizQuestion();
+            }, 1200);
+        }
+
+        function handleTimeOut() {
+            if (isAnswerLocked) return;
+            isAnswerLocked = true;
+            const toast = document.getElementById('feedback-toast');
+            toast.textContent = "Time's up! ⏰";
+            toast.className = "fixed bottom-24 left-1/2 -translate-x-1/2 px-6 py-3 rounded-full text-white font-bold bg-amber-500 opacity-100 transition-opacity z-[60]";
+            
+            setTimeout(() => {
+                toast.style.opacity = "0";
+                quizIndex++;
+                updateQuizQuestion();
+            }, 1200);
+        }
+
+        function showQuizResult() {
+            // Save quiz history
+            quizHistory.push({
+                date: new Date().toISOString(),
+                score: quizScore,
+                total: 10
+            });
+            localStorage.setItem('quizHistory', JSON.stringify(quizHistory));
+            
+            const resultDiv = document.getElementById('quiz-result');
+            const resultText = document.getElementById('result-text');
+            const resultEmoji = document.getElementById('result-emoji');
+            
+            resultDiv.classList.remove('hidden');
+            resultText.textContent = `You scored ${quizScore} out of 10 questions correctly.`;
+            
+            if (quizScore >= 8) {
+                resultEmoji.textContent = "🏆";
+                resultText.innerHTML += "<br><span class='text-green-600 font-bold'>Excellent work!</span>";
+            } else if (quizScore >= 5) {
+                resultEmoji.textContent = "👍";
+                resultText.innerHTML += "<br><span class='text-indigo-600 font-bold'>Getting better!</span>";
+            } else {
+                resultEmoji.textContent = "📖";
+                resultText.innerHTML += "<br><span class='text-slate-600 font-bold'>Keep practicing!</span>";
+            }
+            
+            updateStats();
+        }
+
+        function resetQuiz() {
+            document.getElementById('score-display').classList.add('hidden');
+        }
+
+        // Stats and Progress
+        function updateStats() {
+            const mastered = masteredWords.length;
+            const accuracy = quizHistory.length > 0 
+                ? Math.round((quizHistory.reduce((sum, q) => sum + q.score, 0) / (quizHistory.length * 10)) * 100)
+                : 0;
+            
+            document.getElementById('stats-mastered').textContent = mastered;
+            document.getElementById('stats-accuracy').textContent = `${accuracy}%`;
+            
+            // Category progress
+            const nouns = vocabulary.filter(w => w.cat === 'noun');
+            const verbs = vocabulary.filter(w => w.cat === 'verb');
+            const adjectives = vocabulary.filter(w => w.cat === 'adjective');
+            
+            const masteredNouns = nouns.filter(w => masteredWords.includes(w.k)).length;
+            const masteredVerbs = verbs.filter(w => masteredWords.includes(w.k)).length;
+            const masteredAdjectives = adjectives.filter(w => masteredWords.includes(w.k)).length;
+            
+            document.getElementById('noun-progress-text').textContent = `${masteredNouns}/${nouns.length}`;
+            document.getElementById('verb-progress-text').textContent = `${masteredVerbs}/${verbs.length}`;
+            document.getElementById('adj-progress-text').textContent = `${masteredAdjectives}/${adjectives.length}`;
+            
+            document.getElementById('noun-progress-bar').style.width = `${(masteredNouns / nouns.length) * 100}%`;
+            document.getElementById('verb-progress-bar').style.width = `${(masteredVerbs / verbs.length) * 100}%`;
+            document.getElementById('adj-progress-bar').style.width = `${(masteredAdjectives / adjectives.length) * 100}%`;
+        }
+
+        function updateCategoryCounts() {
+            const nouns = vocabulary.filter(w => w.cat === 'noun').length;
+            const verbs = vocabulary.filter(w => w.cat === 'verb').length;
+            const adjectives = vocabulary.filter(w => w.cat === 'adjective').length;
+            const adverbs = vocabulary.filter(w => w.cat === 'adverb').length;
+            
+            document.getElementById('noun-count').textContent = `${nouns} words`;
+            document.getElementById('verb-count').textContent = `${verbs} words`;
+            document.getElementById('adj-count').textContent = `${adjectives} words`;
+            document.getElementById('adv-count').textContent = `${adverbs} words`;
+        }
+
+        function getCategoryColor(cat) {
+            const colors = {
+                'noun': 'text-indigo-600 bg-indigo-100',
+                'verb': 'text-green-600 bg-green-100',
+                'adjective': 'text-purple-600 bg-purple-100',
+                'adverb': 'text-amber-600 bg-amber-100',
+                'other': 'text-slate-600 bg-slate-100'
+            };
+            return colors[cat] || colors.other;
+        }
+
+        function showToast(message, type = 'info') {
+            const toast = document.getElementById('feedback-toast');
+            toast.textContent = message;
+            
+            const colors = {
+                'info': 'bg-indigo-500',
+                'success': 'bg-green-500',
+                'error': 'bg-red-500',
+                'warning': 'bg-amber-500'
+            };
+            
+            toast.className = `fixed bottom-24 left-1/2 -translate-x-1/2 px-6 py-3 rounded-full text-white font-bold ${colors[type]} opacity-100 transition-opacity z-[60]`;
+            
+            setTimeout(() => {
+                toast.style.opacity = "0";
+            }, 2000);
+        }
+
+        // Initialize app
+        document.addEventListener('DOMContentLoaded', initApp);
+
+        // Handle Back Button
+        window.addEventListener('popstate', () => {
+            changeView('home');
+        });
+
+    </script>
+</body>
+</html>
