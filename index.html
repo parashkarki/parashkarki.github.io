@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-    <title>Parash Karki - Portfolio</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <title>Parash Karki - Portfolio & Tools Hub</title>
     
     <!-- Preconnect to external resources -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -38,6 +38,7 @@
             --success: #10b981;
             --error: #ef4444;
             --warning: #f59e0b;
+            --bottom-nav-height: 70px;
         }
 
         html {
@@ -50,6 +51,7 @@
             color: var(--text);
             line-height: 1.6;
             overflow-x: hidden;
+            padding-bottom: 0;
         }
 
         /* Progress Bar */
@@ -167,9 +169,226 @@
             cursor: pointer;
         }
 
+        /* Bottom Navigation for Mobile */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(2, 6, 23, 0.95);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 0.5rem 1rem;
+            z-index: 99;
+            height: var(--bottom-nav-height);
+            box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .bottom-nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 0.25rem;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.3s;
+            flex: 1;
+            padding: 0.5rem;
+            border-radius: 1rem;
+        }
+
+        .bottom-nav-item i {
+            font-size: 1.5rem;
+        }
+
+        .bottom-nav-item span {
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .bottom-nav-item.active {
+            color: var(--primary);
+            background: rgba(16, 185, 129, 0.1);
+        }
+
+        .bottom-nav-item:hover {
+            color: var(--primary);
+        }
+
+        /* Resume Preview */
+        .resume-preview {
+            background: var(--bg-card);
+            border-radius: 1rem;
+            padding: 2rem;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .resume-preview i {
+            font-size: 4rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .resume-preview h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .resume-preview p {
+            color: var(--text-muted);
+            margin-bottom: 1.5rem;
+        }
+
+        .resume-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .resume-btn {
+            padding: 0.75rem 1.5rem;
+            background: var(--gradient);
+            border: none;
+            border-radius: 0.5rem;
+            color: var(--bg-dark);
+            font-weight: 700;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s;
+            text-decoration: none;
+        }
+
+        .resume-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(16, 185, 129, 0.3);
+        }
+
+        .resume-btn.outline {
+            background: transparent;
+            border: 1px solid var(--primary);
+            color: var(--text);
+        }
+
+        /* Tools List */
+        .tools-list {
+            background: var(--bg-card);
+            border-radius: 1rem;
+            overflow: hidden;
+            margin-top: 1rem;
+        }
+
+        .tools-list-header {
+            padding: 1.5rem;
+            background: rgba(16, 185, 129, 0.1);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .tools-list-header h3 {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .tools-list-header p {
+            color: var(--text-muted);
+            font-size: 0.875rem;
+        }
+
+        .tools-list-items {
+            padding: 1rem;
+        }
+
+        .tools-list-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            border-bottom: 1px solid var(--border);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .tools-list-item:last-child {
+            border-bottom: none;
+        }
+
+        .tools-list-item:hover {
+            background: rgba(16, 185, 129, 0.05);
+        }
+
+        .tools-list-icon {
+            width: 3rem;
+            height: 3rem;
+            background: rgba(16, 185, 129, 0.1);
+            border-radius: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .tools-list-icon i {
+            font-size: 1.5rem;
+        }
+
+        .tools-list-icon .fa-robot { color: var(--primary); }
+        .tools-list-icon .fa-youtube { color: #ef4444; }
+        .tools-list-icon .fa-layer-group { color: var(--secondary); }
+        .tools-list-icon .fa-code { color: #a78bfa; }
+        .tools-list-icon .fa-file-alt { color: #f59e0b; }
+        .tools-list-icon .fa-language { color: #3b82f6; }
+
+        .tools-list-content {
+            flex: 1;
+        }
+
+        .tools-list-content h4 {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .tools-list-badge {
+            font-size: 0.625rem;
+            padding: 0.15rem 0.5rem;
+            border-radius: 1rem;
+            font-weight: 700;
+        }
+
+        .tools-list-badge.free {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--primary);
+        }
+
+        .tools-list-badge.premium {
+            background: rgba(245, 158, 11, 0.1);
+            color: #f59e0b;
+        }
+
+        .tools-list-content p {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .tools-list-arrow {
+            color: var(--text-muted);
+        }
+
         /* Main Content */
         main {
             margin-top: 4rem;
+            margin-bottom: var(--bottom-nav-height);
         }
 
         section {
@@ -183,7 +402,7 @@
 
         /* Hero Section */
         .hero {
-            min-height: calc(100vh - 4rem);
+            min-height: calc(100vh - 4rem - var(--bottom-nav-height));
             display: flex;
             align-items: center;
         }
@@ -279,6 +498,25 @@
         .btn-primary:hover {
             background: var(--primary-dark);
             transform: translateX(5px);
+        }
+
+        .btn-secondary {
+            padding: 0.75rem 1.5rem;
+            background: var(--bg-card);
+            color: var(--text);
+            border: 1px solid var(--border);
+            border-radius: 0.5rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s;
+        }
+
+        .btn-secondary:hover {
+            background: var(--bg-light);
+            border-color: var(--primary);
         }
 
         .social-links {
@@ -867,6 +1105,206 @@
             font-size: 0.875rem;
         }
 
+        /* Tools Hub Section */
+        .tools-section {
+            background: var(--bg-dark);
+            padding: 5rem 2rem;
+        }
+
+        .tools-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .tools-header h2 {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .tools-header p {
+            color: var(--text-muted);
+            font-size: 1.125rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .tools-stats {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1.5rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 2rem;
+        }
+
+        .stat-item i {
+            color: var(--primary);
+        }
+
+        .stat-item i.fa-crown {
+            color: #f59e0b;
+        }
+
+        .stat-item span {
+            font-weight: 600;
+        }
+
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .tool-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 1.5rem;
+            padding: 2rem;
+            position: relative;
+            transition: all 0.3s;
+            overflow: hidden;
+        }
+
+        .tool-card:hover {
+            transform: translateY(-0.5rem);
+            border-color: var(--primary);
+            box-shadow: 0 10px 30px -15px var(--primary);
+        }
+
+        .tool-badge {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            padding: 0.25rem 1rem;
+            border-radius: 2rem;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .tool-badge.free {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--primary);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+        }
+
+        .tool-badge.premium {
+            background: rgba(245, 158, 11, 0.1);
+            color: #f59e0b;
+            border: 1px solid rgba(245, 158, 11, 0.2);
+        }
+
+        .tool-icon {
+            width: 3.5rem;
+            height: 3.5rem;
+            background: rgba(16, 185, 129, 0.1);
+            border-radius: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .tool-icon i {
+            font-size: 1.75rem;
+        }
+
+        .tool-icon .fa-robot { color: var(--primary); }
+        .tool-icon .fa-youtube { color: #ef4444; }
+        .tool-icon .fa-layer-group { color: var(--secondary); }
+        .tool-icon .fa-code { color: #a78bfa; }
+        .tool-icon .fa-file-alt { color: #f59e0b; }
+        .tool-icon .fa-language { color: #3b82f6; }
+
+        .tool-card h3 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+        }
+
+        .tool-card p {
+            color: var(--text-muted);
+            font-size: 0.875rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .tool-btn {
+            width: 100%;
+            padding: 0.75rem;
+            background: transparent;
+            border: 1px solid var(--border);
+            border-radius: 0.75rem;
+            color: var(--text);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .tool-btn:hover {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: var(--bg-dark);
+        }
+
+        .pro-pass-card {
+            max-width: 900px;
+            margin: 4rem auto 0;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 2rem;
+            padding: 3rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 2rem;
+        }
+
+        .pro-pass-content h3 {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--bg-dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .pro-pass-content p {
+            color: rgba(2, 6, 23, 0.8);
+            font-weight: 500;
+            max-width: 500px;
+        }
+
+        .pro-pass-btn {
+            padding: 1rem 2rem;
+            background: var(--bg-dark);
+            border: none;
+            border-radius: 1rem;
+            color: white;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+
+        .pro-pass-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.3);
+        }
+
         /* Contact Section */
         .contact-section {
             background: var(--bg-dark);
@@ -1134,6 +1572,7 @@
             border-top: 1px solid var(--bg-card);
             text-align: center;
             background: rgba(2, 6, 23, 0.8);
+            margin-bottom: var(--bottom-nav-height);
         }
 
         .footer-title {
@@ -1174,6 +1613,7 @@
 
         .footer-btn i.fa-linkedin { color: var(--secondary); }
         .footer-btn i.fa-envelope { color: var(--primary); }
+        .footer-btn i.fa-github { color: #f1f5f9; }
 
         .copyright {
             color: var(--text-muted);
@@ -1189,9 +1629,71 @@
             font-weight: 700;
         }
 
+        /* Modal */
+        .modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+        }
+
+        .modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background: var(--bg-card);
+            border-radius: 1.5rem;
+            padding: 2rem;
+            max-width: 90%;
+            width: 500px;
+            max-height: 80vh;
+            overflow-y: auto;
+            position: relative;
+            border: 1px solid var(--border);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-header h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .modal-close:hover {
+            color: var(--text);
+        }
+
         /* Responsive Design */
         @media (max-width: 1024px) {
             .projects-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .tools-grid {
                 grid-template-columns: repeat(2, 1fr);
             }
             
@@ -1227,7 +1729,8 @@
             .skills-grid,
             .exp-grid,
             .creative-grid,
-            .contact-container {
+            .contact-container,
+            .tools-grid {
                 grid-template-columns: 1fr;
             }
 
@@ -1271,6 +1774,42 @@
                 left: 1rem;
                 max-width: none;
             }
+            
+            .tools-stats {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .pro-pass-card {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .bottom-nav {
+                display: flex;
+            }
+            
+            main {
+                margin-bottom: var(--bottom-nav-height);
+            }
+            
+            footer {
+                margin-bottom: var(--bottom-nav-height);
+            }
+        }
+
+        @media (min-width: 769px) {
+            .bottom-nav {
+                display: none;
+            }
+            
+            main {
+                margin-bottom: 0;
+            }
+            
+            footer {
+                margin-bottom: 0;
+            }
         }
 
         @media (max-width: 480px) {
@@ -1293,6 +1832,19 @@
             
             .contact-form {
                 padding: 1.5rem;
+            }
+            
+            .tools-header h2 {
+                font-size: 2rem;
+            }
+            
+            .tools-stats {
+                width: 100%;
+            }
+            
+            .stat-item {
+                width: 100%;
+                justify-content: center;
             }
         }
 
@@ -1325,6 +1877,14 @@
         .text-secondary {
             color: var(--secondary);
         }
+
+        .view-section {
+            display: block;
+        }
+
+        .view-section.hidden {
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -1334,15 +1894,16 @@
     <!-- Navigation -->
     <nav class="navbar">
         <div class="nav-container">
-            <div class="logo" onclick="scrollToSection('home')">PK.</div>
+            <div class="logo" onclick="showView('portfolio'); scrollToSection('home')">PK.</div>
             <div class="nav-links">
-                <a onclick="scrollToSection('home')" class="nav-link" data-section="home">Home</a>
-                <a onclick="scrollToSection('about')" class="nav-link" data-section="about">About</a>
-                <a onclick="scrollToSection('skills')" class="nav-link" data-section="skills">Skills</a>
-                <a onclick="scrollToSection('experience')" class="nav-link" data-section="experience">Experience</a>
-                <a onclick="scrollToSection('projects')" class="nav-link" data-section="projects">Projects</a>
-                <a onclick="scrollToSection('creative')" class="nav-link" data-section="creative">Creative</a>
-                <a onclick="scrollToSection('contact')" class="nav-link" data-section="contact">Contact</a>
+                <a onclick="showView('portfolio'); scrollToSection('home')" class="nav-link" data-section="home">Home</a>
+                <a onclick="showView('portfolio'); scrollToSection('about')" class="nav-link" data-section="about">About</a>
+                <a onclick="showView('portfolio'); scrollToSection('skills')" class="nav-link" data-section="skills">Skills</a>
+                <a onclick="showView('portfolio'); scrollToSection('experience')" class="nav-link" data-section="experience">Experience</a>
+                <a onclick="showView('portfolio'); scrollToSection('projects')" class="nav-link" data-section="projects">Projects</a>
+                <a onclick="showView('portfolio'); scrollToSection('creative')" class="nav-link" data-section="creative">Creative</a>
+                <a onclick="showView('tools')" class="nav-link" style="color: var(--primary);">Tools Hub</a>
+                <a onclick="showView('portfolio'); scrollToSection('contact')" class="nav-link" data-section="contact">Contact</a>
             </div>
             <button class="menu-btn" onclick="toggleMenu()">
                 <i class="fas fa-bars"></i>
@@ -1355,13 +1916,201 @@
         <button class="close-btn" onclick="toggleMenu()">
             <i class="fas fa-times"></i>
         </button>
-        <a onclick="scrollToSection('home'); toggleMenu()">Home</a>
-        <a onclick="scrollToSection('about'); toggleMenu()">About</a>
-        <a onclick="scrollToSection('skills'); toggleMenu()">Skills</a>
-        <a onclick="scrollToSection('experience'); toggleMenu()">Experience</a>
-        <a onclick="scrollToSection('projects'); toggleMenu()">Projects</a>
-        <a onclick="scrollToSection('creative'); toggleMenu()">Creative</a>
-        <a onclick="scrollToSection('contact'); toggleMenu()">Contact</a>
+        <a onclick="showView('portfolio'); scrollToSection('home'); toggleMenu()">Home</a>
+        <a onclick="showView('portfolio'); scrollToSection('about'); toggleMenu()">About</a>
+        <a onclick="showView('portfolio'); scrollToSection('skills'); toggleMenu()">Skills</a>
+        <a onclick="showView('portfolio'); scrollToSection('experience'); toggleMenu()">Experience</a>
+        <a onclick="showView('portfolio'); scrollToSection('projects'); toggleMenu()">Projects</a>
+        <a onclick="showView('portfolio'); scrollToSection('creative'); toggleMenu()">Creative</a>
+        <a onclick="showView('tools'); toggleMenu()" style="color: var(--primary);">Tools Hub</a>
+        <a onclick="showView('portfolio'); scrollToSection('contact'); toggleMenu()">Contact</a>
+    </div>
+
+    <!-- Bottom Navigation for Mobile -->
+    <div class="bottom-nav">
+        <div class="bottom-nav-item active" id="bottomResumeBtn" onclick="openResumeModal()">
+            <i class="fas fa-file-alt"></i>
+            <span>Resume</span>
+        </div>
+        <div class="bottom-nav-item" id="bottomToolsBtn" onclick="openToolsModal()">
+            <i class="fas fa-tools"></i>
+            <span>Tools Hub</span>
+        </div>
+    </div>
+
+    <!-- Resume Modal -->
+    <div id="resumeModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>My Resume</h3>
+                <button class="modal-close" onclick="closeResumeModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="resume-preview">
+                <i class="fas fa-file-pdf"></i>
+                <h3>Parash Karki - Resume</h3>
+                <p>Computer Engineering Student | Developer | Creative</p>
+                
+                <div class="resume-buttons">
+                    <a href="https://drive.google.com/file/d/1YOUR_RESUME_FILE_ID/view" target="_blank" class="resume-btn">
+                        <i class="fas fa-eye"></i> View Online
+                    </a>
+                    <a href="https://drive.google.com/uc?id=1YOUR_RESUME_FILE_ID&export=download" class="resume-btn outline">
+                        <i class="fas fa-download"></i> Download PDF
+                    </a>
+                </div>
+            </div>
+            
+            <div style="margin-top: 2rem; text-align: center;">
+                <h4 style="margin-bottom: 1rem;">Quick Summary</h4>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <div style="background: rgba(16, 185, 129, 0.1); padding: 1rem; border-radius: 0.5rem;">
+                        <i class="fas fa-graduation-cap" style="color: var(--primary);"></i>
+                        <p style="font-size: 0.875rem; margin-top: 0.5rem;">Computer Engineering</p>
+                    </div>
+                    <div style="background: rgba(34, 211, 238, 0.1); padding: 1rem; border-radius: 0.5rem;">
+                        <i class="fas fa-code" style="color: var(--secondary);"></i>
+                        <p style="font-size: 0.875rem; margin-top: 0.5rem;">Full Stack Dev</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tools Modal -->
+    <div id="toolsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Tools Hub</h3>
+                <button class="modal-close" onclick="closeToolsModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="tools-list">
+                <div class="tools-list-header">
+                    <h3><i class="fas fa-tools" style="color: var(--primary);"></i> All Tools</h3>
+                    <p>Click on any tool to launch it</p>
+                </div>
+                
+                <div class="tools-list-items">
+                    <!-- Tool 1 - Free -->
+                    <div class="tools-list-item" onclick="launchTool('AI Prompt Generator', 'free')">
+                        <div class="tools-list-icon">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <div class="tools-list-content">
+                            <h4>
+                                AI Prompt Generator
+                                <span class="tools-list-badge free">Free</span>
+                            </h4>
+                            <p>Expert-level prompts for ChatGPT & Claude</p>
+                        </div>
+                        <div class="tools-list-arrow">
+                            <i class="fas fa-chevron-right"></i>
+                        </div>
+                    </div>
+                    
+                    <!-- Tool 2 - Premium -->
+                    <div class="tools-list-item" onclick="launchTool('Video SEO Toolkit', 'premium')">
+                        <div class="tools-list-icon">
+                            <i class="fab fa-youtube"></i>
+                        </div>
+                        <div class="tools-list-content">
+                            <h4>
+                                Video SEO Toolkit
+                                <span class="tools-list-badge premium">Premium</span>
+                            </h4>
+                            <p>Advanced metadata for YouTube creators</p>
+                        </div>
+                        <div class="tools-list-arrow">
+                            <i class="fas fa-chevron-right"></i>
+                        </div>
+                    </div>
+                    
+                    <!-- Tool 3 - Free -->
+                    <div class="tools-list-item" onclick="launchTool('PDF Smart Merge', 'free')">
+                        <div class="tools-list-icon">
+                            <i class="fas fa-layer-group"></i>
+                        </div>
+                        <div class="tools-list-content">
+                            <h4>
+                                PDF Smart Merge
+                                <span class="tools-list-badge free">Free</span>
+                            </h4>
+                            <p>Merge and compress PDF files securely</p>
+                        </div>
+                        <div class="tools-list-arrow">
+                            <i class="fas fa-chevron-right"></i>
+                        </div>
+                    </div>
+                    
+                    <!-- Tool 4 - Premium -->
+                    <div class="tools-list-item" onclick="launchTool('Code Snippet Vault', 'premium')">
+                        <div class="tools-list-icon">
+                            <i class="fas fa-code"></i>
+                        </div>
+                        <div class="tools-list-content">
+                            <h4>
+                                Code Snippet Vault
+                                <span class="tools-list-badge premium">Premium</span>
+                            </h4>
+                            <p>500+ optimized React & Tailwind components</p>
+                        </div>
+                        <div class="tools-list-arrow">
+                            <i class="fas fa-chevron-right"></i>
+                        </div>
+                    </div>
+                    
+                    <!-- Tool 5 - Free -->
+                    <div class="tools-list-item" onclick="launchTool('Resume Builder', 'free')">
+                        <div class="tools-list-icon">
+                            <i class="fas fa-file-alt"></i>
+                        </div>
+                        <div class="tools-list-content">
+                            <h4>
+                                Resume Builder
+                                <span class="tools-list-badge free">Free</span>
+                            </h4>
+                            <p>ATS-friendly resume templates</p>
+                        </div>
+                        <div class="tools-list-arrow">
+                            <i class="fas fa-chevron-right"></i>
+                        </div>
+                    </div>
+                    
+                    <!-- Tool 6 - Premium -->
+                    <div class="tools-list-item" onclick="launchTool('Language Partner AI', 'premium')">
+                        <div class="tools-list-icon">
+                            <i class="fas fa-language"></i>
+                        </div>
+                        <div class="tools-list-content">
+                            <h4>
+                                Language Partner AI
+                                <span class="tools-list-badge premium">Premium</span>
+                            </h4>
+                            <p>AI conversation practice for English & Korean</p>
+                        </div>
+                        <div class="tools-list-arrow">
+                            <i class="fas fa-chevron-right"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Pro Pass Card in Modal -->
+            <div class="pro-pass-card" style="margin-top: 2rem; padding: 1.5rem;">
+                <div class="pro-pass-content">
+                    <h3 style="font-size: 1.5rem;">UNLOCK PRO</h3>
+                    <p style="font-size: 0.875rem;">Get lifetime access to all premium tools</p>
+                </div>
+                <button class="pro-pass-btn" style="padding: 0.75rem 1.5rem;" onclick="showNotification('info', 'Pro Pass', 'Coming soon! Get ready for exclusive access.')">
+                    Get Pro Pass
+                </button>
+            </div>
+        </div>
     </div>
 
     <!-- Notification -->
@@ -1378,421 +2127,536 @@
         <div class="notification-progress" id="notificationProgress"></div>
     </div>
 
-    <main>
-        <!-- Hero Section -->
-        <section id="home" class="hero">
-            <div class="container hero-container">
-                <div class="hero-content">
-                    <div class="hero-badge">
-                        <span class="pulse"></span>
-                        Aspiring Developer & Computer Engineer
-                    </div>
-                    <h1 class="hero-title">
-                        Parash <span>Karki</span>
-                    </h1>
-                    <p class="hero-description">
-                        Computer Engineering student and creative mind passionate about building digital solutions. Based in 
-                        <span class="highlight"> South Korea</span>, originally from <span class="highlight">Nepal</span>.
-                    </p>
-                    <div class="hero-buttons">
-                        <button class="btn-primary" onclick="scrollToSection('projects')">
-                            View My Work
-                            <i class="fas fa-chevron-right"></i>
-                        </button>
-                        <div class="social-links">
-                            <a href="https://linkedin.com" target="_blank"><i class="fab fa-linkedin"></i></a>
-                            <a href="https://github.com" target="_blank"><i class="fab fa-github"></i></a>
-                            <a href="mailto:parashkarki782@gmail.com"><i class="fas fa-envelope"></i></a>
+    <!-- Portfolio View -->
+    <div id="portfolio-view" class="view-section">
+        <main>
+            <!-- Hero Section -->
+            <section id="home" class="hero">
+                <div class="container hero-container">
+                    <div class="hero-content">
+                        <div class="hero-badge">
+                            <span class="pulse"></span>
+                            Aspiring Developer & Computer Engineer
                         </div>
-                    </div>
-                </div>
-                <div class="hero-image">
-                    <div class="image-wrapper" id="hero-image-wrapper">
-                        <img 
-                            src="https://drive.google.com/thumbnail?id=1EefofSsPr-ersByxdbbYRZUV3r6xG5GI&sz=w400" 
-                            alt="Parash Karki"
-                            onload="handleImageLoad('photo1')"
-                            onerror="handleImageError('photo1', this)"
-                            id="hero-img"
-                        >
-                        <div class="image-overlay"></div>
-                    </div>
-                    
-                    <!-- Floating Cards -->
-                    <div class="floating-card card-1">
-                        <div class="card-content">
-                            <i class="fas fa-globe card-icon"></i>
-                            <div>
-                                <div class="card-label">Nationality</div>
-                                <div class="card-value">Nepali</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="floating-card card-2">
-                        <div class="card-content">
-                            <i class="fas fa-map-marker-alt card-icon cyan"></i>
-                            <div>
-                                <div class="card-label">Location</div>
-                                <div class="card-value">South Korea</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- About Section -->
-        <section id="about" class="about-section">
-            <div class="container">
-                <div class="section-header">
-                    <i class="fas fa-user"></i>
-                    <h2>My Journey</h2>
-                </div>
-                <div class="about-grid">
-                    <div class="about-text">
-                        <p>
-                            I am Parash Karki, a computer engineering student originally from <span class="highlight">Khiratadi</span>, a rural village in the Bajhang district of Nepal. 
-                            Growing up in a mountainous farming community shaped my resilience, curiosity, and strong work ethic.
+                        <h1 class="hero-title">
+                            Parash <span>Karki</span>
+                        </h1>
+                        <p class="hero-description">
+                            Computer Engineering student and creative mind passionate about building digital solutions. Based in 
+                            <span class="highlight">South Korea</span>, originally from <span class="highlight">Nepal</span>.
                         </p>
-                        <p>
-                            My journey from a remote village to studying abroad reflects my commitment to learning and self-growth. 
-                            I believe that growth comes from curiosity, discipline, and the courage to evolve.
-                        </p>
-                        <div class="info-grid">
-                            <div class="info-card">
-                                <h4>Languages</h4>
-                                <p>Nepali (Native), English (Fluent), Korean (Learning)</p>
-                            </div>
-                            <div class="info-card">
-                                <h4>Focus</h4>
-                                <p>Problem-solving, Growth, & Innovation</p>
+                        <div class="hero-buttons">
+                            <button class="btn-primary" onclick="scrollToSection('projects')">
+                                View My Work
+                                <i class="fas fa-chevron-right"></i>
+                            </button>
+                            <button class="btn-secondary" onclick="showView('tools')">
+                                <i class="fas fa-tools"></i>
+                                Tools Hub
+                            </button>
+                            <div class="social-links">
+                                <a href="https://www.linkedin.com/in/parash-karki-84732b235/" target="_blank"><i class="fab fa-linkedin"></i></a>
+                                <a href="https://github.com/parashkarki782" target="_blank"><i class="fab fa-github"></i></a>
+                                <a href="mailto:parashkarki782@gmail.com"><i class="fas fa-envelope"></i></a>
                             </div>
                         </div>
                     </div>
-                    <div class="values-card">
-                        <h3>
-                            <i class="fas fa-heart"></i>
-                            Values
-                        </h3>
-                        <ul class="values-list">
-                            <li>Curious & Growth-oriented</li>
-                            <li>Self-driven Learner</li>
-                            <li>Adaptable & Resilient</li>
-                            <li>Disciplined</li>
-                            <li>Open to Cultures</li>
-                        </ul>
+                    <div class="hero-image">
+                        <div class="image-wrapper" id="hero-image-wrapper">
+                            <img 
+                                src="https://drive.google.com/thumbnail?id=1EefofSsPr-ersByxdbbYRZUV3r6xG5GI&sz=w400" 
+                                alt="Parash Karki"
+                                onload="handleImageLoad('photo1')"
+                                onerror="handleImageError('photo1', this)"
+                                id="hero-img"
+                            >
+                            <div class="image-overlay"></div>
+                        </div>
+                        
+                        <!-- Floating Cards -->
+                        <div class="floating-card card-1">
+                            <div class="card-content">
+                                <i class="fas fa-globe card-icon"></i>
+                                <div>
+                                    <div class="card-label">Nationality</div>
+                                    <div class="card-value">Nepali</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="floating-card card-2">
+                            <div class="card-content">
+                                <i class="fas fa-map-marker-alt card-icon cyan"></i>
+                                <div>
+                                    <div class="card-label">Location</div>
+                                    <div class="card-value">South Korea</div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </section>
+            </section>
 
-        <!-- Skills Section -->
-        <section id="skills">
-            <div class="container">
-                <div class="section-header">
-                    <i class="fas fa-code"></i>
-                    <h2>Technical Arsenal</h2>
-                </div>
-                <p style="color: var(--text-muted); margin-bottom: 2rem;">Tools and technologies I use to bring ideas to life</p>
-                
-                <div class="skills-grid">
-                    <div class="skill-card core">
-                        <i class="fas fa-terminal"></i>
-                        <h3>Core Skills</h3>
-                        <div class="skill-tags">
-                            <span class="skill-tag">Programming Fundamentals</span>
-                            <span class="skill-tag">Web Development</span>
-                            <span class="skill-tag">App Development</span>
-                            <span class="skill-tag">Problem Solving</span>
-                            <span class="skill-tag">Logical Thinking</span>
-                        </div>
+            <!-- About Section -->
+            <section id="about" class="about-section">
+                <div class="container">
+                    <div class="section-header">
+                        <i class="fas fa-user"></i>
+                        <h2>My Journey</h2>
                     </div>
-                    <div class="skill-card tech">
-                        <i class="fas fa-microchip"></i>
-                        <h3>Tech & Media</h3>
-                        <div class="skill-tags">
-                            <span class="skill-tag">HTML/CSS</span>
-                            <span class="skill-tag">JavaScript</span>
-                            <span class="skill-tag">Video Editing</span>
-                            <span class="skill-tag">AI Tools</span>
-                            <span class="skill-tag">Blender</span>
-                            <span class="skill-tag">Unreal Engine</span>
-                        </div>
-                    </div>
-                    <div class="skill-card focus">
-                        <i class="fas fa-compass"></i>
-                        <h3>Future Focus</h3>
-                        <div class="skill-tags">
-                            <span class="skill-tag">Mobile App Development</span>
-                            <span class="skill-tag">Real-world Systems</span>
-                            <span class="skill-tag">UI/UX Thinking</span>
-                            <span class="skill-tag">Future-ready Tech</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Experience Section -->
-        <section id="experience" class="exp-section">
-            <div class="container">
-                <div class="exp-grid">
-                    <!-- Education -->
-                    <div>
-                        <div class="section-header">
-                            <i class="fas fa-book-open" style="color: var(--primary);"></i>
-                            <h2>Education</h2>
-                        </div>
-                        <div class="timeline">
-                            <div class="timeline-item">
-                                <div class="timeline-dot"></div>
-                                <div class="timeline-date">Current / Ongoing</div>
-                                <h3 class="timeline-title">Computer Engineering</h3>
-                                <p class="timeline-subtitle">Expanding knowledge in advanced technologies, software development, and innovation in South Korea.</p>
-                            </div>
-                            <div class="timeline-item">
-                                <div class="timeline-dot"></div>
-                                <div class="timeline-date">Diploma Completed</div>
-                                <h3 class="timeline-title">Diploma in Computer Engineering</h3>
-                                <p class="timeline-subtitle">Focus on programming fundamentals, computer systems, and digital electronics.</p>
+                    <div class="about-grid">
+                        <div class="about-text">
+                            <p>
+                                I am Parash Karki, a computer engineering student originally from <span class="highlight">Khiratadi</span>, a rural village in the Bajhang district of Nepal. 
+                                Growing up in a mountainous farming community shaped my resilience, curiosity, and strong work ethic.
+                            </p>
+                            <p>
+                                My journey from a remote village to studying abroad reflects my commitment to learning and self-growth. 
+                                I believe that growth comes from curiosity, discipline, and the courage to evolve.
+                            </p>
+                            <div class="info-grid">
+                                <div class="info-card">
+                                    <h4>Languages</h4>
+                                    <p>Nepali (Native), English (Fluent), Korean (Learning)</p>
+                                </div>
+                                <div class="info-card">
+                                    <h4>Focus</h4>
+                                    <p>Problem-solving, Growth, & Innovation</p>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    
-                    <!-- Experience -->
-                    <div>
-                        <div class="section-header">
-                            <i class="fas fa-briefcase" style="color: var(--secondary);"></i>
-                            <h2>Experience</h2>
-                        </div>
-                        <div class="exp-card">
-                            <h3>Video Editor Intern</h3>
-                            <div class="exp-company">View Finders Nepal • Lalitpur, Nepal</div>
-                            <ul class="exp-list">
-                                <li>
-                                    <i class="fas fa-chevron-right"></i>
-                                    Short video editing during On-the-Job Training (OJT).
-                                </li>
-                                <li>
-                                    <i class="fas fa-chevron-right"></i>
-                                    Explored advanced tools like Blender, UE5, and AI in production.
-                                </li>
-                                <li>
-                                    <i class="fas fa-chevron-right"></i>
-                                    Learned teamwork, deadlines, and creative storytelling.
-                                </li>
+                        <div class="values-card">
+                            <h3>
+                                <i class="fas fa-heart"></i>
+                                Values
+                            </h3>
+                            <ul class="values-list">
+                                <li>Curious & Growth-oriented</li>
+                                <li>Self-driven Learner</li>
+                                <li>Adaptable & Resilient</li>
+                                <li>Disciplined</li>
+                                <li>Open to Cultures</li>
                             </ul>
                         </div>
                     </div>
                 </div>
-            </div>
-        </section>
+            </section>
 
-        <!-- Projects Section -->
-        <section id="projects">
-            <div class="container">
-                <div class="projects-header">
-                    <div>
-                        <h2>Vision & Ideas</h2>
-                        <p>I'm focused on building practical apps that solve everyday problems for people in Nepal and beyond.</p>
+            <!-- Skills Section -->
+            <section id="skills">
+                <div class="container">
+                    <div class="section-header">
+                        <i class="fas fa-code"></i>
+                        <h2>Technical Arsenal</h2>
                     </div>
-                    <div class="projects-badge">
-                        <i class="fas fa-lightbulb"></i>
-                        Turning ideas into prototypes
-                    </div>
-                </div>
-                
-                <div class="projects-grid">
-                    <div class="project-card">
-                        <div class="project-icon blue">
-                            <i class="fas fa-globe"></i>
-                        </div>
-                        <h3>Expense Sharing</h3>
-                        <p>Simplified group expense tracking for communities in developing countries.</p>
-                    </div>
-                    <div class="project-card">
-                        <div class="project-icon green">
-                            <i class="fas fa-user"></i>
-                        </div>
-                        <h3>Community Hub</h3>
-                        <p>Local platforms to connect and share resources within mountain villages.</p>
-                    </div>
-                    <div class="project-card">
-                        <div class="project-icon cyan">
+                    <p style="color: var(--text-muted); margin-bottom: 2rem;">Tools and technologies I use to bring ideas to life</p>
+                    
+                    <div class="skills-grid">
+                        <div class="skill-card core">
                             <i class="fas fa-terminal"></i>
-                        </div>
-                        <h3>Utility Tools</h3>
-                        <p>Practical mobile apps designed for low-connectivity environments.</p>
-                    </div>
-                    <div class="project-card">
-                        <div class="project-icon purple">
-                            <i class="fas fa-video"></i>
-                        </div>
-                        <h3>Digital Storytelling</h3>
-                        <p>Using video editing to share personal and community growth stories.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Creative Section -->
-        <section id="creative" class="creative-section">
-            <div class="container">
-                <div class="creative-card">
-                    <i class="fas fa-music creative-bg-icon"></i>
-                    <div class="creative-content">
-                        <div class="section-header">
-                            <i class="fas fa-microphone"></i>
-                            <h2>The Creative Side</h2>
-                        </div>
-                        <div class="creative-grid">
-                            <div class="creative-text">
-                                <p>
-                                    Beyond the code, I believe technology and creativity create a powerful impact. 
-                                    I express this through diverse creative outlets that keep my mind sharp and inspired.
-                                </p>
-                                <div class="creative-items">
-                                    <div class="creative-item">
-                                        <div class="item-icon">
-                                            <i class="fas fa-microphone"></i>
-                                        </div>
-                                        <div class="item-info">
-                                            <h4>Rap & Lyrics</h4>
-                                            <span>Lyrical Expression</span>
-                                        </div>
-                                    </div>
-                                    <div class="creative-item">
-                                        <div class="item-icon cyan">
-                                            <i class="fas fa-video"></i>
-                                        </div>
-                                        <div class="item-info">
-                                            <h4>Video Editing</h4>
-                                            <span>Visual Storytelling</span>
-                                        </div>
-                                    </div>
-                                </div>
+                            <h3>Core Skills</h3>
+                            <div class="skill-tags">
+                                <span class="skill-tag">Programming Fundamentals</span>
+                                <span class="skill-tag">Web Development</span>
+                                <span class="skill-tag">App Development</span>
+                                <span class="skill-tag">Problem Solving</span>
+                                <span class="skill-tag">Logical Thinking</span>
                             </div>
-                            <div class="creative-image">
-                                <img 
-                                    src="https://drive.google.com/thumbnail?id=1_rvPCv6awC9vEYaB7T9Q2tiISMzv6MdG&sz=w400" 
-                                    alt="Creative Parash"
-                                    onload="handleImageLoad('photo2')"
-                                    onerror="handleImageError('photo2', this)"
-                                    id="creative-img"
-                                >
-                                <div class="image-caption">
-                                    <div class="caption-label">Passionate about</div>
-                                    <div class="caption-text">Personal Development Content</div>
-                                </div>
+                        </div>
+                        <div class="skill-card tech">
+                            <i class="fas fa-microchip"></i>
+                            <h3>Tech & Media</h3>
+                            <div class="skill-tags">
+                                <span class="skill-tag">HTML/CSS</span>
+                                <span class="skill-tag">JavaScript</span>
+                                <span class="skill-tag">Video Editing</span>
+                                <span class="skill-tag">AI Tools</span>
+                                <span class="skill-tag">Blender</span>
+                                <span class="skill-tag">Unreal Engine</span>
+                            </div>
+                        </div>
+                        <div class="skill-card focus">
+                            <i class="fas fa-compass"></i>
+                            <h3>Future Focus</h3>
+                            <div class="skill-tags">
+                                <span class="skill-tag">Mobile App Development</span>
+                                <span class="skill-tag">Real-world Systems</span>
+                                <span class="skill-tag">UI/UX Thinking</span>
+                                <span class="skill-tag">Future-ready Tech</span>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </section>
+            </section>
 
-        <!-- Contact Section -->
-        <section id="contact" class="contact-section">
-            <div class="container">
-                <div class="section-header">
-                    <i class="fas fa-envelope"></i>
-                    <h2>Get In Touch</h2>
-                </div>
-                
-                <div class="contact-container">
-                    <div class="contact-info">
-                        <h3>Let's Connect</h3>
-                        <p>
-                            I'm always interested in hearing about new opportunities, collaborations, 
-                            or just having a conversation about technology and creativity.
-                        </p>
+            <!-- Experience Section -->
+            <section id="experience" class="exp-section">
+                <div class="container">
+                    <div class="exp-grid">
+                        <!-- Education -->
+                        <div>
+                            <div class="section-header">
+                                <i class="fas fa-book-open" style="color: var(--primary);"></i>
+                                <h2>Education</h2>
+                            </div>
+                            <div class="timeline">
+                                <div class="timeline-item">
+                                    <div class="timeline-dot"></div>
+                                    <div class="timeline-date">Current / Ongoing</div>
+                                    <h3 class="timeline-title">Computer Engineering</h3>
+                                    <p class="timeline-subtitle">Expanding knowledge in advanced technologies, software development, and innovation in South Korea.</p>
+                                </div>
+                                <div class="timeline-item">
+                                    <div class="timeline-dot"></div>
+                                    <div class="timeline-date">Diploma Completed</div>
+                                    <h3 class="timeline-title">Diploma in Computer Engineering</h3>
+                                    <p class="timeline-subtitle">Focus on programming fundamentals, computer systems, and digital electronics.</p>
+                                </div>
+                            </div>
+                        </div>
                         
-                        <div class="contact-details">
-                            <div class="contact-detail-item">
-                                <div class="contact-detail-icon">
-                                    <i class="fas fa-envelope"></i>
-                                </div>
-                                <div class="contact-detail-text">
-                                    <h4>Email</h4>
-                                    <a href="mailto:parashkarki782@gmail.com">parashkarki782@gmail.com</a>
-                                </div>
+                        <!-- Experience -->
+                        <div>
+                            <div class="section-header">
+                                <i class="fas fa-briefcase" style="color: var(--secondary);"></i>
+                                <h2>Experience</h2>
                             </div>
-                            
-                            <div class="contact-detail-item">
-                                <div class="contact-detail-icon">
-                                    <i class="fas fa-map-marker-alt"></i>
-                                </div>
-                                <div class="contact-detail-text">
-                                    <h4>Location</h4>
-                                    <p>South Korea (Originally from Nepal)</p>
-                                </div>
+                            <div class="exp-card">
+                                <h3>Video Editor Intern</h3>
+                                <div class="exp-company">View Finders Nepal • Lalitpur, Nepal</div>
+                                <ul class="exp-list">
+                                    <li>
+                                        <i class="fas fa-chevron-right"></i>
+                                        Short video editing during On-the-Job Training (OJT).
+                                    </li>
+                                    <li>
+                                        <i class="fas fa-chevron-right"></i>
+                                        Explored advanced tools like Blender, UE5, and AI in production.
+                                    </li>
+                                    <li>
+                                        <i class="fas fa-chevron-right"></i>
+                                        Learned teamwork, deadlines, and creative storytelling.
+                                    </li>
+                                </ul>
                             </div>
-                            
-                            <div class="contact-detail-item">
-                                <div class="contact-detail-icon">
-                                    <i class="fas fa-globe"></i>
-                                </div>
-                                <div class="contact-detail-text">
-                                    <h4>Social</h4>
-                                    <div style="display: flex; gap: 1rem; margin-top: 0.25rem;">
-                                        <a href="https://linkedin.com" target="_blank" style="color: var(--text-muted);">
-                                            <i class="fab fa-linkedin"></i>
-                                        </a>
-                                        <a href="https://github.com" target="_blank" style="color: var(--text-muted);">
-                                            <i class="fab fa-github"></i>
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Projects Section -->
+            <section id="projects">
+                <div class="container">
+                    <div class="projects-header">
+                        <div>
+                            <h2>Vision & Ideas</h2>
+                            <p>I'm focused on building practical apps that solve everyday problems for people in Nepal and beyond.</p>
+                        </div>
+                        <div class="projects-badge">
+                            <i class="fas fa-lightbulb"></i>
+                            Turning ideas into prototypes
                         </div>
                     </div>
                     
-                    <div class="contact-form">
-                        <form id="contactForm">
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label for="name">Name *</label>
-                                    <input type="text" id="name" name="name" placeholder="Your name" required>
-                                </div>
-                                <div class="form-group">
-                                    <label for="email">Email *</label>
-                                    <input type="email" id="email" name="email" placeholder="your@email.com" required>
-                                </div>
+                    <div class="projects-grid">
+                        <div class="project-card">
+                            <div class="project-icon blue">
+                                <i class="fas fa-globe"></i>
                             </div>
-                            
-                            <div class="form-group">
-                                <label for="subject">Subject *</label>
-                                <input type="text" id="subject" name="subject" placeholder="What's this about?" required>
+                            <h3>Expense Sharing</h3>
+                            <p>Simplified group expense tracking for communities in developing countries.</p>
+                        </div>
+                        <div class="project-card">
+                            <div class="project-icon green">
+                                <i class="fas fa-user"></i>
                             </div>
-                            
-                            <div class="form-group">
-                                <label for="message">Message *</label>
-                                <textarea id="message" name="message" placeholder="Your message..." required></textarea>
+                            <h3>Community Hub</h3>
+                            <p>Local platforms to connect and share resources within mountain villages.</p>
+                        </div>
+                        <div class="project-card">
+                            <div class="project-icon cyan">
+                                <i class="fas fa-terminal"></i>
                             </div>
-                            
-                            <button type="submit" class="btn-submit" id="submitBtn">
-                                <span>Send Message</span>
-                                <i class="fas fa-paper-plane"></i>
-                            </button>
-                        </form>
+                            <h3>Utility Tools</h3>
+                            <p>Practical mobile apps designed for low-connectivity environments.</p>
+                        </div>
+                        <div class="project-card">
+                            <div class="project-icon purple">
+                                <i class="fas fa-video"></i>
+                            </div>
+                            <h3>Digital Storytelling</h3>
+                            <p>Using video editing to share personal and community growth stories.</p>
+                        </div>
                     </div>
+                </div>
+            </section>
+
+            <!-- Creative Section -->
+            <section id="creative" class="creative-section">
+                <div class="container">
+                    <div class="creative-card">
+                        <i class="fas fa-music creative-bg-icon"></i>
+                        <div class="creative-content">
+                            <div class="section-header">
+                                <i class="fas fa-microphone"></i>
+                                <h2>The Creative Side</h2>
+                            </div>
+                            <div class="creative-grid">
+                                <div class="creative-text">
+                                    <p>
+                                        Beyond the code, I believe technology and creativity create a powerful impact. 
+                                        I express this through diverse creative outlets that keep my mind sharp and inspired.
+                                    </p>
+                                    <div class="creative-items">
+                                        <div class="creative-item">
+                                            <div class="item-icon">
+                                                <i class="fas fa-microphone"></i>
+                                            </div>
+                                            <div class="item-info">
+                                                <h4>Rap & Lyrics</h4>
+                                                <span>Lyrical Expression</span>
+                                            </div>
+                                        </div>
+                                        <div class="creative-item">
+                                            <div class="item-icon cyan">
+                                                <i class="fas fa-video"></i>
+                                            </div>
+                                            <div class="item-info">
+                                                <h4>Video Editing</h4>
+                                                <span>Visual Storytelling</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="creative-image">
+                                    <img 
+                                        src="https://drive.google.com/thumbnail?id=1_rvPCv6awC9vEYaB7T9Q2tiISMzv6MdG&sz=w400" 
+                                        alt="Creative Parash"
+                                        onload="handleImageLoad('photo2')"
+                                        onerror="handleImageError('photo2', this)"
+                                        id="creative-img"
+                                    >
+                                    <div class="image-caption">
+                                        <div class="caption-label">Passionate about</div>
+                                        <div class="caption-text">Personal Development Content</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Contact Section -->
+            <section id="contact" class="contact-section">
+                <div class="container">
+                    <div class="section-header">
+                        <i class="fas fa-envelope"></i>
+                        <h2>Get In Touch</h2>
+                    </div>
+                    
+                    <div class="contact-container">
+                        <div class="contact-info">
+                            <h3>Let's Connect</h3>
+                            <p>
+                                I'm always interested in hearing about new opportunities, collaborations, 
+                                or just having a conversation about technology and creativity.
+                            </p>
+                            
+                            <div class="contact-details">
+                                <div class="contact-detail-item">
+                                    <div class="contact-detail-icon">
+                                        <i class="fas fa-envelope"></i>
+                                    </div>
+                                    <div class="contact-detail-text">
+                                        <h4>Email</h4>
+                                        <a href="mailto:parashkarki782@gmail.com">parashkarki782@gmail.com</a>
+                                    </div>
+                                </div>
+                                
+                                <div class="contact-detail-item">
+                                    <div class="contact-detail-icon">
+                                        <i class="fas fa-map-marker-alt"></i>
+                                    </div>
+                                    <div class="contact-detail-text">
+                                        <h4>Location</h4>
+                                        <p>South Korea (Originally from Nepal)</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="contact-detail-item">
+                                    <div class="contact-detail-icon">
+                                        <i class="fas fa-globe"></i>
+                                    </div>
+                                    <div class="contact-detail-text">
+                                        <h4>Social</h4>
+                                        <div style="display: flex; gap: 1rem; margin-top: 0.25rem;">
+                                            <a href="https://www.linkedin.com/in/parash-karki-84732b235/" target="_blank" style="color: var(--text-muted);">
+                                                <i class="fab fa-linkedin"></i>
+                                            </a>
+                                            <a href="https://github.com/parashkarki782" target="_blank" style="color: var(--text-muted);">
+                                                <i class="fab fa-github"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="contact-form">
+                            <form id="contactForm">
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="name">Name *</label>
+                                        <input type="text" id="name" name="name" placeholder="Your name" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="email">Email *</label>
+                                        <input type="email" id="email" name="email" placeholder="your@email.com" required>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="subject">Subject *</label>
+                                    <input type="text" id="subject" name="subject" placeholder="What's this about?" required>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="message">Message *</label>
+                                    <textarea id="message" name="message" placeholder="Your message..." required></textarea>
+                                </div>
+                                
+                                <button type="submit" class="btn-submit" id="submitBtn">
+                                    <span>Send Message</span>
+                                    <i class="fas fa-paper-plane"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Tools Hub View -->
+    <div id="tools-view" class="view-section hidden">
+        <section class="tools-section">
+            <div class="container">
+                <div class="tools-header">
+                    <h2>Tools Hub</h2>
+                    <p>Free and premium resources designed to accelerate your growth and simplify your workflow.</p>
+                    
+                    <div class="tools-stats">
+                        <div class="stat-item">
+                            <i class="fas fa-gift"></i>
+                            <span>12+ Free Tools</span>
+                        </div>
+                        <div class="stat-item">
+                            <i class="fas fa-crown"></i>
+                            <span>4+ Premium Tools</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="tools-grid">
+                    <!-- Tool 1 - Free -->
+                    <div class="tool-card">
+                        <div class="tool-badge free">Free</div>
+                        <div class="tool-icon">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <h3>AI Prompt Generator</h3>
+                        <p>Expert-level prompts for ChatGPT & Claude to 10x your productivity.</p>
+                        <button class="tool-btn" onclick="showNotification('info', 'Coming Soon', 'This tool will be available shortly!')">Launch Tool</button>
+                    </div>
+                    
+                    <!-- Tool 2 - Premium -->
+                    <div class="tool-card">
+                        <div class="tool-badge premium">Premium</div>
+                        <div class="tool-icon">
+                            <i class="fab fa-youtube"></i>
+                        </div>
+                        <h3>Video SEO Toolkit</h3>
+                        <p>Advanced metadata and keyword generator for YouTube creators.</p>
+                        <button class="tool-btn" onclick="showNotification('info', 'Premium Feature', 'Upgrade to Pro to access this tool!')">Unlock with Pro</button>
+                    </div>
+                    
+                    <!-- Tool 3 - Free -->
+                    <div class="tool-card">
+                        <div class="tool-badge free">Free</div>
+                        <div class="tool-icon">
+                            <i class="fas fa-layer-group"></i>
+                        </div>
+                        <h3>PDF Smart Merge</h3>
+                        <p>Securely merge and compress PDF files directly in your browser.</p>
+                        <button class="tool-btn" onclick="showNotification('info', 'Coming Soon', 'This tool will be available shortly!')">Launch Tool</button>
+                    </div>
+                    
+                    <!-- Tool 4 - Premium -->
+                    <div class="tool-card">
+                        <div class="tool-badge premium">Premium</div>
+                        <div class="tool-icon">
+                            <i class="fas fa-code"></i>
+                        </div>
+                        <h3>Code Snippet Vault</h3>
+                        <p>A library of 500+ optimized React and Tailwind components.</p>
+                        <button class="tool-btn" onclick="showNotification('info', 'Premium Feature', 'Upgrade to Pro to access this tool!')">Unlock with Pro</button>
+                    </div>
+                    
+                    <!-- Tool 5 - Free -->
+                    <div class="tool-card">
+                        <div class="tool-badge free">Free</div>
+                        <div class="tool-icon">
+                            <i class="fas fa-file-alt"></i>
+                        </div>
+                        <h3>Resume Builder</h3>
+                        <p>Modern, ATS-friendly resume templates used by top engineers.</p>
+                        <button class="tool-btn" onclick="showNotification('info', 'Coming Soon', 'This tool will be available shortly!')">Launch Tool</button>
+                    </div>
+                    
+                    <!-- Tool 6 - Premium -->
+                    <div class="tool-card">
+                        <div class="tool-badge premium">Premium</div>
+                        <div class="tool-icon">
+                            <i class="fas fa-language"></i>
+                        </div>
+                        <h3>Language Partner AI</h3>
+                        <p>AI-driven conversation practice for English & Korean learners.</p>
+                        <button class="tool-btn" onclick="showNotification('info', 'Premium Feature', 'Upgrade to Pro to access this tool!')">Unlock with Pro</button>
+                    </div>
+                </div>
+                
+                <!-- Pro Pass Card -->
+                <div class="pro-pass-card">
+                    <div class="pro-pass-content">
+                        <h3>UNLOCK THE FULL POTENTIAL</h3>
+                        <p>Get lifetime access to all premium tools, upcoming releases, and 1-on-1 engineering consultation with one single pass.</p>
+                    </div>
+                    <button class="pro-pass-btn" onclick="showNotification('info', 'Pro Pass', 'Coming soon! Get ready for exclusive access.')">Get Pro Pass</button>
                 </div>
             </div>
         </section>
-    </main>
+    </div>
 
-    <!-- Footer -->
+    <!-- Footer (appears in both views) -->
     <footer>
         <div class="footer-title">Let's build something together.</div>
         <div class="footer-buttons">
-            <a href="https://linkedin.com" target="_blank" class="footer-btn">
+            <a href="https://www.linkedin.com/in/parash-karki-84732b235/" target="_blank" class="footer-btn">
                 <i class="fab fa-linkedin"></i>
                 LinkedIn
+            </a>
+            <a href="https://github.com/parashkarki782" target="_blank" class="footer-btn">
+                <i class="fab fa-github"></i>
+                GitHub
             </a>
             <a href="mailto:parashkarki782@gmail.com" class="footer-btn">
                 <i class="fas fa-envelope"></i>
                 Email
             </a>
+            <button class="footer-btn" onclick="showView('tools')">
+                <i class="fas fa-tools"></i>
+                Tools Hub
+            </button>
         </div>
         <p class="copyright">© 2025 Parash Karki. From Khiratadi, Bajhang to Seoul, South Korea.</p>
         <p class="footer-tagline">Resilience • Curiosity • Discipline</p>
@@ -1815,9 +2679,126 @@
         const notificationTitle = document.getElementById('notificationTitle');
         const notificationMessage = document.getElementById('notificationMessage');
         const notificationProgress = document.getElementById('notificationProgress');
+        const portfolioView = document.getElementById('portfolio-view');
+        const toolsView = document.getElementById('tools-view');
+        const bottomResumeBtn = document.getElementById('bottomResumeBtn');
+        const bottomToolsBtn = document.getElementById('bottomToolsBtn');
+        const resumeModal = document.getElementById('resumeModal');
+        const toolsModal = document.getElementById('toolsModal');
         
         // Image error tracking
         const imageErrors = { photo1: false, photo2: false };
+        
+        // Current view state
+        let currentView = 'portfolio';
+        
+        // Show notification function (make it global)
+        function showNotification(type, title, message) {
+            // Reset animation
+            if (notificationProgress) {
+                notificationProgress.style.animation = 'none';
+                notificationProgress.offsetHeight; // Trigger reflow
+            }
+            
+            // Set notification type
+            notification.className = 'notification';
+            if (type === 'error') {
+                notification.classList.add('error');
+                notificationIcon.innerHTML = '<i class="fas fa-exclamation-circle"></i>';
+            } else if (type === 'info') {
+                notification.classList.remove('error');
+                notificationIcon.innerHTML = '<i class="fas fa-info-circle"></i>';
+            } else {
+                notification.classList.remove('error');
+                notificationIcon.innerHTML = '<i class="fas fa-check-circle"></i>';
+            }
+            
+            notificationTitle.textContent = title;
+            notificationMessage.textContent = message;
+            
+            // Show notification
+            notification.classList.add('show');
+            
+            // Restart animation
+            if (notificationProgress) {
+                notificationProgress.style.animation = 'progress 5s linear forwards';
+            }
+            
+            // Auto hide after 5 seconds
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 5000);
+        }
+        
+        // Show view function
+        function showView(view) {
+            currentView = view;
+            
+            if (view === 'portfolio') {
+                portfolioView.classList.remove('hidden');
+                toolsView.classList.add('hidden');
+                
+                // Update URL hash to home
+                window.location.hash = '#home';
+            } else {
+                portfolioView.classList.add('hidden');
+                toolsView.classList.remove('hidden');
+                
+                // Remove hash for tools view
+                window.location.hash = '';
+            }
+            
+            // Close mobile menu if open
+            if (mobileMenu.classList.contains('active')) {
+                toggleMenu();
+            }
+            
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        
+        // Resume Modal Functions
+        function openResumeModal() {
+            resumeModal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+            
+            // Update bottom nav active state
+            bottomResumeBtn.classList.add('active');
+            bottomToolsBtn.classList.remove('active');
+        }
+        
+        function closeResumeModal() {
+            resumeModal.classList.remove('active');
+            document.body.style.overflow = '';
+            bottomResumeBtn.classList.remove('active');
+        }
+        
+        // Tools Modal Functions
+        function openToolsModal() {
+            toolsModal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+            
+            // Update bottom nav active state
+            bottomToolsBtn.classList.add('active');
+            bottomResumeBtn.classList.remove('active');
+        }
+        
+        function closeToolsModal() {
+            toolsModal.classList.remove('active');
+            document.body.style.overflow = '';
+            bottomToolsBtn.classList.remove('active');
+        }
+        
+        // Launch Tool Function
+        function launchTool(toolName, type) {
+            closeToolsModal();
+            
+            if (type === 'free') {
+                showNotification('info', toolName, 'This free tool will be available soon!');
+            } else {
+                showNotification('info', 'Premium Tool', `${toolName} requires Pro access. Upgrade to unlock!`);
+            }
+        }
         
         // Toggle Mobile Menu
         function toggleMenu() {
@@ -1835,6 +2816,11 @@
                     top: elementPosition,
                     behavior: 'smooth'
                 });
+            }
+            
+            // Close mobile menu if open
+            if (mobileMenu.classList.contains('active')) {
+                toggleMenu();
             }
         }
         
@@ -1861,38 +2847,19 @@
             }
         }
         
-        // Show Notification
-        function showNotification(type, title, message) {
-            // Set notification type
-            notification.className = 'notification';
-            if (type === 'error') {
-                notification.classList.add('error');
-                notificationIcon.innerHTML = '<i class="fas fa-exclamation-circle"></i>';
-            } else {
-                notificationIcon.innerHTML = '<i class="fas fa-check-circle"></i>';
-            }
-            
-            notificationTitle.textContent = title;
-            notificationMessage.textContent = message;
-            
-            // Show notification
-            notification.classList.add('show');
-            
-            // Auto hide after 5 seconds
-            setTimeout(() => {
-                notification.classList.remove('show');
-            }, 5000);
-        }
-        
         // Update Active Navigation Link
         function updateActiveLink() {
+            if (currentView !== 'portfolio') return;
+            
             const sections = ['home', 'about', 'skills', 'experience', 'projects', 'creative', 'contact'];
             const scrollPosition = window.scrollY + 100; // Offset for navbar
             
             for (const section of sections) {
                 const element = document.getElementById(section);
                 if (element) {
-                    const { offsetTop, offsetHeight } = element;
+                    const offsetTop = element.offsetTop;
+                    const offsetHeight = element.offsetHeight;
+                    
                     if (scrollPosition >= offsetTop && scrollPosition < offsetTop + offsetHeight) {
                         // Remove active class from all links
                         navLinks.forEach(link => link.classList.remove('active'));
@@ -1912,6 +2879,12 @@
             const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
             const scrolled = (winScroll / height) * 100;
             progressBar.style.width = scrolled + '%';
+        }
+        
+        // Email validation helper
+        function isValidEmail(email) {
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(email);
         }
         
         // Handle Form Submission
@@ -1978,12 +2951,6 @@
             });
         }
         
-        // Email validation helper
-        function isValidEmail(email) {
-            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            return re.test(email);
-        }
-        
         // Handle Scroll Events
         window.addEventListener('scroll', () => {
             updateProgressBar();
@@ -1995,6 +2962,16 @@
             if (window.innerWidth > 768 && mobileMenu.classList.contains('active')) {
                 mobileMenu.classList.remove('active');
                 document.body.style.overflow = '';
+            }
+            
+            // Close modals on desktop
+            if (window.innerWidth > 768) {
+                if (resumeModal.classList.contains('active')) {
+                    closeResumeModal();
+                }
+                if (toolsModal.classList.contains('active')) {
+                    closeToolsModal();
+                }
             }
         });
         
@@ -2008,15 +2985,28 @@
         
         // Handle keyboard navigation
         document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && mobileMenu.classList.contains('active')) {
-                mobileMenu.classList.remove('active');
-                document.body.style.overflow = '';
+            if (e.key === 'Escape') {
+                if (mobileMenu.classList.contains('active')) {
+                    mobileMenu.classList.remove('active');
+                    document.body.style.overflow = '';
+                }
+                if (resumeModal.classList.contains('active')) {
+                    closeResumeModal();
+                }
+                if (toolsModal.classList.contains('active')) {
+                    closeToolsModal();
+                }
             }
         });
         
         // Initialize on load
         document.addEventListener('DOMContentLoaded', () => {
             updateActiveLink();
+            
+            // Check if we need to show tools view from URL param
+            if (window.location.hash === '#tools') {
+                showView('tools');
+            }
             
             // Add smooth scroll to all anchor links
             document.querySelectorAll('a[href^="#"]').forEach(anchor => {
@@ -2062,6 +3052,19 @@
             const preloadCreative = new Image();
             preloadCreative.src = 'https://drive.google.com/uc?id=1_rvPCv6awC9vEYaB7T9Q2tiISMzv6MdG';
         });
+
+        // Make functions globally available
+        window.showView = showView;
+        window.toggleMenu = toggleMenu;
+        window.scrollToSection = scrollToSection;
+        window.handleImageLoad = handleImageLoad;
+        window.handleImageError = handleImageError;
+        window.showNotification = showNotification;
+        window.openResumeModal = openResumeModal;
+        window.closeResumeModal = closeResumeModal;
+        window.openToolsModal = openToolsModal;
+        window.closeToolsModal = closeToolsModal;
+        window.launchTool = launchTool;
     </script>
 </body>
 </html>
