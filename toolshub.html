@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>K-Prep Tool Store</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .gradient-border {
+            position: relative;
+            border-radius: 1rem;
+            background: linear-gradient(60deg, #f79533, #f37055, #ef4e7b, #a166ab, #5073b8, #1098ad, #07b39b, #6fba82);
+            padding: 2px;
+        }
+        
+        .gradient-border-content {
+            background: white;
+            border-radius: 0.95rem;
+            height: 100%;
+        }
+        
+        .hover-scale {
+            transition: transform 0.2s ease-in-out;
+        }
+        
+        .hover-scale:hover {
+            transform: scale(1.02);
+        }
+        
+        .animate-fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .animate-slide-in {
+            animation: slideIn 0.3s ease-out;
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateX(20px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        .tool-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .tool-card:hover {
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        
+        .search-highlight {
+            background: linear-gradient(120deg, #fdf2f8 0%, #fdf2f8 100%);
+            background-repeat: no-repeat;
+            background-size: 100% 0.2em;
+            background-position: 0 88%;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-slate-50 to-blue-50 min-h-screen">
+
+    <!-- Navigation -->
+    <nav class="glass-effect sticky top-0 z-50 border-b border-white/20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo -->
+                <div class="flex items-center space-x-3 cursor-pointer group" onclick="showHome()">
+                    <div class="bg-gradient-to-r from-blue-600 to-indigo-600 p-2 rounded-xl shadow-lg group-hover:shadow-xl transition-all group-hover:scale-110">
+                        <svg class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="3" width="7" height="7" rx="1"/>
+                            <rect x="14" y="3" width="7" height="7" rx="1"/>
+                            <rect x="3" y="14" width="7" height="7" rx="1"/>
+                            <rect x="14" y="14" width="7" height="7" rx="1"/>
+                        </svg>
+                    </div>
+                    <span class="font-extrabold text-xl tracking-tight bg-gradient-to-r from-slate-900 to-slate-700 bg-clip-text text-transparent">
+                        K-Prep <span class="text-blue-600">Store</span>
+                    </span>
+                </div>
+
+                <!-- Right Navigation -->
+                <div class="flex items-center space-x-4">
+                    <!-- Quick Stats -->
+                    <div class="hidden md:flex items-center space-x-3">
+                        <div class="flex items-center space-x-1 bg-blue-50 px-3 py-1.5 rounded-full">
+                            <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+                            <span class="text-sm font-medium text-blue-700">4 Tools Active</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Settings Button -->
+                    <button class="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-xl transition-all">
+                        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="3"/>
+                            <path d="M19.4 15a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H5.78a1.65 1.65 0 0 0-1.51 1 1.65 1.65 0 0 0 .33 1.82l.04.04A10 10 0 0 0 12 17.66a10 10 0 0 0 6.36-2.62z"/>
+                            <path d="M16.5 6.5 19 9"/>
+                            <path d="M7.5 6.5 5 9"/>
+                        </svg>
+                    </button>
+                    
+                    <!-- User Avatar -->
+                    <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-sm font-bold text-white shadow-md">
+                        JS
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content Container -->
+    <div id="app" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Dynamic content will be inserted here -->
+    </div>
+
+    <!-- Footer -->
+    <footer class="mt-16 border-t border-slate-200 bg-white/50 backdrop-blur-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+                <div class="text-slate-400 text-sm">
+                    © 2024 K-Prep Tool Store. Made with <span class="text-red-400">❤️</span> for TOPIK warriors
+                </div>
+                <div class="flex gap-8 text-sm">
+                    <a href="#" class="text-slate-500 hover:text-blue-600 transition-colors font-medium">Documentation</a>
+                    <a href="#" class="text-slate-500 hover:text-blue-600 transition-colors font-medium">Support</a>
+                    <a href="#" class="text-slate-500 hover:text-blue-600 transition-colors font-medium">Updates</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // State management
+        let currentView = 'home';
+        let searchQuery = '';
+        let selectedCategory = 'all';
+
+        // Tools data
+        const tools = [
+            {
+                id: 'topik01',
+                title: 'Topik-1 Mastery',
+                description: 'Comprehensive elementary level TOPIK study materials with audio support and interactive exercises.',
+                icon: 'book',
+                color: 'from-blue-500 to-cyan-500',
+                lightBg: 'bg-blue-50',
+                category: 'Study',
+                popularity: 98,
+                lastUpdated: '2 days ago',
+                features: ['Audio Lessons', 'Grammar Guide', 'Practice Tests']
+            },
+            {
+                id: 'papers',
+                title: 'Past Papers Pro',
+                description: 'Complete archive of official TOPIK exam papers (2014-2024) with answer keys and scoring guides.',
+                icon: 'file',
+                color: 'from-emerald-500 to-teal-500',
+                lightBg: 'bg-emerald-50',
+                category: 'Exams',
+                popularity: 95,
+                lastUpdated: '1 week ago',
+                features: ['PDF Downloads', 'Answer Keys', 'Audio Scripts']
+            },
+            {
+                id: 'vocabulary',
+                title: 'Vocab Builder Plus',
+                description: 'Smart flashcards with spaced repetition system. Master 6000+ essential Korean words.',
+                icon: 'bookmark',
+                color: 'from-purple-500 to-pink-500',
+                lightBg: 'bg-purple-50',
+                category: 'Tools',
+                popularity: 92,
+                lastUpdated: '3 days ago',
+                features: ['Spaced Repetition', 'Example Sentences', 'Pronunciation']
+            },
+            {
+                id: 'mock-test',
+                title: 'Mock Test Simulator',
+                description: 'Realistic exam simulation with timer, auto-grading, and detailed performance analytics.',
+                icon: 'clock',
+                color: 'from-orange-500 to-red-500',
+                lightBg: 'bg-orange-50',
+                category: 'Practice',
+                popularity: 96,
+                lastUpdated: 'Yesterday',
+                features: ['Timed Mode', 'Score Analysis', 'Weakness Detection']
+            }
+        ];
+
+        // Helper function to get icon SVG
+        function getIcon(iconName, className = "w-8 h-8") {
+            const icons = {
+                book: `<svg class="${className}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>`,
+                file: `<svg class="${className}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>`,
+                bookmark: `<svg class="${className}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>`,
+                clock: `<svg class="${className}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>`,
+                star: `<svg class="${className}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`
+            };
+            return icons[iconName] || icons.book;
+        }
+
+        // Dashboard view
+        function Dashboard() {
+            const filteredTools = tools.filter(tool => 
+                (selectedCategory === 'all' || tool.category === selectedCategory) &&
+                (tool.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                tool.description.toLowerCase().includes(searchQuery.toLowerCase()))
+            );
+
+            const categories = ['all', ...new Set(tools.map(t => t.category))];
+
+            return `
+                <div class="animate-fade-in">
+                    <!-- Header -->
+                    <header class="mb-8">
+                        <h1 class="text-4xl font-extrabold text-slate-900">Tool Store</h1>
+                        <p class="text-slate-500 mt-2 text-lg">Access premium TOPIK study resources and interactive tools.</p>
+                    </header>
+
+                    <!-- Stats Bar -->
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+                        <div class="bg-white rounded-2xl p-4 border border-slate-100 shadow-sm">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm text-slate-500">Total Tools</p>
+                                    <p class="text-2xl font-bold text-slate-900">${tools.length}</p>
+                                </div>
+                                <div class="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center">
+                                    ${getIcon('book', 'w-5 h-5 text-blue-600')}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-white rounded-2xl p-4 border border-slate-100 shadow-sm">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm text-slate-500">Active Users</p>
+                                    <p class="text-2xl font-bold text-slate-900">1,234</p>
+                                </div>
+                                <div class="w-10 h-10 bg-green-100 rounded-xl flex items-center justify-center">
+                                    ${getIcon('star', 'w-5 h-5 text-green-600')}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-white rounded-2xl p-4 border border-slate-100 shadow-sm">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm text-slate-500">Avg. Rating</p>
+                                    <p class="text-2xl font-bold text-slate-900">4.8</p>
+                                </div>
+                                <div class="w-10 h-10 bg-yellow-100 rounded-xl flex items-center justify-center">
+                                    ${getIcon('star', 'w-5 h-5 text-yellow-600')}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-white rounded-2xl p-4 border border-slate-100 shadow-sm">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm text-slate-500">Downloads</p>
+                                    <p class="text-2xl font-bold text-slate-900">45.2K</p>
+                                </div>
+                                <div class="w-10 h-10 bg-purple-100 rounded-xl flex items-center justify-center">
+                                    <svg class="w-5 h-5 text-purple-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Search and Filter Bar -->
+                    <div class="flex flex-col sm:flex-row gap-4 mb-8">
+                        <div class="flex-1 relative">
+                            <svg class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="11" cy="11" r="8"/>
+                                <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                            </svg>
+                            <input
+                                type="text"
+                                placeholder="Search for tools..."
+                                class="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all bg-white"
+                                value="${searchQuery}"
+                                oninput="updateSearch(this.value)"
+                            />
+                        </div>
+                        <div class="flex gap-2 overflow-x-auto pb-2 sm:pb-0">
+                            ${categories.map(cat => `
+                                <button 
+                                    onclick="selectCategory('${cat}')"
+                                    class="px-4 py-2 rounded-xl font-medium text-sm transition-all whitespace-nowrap ${selectedCategory === cat ? 'bg-blue-600 text-white shadow-md' : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200'}"
+                                >
+                                    ${cat.charAt(0).toUpperCase() + cat.slice(1)}
+                                </button>
+                            `).join('')}
+                        </div>
+                    </div>
+
+                    <!-- Tools Grid -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        ${filteredTools.map(tool => `
+                            <div onclick="openTool('${tool.id}')" class="tool-card group relative bg-white rounded-2xl p-6 border border-slate-100 shadow-sm cursor-pointer hover-scale">
+                                <!-- Popularity Badge -->
+                                <div class="absolute top-4 right-4 bg-slate-100 rounded-full px-2 py-1 text-xs font-medium text-slate-600">
+                                    🔥 ${tool.popularity}%
+                                </div>
+                                
+                                <!-- Icon -->
+                                <div class="bg-gradient-to-br ${tool.color} w-16 h-16 rounded-2xl flex items-center justify-center mb-4 shadow-lg group-hover:scale-110 transition-transform">
+                                    ${getIcon(tool.icon, 'w-8 h-8 text-white')}
+                                </div>
+                                
+                                <!-- Category -->
+                                <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">${tool.category}</span>
+                                
+                                <!-- Title -->
+                                <h3 class="text-xl font-bold text-slate-800 mt-1 group-hover:text-blue-600 transition-colors">${tool.title}</h3>
+                                
+                                <!-- Description -->
+                                <p class="text-slate-500 mt-2 text-sm leading-relaxed">${tool.description}</p>
+                                
+                                <!-- Features -->
+                                <div class="mt-4 flex flex-wrap gap-2">
+                                    ${tool.features.slice(0, 2).map(f => `
+                                        <span class="px-2 py-1 bg-slate-100 rounded-lg text-xs font-medium text-slate-600">${f}</span>
+                                    `).join('')}
+                                    ${tool.features.length > 2 ? `
+                                        <span class="px-2 py-1 bg-slate-100 rounded-lg text-xs font-medium text-slate-600">+${tool.features.length - 2}</span>
+                                    ` : ''}
+                                </div>
+                                
+                                <!-- Last Updated -->
+                                <div class="mt-4 flex items-center justify-between">
+                                    <span class="text-xs text-slate-400">Updated ${tool.lastUpdated}</span>
+                                    <span class="flex items-center text-blue-600 font-medium text-sm">
+                                        Open <svg class="ml-1 w-4 h-4 group-hover:translate-x-1 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                                    </span>
+                                </div>
+                            </div>
+                        `).join('')}
+                        
+                        ${filteredTools.length === 0 ? `
+                            <div class="col-span-full py-20 text-center">
+                                <svg class="w-16 h-16 mx-auto mb-4 text-slate-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
+                                    <circle cx="12" cy="12" r="10"/>
+                                    <line x1="12" y1="8" x2="12" y2="12"/>
+                                    <line x1="12" y1="16" x2="12.01" y2="16"/>
+                                </svg>
+                                <p class="text-slate-400 text-lg">No tools found matching your search.</p>
+                                <button onclick="clearSearch()" class="mt-4 text-blue-600 hover:text-blue-700 font-medium">Clear filters</button>
+                            </div>
+                        ` : ''}
+                    </div>
+                </div>
+            `;
+        }
+
+        // Tool detail view
+        function ToolDetail(toolId) {
+            const tool = tools.find(t => t.id === toolId);
+            if (!tool) return Dashboard();
+
+            return `
+                <div class="animate-slide-in">
+                    <!-- Navigation -->
+                    <nav class="flex items-center justify-between mb-8">
+                        <button onclick="showHome()" class="flex items-center text-slate-600 hover:text-slate-900 font-medium py-2 px-4 rounded-lg hover:bg-white transition-all">
+                            <svg class="w-5 h-5 mr-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="19" y1="12" x2="5" y2="12"/>
+                                <polyline points="12 19 5 12 12 5"/>
+                            </svg>
+                            Back to Store
+                        </button>
+                        <div class="flex items-center gap-3">
+                            <span class="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-bold">
+                                ${tool.id}.html
+                            </span>
+                            <button class="p-2 text-slate-400 hover:text-slate-600 hover:bg-white rounded-lg transition-all">
+                                <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="18" cy="5" r="1"/><circle cx="6" cy="12" r="1"/><circle cx="18" cy="19" r="1"/>
+                                    <line x1="12" y1="5" x2="7" y2="11"/><line x1="17" y1="5" x2="12" y2="11"/>
+                                    <line x1="7" y1="13" x2="12" y2="19"/><line x1="17" y1="13" x2="12" y2="19"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </nav>
+
+                    <!-- Tool Content -->
+                    <div class="bg-gradient-to-br from-slate-50 to-white border-2 border-slate-100 rounded-3xl p-8 md:p-12">
+                        <!-- Header -->
+                        <div class="flex flex-col md:flex-row items-start md:items-center gap-6 mb-8">
+                            <div class="bg-gradient-to-br ${tool.color} w-20 h-20 rounded-2xl flex items-center justify-center shadow-xl">
+                                ${getIcon(tool.icon, 'w-10 h-10 text-white')}
+                            </div>
+                            <div class="flex-1">
+                                <div class="flex items-center gap-3 mb-2">
+                                    <span class="text-sm font-semibold text-slate-400 uppercase">${tool.category}</span>
+                                    <span class="w-1 h-1 bg-slate-300 rounded-full"></span>
+                                    <span class="text-sm text-slate-500">🔥 ${tool.popularity}% popularity</span>
+                                </div>
+                                <h2 class="text-3xl md:text-4xl font-bold text-slate-800">${tool.title}</h2>
+                                <p class="text-slate-500 mt-2 text-lg">${tool.description}</p>
+                            </div>
+                        </div>
+
+                        <!-- Features Grid -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                            <div class="bg-white rounded-xl p-6 border border-slate-200">
+                                <h4 class="font-bold text-slate-700 mb-4 flex items-center gap-2">
+                                    <span class="w-1 h-4 bg-blue-600 rounded-full"></span>
+                                    Tool Features
+                                </h4>
+                                <ul class="space-y-3">
+                                    ${tool.features.map(f => `
+                                        <li class="flex items-center gap-2 text-slate-600">
+                                            <svg class="w-4 h-4 text-green-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                                            ${f}
+                                        </li>
+                                    `).join('')}
+                                </ul>
+                            </div>
+                            <div class="bg-white rounded-xl p-6 border border-slate-200">
+                                <h4 class="font-bold text-slate-700 mb-4 flex items-center gap-2">
+                                    <span class="w-1 h-4 bg-purple-600 rounded-full"></span>
+                                    Quick Stats
+                                </h4>
+                                <div class="space-y-3">
+                                    <div class="flex justify-between items-center">
+                                        <span class="text-slate-500">Version</span>
+                                        <span class="font-medium text-slate-700">2.1.0</span>
+                                    </div>
+                                    <div class="flex justify-between items-center">
+                                        <span class="text-slate-500">Last Updated</span>
+                                        <span class="font-medium text-slate-700">${tool.lastUpdated}</span>
+                                    </div>
+                                    <div class="flex justify-between items-center">
+                                        <span class="text-slate-500">Total Sessions</span>
+                                        <span class="font-medium text-slate-700">12.4K</span>
+                                    </div>
+                                    <div class="flex justify-between items-center">
+                                        <span class="text-slate-500">Success Rate</span>
+                                        <span class="font-medium text-green-600">87%</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="flex flex-col sm:flex-row gap-4">
+                            <button class="flex-1 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold py-3 px-6 rounded-xl hover:shadow-lg transition-all hover:scale-105 flex items-center justify-center gap-2">
+                                <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                                Launch Tool
+                            </button>
+                            <button class="flex-1 bg-white text-slate-700 font-semibold py-3 px-6 rounded-xl border border-slate-200 hover:bg-slate-50 transition-all flex items-center justify-center gap-2">
+                                <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                                Download Resources
+                            </button>
+                            <button class="p-3 bg-white text-slate-700 rounded-xl border border-slate-200 hover:bg-slate-50 transition-all">
+                                <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Render function
+        function render() {
+            const app = document.getElementById('app');
+            if (currentView === 'home') {
+                app.innerHTML = Dashboard();
+            } else {
+                app.innerHTML = ToolDetail(currentView);
+            }
+        }
+
+        // Event handlers
+        window.showHome = () => {
+            currentView = 'home';
+            render();
+        };
+
+        window.openTool = (toolId) => {
+            currentView = toolId;
+            render();
+        };
+
+        window.updateSearch = (value) => {
+            searchQuery = value;
+            render();
+        };
+
+        window.selectCategory = (category) => {
+            selectedCategory = category;
+            render();
+        };
+
+        window.clearSearch = () => {
+            searchQuery = '';
+            selectedCategory = 'all';
+            render();
+        };
+
+        // Initial render
+        render();
+    </script>
+</body>
+</html>
