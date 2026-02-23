@@ -39,6 +39,10 @@
             --error: #ef4444;
             --warning: #f59e0b;
             --bottom-nav-height: 70px;
+            --youtube: #ff0000;
+            --instagram: #e4405f;
+            --tiktok: #000000;
+            --facebook: #1877f2;
         }
 
         html {
@@ -275,6 +279,73 @@
             background: transparent;
             border: 1px solid var(--primary);
             color: var(--text);
+        }
+
+        /* Social Media Section */
+        .social-media-section {
+            background: var(--bg-card);
+            border-radius: 1rem;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .social-media-section h3 {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.25rem;
+            margin-bottom: 1.5rem;
+            color: var(--text);
+        }
+
+        .social-media-section h3 i {
+            color: var(--primary);
+        }
+
+        .social-media-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+
+        .social-media-card {
+            padding: 1.5rem;
+            border-radius: 1rem;
+            text-align: center;
+            text-decoration: none;
+            color: white;
+            transition: all 0.3s;
+        }
+
+        .social-media-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .social-media-card i {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .social-media-card span {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+
+        .social-media-card.youtube {
+            background: linear-gradient(135deg, #ff0000, #cc0000);
+        }
+
+        .social-media-card.instagram {
+            background: linear-gradient(135deg, #f09433, #d62976, #962fbf, #4f5bd5);
+        }
+
+        .social-media-card.tiktok {
+            background: linear-gradient(135deg, #000000, #25f4ee, #fe2c55);
+        }
+
+        .social-media-card.facebook {
+            background: linear-gradient(135deg, #1877f2, #0e5ab3);
         }
 
         /* Tools List */
@@ -533,6 +604,11 @@
         .social-links a:hover {
             color: var(--text);
         }
+
+        .social-links a .fa-youtube:hover { color: #ff0000; }
+        .social-links a .fa-instagram:hover { color: #e4405f; }
+        .social-links a .fa-tiktok:hover { color: #000000; }
+        .social-links a .fa-facebook:hover { color: #1877f2; }
 
         /* Hero Image */
         .hero-image {
@@ -1796,6 +1872,10 @@
             footer {
                 margin-bottom: var(--bottom-nav-height);
             }
+            
+            .social-media-grid {
+                grid-template-columns: 1fr;
+            }
         }
 
         @media (min-width: 769px) {
@@ -1989,6 +2069,33 @@
                 </button>
             </div>
             
+            <!-- Social Media Section for Music -->
+            <div class="social-media-section">
+                <h3><i class="fas fa-music"></i> Listen to My Music</h3>
+                <div class="social-media-grid">
+                    <a href="https://youtube.com/@yourchannel" target="_blank" class="social-media-card youtube">
+                        <i class="fab fa-youtube"></i>
+                        <span>YouTube</span>
+                        <span style="font-size: 0.75rem; opacity: 0.9;">My Songs & Videos</span>
+                    </a>
+                    <a href="https://instagram.com/yourusername" target="_blank" class="social-media-card instagram">
+                        <i class="fab fa-instagram"></i>
+                        <span>Instagram</span>
+                        <span style="font-size: 0.75rem; opacity: 0.9;">Daily Updates</span>
+                    </a>
+                    <a href="https://tiktok.com/@yourusername" target="_blank" class="social-media-card tiktok">
+                        <i class="fab fa-tiktok"></i>
+                        <span>TikTok</span>
+                        <span style="font-size: 0.75rem; opacity: 0.9;">Short Clips</span>
+                    </a>
+                    <a href="https://facebook.com/yourusername" target="_blank" class="social-media-card facebook">
+                        <i class="fab fa-facebook"></i>
+                        <span>Facebook</span>
+                        <span style="font-size: 0.75rem; opacity: 0.9;">Connect with me</span>
+                    </a>
+                </div>
+            </div>
+            
             <div class="tools-list">
                 <div class="tools-list-header">
                     <h3><i class="fas fa-tools" style="color: var(--primary);"></i> All Tools</h3>
@@ -2155,9 +2262,12 @@
                                 Tools Hub
                             </button>
                             <div class="social-links">
+                                <a href="https://www.youtube.com/watch?v=7NnUhprWOKA&list=RD9s2cPPjx-xI&index=3" target="_blank"><i class="fab fa-youtube"></i></a>
+                                <a href="https://instagram.com/ho_zun.0" target="_blank"><i class="fab fa-instagram"></i></a>
+                                <a href="https://tiktok.com/@ho_zun" target="_blank"><i class="fab fa-tiktok"></i></a>
+                                <a href="https://facebook.com/yourusername" target="_blank"><i class="fab fa-facebook"></i></a>
                                 <a href="https://www.linkedin.com/in/parash-karki-84732b235/" target="_blank"><i class="fab fa-linkedin"></i></a>
                                 <a href="https://github.com/parashkarki782" target="_blank"><i class="fab fa-github"></i></a>
-                                <a href="mailto:parashkarki782@gmail.com"><i class="fas fa-envelope"></i></a>
                             </div>
                         </div>
                     </div>
@@ -2489,13 +2599,13 @@
                                     </div>
                                     <div class="contact-detail-text">
                                         <h4>Social</h4>
-                                        <div style="display: flex; gap: 1rem; margin-top: 0.25rem;">
-                                            <a href="https://www.linkedin.com/in/parash-karki-84732b235/" target="_blank" style="color: var(--text-muted);">
-                                                <i class="fab fa-linkedin"></i>
-                                            </a>
-                                            <a href="https://github.com/parashkarki782" target="_blank" style="color: var(--text-muted);">
-                                                <i class="fab fa-github"></i>
-                                            </a>
+                                        <div style="display: flex; gap: 0.5rem; margin-top: 0.25rem; flex-wrap: wrap;">
+                                            <a href="https://youtube.com/@yourchannel" target="_blank" style="color: var(--text-muted);"><i class="fab fa-youtube"></i></a>
+                                            <a href="https://instagram.com/yourusername" target="_blank" style="color: var(--text-muted);"><i class="fab fa-instagram"></i></a>
+                                            <a href="https://tiktok.com/@yourusername" target="_blank" style="color: var(--text-muted);"><i class="fab fa-tiktok"></i></a>
+                                            <a href="https://facebook.com/yourusername" target="_blank" style="color: var(--text-muted);"><i class="fab fa-facebook"></i></a>
+                                            <a href="https://www.linkedin.com/in/parash-karki-84732b235/" target="_blank" style="color: var(--text-muted);"><i class="fab fa-linkedin"></i></a>
+                                            <a href="https://github.com/parashkarki782" target="_blank" style="color: var(--text-muted);"><i class="fab fa-github"></i></a>
                                         </div>
                                     </div>
                                 </div>
@@ -2554,6 +2664,33 @@
                             <i class="fas fa-crown"></i>
                             <span>4+ Premium Tools</span>
                         </div>
+                    </div>
+                </div>
+                
+                <!-- Social Media Section in Tools View -->
+                <div class="social-media-section" style="margin-bottom: 3rem;">
+                    <h3><i class="fas fa-music"></i> Listen to My Music</h3>
+                    <div class="social-media-grid">
+                        <a href="https://youtube.com/@yourchannel" target="_blank" class="social-media-card youtube">
+                            <i class="fab fa-youtube"></i>
+                            <span>YouTube</span>
+                            <span style="font-size: 0.75rem; opacity: 0.9;">My Songs & Videos</span>
+                        </a>
+                        <a href="https://instagram.com/yourusername" target="_blank" class="social-media-card instagram">
+                            <i class="fab fa-instagram"></i>
+                            <span>Instagram</span>
+                            <span style="font-size: 0.75rem; opacity: 0.9;">Daily Updates</span>
+                        </a>
+                        <a href="https://tiktok.com/@yourusername" target="_blank" class="social-media-card tiktok">
+                            <i class="fab fa-tiktok"></i>
+                            <span>TikTok</span>
+                            <span style="font-size: 0.75rem; opacity: 0.9;">Short Clips</span>
+                        </a>
+                        <a href="https://facebook.com/yourusername" target="_blank" class="social-media-card facebook">
+                            <i class="fab fa-facebook"></i>
+                            <span>Facebook</span>
+                            <span style="font-size: 0.75rem; opacity: 0.9;">Connect with me</span>
+                        </a>
                     </div>
                 </div>
                 
