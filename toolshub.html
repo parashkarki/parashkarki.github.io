@@ -2,797 +2,1288 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>TOOLHUB — Professional Utilities</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TOOLBOX — The Ultimate Hub</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-  * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    -webkit-tap-highlight-color: transparent;
-  }
-
   :root {
-    --bg-dark: #0a0c12;
-    --surface-1: #111318;
-    --surface-2: #181c24;
-    --surface-3: #1f232e;
-    --border-subtle: #2a2f3c;
-    --accent-primary: #3b82f6;
-    --accent-primary-glow: rgba(59,130,246,0.25);
-    --accent-success: #10b981;
-    --accent-warning: #f59e0b;
-    --text-primary: #f1f5f9;
-    --text-secondary: #94a3b8;
-    --text-muted: #5b6a8a;
-    --card-radius: 20px;
-    --btn-radius: 14px;
+    --bg: #09090f;
+    --surface: #0f0f1a;
+    --card: #13131f;
+    --border: rgba(255,255,255,0.06);
+    --accent: #7c5cfc;
+    --accent2: #fc5c7d;
+    --accent3: #5cf0fc;
+    --accent4: #fcdb5c;
+    --text: #e8e8f0;
+    --muted: #5a5a7a;
+    --glow: rgba(124,92,252,0.3);
   }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
 
   body {
-    background: var(--bg-dark);
-    color: var(--text-primary);
-    font-family: 'Inter', sans-serif;
-    overflow-x: hidden;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
     min-height: 100vh;
+    overflow-x: hidden;
   }
 
-  /* background refinement */
-  .bg-grain {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-image: radial-gradient(rgba(255,255,255,0.02) 1px, transparent 1px);
-    background-size: 24px 24px;
-    pointer-events: none;
-    z-index: 0;
+  /* ─── NOISE OVERLAY ─── */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none; z-index: 9999; opacity: 0.4;
   }
 
-  .app-container {
-    max-width: 1300px;
-    margin: 0 auto;
-    padding: 0 20px 100px 20px;
-    position: relative;
-    z-index: 2;
-  }
+  /* ─── ORBS ─── */
+  .orb { position: fixed; border-radius: 50%; filter: blur(80px); pointer-events: none; z-index: 0; }
+  .orb-1 { width: 500px; height: 500px; background: radial-gradient(circle, rgba(124,92,252,0.18), transparent 70%); top: -100px; left: -100px; animation: drift1 20s ease-in-out infinite; }
+  .orb-2 { width: 400px; height: 400px; background: radial-gradient(circle, rgba(252,92,125,0.12), transparent 70%); bottom: 0; right: -100px; animation: drift2 18s ease-in-out infinite; }
+  .orb-3 { width: 300px; height: 300px; background: radial-gradient(circle, rgba(92,240,252,0.1), transparent 70%); top: 40%; left: 40%; animation: drift3 25s ease-in-out infinite; }
+  @keyframes drift1 { 0%,100%{transform:translate(0,0)} 33%{transform:translate(60px,40px)} 66%{transform:translate(-30px,70px)} }
+  @keyframes drift2 { 0%,100%{transform:translate(0,0)} 33%{transform:translate(-60px,-40px)} 66%{transform:translate(30px,-70px)} }
+  @keyframes drift3 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(-80px,40px)} }
 
-  /* header */
-  .header {
-    padding: 28px 0 24px;
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-    flex-wrap: wrap;
-    gap: 16px;
-    border-bottom: 1px solid var(--border-subtle);
-    margin-bottom: 32px;
+  /* ─── HEADER ─── */
+  header {
+    position: relative; z-index: 10;
+    padding: 40px 40px 0;
+    display: flex; align-items: center; justify-content: space-between;
   }
-  .logo h1 {
-    font-size: 1.9rem;
-    font-weight: 700;
-    letter-spacing: -0.02em;
-    background: linear-gradient(145deg, #fff, var(--accent-primary));
-    background-clip: text;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+  .logo {
+    font-size: 1.1rem; font-weight: 800; letter-spacing: 0.25em;
+    text-transform: uppercase;
+    background: linear-gradient(135deg, #fff 0%, var(--accent) 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
   }
-  .logo p {
-    font-size: 0.8rem;
-    color: var(--text-secondary);
-    margin-top: 4px;
-  }
-  .badge-header {
-    background: var(--surface-2);
-    padding: 8px 16px;
-    border-radius: 60px;
-    font-size: 0.75rem;
-    font-weight: 500;
-    color: var(--accent-primary);
-    border: 1px solid var(--border-subtle);
-    backdrop-filter: blur(4px);
-  }
+  .logo span { color: var(--accent); -webkit-text-fill-color: var(--accent); }
+  .tagline { font-family: 'DM Mono', monospace; font-size: 0.7rem; color: var(--muted); letter-spacing: 0.1em; }
 
-  /* tool grid (modern) */
+  /* ─── HERO ─── */
+  .hero {
+    position: relative; z-index: 10;
+    text-align: center; padding: 60px 20px 30px;
+  }
+  .hero-label {
+    font-family: 'DM Mono', monospace; font-size: 0.7rem;
+    color: var(--accent); letter-spacing: 0.3em; text-transform: uppercase;
+    margin-bottom: 16px;
+    display: inline-flex; align-items: center; gap: 8px;
+  }
+  .hero-label::before, .hero-label::after { content: ''; width: 30px; height: 1px; background: var(--accent); display: inline-block; }
+  .hero h1 {
+    font-size: clamp(2.5rem, 7vw, 5.5rem); font-weight: 800;
+    line-height: 1.05; letter-spacing: -0.02em;
+    background: linear-gradient(160deg, #fff 30%, rgba(255,255,255,0.5) 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    margin-bottom: 16px;
+  }
+  .hero p { font-family: 'DM Mono', monospace; font-size: 0.85rem; color: var(--muted); max-width: 400px; margin: 0 auto; line-height: 1.7; }
+
+  /* ─── TOOLS GRID ─── */
+  .tools-section { position: relative; z-index: 10; padding: 40px 40px 80px; max-width: 1100px; margin: 0 auto; }
+  .section-title {
+    font-family: 'DM Mono', monospace; font-size: 0.7rem; color: var(--muted);
+    letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 24px;
+  }
   .tools-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-    gap: 18px;
-    margin-bottom: 48px;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 16px;
   }
   .tool-card {
-    background: var(--surface-1);
-    border: 1px solid var(--border-subtle);
-    border-radius: var(--card-radius);
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
     padding: 24px 16px 20px;
-    transition: all 0.2s cubic-bezier(0.2, 0.9, 0.4, 1.1);
     cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    text-align: center;
     position: relative;
-    backdrop-filter: blur(2px);
+    overflow: hidden;
+    animation: fadeUp 0.6s both;
   }
-  .tool-card:hover {
-    transform: translateY(-4px);
-    border-color: var(--accent-primary);
-    background: var(--surface-2);
-    box-shadow: 0 16px 32px -12px rgba(0,0,0,0.5);
+  .tool-card:nth-child(1){animation-delay:0.05s} .tool-card:nth-child(2){animation-delay:0.1s}
+  .tool-card:nth-child(3){animation-delay:0.15s} .tool-card:nth-child(4){animation-delay:0.2s}
+  .tool-card:nth-child(5){animation-delay:0.25s} .tool-card:nth-child(6){animation-delay:0.3s}
+  .tool-card:nth-child(7){animation-delay:0.35s} .tool-card:nth-child(8){animation-delay:0.4s}
+  @keyframes fadeUp { from{opacity:0;transform:translateY(30px)} to{opacity:1;transform:translateY(0)} }
+
+  .tool-card::before {
+    content: ''; position: absolute; inset: 0;
+    background: var(--tool-glow, var(--glow));
+    opacity: 0; transition: opacity 0.3s;
+    border-radius: inherit;
   }
+  .tool-card:hover { transform: translateY(-6px) scale(1.03); border-color: var(--tool-color, var(--accent)); box-shadow: 0 20px 60px var(--tool-glow, var(--glow)); }
+  .tool-card:hover::before { opacity: 0.15; }
+  .tool-card.active { border-color: var(--tool-color, var(--accent)); box-shadow: 0 0 0 2px var(--tool-color, var(--accent)), 0 20px 60px var(--tool-glow, var(--glow)); }
+
   .tool-icon {
-    font-size: 2.2rem;
-    margin-bottom: 16px;
+    width: 54px; height: 54px; border-radius: 14px;
+    background: var(--tool-bg, rgba(124,92,252,0.15));
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 14px; font-size: 1.6rem;
+    border: 1px solid rgba(255,255,255,0.06);
+    transition: transform 0.3s;
   }
-  .tool-name {
-    font-weight: 700;
-    font-size: 1.1rem;
-    letter-spacing: -0.2px;
-    margin-bottom: 4px;
-  }
-  .tool-desc {
-    font-size: 0.7rem;
-    color: var(--text-secondary);
-    line-height: 1.4;
-  }
+  .tool-card:hover .tool-icon { transform: scale(1.15) rotate(-5deg); }
+  .tool-name { font-size: 0.85rem; font-weight: 700; margin-bottom: 4px; color: var(--text); }
+  .tool-desc { font-family: 'DM Mono', monospace; font-size: 0.62rem; color: var(--muted); line-height: 1.5; }
   .tool-badge {
-    position: absolute;
-    top: 16px;
-    right: 16px;
-    font-size: 0.6rem;
-    font-weight: 600;
-    background: rgba(59,130,246,0.12);
-    padding: 4px 8px;
-    border-radius: 40px;
-    color: var(--accent-primary);
-    border: 0.5px solid rgba(59,130,246,0.3);
+    position: absolute; top: 10px; right: 10px;
+    font-family: 'DM Mono', monospace; font-size: 0.55rem; font-weight: 500;
+    padding: 2px 7px; border-radius: 20px; letter-spacing: 0.05em;
+    background: var(--tool-badge-bg, rgba(124,92,252,0.2));
+    color: var(--tool-color, var(--accent));
+    border: 1px solid var(--tool-color, var(--accent));
   }
 
-  /* PANEL OVERLAY (modern sheet) */
+  /* ─── TOOL PANEL ─── */
   .panel-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(5, 7, 12, 0.85);
-    backdrop-filter: blur(14px);
-    z-index: 1000;
-    display: none;
-    align-items: center;
-    justify-content: center;
-    padding: 24px;
+    position: fixed; inset: 0; z-index: 100;
+    background: rgba(9,9,15,0.7); backdrop-filter: blur(8px);
+    display: none; align-items: flex-end; justify-content: center;
+    padding: 20px;
   }
-  .panel-overlay.open {
-    display: flex;
-    animation: fadeIn 0.2s ease;
-  }
-  @keyframes fadeIn {
-    from { opacity: 0; backdrop-filter: blur(0);}
-    to { opacity: 1; backdrop-filter: blur(14px);}
-  }
+  .panel-overlay.open { display: flex; animation: overlayIn 0.3s ease; }
+  @keyframes overlayIn { from{opacity:0} to{opacity:1} }
+
   .panel {
-    background: var(--surface-2);
-    border-radius: 32px;
-    max-width: 800px;
-    width: 100%;
-    max-height: 85vh;
-    display: flex;
-    flex-direction: column;
-    border: 1px solid var(--border-subtle);
-    box-shadow: 0 40px 90px rgba(0,0,0,0.5);
-    animation: slideUp 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 24px 24px 16px 16px;
+    width: 100%; max-width: 780px;
+    max-height: 88vh;
     overflow: hidden;
+    display: flex; flex-direction: column;
+    animation: panelUp 0.4s cubic-bezier(0.34, 1.4, 0.64, 1);
+    box-shadow: 0 -20px 80px rgba(0,0,0,0.5), 0 0 0 1px var(--panel-color, var(--accent));
   }
-  @keyframes slideUp {
-    from { transform: translateY(30px); opacity: 0; }
-    to { transform: translateY(0); opacity: 1; }
-  }
+  @keyframes panelUp { from{transform:translateY(100px);opacity:0} to{transform:translateY(0);opacity:1} }
+
   .panel-header {
-    padding: 22px 24px;
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    border-bottom: 1px solid var(--border-subtle);
-    background: var(--surface-1);
+    padding: 20px 24px 16px;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 14px;
+    flex-shrink: 0;
   }
   .panel-icon {
-    width: 48px;
-    height: 48px;
-    background: rgba(59,130,246,0.12);
-    border-radius: 24px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.8rem;
+    width: 42px; height: 42px; border-radius: 12px;
+    background: var(--panel-bg, rgba(124,92,252,0.15));
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.3rem; flex-shrink: 0;
   }
-  .panel-title-area {
-    flex: 1;
-  }
-  .panel-title {
-    font-size: 1.4rem;
-    font-weight: 700;
-    letter-spacing: -0.3px;
-  }
-  .panel-subtitle {
-    font-size: 0.7rem;
-    color: var(--text-secondary);
-  }
+  .panel-title-area { flex: 1; }
+  .panel-title { font-size: 1.1rem; font-weight: 800; }
+  .panel-subtitle { font-family: 'DM Mono', monospace; font-size: 0.65rem; color: var(--muted); margin-top: 2px; }
   .panel-close {
-    background: var(--surface-3);
-    border: none;
-    width: 36px;
-    height: 36px;
-    border-radius: 40px;
-    color: var(--text-secondary);
-    font-size: 1.2rem;
-    cursor: pointer;
-    transition: 0.2s;
+    width: 36px; height: 36px; border-radius: 10px;
+    background: rgba(255,255,255,0.05); border: 1px solid var(--border);
+    color: var(--muted); cursor: pointer; font-size: 1rem;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s; flex-shrink: 0;
   }
-  .panel-close:hover {
-    background: var(--border-subtle);
-    color: white;
-  }
-  .panel-body {
-    padding: 24px;
-    overflow-y: auto;
-    flex: 1;
-  }
+  .panel-close:hover { background: rgba(255,255,255,0.1); color: var(--text); }
 
-  /* form elements – rectangular */
-  input, select, textarea, button {
-    font-family: 'Inter', sans-serif;
-    border-radius: var(--btn-radius);
+  .panel-body { padding: 24px; overflow-y: auto; flex: 1; }
+
+  /* ─── RANDOMIZER ─── */
+  .rand-tabs {
+    display: flex; gap: 4px;
+    background: rgba(255,255,255,0.04); border-radius: 12px; padding: 4px;
+    margin-bottom: 24px; overflow-x: auto; flex-shrink: 0;
   }
-  .input-group {
-    margin-bottom: 16px;
+  .rand-tab {
+    padding: 8px 16px; border-radius: 8px; cursor: pointer;
+    font-size: 0.75rem; font-weight: 600; letter-spacing: 0.05em;
+    white-space: nowrap; transition: all 0.2s; color: var(--muted);
+    flex-shrink: 0;
   }
-  .input-group label {
-    font-size: 0.7rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    color: var(--text-secondary);
-    display: block;
-    margin-bottom: 6px;
+  .rand-tab.active { background: var(--accent); color: #fff; }
+  .rand-tab:hover:not(.active) { color: var(--text); background: rgba(255,255,255,0.06); }
+
+  .rand-panel { display: none; }
+  .rand-panel.active { display: block; animation: fadeUp 0.3s both; }
+
+  /* Number randomizer */
+  .num-controls { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+  .input-group label { font-family: 'DM Mono', monospace; font-size: 0.65rem; color: var(--muted); letter-spacing: 0.1em; display: block; margin-bottom: 6px; }
+  .input-group input, .input-group select, .input-group textarea {
+    width: 100%; background: rgba(255,255,255,0.05); border: 1px solid var(--border);
+    border-radius: 10px; padding: 10px 14px; color: var(--text);
+    font-family: 'DM Mono', monospace; font-size: 0.85rem;
+    outline: none; transition: border-color 0.2s;
   }
-  input, select, textarea {
-    width: 100%;
-    background: var(--surface-1);
-    border: 1px solid var(--border-subtle);
-    padding: 12px 14px;
-    color: var(--text-primary);
-    font-size: 0.9rem;
-    outline: none;
-    transition: 0.2s;
+  .input-group input:focus, .input-group select:focus, .input-group textarea:focus { border-color: var(--accent); }
+  .input-group textarea { resize: vertical; min-height: 80px; }
+  .input-group select option { background: #1a1a2e; }
+
+  .btn {
+    padding: 12px 24px; border-radius: 12px; cursor: pointer; font-family: 'Syne', sans-serif;
+    font-size: 0.85rem; font-weight: 700; letter-spacing: 0.05em; border: none;
+    transition: all 0.2s; display: inline-flex; align-items: center; gap: 8px;
   }
-  input:focus, select:focus, textarea:focus {
-    border-color: var(--accent-primary);
-    box-shadow: 0 0 0 2px rgba(59,130,246,0.2);
-  }
-  button {
-    cursor: pointer;
-    font-weight: 600;
-    transition: all 0.2s;
-    border: none;
-  }
-  .btn-primary {
-    background: var(--accent-primary);
-    color: white;
-    padding: 10px 18px;
-    font-size: 0.85rem;
-  }
-  .btn-primary:hover {
-    background: #2563eb;
-    transform: translateY(-1px);
-  }
-  .btn-secondary {
-    background: var(--surface-3);
-    border: 1px solid var(--border-subtle);
-    color: var(--text-primary);
-    padding: 10px 16px;
-  }
-  .btn-secondary:hover {
-    background: var(--surface-1);
-    border-color: var(--accent-primary);
-  }
-  .btn-sm {
-    padding: 6px 14px;
-    font-size: 0.75rem;
-  }
-  .action-row {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 12px;
-    margin: 20px 0 12px;
-  }
-  .result-card {
-    background: var(--surface-1);
-    border: 1px solid var(--border-subtle);
-    border-radius: 20px;
-    padding: 18px;
-    margin-top: 16px;
-    text-align: center;
+  .btn-primary { background: var(--accent); color: #fff; }
+  .btn-primary:hover { background: #9070ff; transform: translateY(-1px); box-shadow: 0 8px 30px rgba(124,92,252,0.4); }
+  .btn-secondary { background: rgba(255,255,255,0.07); color: var(--text); border: 1px solid var(--border); }
+  .btn-secondary:hover { background: rgba(255,255,255,0.12); }
+  .btn-danger { background: rgba(252,92,125,0.15); color: var(--accent2); border: 1px solid rgba(252,92,125,0.3); }
+  .btn-danger:hover { background: rgba(252,92,125,0.25); }
+  .btn-sm { padding: 8px 16px; font-size: 0.75rem; }
+
+  .result-display {
+    background: rgba(255,255,255,0.03); border: 1px solid var(--border);
+    border-radius: 14px; padding: 20px; text-align: center; margin-top: 16px;
+    min-height: 80px; display: flex; align-items: center; justify-content: center;
+    flex-direction: column; gap: 8px;
   }
   .result-number {
-    font-size: 2.8rem;
-    font-weight: 800;
-    background: linear-gradient(145deg, #fff, var(--accent-primary));
-    background-clip: text;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    font-size: clamp(2.5rem, 8vw, 4rem); font-weight: 800;
+    background: linear-gradient(135deg, #fff, var(--accent));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    animation: popIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    line-height: 1;
   }
+  @keyframes popIn { from{transform:scale(0.5);opacity:0} to{transform:scale(1);opacity:1} }
+  .result-label { font-family: 'DM Mono', monospace; font-size: 0.65rem; color: var(--muted); letter-spacing: 0.1em; }
+
+  .results-list {
+    display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-top: 8px;
+  }
+  .result-pill {
+    background: rgba(124,92,252,0.15); border: 1px solid rgba(124,92,252,0.3);
+    border-radius: 8px; padding: 6px 14px; font-family: 'DM Mono', monospace;
+    font-size: 0.85rem; font-weight: 500; color: var(--text);
+    animation: popIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  .result-pill.highlight { background: rgba(124,92,252,0.35); border-color: var(--accent); color: #fff; }
+
+  .history-list { margin-top: 16px; }
   .history-item {
-    padding: 8px 12px;
-    background: var(--surface-1);
-    border-radius: 12px;
-    margin-bottom: 6px;
-    font-family: monospace;
-    font-size: 0.8rem;
-    border-left: 2px solid var(--accent-primary);
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 8px 12px; border-radius: 8px; font-family: 'DM Mono', monospace;
+    font-size: 0.75rem; border-bottom: 1px solid var(--border);
+    color: var(--muted);
   }
-  .pill-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin-top: 10px;
+  .history-item:last-child { border-bottom: none; }
+  .history-val { color: var(--text); font-weight: 500; }
+
+  .action-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 14px; }
+
+  /* Dice */
+  .dice-grid { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 16px; }
+  .dice-select-btn {
+    padding: 8px 16px; border-radius: 10px; cursor: pointer; font-family: 'DM Mono', monospace;
+    font-size: 0.8rem; font-weight: 500; border: 1px solid var(--border);
+    background: rgba(255,255,255,0.04); color: var(--muted); transition: all 0.2s;
   }
-  .pill {
-    background: var(--surface-3);
-    padding: 6px 14px;
-    border-radius: 40px;
-    font-size: 0.8rem;
+  .dice-select-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .dice-select-btn:hover:not(.active) { border-color: var(--accent); color: var(--text); }
+
+  .dice-roll-display {
+    display: flex; gap: 12px; flex-wrap: wrap; justify-content: center;
+    margin: 16px 0; min-height: 70px; align-items: center;
   }
-  .grid-2 {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
+  .die {
+    width: 60px; height: 60px; background: rgba(124,92,252,0.15);
+    border: 2px solid rgba(124,92,252,0.4); border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.6rem; font-weight: 800;
+    animation: diceRoll 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    transition: all 0.2s;
   }
+  @keyframes diceRoll { from{transform:rotate(180deg) scale(0);opacity:0} to{transform:rotate(0deg) scale(1);opacity:1} }
+
+  /* Wheel */
+  .wheel-container { display: flex; flex-direction: column; align-items: center; gap: 16px; }
+  .wheel-entries { width: 100%; }
+  .wheel-entry-list { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; min-height: 40px; }
+  .wheel-entry-tag {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: rgba(255,255,255,0.07); border: 1px solid var(--border);
+    border-radius: 8px; padding: 5px 10px; font-size: 0.78rem;
+  }
+  .wheel-entry-tag button { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 0.75rem; padding: 0; line-height: 1; }
+  .wheel-entry-tag button:hover { color: var(--accent2); }
+  .wheel-canvas-wrap {
+    position: relative; width: min(280px, 90vw); height: min(280px, 90vw);
+  }
+  #wheelCanvas { border-radius: 50%; }
+  .wheel-pointer {
+    position: absolute; top: -10px; left: 50%; transform: translateX(-50%);
+    width: 0; height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-top: 22px solid #fff;
+    filter: drop-shadow(0 2px 6px rgba(0,0,0,0.5));
+    z-index: 2;
+  }
+  #spinBtn {
+    width: 70px; height: 70px; border-radius: 50%; font-size: 1.1rem;
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
+    background: rgba(9,9,15,0.9); border: 2px solid var(--accent);
+    color: var(--text); cursor: pointer; font-family: 'Syne', sans-serif;
+    font-weight: 800; font-size: 0.75rem; letter-spacing: 0.05em;
+    z-index: 3; transition: all 0.2s;
+  }
+  #spinBtn:hover { background: var(--accent); color: #fff; }
+  #spinBtn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  /* Coin */
+  .coin-wrap { display: flex; flex-direction: column; align-items: center; gap: 20px; padding: 10px 0; }
+  .coin {
+    width: 120px; height: 120px; border-radius: 50%; cursor: pointer;
+    position: relative; transform-style: preserve-3d;
+    transition: transform 0.1s; perspective: 1000px;
+  }
+  .coin.flipping { animation: coinFlip 0.8s ease-in-out; }
+  @keyframes coinFlip {
+    0%{transform:rotateX(0deg)} 25%{transform:rotateX(720deg)}
+    75%{transform:rotateX(1440deg)} 100%{transform:rotateX(0deg)}
+  }
+  .coin-face {
+    width: 120px; height: 120px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 2.5rem; border: 4px solid;
+    position: absolute; inset: 0;
+    box-shadow: inset 0 -4px 10px rgba(0,0,0,0.4), 0 4px 20px rgba(0,0,0,0.3);
+  }
+  .coin-heads { background: radial-gradient(circle at 35% 35%, #f7d44c, #c8a020); border-color: #b8900a; }
+  .coin-tails { background: radial-gradient(circle at 35% 35%, #c0c0d0, #8090a0); border-color: #607080; display: none; }
+  .coin-result { font-size: 1.6rem; font-weight: 800; letter-spacing: 0.05em; }
+  .coin-sub { font-family: 'DM Mono', monospace; font-size: 0.7rem; color: var(--muted); }
+  .coin-stats { display: flex; gap: 20px; }
+  .stat-box { text-align: center; background: rgba(255,255,255,0.04); border: 1px solid var(--border); border-radius: 12px; padding: 12px 20px; }
+  .stat-val { font-size: 1.5rem; font-weight: 800; }
+  .stat-label { font-family: 'DM Mono', monospace; font-size: 0.62rem; color: var(--muted); margin-top: 2px; }
+
+  /* Password */
+  .pass-result {
+    background: rgba(255,255,255,0.04); border: 1px solid var(--border);
+    border-radius: 12px; padding: 16px 20px; font-family: 'DM Mono', monospace;
+    font-size: clamp(0.75rem, 2.5vw, 1rem); word-break: break-all; letter-spacing: 0.08em;
+    color: var(--text); min-height: 56px; margin: 16px 0;
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  }
+  .pass-text { flex: 1; }
+  .strength-bar-wrap { margin-bottom: 16px; }
+  .strength-bar { height: 6px; border-radius: 3px; background: rgba(255,255,255,0.08); overflow: hidden; }
+  .strength-fill { height: 100%; border-radius: 3px; transition: width 0.4s, background 0.4s; }
+  .strength-label { font-family: 'DM Mono', monospace; font-size: 0.65rem; color: var(--muted); margin-top: 6px; }
+
+  /* Checkboxes */
+  .checkbox-group { display: flex; flex-wrap: wrap; gap: 10px; margin: 10px 0; }
+  .custom-check { display: flex; align-items: center; gap: 8px; cursor: pointer; }
+  .custom-check input { appearance: none; width: 18px; height: 18px; border-radius: 5px; border: 1px solid var(--border); background: rgba(255,255,255,0.05); cursor: pointer; position: relative; flex-shrink: 0; }
+  .custom-check input:checked { background: var(--accent); border-color: var(--accent); }
+  .custom-check input:checked::after { content: '✓'; position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); color: #fff; font-size: 11px; font-weight: 700; }
+  .custom-check span { font-family: 'DM Mono', monospace; font-size: 0.75rem; color: var(--muted); }
+
+  /* Colour picker tool */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(55px, 1fr)); gap: 8px; margin: 12px 0; }
+  .color-swatch { width: 100%; aspect-ratio: 1; border-radius: 10px; cursor: pointer; border: 2px solid transparent; transition: all 0.2s; display: flex; align-items: flex-end; justify-content: center; padding: 4px; overflow: hidden; }
+  .color-swatch:hover { transform: scale(1.1); }
+  .color-swatch.selected { border-color: #fff; box-shadow: 0 0 0 2px rgba(255,255,255,0.3); }
+  .color-label { font-family: 'DM Mono', monospace; font-size: 0.5rem; color: rgba(255,255,255,0.7); text-shadow: 0 1px 2px rgba(0,0,0,0.8); }
+
+  /* UUID */
+  .uuid-output { font-family: 'DM Mono', monospace; font-size: 0.8rem; color: var(--accent3); word-break: break-all; line-height: 2; }
+  .uuid-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; background: rgba(255,255,255,0.03); border-radius: 8px; margin-bottom: 6px; }
+  .uuid-item:hover { background: rgba(255,255,255,0.06); }
+
+  /* Countdown */
+  .countdown-display { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin: 16px 0; }
+  .count-box { text-align: center; background: rgba(255,255,255,0.04); border: 1px solid var(--border); border-radius: 14px; padding: 16px 20px; min-width: 70px; }
+  .count-val { font-size: 2rem; font-weight: 800; line-height: 1; }
+  .count-unit { font-family: 'DM Mono', monospace; font-size: 0.6rem; color: var(--muted); margin-top: 4px; letter-spacing: 0.1em; }
+
+  /* ─── RESPONSIVE ─── */
   @media (max-width: 600px) {
-    .app-container { padding: 0 16px 90px 16px; }
-    .tools-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
-    .tool-card { padding: 18px 12px; }
-    .tool-icon { font-size: 1.8rem; }
-    .tool-name { font-size: 0.9rem; }
-    .panel-header { padding: 16px; }
-    .panel-title { font-size: 1.2rem; }
-    .grid-2 { grid-template-columns: 1fr; }
-    .result-number { font-size: 2rem; }
+    header { padding: 24px 20px 0; }
+    .hero { padding: 40px 20px 20px; }
+    .tools-section { padding: 24px 16px 60px; }
+    .tools-grid { grid-template-columns: repeat(3, 1fr); gap: 10px; }
+    .tool-card { padding: 16px 10px 14px; }
+    .tool-icon { width: 44px; height: 44px; font-size: 1.3rem; }
+    .tool-name { font-size: 0.75rem; }
+    .tool-desc { display: none; }
+    .num-controls { grid-template-columns: 1fr; }
+    .panel { border-radius: 20px 20px 0 0; max-height: 92vh; }
+    .panel-body { padding: 16px; }
+    .rand-tabs { gap: 2px; }
+    .rand-tab { padding: 7px 10px; font-size: 0.7rem; }
+    .coin-stats { gap: 12px; }
+    .stat-box { padding: 10px 14px; }
   }
-  /* tab navigation */
-  .tab-bar {
-    display: flex;
-    gap: 4px;
-    background: var(--surface-1);
-    border-radius: 60px;
-    padding: 4px;
-    margin-bottom: 24px;
-    overflow-x: auto;
+  @media (max-width: 380px) {
+    .tools-grid { grid-template-columns: repeat(2, 1fr); }
   }
-  .tab-btn {
-    flex: 1;
-    text-align: center;
-    background: transparent;
-    color: var(--text-secondary);
-    padding: 10px 0;
-    border-radius: 40px;
-    font-weight: 600;
-    font-size: 0.75rem;
+
+  /* ─── COPY TOAST ─── */
+  .toast {
+    position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(20px);
+    background: var(--accent); color: #fff; padding: 10px 22px; border-radius: 30px;
+    font-size: 0.8rem; font-weight: 700; pointer-events: none;
+    opacity: 0; transition: all 0.3s; z-index: 1000;
     white-space: nowrap;
   }
-  .tab-btn.active {
-    background: var(--accent-primary);
-    color: white;
-  }
-  .tab-pane { display: none; }
-  .tab-pane.active { display: block; animation: fadeQuick 0.2s; }
-  @keyframes fadeQuick { from { opacity: 0; } to { opacity: 1; } }
-  .toast {
-    position: fixed;
-    bottom: 30px;
-    left: 50%;
-    transform: translateX(-50%) translateY(20px);
-    background: var(--accent-primary);
-    color: white;
-    padding: 10px 24px;
-    border-radius: 60px;
-    font-size: 0.8rem;
-    font-weight: 500;
-    opacity: 0;
-    transition: 0.2s;
-    z-index: 1200;
-    pointer-events: none;
-  }
   .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-  .strength-bar {
-    height: 6px;
-    background: var(--surface-3);
-    border-radius: 10px;
-    overflow: hidden;
-    margin: 8px 0;
+
+  /* ─── RAND HINT ─── */
+  .rand-hint {
+    font-family: 'DM Mono', monospace; font-size: 0.7rem; color: var(--muted);
+    line-height: 1.6; margin-bottom: 16px;
+    padding: 10px 14px; background: rgba(255,255,255,0.03);
+    border-left: 2px solid var(--accent); border-radius: 0 8px 8px 0;
   }
-  .strength-fill { height: 100%; width: 0; background: var(--accent-success); transition: 0.2s; }
+
+  /* ─── GROUPS ─── */
+  .grp-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+    gap: 12px;
+  }
+  .grp-card {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 14px; padding: 14px;
+    border-top: 3px solid var(--gc, var(--accent));
+    animation: fadeUp 0.35s both;
+  }
+  .grp-title {
+    display: flex; align-items: center; gap: 8px;
+    font-weight: 700; font-size: 0.85rem; margin-bottom: 10px;
+  }
+  .grp-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .grp-count {
+    margin-left: auto; font-family: 'DM Mono', monospace;
+    font-size: 0.65rem; color: var(--muted);
+    background: rgba(255,255,255,0.07); padding: 2px 8px; border-radius: 10px;
+  }
+  .grp-members { display: flex; flex-direction: column; gap: 5px; }
+  .grp-member {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 0.82rem; padding: 5px 8px;
+    background: rgba(255,255,255,0.04); border-radius: 7px;
+    animation: fadeUp 0.3s both;
+  }
+  .grp-num {
+    font-family: 'DM Mono', monospace; font-size: 0.65rem;
+    color: var(--muted); width: 14px; flex-shrink: 0; text-align: center;
+  }
+
+  /* scroll */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 3px; }
 </style>
 </head>
 <body>
-<div class="bg-grain"></div>
-<div class="app-container">
-  <div class="header">
-    <div class="logo">
-      <h1>TOOLHUB</h1>
-      <p>professional utilities · real time</p>
-    </div>
-    <div class="badge-header">⚡ live tools</div>
-  </div>
 
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+<div class="orb orb-3"></div>
+
+<header>
+  <div class="logo">TOOL<span>BOX</span></div>
+  <div class="tagline">// your utility hub</div>
+</header>
+
+<section class="hero">
+  <div class="hero-label">6 powerful tools</div>
+  <h1>Everything<br>You Need</h1>
+  <p>A sleek collection of everyday utilities. Click any tool below to get started.</p>
+</section>
+
+<section class="tools-section">
+  <div class="section-title">// tools available</div>
   <div class="tools-grid" id="toolsGrid"></div>
-</div>
+</section>
 
+<!-- Panel -->
 <div class="panel-overlay" id="panelOverlay">
-  <div class="panel">
+  <div class="panel" id="mainPanel">
     <div class="panel-header">
-      <div class="panel-icon" id="panelIcon">🎲</div>
+      <div class="panel-icon" id="panelIcon"></div>
       <div class="panel-title-area">
-        <div class="panel-title" id="panelTitle">Randomizer</div>
-        <div class="panel-subtitle" id="panelSubtitle">// pro generator</div>
+        <div class="panel-title" id="panelTitle"></div>
+        <div class="panel-subtitle" id="panelSubtitle"></div>
       </div>
-      <button class="panel-close" id="closePanelBtn">✕</button>
+      <button class="panel-close" onclick="closePanel()">✕</button>
     </div>
     <div class="panel-body" id="panelBody"></div>
   </div>
 </div>
-<div class="toast" id="toastMsg"></div>
+
+<div class="toast" id="toast"></div>
 
 <script>
-  // ======================== TOOLS REGISTRY (NO COIN) ==================
-  const toolsCatalog = [
-    { id: 'randomizer', icon: '🎲', name: 'Randomizer', desc: 'Numbers, lists, groups, weighted', badge: 'PRO', color: '#3b82f6' },
-    { id: 'dice', icon: '🎯', name: 'Dice Roller', desc: 'd4 to d100, modifiers', badge: 'DICE', color: '#f59e0b' },
-    { id: 'wheel', icon: '🎡', name: 'Spin Wheel', desc: 'Custom decision spinner', badge: 'PICK', color: '#10b981' },
-    { id: 'password', icon: '🔐', name: 'Password Gen', desc: 'Secure & strength meter', badge: 'SECURE', color: '#8b5cf6' },
-    { id: 'uuid', icon: '🆔', name: 'UUID v4', desc: 'Unique IDs generator', badge: 'DEV', color: '#ec489a' }
-  ];
-
-  const gridContainer = document.getElementById('toolsGrid');
-  function buildToolGrid() {
-    gridContainer.innerHTML = '';
-    toolsCatalog.forEach(t => {
-      const card = document.createElement('div');
-      card.className = 'tool-card';
-      card.setAttribute('data-id', t.id);
-      card.innerHTML = `
-        <div class="tool-badge">${t.badge}</div>
-        <div class="tool-icon">${t.icon}</div>
-        <div class="tool-name">${t.name}</div>
-        <div class="tool-desc">${t.desc}</div>
-      `;
-      card.addEventListener('click', () => openToolPanel(t.id));
-      gridContainer.appendChild(card);
-    });
+// ─── TOOLS CONFIG ───
+const tools = [
+  {
+    id: 'randomizer',
+    icon: '🎲',
+    name: 'Randomizer',
+    desc: 'Numbers, lists & more',
+    badge: 'PRO',
+    color: '#7c5cfc',
+    glow: 'rgba(124,92,252,0.3)',
+    bg: 'rgba(124,92,252,0.12)',
+  },
+  {
+    id: 'dice',
+    icon: '🎯',
+    name: 'Dice Roller',
+    desc: 'Roll any dice type',
+    badge: 'FUN',
+    color: '#fc5c7d',
+    glow: 'rgba(252,92,125,0.3)',
+    bg: 'rgba(252,92,125,0.12)',
+  },
+  {
+    id: 'wheel',
+    icon: '🎡',
+    name: 'Spin Wheel',
+    desc: 'Decision spinner',
+    badge: 'NEW',
+    color: '#5cf0fc',
+    glow: 'rgba(92,240,252,0.3)',
+    bg: 'rgba(92,240,252,0.12)',
+  },
+  {
+    id: 'coin',
+    icon: '🪙',
+    name: 'Coin Flip',
+    desc: 'Heads or tails?',
+    badge: 'FLIP',
+    color: '#fcdb5c',
+    glow: 'rgba(252,219,92,0.3)',
+    bg: 'rgba(252,219,92,0.12)',
+  },
+  {
+    id: 'password',
+    icon: '🔐',
+    name: 'Password',
+    desc: 'Secure generator',
+    badge: 'SEC',
+    color: '#5cfc8e',
+    glow: 'rgba(92,252,142,0.3)',
+    bg: 'rgba(92,252,142,0.12)',
+  },
+  {
+    id: 'uuid',
+    icon: '🆔',
+    name: 'UUID Gen',
+    desc: 'Unique identifiers',
+    badge: 'DEV',
+    color: '#fc9d5c',
+    glow: 'rgba(252,157,92,0.3)',
+    bg: 'rgba(252,157,92,0.12)',
   }
+];
 
-  // Panel management
+// ─── RENDER GRID ───
+const grid = document.getElementById('toolsGrid');
+tools.forEach(t => {
+  const card = document.createElement('div');
+  card.className = 'tool-card';
+  card.id = 'card-' + t.id;
+  card.style.cssText = `--tool-color:${t.color};--tool-glow:${t.glow};--tool-bg:${t.bg};--tool-badge-bg:${t.bg}`;
+  card.innerHTML = `
+    <div class="tool-badge">${t.badge}</div>
+    <div class="tool-icon">${t.icon}</div>
+    <div class="tool-name">${t.name}</div>
+    <div class="tool-desc">${t.desc}</div>
+  `;
+  card.addEventListener('click', () => openTool(t));
+  grid.appendChild(card);
+});
+
+// ─── PANEL ───
+function openTool(t) {
+  document.querySelectorAll('.tool-card').forEach(c => c.classList.remove('active'));
+  document.getElementById('card-' + t.id).classList.add('active');
+  
   const overlay = document.getElementById('panelOverlay');
-  const panelBody = document.getElementById('panelBody');
-  const panelIcon = document.getElementById('panelIcon');
-  const panelTitle = document.getElementById('panelTitle');
-  const panelSubtitle = document.getElementById('panelSubtitle');
-  function openToolPanel(toolId) {
-    const tool = toolsCatalog.find(t => t.id === toolId);
-    if (!tool) return;
-    panelIcon.textContent = tool.icon;
-    panelTitle.textContent = tool.name;
-    panelSubtitle.textContent = `// ${tool.desc}`;
-    renderToolContent(toolId);
-    overlay.classList.add('open');
-    document.body.style.overflow = 'hidden';
-  }
-  function closePanel() {
-    overlay.classList.remove('open');
-    document.body.style.overflow = '';
-  }
-  document.getElementById('closePanelBtn').addEventListener('click', closePanel);
-  overlay.addEventListener('click', (e) => { if (e.target === overlay) closePanel(); });
-  function toastMsg(msg) {
-    const toast = document.getElementById('toastMsg');
-    toast.textContent = msg;
-    toast.classList.add('show');
-    setTimeout(() => toast.classList.remove('show'), 2000);
-  }
-  function copyToClipboard(text) {
-    navigator.clipboard.writeText(text).then(() => toastMsg('Copied!'));
-  }
+  const panel = document.getElementById('mainPanel');
+  document.getElementById('panelIcon').textContent = t.icon;
+  document.getElementById('panelIcon').style.background = t.bg;
+  document.getElementById('panelTitle').textContent = t.name;
+  panel.style.setProperty('--panel-color', t.color);
+  panel.style.setProperty('--panel-bg', t.bg);
 
-  // =========================== RANDOMIZER (full featured) ===========================
-  let randHistoryNum = [];
-  let lastGroupsResult = [];
-  let lastSeqArray = [];
-  let weightedItems = [];
+  const subtitles = {
+    randomizer: '// Advanced number & list randomizer',
+    dice: '// Roll dice of any type',
+    wheel: '// Spin to decide',
+    coin: '// Classic coin toss tracker',
+    password: '// Secure password creator',
+    uuid: '// UUID / unique ID generator',
+  };
+  document.getElementById('panelSubtitle').textContent = subtitles[t.id];
 
-  function renderRandomizer() {
-    panelBody.innerHTML = `
-      <div class="tab-bar" id="randTabsBar">
-        <button class="tab-btn active" data-tab="num">🔢 Numbers</button>
-        <button class="tab-btn" data-tab="multi">📊 Multiple</button>
-        <button class="tab-btn" data-tab="list">📋 From List</button>
-        <button class="tab-btn" data-tab="groups">👥 Groups</button>
-        <button class="tab-btn" data-tab="seq">🔀 Sequence</button>
-        <button class="tab-btn" data-tab="weighted">⚖️ Weighted</button>
+  const builders = { randomizer: buildRandomizer, dice: buildDice, wheel: buildWheel, coin: buildCoin, password: buildPassword, uuid: buildUUID };
+  document.getElementById('panelBody').innerHTML = '';
+  builders[t.id]();
+
+  overlay.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closePanel() {
+  document.getElementById('panelOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+  document.querySelectorAll('.tool-card').forEach(c => c.classList.remove('active'));
+}
+document.getElementById('panelOverlay').addEventListener('click', e => { if (e.target === e.currentTarget) closePanel(); });
+
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2000);
+}
+
+function copyText(text) { navigator.clipboard.writeText(text).then(() => toast('Copied!')); }
+
+// ──────────────────────────────────────────────
+// 1. RANDOMIZER
+// ──────────────────────────────────────────────
+let randHistory = [];
+function buildRandomizer() {
+  const body = document.getElementById('panelBody');
+  body.innerHTML = `
+    <div class="rand-tabs">
+      <div class="rand-tab active" onclick="switchRandTab('number',this)">🔢 Number</div>
+      <div class="rand-tab" onclick="switchRandTab('multi',this)">🎰 Multiple</div>
+      <div class="rand-tab" onclick="switchRandTab('list',this)">📋 From List</div>
+      <div class="rand-tab" onclick="switchRandTab('groups',this)">👥 Groups</div>
+      <div class="rand-tab" onclick="switchRandTab('sequence',this)">🔀 Sequence</div>
+      <div class="rand-tab" onclick="switchRandTab('weighted',this)">⚖️ Weighted</div>
+    </div>
+
+    <!-- NUMBER -->
+    <div class="rand-panel active" id="rp-number">
+      <p class="rand-hint">Generate a single random number between any two values. Great for quick decisions, lottery picks, or games.</p>
+      <div class="num-controls">
+        <div class="input-group"><label>MIN VALUE</label><input type="number" id="rMin" value="1"></div>
+        <div class="input-group"><label>MAX VALUE</label><input type="number" id="rMax" value="100"></div>
       </div>
-      <div id="randContent"></div>
-    `;
-    const tabs = document.querySelectorAll('#randTabsBar .tab-btn');
-    const contentDiv = document.getElementById('randContent');
-    function switchTab(tabId) {
-      let html = '';
-      if (tabId === 'num') html = getNumberTab();
-      else if (tabId === 'multi') html = getMultiTab();
-      else if (tabId === 'list') html = getListTab();
-      else if (tabId === 'groups') html = getGroupsTab();
-      else if (tabId === 'seq') html = getSeqTab();
-      else if (tabId === 'weighted') html = getWeightedTab();
-      contentDiv.innerHTML = html;
-      attachRandEventListeners(tabId);
-    }
-    tabs.forEach(btn => {
-      btn.addEventListener('click', () => {
-        tabs.forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        switchTab(btn.getAttribute('data-tab'));
-      });
-    });
-    switchTab('num');
+      <div class="action-row">
+        <button class="btn btn-primary" onclick="rollSingle()">🎲 Randomize</button>
+        <button class="btn btn-secondary btn-sm" onclick="clearHistory()">Clear History</button>
+      </div>
+      <div class="result-display" id="rSingleResult"><span style="color:var(--muted);font-family:'DM Mono',monospace;font-size:0.75rem">Press Randomize to begin</span></div>
+      <div class="history-list" id="rHistory"></div>
+    </div>
+
+    <!-- MULTIPLE -->
+    <div class="rand-panel" id="rp-multi">
+      <p class="rand-hint">Generate a batch of random numbers at once. Useful for lottery draws, selecting multiple winners, or sampling data.</p>
+      <div class="num-controls">
+        <div class="input-group"><label>MIN</label><input type="number" id="rmMin" value="1"></div>
+        <div class="input-group"><label>MAX</label><input type="number" id="rmMax" value="100"></div>
+        <div class="input-group"><label>HOW MANY TO GENERATE</label><input type="number" id="rmCount" value="5" min="1" max="50"></div>
+        <div class="input-group"><label>DUPLICATES</label>
+          <select id="rmDupes"><option value="yes">Allowed</option><option value="no">Unique only</option></select>
+        </div>
+      </div>
+      <div style="margin-bottom:14px">
+        <label class="custom-check"><input type="checkbox" id="rmSort"><span>Sort results low → high</span></label>
+      </div>
+      <button class="btn btn-primary" onclick="rollMulti()">🎲 Generate Numbers</button>
+      <div class="result-display" id="rmResult" style="flex-direction:column;gap:12px">
+        <span style="color:var(--muted);font-family:'DM Mono',monospace;font-size:0.75rem">Press Generate to begin</span>
+      </div>
+    </div>
+
+    <!-- LIST -->
+    <div class="rand-panel" id="rp-list">
+      <p class="rand-hint">Paste any list of words or names, then randomly pick one or more. Perfect for choosing a restaurant, movie, or winner from entries.</p>
+      <div class="input-group" style="margin-bottom:12px">
+        <label>YOUR ITEMS (one per line, or comma-separated)</label>
+        <textarea id="listItems" placeholder="Alice&#10;Bob&#10;Charlie&#10;Diana&#10;&#10;— or —&#10;Pizza, Sushi, Tacos, Burgers" style="min-height:100px"></textarea>
+      </div>
+      <div class="num-controls">
+        <div class="input-group"><label>HOW MANY TO PICK</label><input type="number" id="listCount" value="1" min="1"></div>
+        <div class="input-group"><label>SAME ITEM TWICE?</label>
+          <select id="listDupes"><option value="no">No — unique picks</option><option value="yes">Yes — allow repeats</option></select>
+        </div>
+      </div>
+      <div class="action-row">
+        <button class="btn btn-primary" onclick="rollList()">🔀 Pick Random</button>
+        <button class="btn btn-secondary btn-sm" onclick="document.getElementById('listItems').value='';document.getElementById('listResult').innerHTML='<span style=\'color:var(--muted);font-family:DM Mono,monospace;font-size:0.75rem\'>Cleared</span>'">Clear</button>
+      </div>
+      <div class="result-display" id="listResult" style="flex-direction:column;gap:10px">
+        <span style="color:var(--muted);font-family:'DM Mono',monospace;font-size:0.75rem">Add items above and press Pick</span>
+      </div>
+    </div>
+
+    <!-- GROUPS -->
+    <div class="rand-panel" id="rp-groups">
+      <p class="rand-hint">Divide a fixed list of names or words into a fixed number of balanced random groups. Perfect for teams, class projects, seating arrangements, or any assignment.</p>
+      <div class="input-group" style="margin-bottom:12px">
+        <label>MEMBERS / WORDS (one per line or comma-separated)</label>
+        <textarea id="grpItems" placeholder="Alice&#10;Bob&#10;Charlie&#10;Diana&#10;Eve&#10;Frank&#10;Grace&#10;Hank" style="min-height:110px"></textarea>
+      </div>
+      <div class="num-controls">
+        <div class="input-group">
+          <label>NUMBER OF GROUPS</label>
+          <input type="number" id="grpCount" value="3" min="2" max="50" placeholder="e.g. 3">
+        </div>
+        <div class="input-group">
+          <label>GROUP NAME PREFIX</label>
+          <input type="text" id="grpPrefix" value="Group" placeholder="Team / Class / Squad">
+        </div>
+      </div>
+      <div style="margin-bottom:14px;display:flex;flex-wrap:wrap;gap:12px">
+        <label class="custom-check"><input type="checkbox" id="grpBalance" checked><span>Balance group sizes</span></label>
+        <label class="custom-check"><input type="checkbox" id="grpLabel"><span>Number members within group</span></label>
+      </div>
+      <div class="action-row">
+        <button class="btn btn-primary" onclick="makeGroups()">👥 Create Groups</button>
+        <button class="btn btn-secondary btn-sm" onclick="reshuffleGroups()">🔀 Re-shuffle</button>
+        <button class="btn btn-secondary btn-sm" onclick="copyGroups()">📋 Copy All</button>
+      </div>
+      <div id="grpResult" style="margin-top:16px"></div>
+    </div>
+
+    <!-- SEQUENCE -->
+    <div class="rand-panel" id="rp-sequence">
+      <p class="rand-hint">Generate every number in a range, then shuffle the entire order randomly. Useful for creating a random play order, turn rotation, or randomised bracket.</p>
+      <div class="num-controls">
+        <div class="input-group"><label>FROM</label><input type="number" id="seqFrom" value="1"></div>
+        <div class="input-group"><label>TO</label><input type="number" id="seqTo" value="10"></div>
+      </div>
+      <div class="action-row">
+        <button class="btn btn-primary" onclick="rollSequence()">🔀 Shuffle Sequence</button>
+        <button class="btn btn-secondary btn-sm" onclick="copySeqResult()">📋 Copy</button>
+      </div>
+      <div class="result-display" id="seqResult" style="flex-direction:column;gap:12px">
+        <span style="color:var(--muted);font-family:'DM Mono',monospace;font-size:0.75rem">Press Shuffle to begin</span>
+      </div>
+    </div>
+
+    <!-- WEIGHTED -->
+    <div class="rand-panel" id="rp-weighted">
+      <p class="rand-hint">Add items with custom weights. A higher weight means a higher chance of being picked — like a rigged lottery. Great for loot tables, promotions, or skewed decisions.</p>
+      <div style="display:flex;gap:8px;margin-bottom:10px;align-items:flex-end">
+        <div class="input-group" style="flex:1"><label>ITEM NAME</label><input type="text" id="wItem" placeholder="e.g. Pizza"></div>
+        <div class="input-group" style="width:90px"><label>WEIGHT (1–100)</label><input type="number" id="wWeight" value="1" min="1" max="100"></div>
+        <button class="btn btn-secondary btn-sm" style="margin-bottom:0;flex-shrink:0" onclick="addWeighted()">+ Add</button>
+      </div>
+      <div class="action-row" style="margin-bottom:12px">
+        <button class="btn btn-secondary btn-sm" onclick="loadWeightedPreset()">Load Example</button>
+        <button class="btn btn-danger btn-sm" onclick="clearWeighted()">Clear All</button>
+      </div>
+      <div id="weightedList" style="margin-bottom:12px;max-height:180px;overflow-y:auto"></div>
+      <button class="btn btn-primary" onclick="rollWeighted()">🎲 Pick Weighted Random</button>
+      <div class="result-display" id="wResult" style="margin-top:12px">
+        <span style="color:var(--muted);font-family:'DM Mono',monospace;font-size:0.75rem">Add items then pick</span>
+      </div>
+    </div>
+  `;
+}
+
+let weightedItems = [];
+let lastGroups = [];
+let lastSeqArr = [];
+
+function switchRandTab(id, el) {
+  document.querySelectorAll('.rand-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.rand-panel').forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('rp-' + id).classList.add('active');
+}
+
+function rollSingle() {
+  const mn = +document.getElementById('rMin').value, mx = +document.getElementById('rMax').value;
+  if (mn > mx) { toast('Min must be ≤ Max'); return; }
+  const n = Math.floor(Math.random() * (mx - mn + 1)) + mn;
+  randHistory.unshift({ val: n, range: `${mn}–${mx}`, time: new Date().toLocaleTimeString() });
+  if (randHistory.length > 8) randHistory.pop();
+  document.getElementById('rSingleResult').innerHTML = `<div class="result-number">${n}</div><div class="result-label">from ${mn} to ${mx}</div>`;
+  renderHistory();
+}
+function clearHistory() { randHistory = []; renderHistory(); }
+function renderHistory() {
+  const el = document.getElementById('rHistory');
+  if (!el) return;
+  el.innerHTML = randHistory.length ? '<div style="font-family:\'DM Mono\',monospace;font-size:0.65rem;color:var(--muted);margin:10px 0 6px;letter-spacing:0.1em">HISTORY</div>' + randHistory.map(h => `<div class="history-item"><span>${h.time} · ${h.range}</span><span class="history-val">${h.val}</span></div>`).join('') : '';
+}
+
+function rollMulti() {
+  const mn = +document.getElementById('rmMin').value, mx = +document.getElementById('rmMax').value;
+  const cnt = Math.min(Math.max(+document.getElementById('rmCount').value, 1), 50);
+  const dupes = document.getElementById('rmDupes').value === 'yes';
+  const sort = document.getElementById('rmSort').checked;
+  if (mn > mx) { toast('Min must be ≤ Max'); return; }
+  if (!dupes && cnt > (mx - mn + 1)) { toast('Range too small for unique numbers'); return; }
+  let nums = [];
+  if (dupes) { for (let i = 0; i < cnt; i++) nums.push(Math.floor(Math.random() * (mx - mn + 1)) + mn); }
+  else {
+    const pool = []; for (let i = mn; i <= mx; i++) pool.push(i);
+    for (let i = pool.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i+1)); [pool[i],pool[j]] = [pool[j],pool[i]]; }
+    nums = pool.slice(0, cnt);
   }
+  if (sort) nums.sort((a,b) => a-b);
+  const sum = nums.reduce((a,b)=>a+b,0), avg = (sum/nums.length).toFixed(1), min2 = Math.min(...nums), max2 = Math.max(...nums);
+  document.getElementById('rmResult').innerHTML = `
+    <div class="results-list">${nums.map((n,i)=>`<div class="result-pill ${i===0?'highlight':''}">${n}</div>`).join('')}</div>
+    <div style="display:flex;gap:16px;font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--muted);flex-wrap:wrap;justify-content:center;margin-top:4px">
+      <span>SUM <b style="color:var(--text)">${sum}</b></span>
+      <span>AVG <b style="color:var(--text)">${avg}</b></span>
+      <span>MIN <b style="color:var(--text)">${min2}</b></span>
+      <span>MAX <b style="color:var(--text)">${max2}</b></span>
+      <span>COUNT <b style="color:var(--text)">${nums.length}</b></span>
+    </div>`;
+}
 
-  function getNumberTab() { return `<div class="input-group"><label>MIN</label><input type="number" id="numMin" value="1"></div><div class="input-group"><label>MAX</label><input type="number" id="numMax" value="100"></div><button class="btn-primary" id="genNumBtn">🎲 Generate</button><div class="result-card" id="numResult">—</div><div id="numHistory"></div>`; }
-  function getMultiTab() { return `<div class="grid-2"><div class="input-group"><label>MIN</label><input type="number" id="multiMin" value="1"></div><div class="input-group"><label>MAX</label><input type="number" id="multiMax" value="100"></div></div><div class="input-group"><label>COUNT</label><input type="number" id="multiCount" value="5" min="1" max="30"></div><label class="custom-check" style="display:flex;gap:8px;margin:8px 0"><input type="checkbox" id="uniqueOnly"> <span style="color:var(--text-secondary)">Unique only</span></label><button class="btn-primary" id="genMultiBtn">Generate batch</button><div class="result-card" id="multiResult"></div>`; }
-  function getListTab() { return `<div class="input-group"><label>ITEMS (comma or line break)</label><textarea id="listRaw" rows="4" placeholder="Apple, Banana, Cherry&#10;Pizza, Sushi, Burger"></textarea></div><div class="input-group"><label>Number to pick</label><input type="number" id="pickCount" value="1" min="1"></div><button class="btn-primary" id="pickListBtn">Pick random</button><div class="result-card" id="listPickResult"></div>`; }
-  function getGroupsTab() { return `<div class="input-group"><label>MEMBERS (comma or newline)</label><textarea id="groupMembers" rows="4" placeholder="Alice, Bob, Charlie, Diana, Eve, Frank, Grace, Henry"></textarea></div><div class="grid-2"><div class="input-group"><label># GROUPS</label><input type="number" id="groupCount" value="3" min="2"></div><div class="input-group"><label>PREFIX</label><input type="text" id="groupPrefix" value="Team"></div></div><button class="btn-primary" id="makeGroupsBtn">⚡ Create groups</button><div id="groupsDisplay"></div>`; }
-  function getSeqTab() { return `<div class="grid-2"><div class="input-group"><label>FROM</label><input type="number" id="seqFrom" value="1"></div><div class="input-group"><label>TO</label><input type="number" id="seqTo" value="20"></div></div><button class="btn-primary" id="shuffleSeqBtn">🔀 Shuffle sequence</button><div class="result-card" id="seqResultDisplay"></div>`; }
-  function getWeightedTab() { return `<div style="display:flex;gap:8px;flex-wrap:wrap"><input type="text" id="weightItem" placeholder="Item name" style="flex:2"><input type="number" id="weightVal" placeholder="Weight" style="width:90px"><button class="btn-secondary" id="addWeightBtn">Add</button><button class="btn-secondary" id="loadWeightPreset">Load Example</button></div><div id="weightedListArea" style="margin:16px 0; max-height:200px; overflow:auto"></div><button class="btn-primary" id="rollWeightedBtn">🎲 Pick weighted</button><div class="result-card" id="weightedResult"></div>`; }
-
-  function attachRandEventListeners(activeTab) {
-    if (activeTab === 'num') {
-      document.getElementById('genNumBtn')?.addEventListener('click', () => {
-        const min = +document.getElementById('numMin').value, max = +document.getElementById('numMax').value;
-        if (min > max) { toastMsg('Min <= Max'); return; }
-        const val = Math.floor(Math.random() * (max - min + 1)) + min;
-        randHistoryNum.unshift({ val, range: `${min}-${max}`, time: new Date().toLocaleTimeString() });
-        if (randHistoryNum.length > 6) randHistoryNum.pop();
-        document.getElementById('numResult').innerHTML = `<div class="result-number">${val}</div><div class="text-secondary" style="font-size:0.7rem">Range ${min}–${max}</div>`;
-        const histDiv = document.getElementById('numHistory');
-        histDiv.innerHTML = randHistoryNum.length ? `<div style="margin-top:12px"><strong>Recent</strong>${randHistoryNum.map(h => `<div class="history-item">${h.time}  →  ${h.val}</div>`).join('')}</div>` : '';
-      });
-    }
-    if (activeTab === 'multi') {
-      document.getElementById('genMultiBtn')?.addEventListener('click', () => {
-        let min = +document.getElementById('multiMin').value, max = +document.getElementById('multiMax').value, cnt = Math.min(+document.getElementById('multiCount').value, 30);
-        const unique = document.getElementById('uniqueOnly').checked;
-        if (min > max) { toastMsg('Min <= Max'); return; }
-        let results = [];
-        if (unique) {
-          if (max - min + 1 < cnt) { toastMsg('Range too small for unique'); return; }
-          let pool = Array.from({ length: max - min + 1 }, (_, i) => min + i);
-          for (let i = pool.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [pool[i], pool[j]] = [pool[j], pool[i]]; }
-          results = pool.slice(0, cnt);
-        } else {
-          for (let i = 0; i < cnt; i++) results.push(Math.floor(Math.random() * (max - min + 1)) + min);
-        }
-        const sum = results.reduce((a, b) => a + b, 0);
-        document.getElementById('multiResult').innerHTML = `<div class="pill-list">${results.map(r => `<span class="pill">${r}</span>`).join('')}</div><div style="margin-top:12px; font-size:0.75rem">Sum: ${sum} | Avg: ${(sum/results.length).toFixed(1)}</div>`;
-      });
-    }
-    if (activeTab === 'list') {
-      document.getElementById('pickListBtn')?.addEventListener('click', () => {
-        let raw = document.getElementById('listRaw').value;
-        let items = raw.split(/,|\n/).map(s => s.trim()).filter(Boolean);
-        if (!items.length) { toastMsg('Enter items'); return; }
-        let cnt = Math.min(+document.getElementById('pickCount').value, items.length);
-        let shuffled = [...items];
-        for (let i = shuffled.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]; }
-        let picked = shuffled.slice(0, cnt);
-        document.getElementById('listPickResult').innerHTML = `<div class="pill-list">${picked.map(p => `<span class="pill">${p}</span>`).join('')}</div><div style="margin-top:6px">from ${items.length} items</div>`;
-      });
-    }
-    if (activeTab === 'groups') {
-      document.getElementById('makeGroupsBtn')?.addEventListener('click', () => {
-        let raw = document.getElementById('groupMembers').value;
-        let members = raw.split(/,|\n/).map(s => s.trim()).filter(Boolean);
-        if (members.length < 2) { toastMsg('Need at least 2 members'); return; }
-        let groupNum = Math.min(Math.max(+document.getElementById('groupCount').value, 2), members.length);
-        let shuffled = [...members];
-        for (let i = shuffled.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]; }
-        let groups = Array.from({ length: groupNum }, () => []);
-        shuffled.forEach((m, idx) => groups[idx % groupNum].push(m));
-        lastGroupsResult = groups;
-        let prefix = document.getElementById('groupPrefix').value || 'Group';
-        let html = `<div style="display:flex; flex-direction:column; gap:12px; margin-top:12px">`;
-        groups.forEach((g, i) => { html += `<div style="background:var(--surface-1); border-radius:20px; padding:12px"><div style="font-weight:700">${prefix} ${i+1} <span style="font-size:0.7rem; color:var(--text-muted)">(${g.length})</span></div><div class="pill-list">${g.map(m => `<span class="pill">${m}</span>`).join('')}</div></div>`; });
-        html += `<button class="btn-secondary btn-sm" id="copyGroupsBtn">📋 Copy groups</button></div>`;
-        document.getElementById('groupsDisplay').innerHTML = html;
-        document.getElementById('copyGroupsBtn')?.addEventListener('click', () => {
-          let txt = lastGroupsResult.map((g, idx) => `${prefix} ${idx+1}: ${g.join(', ')}`).join('\n');
-          copyToClipboard(txt);
-        });
-      });
-    }
-    if (activeTab === 'seq') {
-      document.getElementById('shuffleSeqBtn')?.addEventListener('click', () => {
-        let from = +document.getElementById('seqFrom').value, to = +document.getElementById('seqTo').value;
-        if (from > to) { toastMsg('From <= To'); return; }
-        let arr = Array.from({ length: to - from + 1 }, (_, i) => from + i);
-        for (let i = arr.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [arr[i], arr[j]] = [arr[j], arr[i]]; }
-        lastSeqArray = arr;
-        document.getElementById('seqResultDisplay').innerHTML = `<div class="pill-list">${arr.map(n => `<span class="pill">${n}</span>`).join('')}</div><button class="btn-secondary btn-sm" id="copySeqBtn">Copy order</button>`;
-        document.getElementById('copySeqBtn')?.addEventListener('click', () => copyToClipboard(lastSeqArray.join(', ')));
-      });
-    }
-    if (activeTab === 'weighted') {
-      function renderWeightedList() {
-        const container = document.getElementById('weightedListArea');
-        if (!weightedItems.length) { container.innerHTML = '<div style="color:var(--text-muted); padding:12px">No items added</div>'; return; }
-        container.innerHTML = weightedItems.map((it, idx) => `<div style="display:flex; justify-content:space-between; background:var(--surface-1); padding:8px 12px; border-radius:12px; margin-bottom:6px"><span><strong>${it.name}</strong> (weight ${it.weight})</span><button class="removeWeight" data-idx="${idx}" style="background:none; color:red; border:none; cursor:pointer">✕</button></div>`).join('');
-        document.querySelectorAll('.removeWeight').forEach(btn => {
-          btn.addEventListener('click', (e) => { const idx = parseInt(btn.getAttribute('data-idx')); weightedItems.splice(idx, 1); renderWeightedList(); });
-        });
-      }
-      document.getElementById('addWeightBtn')?.addEventListener('click', () => {
-        let name = document.getElementById('weightItem').value.trim();
-        let weight = parseInt(document.getElementById('weightVal').value);
-        if (!name) { toastMsg('Enter item name'); return; }
-        if (isNaN(weight) || weight < 1) weight = 1;
-        weightedItems.push({ name, weight });
-        document.getElementById('weightItem').value = '';
-        renderWeightedList();
-      });
-      document.getElementById('loadWeightPreset')?.addEventListener('click', () => {
-        weightedItems = [{ name: 'Common', weight: 60 }, { name: 'Rare', weight: 25 }, { name: 'Epic', weight: 10 }, { name: 'Legendary', weight: 5 }];
-        renderWeightedList();
-      });
-      document.getElementById('rollWeightedBtn')?.addEventListener('click', () => {
-        if (!weightedItems.length) { toastMsg('Add weighted items first'); return; }
-        let total = weightedItems.reduce((s, i) => s + i.weight, 0);
-        let rand = Math.random() * total;
-        let accum = 0, selected = null;
-        for (let item of weightedItems) { accum += item.weight; if (rand <= accum) { selected = item; break; } }
-        if (!selected) selected = weightedItems[0];
-        document.getElementById('weightedResult').innerHTML = `<div class="result-number" style="font-size:1.8rem">🎲 ${selected.name}</div><div>weight ${selected.weight} · chance ${((selected.weight/total)*100).toFixed(1)}%</div>`;
-      });
-      renderWeightedList();
-    }
+function rollList() {
+  const raw = document.getElementById('listItems').value.trim();
+  if (!raw) { toast('Enter some items first'); return; }
+  let items = raw.includes('\n') ? raw.split('\n') : raw.split(',');
+  items = items.map(s => s.trim()).filter(Boolean);
+  if (!items.length) { toast('No valid items found'); return; }
+  const cnt = Math.min(+document.getElementById('listCount').value || 1, items.length);
+  const dupes = document.getElementById('listDupes').value === 'yes';
+  let picked = [];
+  if (dupes) { for (let i = 0; i < cnt; i++) picked.push(items[Math.floor(Math.random() * items.length)]); }
+  else {
+    const shuffled = [...items].sort(() => Math.random()-0.5);
+    picked = shuffled.slice(0, Math.min(cnt, shuffled.length));
   }
+  document.getElementById('listResult').innerHTML = `
+    <div class="results-list">${picked.map((p,i) => `<div class="result-pill ${i===0?'highlight':''}">${p}</div>`).join('')}</div>
+    <div style="font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--muted);margin-top:6px">picked ${picked.length} of ${items.length} items</div>`;
+}
 
-  // ===================== DICE ROLLER =====================
-  let diceHistory = [];
-  function renderDice() {
-    panelBody.innerHTML = `
-      <div class="tab-bar" style="margin-bottom:20px"><button class="tab-btn active" data-dice="6">d6</button><button data-dice="4">d4</button><button data-dice="8">d8</button><button data-dice="10">d10</button><button data-dice="12">d12</button><button data-dice="20">d20</button><button data-dice="100">d100</button></div>
-      <div class="grid-2"><div class="input-group"><label># of dice</label><input type="number" id="diceCount" value="1" min="1" max="12"></div><div class="input-group"><label>Modifier</label><input type="number" id="diceMod" value="0"></div></div>
-      <button class="btn-primary" id="rollDiceBtn">🎲 Roll</button>
-      <div class="result-card" id="diceResultArea">—</div>
-      <div id="diceHistList"></div>
-    `;
-    let currentDice = 6;
-    document.querySelectorAll('[data-dice]').forEach(btn => {
-      btn.addEventListener('click', () => { document.querySelectorAll('[data-dice]').forEach(b => b.classList.remove('active')); btn.classList.add('active'); currentDice = parseInt(btn.getAttribute('data-dice')); });
-      if (btn.getAttribute('data-dice') === '6') btn.classList.add('active');
-    });
-    document.getElementById('rollDiceBtn').addEventListener('click', () => {
-      let count = Math.min(12, Math.max(1, +document.getElementById('diceCount').value));
-      let mod = +document.getElementById('diceMod').value;
-      let rolls = Array.from({ length: count }, () => Math.floor(Math.random() * currentDice) + 1);
-      let sum = rolls.reduce((a,b)=>a+b,0) + mod;
-      let displayRolls = rolls.join(' + ');
-      document.getElementById('diceResultArea').innerHTML = `<div class="result-number">${sum}</div><div style="font-size:0.7rem">${displayRolls} ${mod ? (mod>0 ? `+ ${mod}` : `- ${-mod}`) : ''}</div><div class="pill-list">${rolls.map(r=>`<span class="pill">${r}</span>`).join('')}</div>`;
-      diceHistory.unshift(`${count}d${currentDice} ${mod? (mod>0?`+${mod}`:`${mod}`):''} → ${sum}`);
-      if(diceHistory.length > 5) diceHistory.pop();
-      document.getElementById('diceHistList').innerHTML = diceHistory.map(h=>`<div class="history-item">${h}</div>`).join('');
-    });
+// ── GROUPS ──
+function parseGroupItems() {
+  const raw = document.getElementById('grpItems').value.trim();
+  if (!raw) return [];
+  let items = raw.includes('\n') ? raw.split('\n') : raw.split(',');
+  return items.map(s => s.trim()).filter(Boolean);
+}
+
+function makeGroups() {
+  const items = parseGroupItems();
+  if (items.length < 2) { toast('Add at least 2 members'); return; }
+  const gCount = Math.min(Math.max(+document.getElementById('grpCount').value || 2, 2), items.length);
+  if (gCount > items.length) { toast('More groups than members!'); return; }
+  // Shuffle items
+  const shuffled = [...items];
+  for (let i = shuffled.length-1; i > 0; i--) { const j = Math.floor(Math.random()*(i+1)); [shuffled[i],shuffled[j]] = [shuffled[j],shuffled[i]]; }
+  // Distribute
+  const groups = Array.from({length: gCount}, () => []);
+  shuffled.forEach((item, idx) => groups[idx % gCount].push(item));
+  lastGroups = groups;
+  renderGroups();
+}
+
+function reshuffleGroups() {
+  const items = parseGroupItems();
+  if (items.length < 2) { toast('Add members first'); return; }
+  makeGroups();
+}
+
+const GROUP_COLORS = ['#7c5cfc','#fc5c7d','#5cf0fc','#fcdb5c','#5cfc8e','#fc9d5c','#c05cfc','#5c9ffc','#fc5cdc','#9cfc5c'];
+
+function renderGroups() {
+  const el = document.getElementById('grpResult');
+  if (!el || !lastGroups.length) return;
+  const prefix = document.getElementById('grpPrefix').value.trim() || 'Group';
+  const labelMembers = document.getElementById('grpLabel').checked;
+  el.innerHTML = `
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px">
+      <div style="font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--muted);letter-spacing:0.1em">${lastGroups.length} GROUPS · ${lastGroups.flat().length} MEMBERS</div>
+    </div>
+    <div class="grp-grid">
+      ${lastGroups.map((group, gi) => {
+        const color = GROUP_COLORS[gi % GROUP_COLORS.length];
+        return `
+        <div class="grp-card" style="--gc:${color}">
+          <div class="grp-title">
+            <span class="grp-dot" style="background:${color}"></span>
+            ${prefix} ${gi + 1}
+            <span class="grp-count">${group.length}</span>
+          </div>
+          <div class="grp-members">
+            ${group.map((m, mi) => `<div class="grp-member"><span class="grp-num">${labelMembers ? mi+1 : '·'}</span>${m}</div>`).join('')}
+          </div>
+        </div>`;
+      }).join('')}
+    </div>`;
+}
+
+function copyGroups() {
+  if (!lastGroups.length) { toast('Generate groups first'); return; }
+  const prefix = document.getElementById('grpPrefix').value.trim() || 'Group';
+  const text = lastGroups.map((g, i) => `${prefix} ${i+1}:\n${g.map((m,j)=>`  ${j+1}. ${m}`).join('\n')}`).join('\n\n');
+  copyText(text);
+}
+
+function rollSequence() {
+  const from = +document.getElementById('seqFrom').value, to = +document.getElementById('seqTo').value;
+  if (from > to) { toast('From must be ≤ To'); return; }
+  if (to - from > 99) { toast('Max range is 100 numbers'); return; }
+  const arr = []; for (let i = from; i <= to; i++) arr.push(i);
+  for (let i = arr.length-1; i > 0; i--) { const j = Math.floor(Math.random()*(i+1)); [arr[i],arr[j]] = [arr[j],arr[i]]; }
+  lastSeqArr = arr;
+  document.getElementById('seqResult').innerHTML = `
+    <div class="results-list">${arr.map((n,i) => `<div class="result-pill ${i===0?'highlight':''}">${n}</div>`).join('')}</div>
+    <div style="font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--muted);margin-top:4px">${arr.length} numbers in shuffled order</div>`;
+}
+function copySeqResult() {
+  if (!lastSeqArr.length) { toast('Generate a sequence first'); return; }
+  copyText(lastSeqArr.join(', '));
+}
+
+function loadWeightedPreset() {
+  weightedItems = [{name:'Common',weight:50},{name:'Uncommon',weight:30},{name:'Rare',weight:15},{name:'Epic',weight:4},{name:'Legendary',weight:1}];
+  renderWeighted();
+}
+function addWeighted() {
+  const item = document.getElementById('wItem').value.trim(), weight = Math.max(1, Math.min(100, +document.getElementById('wWeight').value||1));
+  if (!item) { toast('Enter an item name'); return; }
+  weightedItems.push({ name: item, weight });
+  document.getElementById('wItem').value = '';
+  renderWeighted();
+}
+function clearWeighted() { weightedItems = []; renderWeighted(); }
+function renderWeighted() {
+  const el = document.getElementById('weightedList');
+  if (!el) return;
+  const total = weightedItems.reduce((s,i)=>s+i.weight,0);
+  if (!weightedItems.length) { el.innerHTML = `<div style="font-family:'DM Mono',monospace;font-size:0.72rem;color:var(--muted);text-align:center;padding:12px">No items yet — add some above</div>`; return; }
+  el.innerHTML = `
+    <div style="font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--muted);margin-bottom:8px;letter-spacing:0.1em">${weightedItems.length} ITEMS · TOTAL WEIGHT: ${total}</div>
+    ${weightedItems.map((it,idx) => {
+      const pct = total ? (it.weight/total*100).toFixed(1) : 0;
+      return `<div style="display:flex;align-items:center;gap:8px;padding:8px 10px;background:rgba(255,255,255,0.03);border-radius:8px;margin-bottom:5px">
+        <div style="flex:1;min-width:0">
+          <div style="font-size:0.85rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${it.name}</div>
+          <div style="height:4px;background:rgba(255,255,255,0.08);border-radius:2px;margin-top:5px;overflow:hidden">
+            <div style="height:100%;width:${pct}%;background:var(--accent);border-radius:2px;transition:width 0.4s"></div>
+          </div>
+        </div>
+        <span style="font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--muted);white-space:nowrap">${it.weight}× · ${pct}%</span>
+        <button onclick="weightedItems.splice(${idx},1);renderWeighted()" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:0.8rem;padding:2px 4px;flex-shrink:0" title="Remove">✕</button>
+      </div>`;
+    }).join('')}`;
+}
+function rollWeighted() {
+  if (!weightedItems.length) { toast('Add some items first'); return; }
+  const total = weightedItems.reduce((s,i)=>s+i.weight,0);
+  let r = Math.random() * total, cumul = 0, chosen;
+  for (const it of weightedItems) { cumul += it.weight; if (r <= cumul) { chosen = it; break; } }
+  if (!chosen) chosen = weightedItems[weightedItems.length-1];
+  const pct = (chosen.weight/total*100).toFixed(1);
+  document.getElementById('wResult').innerHTML = `<div class="result-number" style="font-size:2rem">${chosen.name}</div><div class="result-label">weight ${chosen.weight} · ${pct}% probability</div>`;
+}
+
+// ──────────────────────────────────────────────
+// 2. DICE
+// ──────────────────────────────────────────────
+let selectedDice = 6, diceCount = 1;
+function buildDice() {
+  const body = document.getElementById('panelBody');
+  body.innerHTML = `
+    <div style="margin-bottom:16px">
+      <div style="font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--muted);margin-bottom:10px;letter-spacing:0.1em">DICE TYPE</div>
+      <div class="dice-grid">
+        ${[4,6,8,10,12,20,100].map(d=>`<button class="dice-select-btn ${d===6?'active':''}" onclick="selectDice(${d},this)">d${d}</button>`).join('')}
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:16px;margin-bottom:16px;flex-wrap:wrap">
+      <div class="input-group" style="max-width:120px"><label>NUMBER OF DICE</label><input type="number" id="diceCount" value="1" min="1" max="20" oninput="diceCount=Math.min(20,Math.max(1,+this.value))"></div>
+      <div class="input-group" style="max-width:120px"><label>ADD MODIFIER</label><input type="number" id="diceMod" value="0" placeholder="+/-"></div>
+    </div>
+    <div class="action-row">
+      <button class="btn btn-primary" onclick="rollDice()">🎯 Roll Dice</button>
+      <button class="btn btn-secondary btn-sm" onclick="rollDice()">Re-roll</button>
+    </div>
+    <div class="dice-roll-display" id="diceDisplay"><span style="color:var(--muted);font-family:'DM Mono',monospace;font-size:0.75rem">Choose dice and roll</span></div>
+    <div class="result-display" id="diceTotalDisplay" style="min-height:60px"></div>
+    <div class="history-list" id="diceHistory"></div>
+  `;
+}
+let diceLog = [];
+function selectDice(n, el) {
+  document.querySelectorAll('.dice-select-btn').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active'); selectedDice = n;
+}
+function rollDice() {
+  const count = Math.min(Math.max(+document.getElementById('diceCount').value||1,1),20);
+  const mod = +document.getElementById('diceMod').value||0;
+  const rolls = Array.from({length:count}, ()=>Math.floor(Math.random()*selectedDice)+1);
+  const sum = rolls.reduce((a,b)=>a+b,0) + mod;
+  const display = document.getElementById('diceDisplay');
+  display.innerHTML = rolls.map(r=>`<div class="die">${r}</div>`).join('');
+  document.getElementById('diceTotalDisplay').innerHTML = `<div class="result-number">${sum}</div><div class="result-label">${rolls.join(' + ')}${mod?` + (${mod>0?'+':''}${mod})`:''} = ${sum}</div>`;
+  diceLog.unshift(`${count}d${selectedDice}${mod?`+${mod}`:''} → ${sum}`);
+  if (diceLog.length > 6) diceLog.pop();
+  document.getElementById('diceHistory').innerHTML = diceLog.length ? '<div style="font-family:\'DM Mono\',monospace;font-size:0.65rem;color:var(--muted);margin:12px 0 6px;letter-spacing:0.1em">HISTORY</div>' + diceLog.map(l=>`<div class="history-item"><span class="history-val">${l}</span></div>`).join('') : '';
+}
+
+// ──────────────────────────────────────────────
+// 3. WHEEL
+// ──────────────────────────────────────────────
+let wheelItems = ['Option 1','Option 2','Option 3','Option 4','Option 5'];
+let wheelAngle = 0, spinning = false;
+const WHEEL_COLORS = ['#7c5cfc','#fc5c7d','#5cf0fc','#fcdb5c','#5cfc8e','#fc9d5c','#c05cfc','#5c9ffc'];
+
+function buildWheel() {
+  const body = document.getElementById('panelBody');
+  body.innerHTML = `
+    <div class="wheel-container">
+      <div class="wheel-entries" style="width:100%">
+        <div style="display:flex;gap:8px;margin-bottom:10px">
+          <input type="text" id="wEntry" placeholder="Add an option..." style="flex:1;background:rgba(255,255,255,0.05);border:1px solid var(--border);border-radius:10px;padding:10px 14px;color:var(--text);font-family:'DM Mono',monospace;font-size:0.85rem;outline:none">
+          <button class="btn btn-primary btn-sm" onclick="addWheelEntry()">+ Add</button>
+        </div>
+        <div class="wheel-entry-list" id="wheelTagList"></div>
+        <div style="font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--muted);margin-bottom:16px">${wheelItems.length} items loaded</div>
+      </div>
+      <div class="wheel-canvas-wrap">
+        <div class="wheel-pointer"></div>
+        <canvas id="wheelCanvas" width="280" height="280"></canvas>
+        <button id="spinBtn" onclick="spinWheel()">SPIN</button>
+      </div>
+      <div class="result-display" id="wheelResult" style="width:100%;min-height:60px">
+        <span style="color:var(--muted);font-family:'DM Mono',monospace;font-size:0.75rem">Spin the wheel to get a result</span>
+      </div>
+    </div>
+  `;
+  renderWheelTags(); drawWheel(wheelAngle);
+  document.getElementById('wEntry').addEventListener('keydown', e => { if(e.key==='Enter') addWheelEntry(); });
+}
+function renderWheelTags() {
+  const el = document.getElementById('wheelTagList');
+  if (!el) return;
+  el.innerHTML = wheelItems.map((it,i)=>`<div class="wheel-entry-tag" style="border-color:${WHEEL_COLORS[i%WHEEL_COLORS.length]}44;color:${WHEEL_COLORS[i%WHEEL_COLORS.length]}">${it}<button onclick="removeWheelItem(${i})">✕</button></div>`).join('');
+}
+function removeWheelItem(i) { wheelItems.splice(i,1); renderWheelTags(); drawWheel(wheelAngle); }
+function addWheelEntry() {
+  const val = document.getElementById('wEntry').value.trim();
+  if (!val) return;
+  wheelItems.push(val); document.getElementById('wEntry').value = '';
+  renderWheelTags(); drawWheel(wheelAngle);
+}
+function drawWheel(angle) {
+  const canvas = document.getElementById('wheelCanvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d'), n = wheelItems.length, cx = 140, cy = 140, r = 134;
+  ctx.clearRect(0,0,280,280);
+  if (!n) { ctx.fillStyle='rgba(255,255,255,0.05)'; ctx.beginPath(); ctx.arc(cx,cy,r,0,Math.PI*2); ctx.fill(); return; }
+  const slice = (Math.PI*2)/n;
+  for (let i=0;i<n;i++) {
+    const start = angle+i*slice, end = start+slice;
+    ctx.beginPath(); ctx.moveTo(cx,cy); ctx.arc(cx,cy,r,start,end); ctx.closePath();
+    ctx.fillStyle = WHEEL_COLORS[i%WHEEL_COLORS.length]+'cc'; ctx.fill();
+    ctx.strokeStyle='rgba(9,9,15,0.8)'; ctx.lineWidth=2; ctx.stroke();
+    ctx.save(); ctx.translate(cx,cy); ctx.rotate(start+slice/2);
+    ctx.textAlign='right'; ctx.fillStyle='#fff';
+    const fs = Math.max(10, Math.min(14, 220/Math.max(wheelItems[i].length,1)));
+    ctx.font = `bold ${fs}px Syne`;
+    ctx.fillText(wheelItems[i].substring(0,14), r-10, 5);
+    ctx.restore();
   }
-
-  // ===================== WHEEL =====================
-  let wheelOptions = ['Option A', 'Option B', 'Option C', 'Option D'];
-  let wheelAngle = 0, spinningWheel = false;
-  function renderWheel() {
-    panelBody.innerHTML = `<div style="display:flex; gap:8px; flex-wrap:wrap"><input id="wheelNewItem" placeholder="Add option" style="flex:2"><button id="addWheelBtn" class="btn-secondary">Add</button></div><div id="wheelTags" style="display:flex; flex-wrap:wrap; gap:8px; margin:12px 0"></div><canvas id="wheelCanvas" width="260" height="260" style="width:100%; max-width:260px; margin:0 auto; display:block; border-radius:50%; background:var(--surface-1); box-shadow:0 8px 20px rgba(0,0,0,0.3)"></canvas><button id="spinWheelBtn" class="btn-primary" style="margin-top:16px; width:100%">SPIN WHEEL</button><div class="result-card" id="wheelResultDisplay">Ready to spin</div>`;
-    function updateTags() {
-      const container = document.getElementById('wheelTags');
-      container.innerHTML = wheelOptions.map((opt, idx) => `<span style="background:var(--surface-3); padding:4px 12px; border-radius:40px; display:inline-flex; gap:6px"><span>${opt}</span><button data-idx="${idx}" class="removeWheelOpt" style="background:none; border:none; color:red; cursor:pointer">✕</button></span>`).join('');
-      document.querySelectorAll('.removeWheelOpt').forEach(btn => { btn.addEventListener('click', (e) => { let i = parseInt(btn.getAttribute('data-idx')); wheelOptions.splice(i,1); updateTags(); drawWheelCanvas(); }); });
-      drawWheelCanvas();
-    }
-    function drawWheelCanvas() {
-      const canvas = document.getElementById('wheelCanvas');
-      if (!canvas) return;
-      const ctx = canvas.getContext('2d');
-      const w = canvas.width = canvas.clientWidth; canvas.height = w;
-      const center = w/2, rad = w/2 - 8;
-      ctx.clearRect(0,0,w,w);
-      if (!wheelOptions.length) { ctx.fillStyle = '#1f232e'; ctx.beginPath(); ctx.arc(center,center,rad,0,Math.PI*2); ctx.fill(); return; }
-      const angleStep = (Math.PI*2)/wheelOptions.length;
-      const colors = ['#3b82f6','#f59e0b','#10b981','#ef4444','#8b5cf6','#ec489a'];
-      for (let i=0; i<wheelOptions.length; i++) {
-        const start = wheelAngle + i*angleStep;
-        const end = start + angleStep;
-        ctx.beginPath(); ctx.moveTo(center,center); ctx.arc(center,center,rad,start,end); ctx.fillStyle = colors[i%colors.length]; ctx.fill();
-        ctx.save(); ctx.translate(center,center); ctx.rotate(start+angleStep/2); ctx.fillStyle = '#fff'; ctx.font = `bold ${Math.max(10, 12)}px Inter`; ctx.fillText(wheelOptions[i].substring(0,8), rad-20, 6); ctx.restore();
-      }
-    }
-    document.getElementById('addWheelBtn')?.addEventListener('click', () => {
-      const val = document.getElementById('wheelNewItem').value.trim();
-      if(val) { wheelOptions.push(val); document.getElementById('wheelNewItem').value = ''; updateTags(); }
-    });
-    document.getElementById('spinWheelBtn')?.addEventListener('click', () => {
-      if(spinningWheel || !wheelOptions.length) { toastMsg('Add at least one option'); return; }
-      spinningWheel = true; const spinBtn = document.getElementById('spinWheelBtn'); spinBtn.disabled = true;
-      const extra = Math.PI*2*(5+Math.random()*4);
-      const start = performance.now(), startAngle = wheelAngle, duration = 1500;
-      function animate(now) {
-        const t = Math.min((now-start)/duration, 1);
-        const ease = 1 - Math.pow(1-t, 3);
-        wheelAngle = startAngle + extra * ease;
-        drawWheelCanvas();
-        if(t<1) requestAnimationFrame(animate);
-        else {
-          spinningWheel = false; spinBtn.disabled = false;
-          const normAngle = ((-wheelAngle) % (Math.PI*2) + Math.PI*2) % (Math.PI*2);
-          const idx = Math.floor(normAngle / ((Math.PI*2)/wheelOptions.length)) % wheelOptions.length;
-          const winner = wheelOptions[idx];
-          document.getElementById('wheelResultDisplay').innerHTML = `<div class="result-number" style="font-size:1.6rem">${winner}</div>`;
-        }
-      }
-      requestAnimationFrame(animate);
-    });
-    updateTags();
+  ctx.beginPath(); ctx.arc(cx,cy,18,0,Math.PI*2);
+  ctx.fillStyle='rgba(9,9,15,0.95)'; ctx.fill();
+  ctx.strokeStyle='var(--accent)'; ctx.lineWidth=2; ctx.stroke();
+}
+function spinWheel() {
+  if (spinning || !wheelItems.length) { if(!wheelItems.length) toast('Add items first'); return; }
+  spinning = true; document.getElementById('spinBtn').disabled = true;
+  const extra = Math.PI*2*(5+Math.random()*5), duration = 4000;
+  const start = performance.now(), startAngle = wheelAngle, endAngle = startAngle + extra;
+  function animate(now) {
+    const t = Math.min((now-start)/duration, 1);
+    const ease = 1-Math.pow(1-t,4);
+    wheelAngle = startAngle + (endAngle-startAngle)*ease;
+    drawWheel(wheelAngle);
+    if (t < 1) { requestAnimationFrame(animate); return; }
+    spinning = false; document.getElementById('spinBtn').disabled = false;
+    const n = wheelItems.length, norm = (((-wheelAngle % (Math.PI*2)) + Math.PI*2) % (Math.PI*2));
+    const idx = Math.floor(norm / (Math.PI*2/n)) % n;
+    const winner = wheelItems[idx];
+    const el = document.getElementById('wheelResult');
+    if (el) el.innerHTML = `<div class="result-number" style="font-size:1.8rem">🎉 ${winner}</div><div class="result-label">spin again to try</div>`;
   }
+  requestAnimationFrame(animate);
+}
 
-  // ===================== PASSWORD =====================
-  function renderPassword() {
-    panelBody.innerHTML = `<div class="input-group"><label>Length: <span id="lenVal">16</span></label><input type="range" id="passLen" min="6" max="64" value="16"></div><div style="display:flex; flex-wrap:wrap; gap:12px; margin:12px 0"><label><input type="checkbox" id="chUpper" checked> Uppercase</label><label><input type="checkbox" id="chLower" checked> Lowercase</label><label><input type="checkbox" id="chDigits" checked> Digits</label><label><input type="checkbox" id="chSymbols"> Symbols</label></div><button class="btn-primary" id="genPassBtn">Generate password</button><div class="result-card" id="passDisplay">—</div><div class="strength-bar"><div class="strength-fill" id="strengthFill"></div></div><div id="strengthText" style="font-size:0.7rem; color:var(--text-secondary)"></div>`;
-    function generate() {
-      let len = +document.getElementById('passLen').value;
-      let upper = "ABCDEFGHIJKLMNOPQRSTUVWXYZ", lower = "abcdefghijklmnopqrstuvwxyz", digits = "0123456789", symbols = "!@#$%^&*()_+";
-      let chars = "";
-      if(document.getElementById('chUpper').checked) chars+=upper;
-      if(document.getElementById('chLower').checked) chars+=lower;
-      if(document.getElementById('chDigits').checked) chars+=digits;
-      if(document.getElementById('chSymbols').checked) chars+=symbols;
-      if(!chars) { toastMsg('Select at least one type'); return; }
-      let password = "";
-      for(let i=0;i<len;i++) password += chars[Math.floor(Math.random()*chars.length)];
-      document.getElementById('passDisplay').innerHTML = `<div style="word-break:break-all; font-family:monospace">${password}</div><button class="btn-secondary btn-sm" id="copyPassBtn">Copy</button>`;
-      let strength = 0;
-      if(len>=12) strength+=1; if(len>=16) strength+=1;
-      if(/[A-Z]/.test(password)) strength++; if(/[a-z]/.test(password)) strength++; if(/[0-9]/.test(password)) strength++; if(/[^A-Za-z0-9]/.test(password)) strength++;
-      let percent = Math.min(100, strength*14);
-      document.getElementById('strengthFill').style.width = `${percent}%`;
-      document.getElementById('strengthFill').style.background = percent<30? '#ef4444' : percent<70? '#f59e0b' : '#10b981';
-      document.getElementById('strengthText').innerText = `Strength: ${percent<30?'Weak':percent<70?'Medium':'Strong'}`;
-      document.getElementById('copyPassBtn')?.addEventListener('click', () => copyToClipboard(password));
-    }
-    document.getElementById('passLen').addEventListener('input', (e) => { document.getElementById('lenVal').innerText = e.target.value; generate(); });
-    document.getElementById('genPassBtn').addEventListener('click', generate);
-    generate();
-  }
+// ──────────────────────────────────────────────
+// 4. COIN
+// ──────────────────────────────────────────────
+let heads=0, tails=0, coinSide='heads';
+function buildCoin() {
+  const body = document.getElementById('panelBody');
+  body.innerHTML = `
+    <div class="coin-wrap">
+      <div class="coin" id="coinEl" onclick="flipCoin()">
+        <div class="coin-face coin-heads" id="coinFace">👑</div>
+      </div>
+      <div id="coinText">
+        <div class="coin-result" id="coinResult" style="text-align:center">—</div>
+        <div class="coin-sub" style="text-align:center">Click coin or button to flip</div>
+      </div>
+      <button class="btn btn-primary" onclick="flipCoin()">🪙 Flip Coin</button>
+      <button class="btn btn-secondary btn-sm" onclick="flipMultiple()">Flip 10×</button>
+      <div class="coin-stats">
+        <div class="stat-box"><div class="stat-val" id="headsCount">0</div><div class="stat-label">HEADS</div></div>
+        <div class="stat-box"><div class="stat-val" id="tailsCount">0</div><div class="stat-label">TAILS</div></div>
+        <div class="stat-box"><div class="stat-val" id="totalCount">0</div><div class="stat-label">TOTAL</div></div>
+      </div>
+      <button class="btn btn-danger btn-sm" onclick="resetCoin()">Reset Stats</button>
+    </div>
+  `;
+}
+function flipCoin() {
+  const coin = document.getElementById('coinEl');
+  coin.classList.remove('flipping');
+  void coin.offsetWidth;
+  coin.classList.add('flipping');
+  setTimeout(() => {
+    const side = Math.random() < 0.5 ? 'heads' : 'tails';
+    coinSide = side;
+    if (side==='heads') heads++; else tails++;
+    document.getElementById('coinResult').textContent = side === 'heads' ? '👑 HEADS' : '🛡 TAILS';
+    document.getElementById('coinFace').textContent = side === 'heads' ? '👑' : '🛡';
+    document.getElementById('coinFace').style.background = side === 'heads' ? 'radial-gradient(circle at 35% 35%, #f7d44c, #c8a020)' : 'radial-gradient(circle at 35% 35%, #c0c0d0, #8090a0)';
+    document.getElementById('headsCount').textContent = heads;
+    document.getElementById('tailsCount').textContent = tails;
+    document.getElementById('totalCount').textContent = heads+tails;
+  }, 400);
+}
+function flipMultiple() {
+  let h=0, t=0;
+  for (let i=0;i<10;i++) { if(Math.random()<0.5) h++; else t++; }
+  heads+=h; tails+=t;
+  document.getElementById('headsCount').textContent = heads;
+  document.getElementById('tailsCount').textContent = tails;
+  document.getElementById('totalCount').textContent = heads+tails;
+  document.getElementById('coinResult').textContent = `H:${h} T:${t} (10 flips)`;
+}
+function resetCoin() { heads=0; tails=0; document.getElementById('headsCount').textContent=0; document.getElementById('tailsCount').textContent=0; document.getElementById('totalCount').textContent=0; document.getElementById('coinResult').textContent='—'; }
 
-  // ===================== UUID =====================
-  function renderUUID() {
-    panelBody.innerHTML = `<div class="input-group"><label>Number of UUIDs</label><input type="number" id="uuidCount" value="5" min="1" max="25"></div><button class="btn-primary" id="genUuidBtn">Generate UUIDs</button><div id="uuidListContainer" class="result-card" style="margin-top:12px"></div>`;
-    function genUUIDv4() { return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => { let r = Math.random()*16|0, v = c==='x'?r:(r&0x3|0x8); return v.toString(16); }); }
-    function generateList() {
-      let count = Math.min(25, +document.getElementById('uuidCount').value);
-      let list = Array.from({length:count}, genUUIDv4);
-      document.getElementById('uuidListContainer').innerHTML = `<div style="max-height:280px; overflow:auto">${list.map(u => `<div style="display:flex; justify-content:space-between; align-items:center; background:var(--surface-1); border-radius:12px; padding:8px 12px; margin-bottom:8px"><code>${u}</code><button class="copyUuidBtn btn-secondary btn-sm" data-val="${u}">Copy</button></div>`).join('')}</div>`;
-      document.querySelectorAll('.copyUuidBtn').forEach(btn => { btn.addEventListener('click', () => copyToClipboard(btn.getAttribute('data-val'))); });
-    }
-    document.getElementById('genUuidBtn').addEventListener('click', generateList);
-    generateList();
-  }
+// ──────────────────────────────────────────────
+// 5. PASSWORD
+// ──────────────────────────────────────────────
+function buildPassword() {
+  const body = document.getElementById('panelBody');
+  body.innerHTML = `
+    <div class="input-group" style="margin-bottom:16px">
+      <label>LENGTH: <span id="passLenLabel">16</span> characters</label>
+      <input type="range" id="passLen" min="4" max="128" value="16" oninput="document.getElementById('passLenLabel').textContent=this.value;genPassword()" style="width:100%;accent-color:var(--accent)">
+    </div>
+    <div class="checkbox-group" style="margin-bottom:16px">
+      <label class="custom-check"><input type="checkbox" id="pUpper" checked onchange="genPassword()"><span>Uppercase (A–Z)</span></label>
+      <label class="custom-check"><input type="checkbox" id="pLower" checked onchange="genPassword()"><span>Lowercase (a–z)</span></label>
+      <label class="custom-check"><input type="checkbox" id="pNum" checked onchange="genPassword()"><span>Numbers (0–9)</span></label>
+      <label class="custom-check"><input type="checkbox" id="pSym" onchange="genPassword()"><span>Symbols (!@#$...)</span></label>
+      <label class="custom-check"><input type="checkbox" id="pNoAmb" onchange="genPassword()"><span>Exclude ambiguous (l,1,O,0)</span></label>
+    </div>
+    <div class="pass-result" id="passResult">
+      <span class="pass-text" id="passText">—</span>
+      <button class="btn btn-secondary btn-sm" onclick="copyPass()">Copy</button>
+    </div>
+    <div class="strength-bar-wrap">
+      <div class="strength-bar"><div class="strength-fill" id="strengthFill" style="width:0%"></div></div>
+      <div class="strength-label" id="strengthLabel">—</div>
+    </div>
+    <div class="action-row">
+      <button class="btn btn-primary" onclick="genPassword()">🔄 Regenerate</button>
+      <div class="input-group" style="max-width:120px"><label>GENERATE #</label>
+        <select id="genCount"><option>1</option><option>5</option><option>10</option></select>
+      </div>
+      <button class="btn btn-secondary btn-sm" onclick="genMultiPass()">Batch Generate</button>
+    </div>
+    <div id="batchPassList" style="margin-top:12px"></div>
+  `;
+  genPassword();
+}
+function getPassChars() {
+  let chars = '';
+  if (document.getElementById('pUpper').checked) chars += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  if (document.getElementById('pLower').checked) chars += 'abcdefghijklmnopqrstuvwxyz';
+  if (document.getElementById('pNum').checked) chars += '0123456789';
+  if (document.getElementById('pSym').checked) chars += '!@#$%^&*()_+-=[]{}|;:,.<>?';
+  if (document.getElementById('pNoAmb').checked) chars = chars.replace(/[l1O0]/g,'');
+  return chars;
+}
+function genPassword() {
+  const len = +document.getElementById('passLen').value;
+  const chars = getPassChars();
+  if (!chars) { document.getElementById('passText').textContent = 'Select at least one character type'; return; }
+  let pass = ''; for (let i=0;i<len;i++) pass += chars[Math.floor(Math.random()*chars.length)];
+  document.getElementById('passText').textContent = pass;
+  rateStrength(pass);
+}
+function rateStrength(p) {
+  let score = 0;
+  if (p.length >= 8) score++; if (p.length >= 12) score++; if (p.length >= 20) score++;
+  if (/[A-Z]/.test(p)) score++; if (/[a-z]/.test(p)) score++;
+  if (/[0-9]/.test(p)) score++; if (/[^A-Za-z0-9]/.test(p)) score++;
+  const levels = [{w:10,c:'#fc5c7d',l:'Weak'},{w:30,c:'#fcdb5c',l:'Fair'},{w:55,c:'#fc9d5c',l:'Good'},{w:80,c:'#5cfc8e',l:'Strong'},{w:100,c:'#7c5cfc',l:'Very Strong'}];
+  const idx = Math.min(Math.floor(score/7*5),4);
+  const lv = levels[idx];
+  document.getElementById('strengthFill').style.cssText = `width:${lv.w}%;background:${lv.c}`;
+  document.getElementById('strengthLabel').textContent = `Strength: ${lv.l}`;
+}
+function copyPass() { const t = document.getElementById('passText').textContent; copyText(t); }
+function genMultiPass() {
+  const n = +document.getElementById('genCount').value;
+  const chars = getPassChars(), len = +document.getElementById('passLen').value;
+  if (!chars) { toast('Select char types'); return; }
+  let list = [];
+  for (let i=0;i<n;i++) { let p=''; for(let j=0;j<len;j++) p+=chars[Math.floor(Math.random()*chars.length)]; list.push(p); }
+  document.getElementById('batchPassList').innerHTML = list.map(p=>`<div class="uuid-item"><span class="uuid-output" style="font-size:0.75rem">${p}</span><button class="btn btn-secondary btn-sm" onclick="copyText('${p}')">Copy</button></div>`).join('');
+}
 
-  function renderToolContent(toolId) {
-    if (toolId === 'randomizer') renderRandomizer();
-    else if (toolId === 'dice') renderDice();
-    else if (toolId === 'wheel') renderWheel();
-    else if (toolId === 'password') renderPassword();
-    else if (toolId === 'uuid') renderUUID();
-  }
-
-  buildToolGrid();
+// ──────────────────────────────────────────────
+// 6. UUID
+// ──────────────────────────────────────────────
+function buildUUID() {
+  const body = document.getElementById('panelBody');
+  body.innerHTML = `
+    <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:16px;align-items:flex-end">
+      <div class="input-group" style="max-width:120px"><label>VERSION</label>
+        <select id="uuidVersion"><option value="4">v4 (Random)</option><option value="custom">Custom</option></select>
+      </div>
+      <div class="input-group" style="max-width:100px"><label>COUNT</label>
+        <input type="number" id="uuidCount" value="5" min="1" max="50">
+      </div>
+      <button class="btn btn-primary" onclick="genUUIDs()">⚡ Generate</button>
+    </div>
+    <div id="uuidList"></div>
+    <div class="action-row" style="margin-top:12px">
+      <button class="btn btn-secondary btn-sm" onclick="copyAllUUIDs()">Copy All</button>
+      <button class="btn btn-danger btn-sm" onclick="document.getElementById('uuidList').innerHTML=''">Clear</button>
+    </div>
+  `;
+  genUUIDs();
+}
+let lastUUIDs = [];
+function genUUID4() {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c=>{
+    const r=Math.random()*16|0, v=c==='x'?r:(r&0x3|0x8); return v.toString(16);
+  });
+}
+function genUUIDs() {
+  const n = Math.min(+document.getElementById('uuidCount').value||5, 50);
+  lastUUIDs = Array.from({length:n}, genUUID4);
+  document.getElementById('uuidList').innerHTML = lastUUIDs.map(id=>`
+    <div class="uuid-item">
+      <span class="uuid-output">${id}</span>
+      <button class="btn btn-secondary btn-sm" onclick="copyText('${id}')">Copy</button>
+    </div>`).join('');
+}
+function copyAllUUIDs() { copyText(lastUUIDs.join('\n')); }
 </script>
 </body>
 </html>
