@@ -1,519 +1,798 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>K-Prep Tool Store</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <style>
-        * {
-            font-family: 'Inter', sans-serif;
-        }
-        
-        .glass-effect {
-            background: rgba(255, 255, 255, 0.8);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-        }
-        
-        .gradient-border {
-            position: relative;
-            border-radius: 1rem;
-            background: linear-gradient(60deg, #f79533, #f37055, #ef4e7b, #a166ab, #5073b8, #1098ad, #07b39b, #6fba82);
-            padding: 2px;
-        }
-        
-        .gradient-border-content {
-            background: white;
-            border-radius: 0.95rem;
-            height: 100%;
-        }
-        
-        .hover-scale {
-            transition: transform 0.2s ease-in-out;
-        }
-        
-        .hover-scale:hover {
-            transform: scale(1.02);
-        }
-        
-        .animate-fade-in {
-            animation: fadeIn 0.5s ease-in-out;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .animate-slide-in {
-            animation: slideIn 0.3s ease-out;
-        }
-        
-        @keyframes slideIn {
-            from { transform: translateX(20px); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
-        }
-        
-        .tool-card {
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        
-        .tool-card:hover {
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-        }
-        
-        .search-highlight {
-            background: linear-gradient(120deg, #fdf2f8 0%, #fdf2f8 100%);
-            background-repeat: no-repeat;
-            background-size: 100% 0.2em;
-            background-position: 0 88%;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>TOOLHUB — Professional Utilities</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  :root {
+    --bg-dark: #0a0c12;
+    --surface-1: #111318;
+    --surface-2: #181c24;
+    --surface-3: #1f232e;
+    --border-subtle: #2a2f3c;
+    --accent-primary: #3b82f6;
+    --accent-primary-glow: rgba(59,130,246,0.25);
+    --accent-success: #10b981;
+    --accent-warning: #f59e0b;
+    --text-primary: #f1f5f9;
+    --text-secondary: #94a3b8;
+    --text-muted: #5b6a8a;
+    --card-radius: 20px;
+    --btn-radius: 14px;
+  }
+
+  body {
+    background: var(--bg-dark);
+    color: var(--text-primary);
+    font-family: 'Inter', sans-serif;
+    overflow-x: hidden;
+    min-height: 100vh;
+  }
+
+  /* background refinement */
+  .bg-grain {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: radial-gradient(rgba(255,255,255,0.02) 1px, transparent 1px);
+    background-size: 24px 24px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .app-container {
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 0 20px 100px 20px;
+    position: relative;
+    z-index: 2;
+  }
+
+  /* header */
+  .header {
+    padding: 28px 0 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    gap: 16px;
+    border-bottom: 1px solid var(--border-subtle);
+    margin-bottom: 32px;
+  }
+  .logo h1 {
+    font-size: 1.9rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    background: linear-gradient(145deg, #fff, var(--accent-primary));
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .logo p {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    margin-top: 4px;
+  }
+  .badge-header {
+    background: var(--surface-2);
+    padding: 8px 16px;
+    border-radius: 60px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--accent-primary);
+    border: 1px solid var(--border-subtle);
+    backdrop-filter: blur(4px);
+  }
+
+  /* tool grid (modern) */
+  .tools-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 18px;
+    margin-bottom: 48px;
+  }
+  .tool-card {
+    background: var(--surface-1);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--card-radius);
+    padding: 24px 16px 20px;
+    transition: all 0.2s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+    cursor: pointer;
+    position: relative;
+    backdrop-filter: blur(2px);
+  }
+  .tool-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--accent-primary);
+    background: var(--surface-2);
+    box-shadow: 0 16px 32px -12px rgba(0,0,0,0.5);
+  }
+  .tool-icon {
+    font-size: 2.2rem;
+    margin-bottom: 16px;
+  }
+  .tool-name {
+    font-weight: 700;
+    font-size: 1.1rem;
+    letter-spacing: -0.2px;
+    margin-bottom: 4px;
+  }
+  .tool-desc {
+    font-size: 0.7rem;
+    color: var(--text-secondary);
+    line-height: 1.4;
+  }
+  .tool-badge {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    font-size: 0.6rem;
+    font-weight: 600;
+    background: rgba(59,130,246,0.12);
+    padding: 4px 8px;
+    border-radius: 40px;
+    color: var(--accent-primary);
+    border: 0.5px solid rgba(59,130,246,0.3);
+  }
+
+  /* PANEL OVERLAY (modern sheet) */
+  .panel-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(5, 7, 12, 0.85);
+    backdrop-filter: blur(14px);
+    z-index: 1000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+  .panel-overlay.open {
+    display: flex;
+    animation: fadeIn 0.2s ease;
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; backdrop-filter: blur(0);}
+    to { opacity: 1; backdrop-filter: blur(14px);}
+  }
+  .panel {
+    background: var(--surface-2);
+    border-radius: 32px;
+    max-width: 800px;
+    width: 100%;
+    max-height: 85vh;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--border-subtle);
+    box-shadow: 0 40px 90px rgba(0,0,0,0.5);
+    animation: slideUp 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+    overflow: hidden;
+  }
+  @keyframes slideUp {
+    from { transform: translateY(30px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+  .panel-header {
+    padding: 22px 24px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    border-bottom: 1px solid var(--border-subtle);
+    background: var(--surface-1);
+  }
+  .panel-icon {
+    width: 48px;
+    height: 48px;
+    background: rgba(59,130,246,0.12);
+    border-radius: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+  }
+  .panel-title-area {
+    flex: 1;
+  }
+  .panel-title {
+    font-size: 1.4rem;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+  }
+  .panel-subtitle {
+    font-size: 0.7rem;
+    color: var(--text-secondary);
+  }
+  .panel-close {
+    background: var(--surface-3);
+    border: none;
+    width: 36px;
+    height: 36px;
+    border-radius: 40px;
+    color: var(--text-secondary);
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: 0.2s;
+  }
+  .panel-close:hover {
+    background: var(--border-subtle);
+    color: white;
+  }
+  .panel-body {
+    padding: 24px;
+    overflow-y: auto;
+    flex: 1;
+  }
+
+  /* form elements – rectangular */
+  input, select, textarea, button {
+    font-family: 'Inter', sans-serif;
+    border-radius: var(--btn-radius);
+  }
+  .input-group {
+    margin-bottom: 16px;
+  }
+  .input-group label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-secondary);
+    display: block;
+    margin-bottom: 6px;
+  }
+  input, select, textarea {
+    width: 100%;
+    background: var(--surface-1);
+    border: 1px solid var(--border-subtle);
+    padding: 12px 14px;
+    color: var(--text-primary);
+    font-size: 0.9rem;
+    outline: none;
+    transition: 0.2s;
+  }
+  input:focus, select:focus, textarea:focus {
+    border-color: var(--accent-primary);
+    box-shadow: 0 0 0 2px rgba(59,130,246,0.2);
+  }
+  button {
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.2s;
+    border: none;
+  }
+  .btn-primary {
+    background: var(--accent-primary);
+    color: white;
+    padding: 10px 18px;
+    font-size: 0.85rem;
+  }
+  .btn-primary:hover {
+    background: #2563eb;
+    transform: translateY(-1px);
+  }
+  .btn-secondary {
+    background: var(--surface-3);
+    border: 1px solid var(--border-subtle);
+    color: var(--text-primary);
+    padding: 10px 16px;
+  }
+  .btn-secondary:hover {
+    background: var(--surface-1);
+    border-color: var(--accent-primary);
+  }
+  .btn-sm {
+    padding: 6px 14px;
+    font-size: 0.75rem;
+  }
+  .action-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin: 20px 0 12px;
+  }
+  .result-card {
+    background: var(--surface-1);
+    border: 1px solid var(--border-subtle);
+    border-radius: 20px;
+    padding: 18px;
+    margin-top: 16px;
+    text-align: center;
+  }
+  .result-number {
+    font-size: 2.8rem;
+    font-weight: 800;
+    background: linear-gradient(145deg, #fff, var(--accent-primary));
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .history-item {
+    padding: 8px 12px;
+    background: var(--surface-1);
+    border-radius: 12px;
+    margin-bottom: 6px;
+    font-family: monospace;
+    font-size: 0.8rem;
+    border-left: 2px solid var(--accent-primary);
+  }
+  .pill-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 10px;
+  }
+  .pill {
+    background: var(--surface-3);
+    padding: 6px 14px;
+    border-radius: 40px;
+    font-size: 0.8rem;
+  }
+  .grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  @media (max-width: 600px) {
+    .app-container { padding: 0 16px 90px 16px; }
+    .tools-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    .tool-card { padding: 18px 12px; }
+    .tool-icon { font-size: 1.8rem; }
+    .tool-name { font-size: 0.9rem; }
+    .panel-header { padding: 16px; }
+    .panel-title { font-size: 1.2rem; }
+    .grid-2 { grid-template-columns: 1fr; }
+    .result-number { font-size: 2rem; }
+  }
+  /* tab navigation */
+  .tab-bar {
+    display: flex;
+    gap: 4px;
+    background: var(--surface-1);
+    border-radius: 60px;
+    padding: 4px;
+    margin-bottom: 24px;
+    overflow-x: auto;
+  }
+  .tab-btn {
+    flex: 1;
+    text-align: center;
+    background: transparent;
+    color: var(--text-secondary);
+    padding: 10px 0;
+    border-radius: 40px;
+    font-weight: 600;
+    font-size: 0.75rem;
+    white-space: nowrap;
+  }
+  .tab-btn.active {
+    background: var(--accent-primary);
+    color: white;
+  }
+  .tab-pane { display: none; }
+  .tab-pane.active { display: block; animation: fadeQuick 0.2s; }
+  @keyframes fadeQuick { from { opacity: 0; } to { opacity: 1; } }
+  .toast {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: var(--accent-primary);
+    color: white;
+    padding: 10px 24px;
+    border-radius: 60px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    opacity: 0;
+    transition: 0.2s;
+    z-index: 1200;
+    pointer-events: none;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  .strength-bar {
+    height: 6px;
+    background: var(--surface-3);
+    border-radius: 10px;
+    overflow: hidden;
+    margin: 8px 0;
+  }
+  .strength-fill { height: 100%; width: 0; background: var(--accent-success); transition: 0.2s; }
+</style>
 </head>
-<body class="bg-gradient-to-br from-slate-50 to-blue-50 min-h-screen">
-
-    <!-- Navigation -->
-    <nav class="glass-effect sticky top-0 z-50 border-b border-white/20">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-16">
-                <!-- Logo -->
-                <div class="flex items-center space-x-3 cursor-pointer group" onclick="showHome()">
-                    <div class="bg-gradient-to-r from-blue-600 to-indigo-600 p-2 rounded-xl shadow-lg group-hover:shadow-xl transition-all group-hover:scale-110">
-                        <svg class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <rect x="3" y="3" width="7" height="7" rx="1"/>
-                            <rect x="14" y="3" width="7" height="7" rx="1"/>
-                            <rect x="3" y="14" width="7" height="7" rx="1"/>
-                            <rect x="14" y="14" width="7" height="7" rx="1"/>
-                        </svg>
-                    </div>
-                    <span class="font-extrabold text-xl tracking-tight bg-gradient-to-r from-slate-900 to-slate-700 bg-clip-text text-transparent">
-                        K-Prep <span class="text-blue-600">Store</span>
-                    </span>
-                </div>
-
-                <!-- Right Navigation -->
-                <div class="flex items-center space-x-4">
-                    <!-- Quick Stats -->
-                    <div class="hidden md:flex items-center space-x-3">
-                        <div class="flex items-center space-x-1 bg-blue-50 px-3 py-1.5 rounded-full">
-                            <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
-                            <span class="text-sm font-medium text-blue-700">4 Tools Active</span>
-                        </div>
-                    </div>
-                    
-                    <!-- Settings Button -->
-                    <button class="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-xl transition-all">
-                        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <circle cx="12" cy="12" r="3"/>
-                            <path d="M19.4 15a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H5.78a1.65 1.65 0 0 0-1.51 1 1.65 1.65 0 0 0 .33 1.82l.04.04A10 10 0 0 0 12 17.66a10 10 0 0 0 6.36-2.62z"/>
-                            <path d="M16.5 6.5 19 9"/>
-                            <path d="M7.5 6.5 5 9"/>
-                        </svg>
-                    </button>
-                    
-                    <!-- User Avatar -->
-                    <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-sm font-bold text-white shadow-md">
-                        JS
-                    </div>
-                </div>
-            </div>
-        </div>
-    </nav>
-
-    <!-- Main Content Container -->
-    <div id="app" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <!-- Dynamic content will be inserted here -->
+<body>
+<div class="bg-grain"></div>
+<div class="app-container">
+  <div class="header">
+    <div class="logo">
+      <h1>TOOLHUB</h1>
+      <p>professional utilities · real time</p>
     </div>
+    <div class="badge-header">⚡ live tools</div>
+  </div>
 
-    <!-- Footer -->
-    <footer class="mt-16 border-t border-slate-200 bg-white/50 backdrop-blur-sm">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-            <div class="flex flex-col md:flex-row justify-between items-center gap-4">
-                <div class="text-slate-400 text-sm">
-                    © 2024 K-Prep Tool Store. Made with <span class="text-red-400">❤️</span> for TOPIK warriors
-                </div>
-                <div class="flex gap-8 text-sm">
-                    <a href="#" class="text-slate-500 hover:text-blue-600 transition-colors font-medium">Documentation</a>
-                    <a href="#" class="text-slate-500 hover:text-blue-600 transition-colors font-medium">Support</a>
-                    <a href="#" class="text-slate-500 hover:text-blue-600 transition-colors font-medium">Updates</a>
-                </div>
-            </div>
-        </div>
-    </footer>
+  <div class="tools-grid" id="toolsGrid"></div>
+</div>
 
-    <script>
-        // State management
-        let currentView = 'home';
-        let searchQuery = '';
-        let selectedCategory = 'all';
+<div class="panel-overlay" id="panelOverlay">
+  <div class="panel">
+    <div class="panel-header">
+      <div class="panel-icon" id="panelIcon">🎲</div>
+      <div class="panel-title-area">
+        <div class="panel-title" id="panelTitle">Randomizer</div>
+        <div class="panel-subtitle" id="panelSubtitle">// pro generator</div>
+      </div>
+      <button class="panel-close" id="closePanelBtn">✕</button>
+    </div>
+    <div class="panel-body" id="panelBody"></div>
+  </div>
+</div>
+<div class="toast" id="toastMsg"></div>
 
-        // Tools data
-        const tools = [
-            {
-                id: 'topik01',
-                title: 'Topik-1 Mastery',
-                description: 'Comprehensive elementary level TOPIK study materials with audio support and interactive exercises.',
-                icon: 'book',
-                color: 'from-blue-500 to-cyan-500',
-                lightBg: 'bg-blue-50',
-                category: 'Study',
-                popularity: 98,
-                lastUpdated: '2 days ago',
-                features: ['Audio Lessons', 'Grammar Guide', 'Practice Tests']
-            },
-            {
-                id: 'papers',
-                title: 'Past Papers Pro',
-                description: 'Complete archive of official TOPIK exam papers (2014-2024) with answer keys and scoring guides.',
-                icon: 'file',
-                color: 'from-emerald-500 to-teal-500',
-                lightBg: 'bg-emerald-50',
-                category: 'Exams',
-                popularity: 95,
-                lastUpdated: '1 week ago',
-                features: ['PDF Downloads', 'Answer Keys', 'Audio Scripts']
-            },
-            {
-                id: 'vocabulary',
-                title: 'Vocab Builder Plus',
-                description: 'Smart flashcards with spaced repetition system. Master 6000+ essential Korean words.',
-                icon: 'bookmark',
-                color: 'from-purple-500 to-pink-500',
-                lightBg: 'bg-purple-50',
-                category: 'Tools',
-                popularity: 92,
-                lastUpdated: '3 days ago',
-                features: ['Spaced Repetition', 'Example Sentences', 'Pronunciation']
-            },
-            {
-                id: 'mock-test',
-                title: 'Mock Test Simulator',
-                description: 'Realistic exam simulation with timer, auto-grading, and detailed performance analytics.',
-                icon: 'clock',
-                color: 'from-orange-500 to-red-500',
-                lightBg: 'bg-orange-50',
-                category: 'Practice',
-                popularity: 96,
-                lastUpdated: 'Yesterday',
-                features: ['Timed Mode', 'Score Analysis', 'Weakness Detection']
-            }
-        ];
+<script>
+  // ======================== TOOLS REGISTRY (NO COIN) ==================
+  const toolsCatalog = [
+    { id: 'randomizer', icon: '🎲', name: 'Randomizer', desc: 'Numbers, lists, groups, weighted', badge: 'PRO', color: '#3b82f6' },
+    { id: 'dice', icon: '🎯', name: 'Dice Roller', desc: 'd4 to d100, modifiers', badge: 'DICE', color: '#f59e0b' },
+    { id: 'wheel', icon: '🎡', name: 'Spin Wheel', desc: 'Custom decision spinner', badge: 'PICK', color: '#10b981' },
+    { id: 'password', icon: '🔐', name: 'Password Gen', desc: 'Secure & strength meter', badge: 'SECURE', color: '#8b5cf6' },
+    { id: 'uuid', icon: '🆔', name: 'UUID v4', desc: 'Unique IDs generator', badge: 'DEV', color: '#ec489a' }
+  ];
 
-        // Helper function to get icon SVG
-        function getIcon(iconName, className = "w-8 h-8") {
-            const icons = {
-                book: `<svg class="${className}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>`,
-                file: `<svg class="${className}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>`,
-                bookmark: `<svg class="${className}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>`,
-                clock: `<svg class="${className}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>`,
-                star: `<svg class="${className}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`
-            };
-            return icons[iconName] || icons.book;
+  const gridContainer = document.getElementById('toolsGrid');
+  function buildToolGrid() {
+    gridContainer.innerHTML = '';
+    toolsCatalog.forEach(t => {
+      const card = document.createElement('div');
+      card.className = 'tool-card';
+      card.setAttribute('data-id', t.id);
+      card.innerHTML = `
+        <div class="tool-badge">${t.badge}</div>
+        <div class="tool-icon">${t.icon}</div>
+        <div class="tool-name">${t.name}</div>
+        <div class="tool-desc">${t.desc}</div>
+      `;
+      card.addEventListener('click', () => openToolPanel(t.id));
+      gridContainer.appendChild(card);
+    });
+  }
+
+  // Panel management
+  const overlay = document.getElementById('panelOverlay');
+  const panelBody = document.getElementById('panelBody');
+  const panelIcon = document.getElementById('panelIcon');
+  const panelTitle = document.getElementById('panelTitle');
+  const panelSubtitle = document.getElementById('panelSubtitle');
+  function openToolPanel(toolId) {
+    const tool = toolsCatalog.find(t => t.id === toolId);
+    if (!tool) return;
+    panelIcon.textContent = tool.icon;
+    panelTitle.textContent = tool.name;
+    panelSubtitle.textContent = `// ${tool.desc}`;
+    renderToolContent(toolId);
+    overlay.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closePanel() {
+    overlay.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+  document.getElementById('closePanelBtn').addEventListener('click', closePanel);
+  overlay.addEventListener('click', (e) => { if (e.target === overlay) closePanel(); });
+  function toastMsg(msg) {
+    const toast = document.getElementById('toastMsg');
+    toast.textContent = msg;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 2000);
+  }
+  function copyToClipboard(text) {
+    navigator.clipboard.writeText(text).then(() => toastMsg('Copied!'));
+  }
+
+  // =========================== RANDOMIZER (full featured) ===========================
+  let randHistoryNum = [];
+  let lastGroupsResult = [];
+  let lastSeqArray = [];
+  let weightedItems = [];
+
+  function renderRandomizer() {
+    panelBody.innerHTML = `
+      <div class="tab-bar" id="randTabsBar">
+        <button class="tab-btn active" data-tab="num">🔢 Numbers</button>
+        <button class="tab-btn" data-tab="multi">📊 Multiple</button>
+        <button class="tab-btn" data-tab="list">📋 From List</button>
+        <button class="tab-btn" data-tab="groups">👥 Groups</button>
+        <button class="tab-btn" data-tab="seq">🔀 Sequence</button>
+        <button class="tab-btn" data-tab="weighted">⚖️ Weighted</button>
+      </div>
+      <div id="randContent"></div>
+    `;
+    const tabs = document.querySelectorAll('#randTabsBar .tab-btn');
+    const contentDiv = document.getElementById('randContent');
+    function switchTab(tabId) {
+      let html = '';
+      if (tabId === 'num') html = getNumberTab();
+      else if (tabId === 'multi') html = getMultiTab();
+      else if (tabId === 'list') html = getListTab();
+      else if (tabId === 'groups') html = getGroupsTab();
+      else if (tabId === 'seq') html = getSeqTab();
+      else if (tabId === 'weighted') html = getWeightedTab();
+      contentDiv.innerHTML = html;
+      attachRandEventListeners(tabId);
+    }
+    tabs.forEach(btn => {
+      btn.addEventListener('click', () => {
+        tabs.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        switchTab(btn.getAttribute('data-tab'));
+      });
+    });
+    switchTab('num');
+  }
+
+  function getNumberTab() { return `<div class="input-group"><label>MIN</label><input type="number" id="numMin" value="1"></div><div class="input-group"><label>MAX</label><input type="number" id="numMax" value="100"></div><button class="btn-primary" id="genNumBtn">🎲 Generate</button><div class="result-card" id="numResult">—</div><div id="numHistory"></div>`; }
+  function getMultiTab() { return `<div class="grid-2"><div class="input-group"><label>MIN</label><input type="number" id="multiMin" value="1"></div><div class="input-group"><label>MAX</label><input type="number" id="multiMax" value="100"></div></div><div class="input-group"><label>COUNT</label><input type="number" id="multiCount" value="5" min="1" max="30"></div><label class="custom-check" style="display:flex;gap:8px;margin:8px 0"><input type="checkbox" id="uniqueOnly"> <span style="color:var(--text-secondary)">Unique only</span></label><button class="btn-primary" id="genMultiBtn">Generate batch</button><div class="result-card" id="multiResult"></div>`; }
+  function getListTab() { return `<div class="input-group"><label>ITEMS (comma or line break)</label><textarea id="listRaw" rows="4" placeholder="Apple, Banana, Cherry&#10;Pizza, Sushi, Burger"></textarea></div><div class="input-group"><label>Number to pick</label><input type="number" id="pickCount" value="1" min="1"></div><button class="btn-primary" id="pickListBtn">Pick random</button><div class="result-card" id="listPickResult"></div>`; }
+  function getGroupsTab() { return `<div class="input-group"><label>MEMBERS (comma or newline)</label><textarea id="groupMembers" rows="4" placeholder="Alice, Bob, Charlie, Diana, Eve, Frank, Grace, Henry"></textarea></div><div class="grid-2"><div class="input-group"><label># GROUPS</label><input type="number" id="groupCount" value="3" min="2"></div><div class="input-group"><label>PREFIX</label><input type="text" id="groupPrefix" value="Team"></div></div><button class="btn-primary" id="makeGroupsBtn">⚡ Create groups</button><div id="groupsDisplay"></div>`; }
+  function getSeqTab() { return `<div class="grid-2"><div class="input-group"><label>FROM</label><input type="number" id="seqFrom" value="1"></div><div class="input-group"><label>TO</label><input type="number" id="seqTo" value="20"></div></div><button class="btn-primary" id="shuffleSeqBtn">🔀 Shuffle sequence</button><div class="result-card" id="seqResultDisplay"></div>`; }
+  function getWeightedTab() { return `<div style="display:flex;gap:8px;flex-wrap:wrap"><input type="text" id="weightItem" placeholder="Item name" style="flex:2"><input type="number" id="weightVal" placeholder="Weight" style="width:90px"><button class="btn-secondary" id="addWeightBtn">Add</button><button class="btn-secondary" id="loadWeightPreset">Load Example</button></div><div id="weightedListArea" style="margin:16px 0; max-height:200px; overflow:auto"></div><button class="btn-primary" id="rollWeightedBtn">🎲 Pick weighted</button><div class="result-card" id="weightedResult"></div>`; }
+
+  function attachRandEventListeners(activeTab) {
+    if (activeTab === 'num') {
+      document.getElementById('genNumBtn')?.addEventListener('click', () => {
+        const min = +document.getElementById('numMin').value, max = +document.getElementById('numMax').value;
+        if (min > max) { toastMsg('Min <= Max'); return; }
+        const val = Math.floor(Math.random() * (max - min + 1)) + min;
+        randHistoryNum.unshift({ val, range: `${min}-${max}`, time: new Date().toLocaleTimeString() });
+        if (randHistoryNum.length > 6) randHistoryNum.pop();
+        document.getElementById('numResult').innerHTML = `<div class="result-number">${val}</div><div class="text-secondary" style="font-size:0.7rem">Range ${min}–${max}</div>`;
+        const histDiv = document.getElementById('numHistory');
+        histDiv.innerHTML = randHistoryNum.length ? `<div style="margin-top:12px"><strong>Recent</strong>${randHistoryNum.map(h => `<div class="history-item">${h.time}  →  ${h.val}</div>`).join('')}</div>` : '';
+      });
+    }
+    if (activeTab === 'multi') {
+      document.getElementById('genMultiBtn')?.addEventListener('click', () => {
+        let min = +document.getElementById('multiMin').value, max = +document.getElementById('multiMax').value, cnt = Math.min(+document.getElementById('multiCount').value, 30);
+        const unique = document.getElementById('uniqueOnly').checked;
+        if (min > max) { toastMsg('Min <= Max'); return; }
+        let results = [];
+        if (unique) {
+          if (max - min + 1 < cnt) { toastMsg('Range too small for unique'); return; }
+          let pool = Array.from({ length: max - min + 1 }, (_, i) => min + i);
+          for (let i = pool.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [pool[i], pool[j]] = [pool[j], pool[i]]; }
+          results = pool.slice(0, cnt);
+        } else {
+          for (let i = 0; i < cnt; i++) results.push(Math.floor(Math.random() * (max - min + 1)) + min);
         }
+        const sum = results.reduce((a, b) => a + b, 0);
+        document.getElementById('multiResult').innerHTML = `<div class="pill-list">${results.map(r => `<span class="pill">${r}</span>`).join('')}</div><div style="margin-top:12px; font-size:0.75rem">Sum: ${sum} | Avg: ${(sum/results.length).toFixed(1)}</div>`;
+      });
+    }
+    if (activeTab === 'list') {
+      document.getElementById('pickListBtn')?.addEventListener('click', () => {
+        let raw = document.getElementById('listRaw').value;
+        let items = raw.split(/,|\n/).map(s => s.trim()).filter(Boolean);
+        if (!items.length) { toastMsg('Enter items'); return; }
+        let cnt = Math.min(+document.getElementById('pickCount').value, items.length);
+        let shuffled = [...items];
+        for (let i = shuffled.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]; }
+        let picked = shuffled.slice(0, cnt);
+        document.getElementById('listPickResult').innerHTML = `<div class="pill-list">${picked.map(p => `<span class="pill">${p}</span>`).join('')}</div><div style="margin-top:6px">from ${items.length} items</div>`;
+      });
+    }
+    if (activeTab === 'groups') {
+      document.getElementById('makeGroupsBtn')?.addEventListener('click', () => {
+        let raw = document.getElementById('groupMembers').value;
+        let members = raw.split(/,|\n/).map(s => s.trim()).filter(Boolean);
+        if (members.length < 2) { toastMsg('Need at least 2 members'); return; }
+        let groupNum = Math.min(Math.max(+document.getElementById('groupCount').value, 2), members.length);
+        let shuffled = [...members];
+        for (let i = shuffled.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]; }
+        let groups = Array.from({ length: groupNum }, () => []);
+        shuffled.forEach((m, idx) => groups[idx % groupNum].push(m));
+        lastGroupsResult = groups;
+        let prefix = document.getElementById('groupPrefix').value || 'Group';
+        let html = `<div style="display:flex; flex-direction:column; gap:12px; margin-top:12px">`;
+        groups.forEach((g, i) => { html += `<div style="background:var(--surface-1); border-radius:20px; padding:12px"><div style="font-weight:700">${prefix} ${i+1} <span style="font-size:0.7rem; color:var(--text-muted)">(${g.length})</span></div><div class="pill-list">${g.map(m => `<span class="pill">${m}</span>`).join('')}</div></div>`; });
+        html += `<button class="btn-secondary btn-sm" id="copyGroupsBtn">📋 Copy groups</button></div>`;
+        document.getElementById('groupsDisplay').innerHTML = html;
+        document.getElementById('copyGroupsBtn')?.addEventListener('click', () => {
+          let txt = lastGroupsResult.map((g, idx) => `${prefix} ${idx+1}: ${g.join(', ')}`).join('\n');
+          copyToClipboard(txt);
+        });
+      });
+    }
+    if (activeTab === 'seq') {
+      document.getElementById('shuffleSeqBtn')?.addEventListener('click', () => {
+        let from = +document.getElementById('seqFrom').value, to = +document.getElementById('seqTo').value;
+        if (from > to) { toastMsg('From <= To'); return; }
+        let arr = Array.from({ length: to - from + 1 }, (_, i) => from + i);
+        for (let i = arr.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [arr[i], arr[j]] = [arr[j], arr[i]]; }
+        lastSeqArray = arr;
+        document.getElementById('seqResultDisplay').innerHTML = `<div class="pill-list">${arr.map(n => `<span class="pill">${n}</span>`).join('')}</div><button class="btn-secondary btn-sm" id="copySeqBtn">Copy order</button>`;
+        document.getElementById('copySeqBtn')?.addEventListener('click', () => copyToClipboard(lastSeqArray.join(', ')));
+      });
+    }
+    if (activeTab === 'weighted') {
+      function renderWeightedList() {
+        const container = document.getElementById('weightedListArea');
+        if (!weightedItems.length) { container.innerHTML = '<div style="color:var(--text-muted); padding:12px">No items added</div>'; return; }
+        container.innerHTML = weightedItems.map((it, idx) => `<div style="display:flex; justify-content:space-between; background:var(--surface-1); padding:8px 12px; border-radius:12px; margin-bottom:6px"><span><strong>${it.name}</strong> (weight ${it.weight})</span><button class="removeWeight" data-idx="${idx}" style="background:none; color:red; border:none; cursor:pointer">✕</button></div>`).join('');
+        document.querySelectorAll('.removeWeight').forEach(btn => {
+          btn.addEventListener('click', (e) => { const idx = parseInt(btn.getAttribute('data-idx')); weightedItems.splice(idx, 1); renderWeightedList(); });
+        });
+      }
+      document.getElementById('addWeightBtn')?.addEventListener('click', () => {
+        let name = document.getElementById('weightItem').value.trim();
+        let weight = parseInt(document.getElementById('weightVal').value);
+        if (!name) { toastMsg('Enter item name'); return; }
+        if (isNaN(weight) || weight < 1) weight = 1;
+        weightedItems.push({ name, weight });
+        document.getElementById('weightItem').value = '';
+        renderWeightedList();
+      });
+      document.getElementById('loadWeightPreset')?.addEventListener('click', () => {
+        weightedItems = [{ name: 'Common', weight: 60 }, { name: 'Rare', weight: 25 }, { name: 'Epic', weight: 10 }, { name: 'Legendary', weight: 5 }];
+        renderWeightedList();
+      });
+      document.getElementById('rollWeightedBtn')?.addEventListener('click', () => {
+        if (!weightedItems.length) { toastMsg('Add weighted items first'); return; }
+        let total = weightedItems.reduce((s, i) => s + i.weight, 0);
+        let rand = Math.random() * total;
+        let accum = 0, selected = null;
+        for (let item of weightedItems) { accum += item.weight; if (rand <= accum) { selected = item; break; } }
+        if (!selected) selected = weightedItems[0];
+        document.getElementById('weightedResult').innerHTML = `<div class="result-number" style="font-size:1.8rem">🎲 ${selected.name}</div><div>weight ${selected.weight} · chance ${((selected.weight/total)*100).toFixed(1)}%</div>`;
+      });
+      renderWeightedList();
+    }
+  }
 
-        // Dashboard view
-        function Dashboard() {
-            const filteredTools = tools.filter(tool => 
-                (selectedCategory === 'all' || tool.category === selectedCategory) &&
-                (tool.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                tool.description.toLowerCase().includes(searchQuery.toLowerCase()))
-            );
+  // ===================== DICE ROLLER =====================
+  let diceHistory = [];
+  function renderDice() {
+    panelBody.innerHTML = `
+      <div class="tab-bar" style="margin-bottom:20px"><button class="tab-btn active" data-dice="6">d6</button><button data-dice="4">d4</button><button data-dice="8">d8</button><button data-dice="10">d10</button><button data-dice="12">d12</button><button data-dice="20">d20</button><button data-dice="100">d100</button></div>
+      <div class="grid-2"><div class="input-group"><label># of dice</label><input type="number" id="diceCount" value="1" min="1" max="12"></div><div class="input-group"><label>Modifier</label><input type="number" id="diceMod" value="0"></div></div>
+      <button class="btn-primary" id="rollDiceBtn">🎲 Roll</button>
+      <div class="result-card" id="diceResultArea">—</div>
+      <div id="diceHistList"></div>
+    `;
+    let currentDice = 6;
+    document.querySelectorAll('[data-dice]').forEach(btn => {
+      btn.addEventListener('click', () => { document.querySelectorAll('[data-dice]').forEach(b => b.classList.remove('active')); btn.classList.add('active'); currentDice = parseInt(btn.getAttribute('data-dice')); });
+      if (btn.getAttribute('data-dice') === '6') btn.classList.add('active');
+    });
+    document.getElementById('rollDiceBtn').addEventListener('click', () => {
+      let count = Math.min(12, Math.max(1, +document.getElementById('diceCount').value));
+      let mod = +document.getElementById('diceMod').value;
+      let rolls = Array.from({ length: count }, () => Math.floor(Math.random() * currentDice) + 1);
+      let sum = rolls.reduce((a,b)=>a+b,0) + mod;
+      let displayRolls = rolls.join(' + ');
+      document.getElementById('diceResultArea').innerHTML = `<div class="result-number">${sum}</div><div style="font-size:0.7rem">${displayRolls} ${mod ? (mod>0 ? `+ ${mod}` : `- ${-mod}`) : ''}</div><div class="pill-list">${rolls.map(r=>`<span class="pill">${r}</span>`).join('')}</div>`;
+      diceHistory.unshift(`${count}d${currentDice} ${mod? (mod>0?`+${mod}`:`${mod}`):''} → ${sum}`);
+      if(diceHistory.length > 5) diceHistory.pop();
+      document.getElementById('diceHistList').innerHTML = diceHistory.map(h=>`<div class="history-item">${h}</div>`).join('');
+    });
+  }
 
-            const categories = ['all', ...new Set(tools.map(t => t.category))];
-
-            return `
-                <div class="animate-fade-in">
-                    <!-- Header -->
-                    <header class="mb-8">
-                        <h1 class="text-4xl font-extrabold text-slate-900">Tool Store</h1>
-                        <p class="text-slate-500 mt-2 text-lg">Access premium TOPIK study resources and interactive tools.</p>
-                    </header>
-
-                    <!-- Stats Bar -->
-                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-                        <div class="bg-white rounded-2xl p-4 border border-slate-100 shadow-sm">
-                            <div class="flex items-center justify-between">
-                                <div>
-                                    <p class="text-sm text-slate-500">Total Tools</p>
-                                    <p class="text-2xl font-bold text-slate-900">${tools.length}</p>
-                                </div>
-                                <div class="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center">
-                                    ${getIcon('book', 'w-5 h-5 text-blue-600')}
-                                </div>
-                            </div>
-                        </div>
-                        <div class="bg-white rounded-2xl p-4 border border-slate-100 shadow-sm">
-                            <div class="flex items-center justify-between">
-                                <div>
-                                    <p class="text-sm text-slate-500">Active Users</p>
-                                    <p class="text-2xl font-bold text-slate-900">1,234</p>
-                                </div>
-                                <div class="w-10 h-10 bg-green-100 rounded-xl flex items-center justify-center">
-                                    ${getIcon('star', 'w-5 h-5 text-green-600')}
-                                </div>
-                            </div>
-                        </div>
-                        <div class="bg-white rounded-2xl p-4 border border-slate-100 shadow-sm">
-                            <div class="flex items-center justify-between">
-                                <div>
-                                    <p class="text-sm text-slate-500">Avg. Rating</p>
-                                    <p class="text-2xl font-bold text-slate-900">4.8</p>
-                                </div>
-                                <div class="w-10 h-10 bg-yellow-100 rounded-xl flex items-center justify-center">
-                                    ${getIcon('star', 'w-5 h-5 text-yellow-600')}
-                                </div>
-                            </div>
-                        </div>
-                        <div class="bg-white rounded-2xl p-4 border border-slate-100 shadow-sm">
-                            <div class="flex items-center justify-between">
-                                <div>
-                                    <p class="text-sm text-slate-500">Downloads</p>
-                                    <p class="text-2xl font-bold text-slate-900">45.2K</p>
-                                </div>
-                                <div class="w-10 h-10 bg-purple-100 rounded-xl flex items-center justify-center">
-                                    <svg class="w-5 h-5 text-purple-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Search and Filter Bar -->
-                    <div class="flex flex-col sm:flex-row gap-4 mb-8">
-                        <div class="flex-1 relative">
-                            <svg class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <circle cx="11" cy="11" r="8"/>
-                                <line x1="21" y1="21" x2="16.65" y2="16.65"/>
-                            </svg>
-                            <input
-                                type="text"
-                                placeholder="Search for tools..."
-                                class="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all bg-white"
-                                value="${searchQuery}"
-                                oninput="updateSearch(this.value)"
-                            />
-                        </div>
-                        <div class="flex gap-2 overflow-x-auto pb-2 sm:pb-0">
-                            ${categories.map(cat => `
-                                <button 
-                                    onclick="selectCategory('${cat}')"
-                                    class="px-4 py-2 rounded-xl font-medium text-sm transition-all whitespace-nowrap ${selectedCategory === cat ? 'bg-blue-600 text-white shadow-md' : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200'}"
-                                >
-                                    ${cat.charAt(0).toUpperCase() + cat.slice(1)}
-                                </button>
-                            `).join('')}
-                        </div>
-                    </div>
-
-                    <!-- Tools Grid -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        ${filteredTools.map(tool => `
-                            <div onclick="openTool('${tool.id}')" class="tool-card group relative bg-white rounded-2xl p-6 border border-slate-100 shadow-sm cursor-pointer hover-scale">
-                                <!-- Popularity Badge -->
-                                <div class="absolute top-4 right-4 bg-slate-100 rounded-full px-2 py-1 text-xs font-medium text-slate-600">
-                                    🔥 ${tool.popularity}%
-                                </div>
-                                
-                                <!-- Icon -->
-                                <div class="bg-gradient-to-br ${tool.color} w-16 h-16 rounded-2xl flex items-center justify-center mb-4 shadow-lg group-hover:scale-110 transition-transform">
-                                    ${getIcon(tool.icon, 'w-8 h-8 text-white')}
-                                </div>
-                                
-                                <!-- Category -->
-                                <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">${tool.category}</span>
-                                
-                                <!-- Title -->
-                                <h3 class="text-xl font-bold text-slate-800 mt-1 group-hover:text-blue-600 transition-colors">${tool.title}</h3>
-                                
-                                <!-- Description -->
-                                <p class="text-slate-500 mt-2 text-sm leading-relaxed">${tool.description}</p>
-                                
-                                <!-- Features -->
-                                <div class="mt-4 flex flex-wrap gap-2">
-                                    ${tool.features.slice(0, 2).map(f => `
-                                        <span class="px-2 py-1 bg-slate-100 rounded-lg text-xs font-medium text-slate-600">${f}</span>
-                                    `).join('')}
-                                    ${tool.features.length > 2 ? `
-                                        <span class="px-2 py-1 bg-slate-100 rounded-lg text-xs font-medium text-slate-600">+${tool.features.length - 2}</span>
-                                    ` : ''}
-                                </div>
-                                
-                                <!-- Last Updated -->
-                                <div class="mt-4 flex items-center justify-between">
-                                    <span class="text-xs text-slate-400">Updated ${tool.lastUpdated}</span>
-                                    <span class="flex items-center text-blue-600 font-medium text-sm">
-                                        Open <svg class="ml-1 w-4 h-4 group-hover:translate-x-1 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-                                    </span>
-                                </div>
-                            </div>
-                        `).join('')}
-                        
-                        ${filteredTools.length === 0 ? `
-                            <div class="col-span-full py-20 text-center">
-                                <svg class="w-16 h-16 mx-auto mb-4 text-slate-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
-                                    <circle cx="12" cy="12" r="10"/>
-                                    <line x1="12" y1="8" x2="12" y2="12"/>
-                                    <line x1="12" y1="16" x2="12.01" y2="16"/>
-                                </svg>
-                                <p class="text-slate-400 text-lg">No tools found matching your search.</p>
-                                <button onclick="clearSearch()" class="mt-4 text-blue-600 hover:text-blue-700 font-medium">Clear filters</button>
-                            </div>
-                        ` : ''}
-                    </div>
-                </div>
-            `;
+  // ===================== WHEEL =====================
+  let wheelOptions = ['Option A', 'Option B', 'Option C', 'Option D'];
+  let wheelAngle = 0, spinningWheel = false;
+  function renderWheel() {
+    panelBody.innerHTML = `<div style="display:flex; gap:8px; flex-wrap:wrap"><input id="wheelNewItem" placeholder="Add option" style="flex:2"><button id="addWheelBtn" class="btn-secondary">Add</button></div><div id="wheelTags" style="display:flex; flex-wrap:wrap; gap:8px; margin:12px 0"></div><canvas id="wheelCanvas" width="260" height="260" style="width:100%; max-width:260px; margin:0 auto; display:block; border-radius:50%; background:var(--surface-1); box-shadow:0 8px 20px rgba(0,0,0,0.3)"></canvas><button id="spinWheelBtn" class="btn-primary" style="margin-top:16px; width:100%">SPIN WHEEL</button><div class="result-card" id="wheelResultDisplay">Ready to spin</div>`;
+    function updateTags() {
+      const container = document.getElementById('wheelTags');
+      container.innerHTML = wheelOptions.map((opt, idx) => `<span style="background:var(--surface-3); padding:4px 12px; border-radius:40px; display:inline-flex; gap:6px"><span>${opt}</span><button data-idx="${idx}" class="removeWheelOpt" style="background:none; border:none; color:red; cursor:pointer">✕</button></span>`).join('');
+      document.querySelectorAll('.removeWheelOpt').forEach(btn => { btn.addEventListener('click', (e) => { let i = parseInt(btn.getAttribute('data-idx')); wheelOptions.splice(i,1); updateTags(); drawWheelCanvas(); }); });
+      drawWheelCanvas();
+    }
+    function drawWheelCanvas() {
+      const canvas = document.getElementById('wheelCanvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      const w = canvas.width = canvas.clientWidth; canvas.height = w;
+      const center = w/2, rad = w/2 - 8;
+      ctx.clearRect(0,0,w,w);
+      if (!wheelOptions.length) { ctx.fillStyle = '#1f232e'; ctx.beginPath(); ctx.arc(center,center,rad,0,Math.PI*2); ctx.fill(); return; }
+      const angleStep = (Math.PI*2)/wheelOptions.length;
+      const colors = ['#3b82f6','#f59e0b','#10b981','#ef4444','#8b5cf6','#ec489a'];
+      for (let i=0; i<wheelOptions.length; i++) {
+        const start = wheelAngle + i*angleStep;
+        const end = start + angleStep;
+        ctx.beginPath(); ctx.moveTo(center,center); ctx.arc(center,center,rad,start,end); ctx.fillStyle = colors[i%colors.length]; ctx.fill();
+        ctx.save(); ctx.translate(center,center); ctx.rotate(start+angleStep/2); ctx.fillStyle = '#fff'; ctx.font = `bold ${Math.max(10, 12)}px Inter`; ctx.fillText(wheelOptions[i].substring(0,8), rad-20, 6); ctx.restore();
+      }
+    }
+    document.getElementById('addWheelBtn')?.addEventListener('click', () => {
+      const val = document.getElementById('wheelNewItem').value.trim();
+      if(val) { wheelOptions.push(val); document.getElementById('wheelNewItem').value = ''; updateTags(); }
+    });
+    document.getElementById('spinWheelBtn')?.addEventListener('click', () => {
+      if(spinningWheel || !wheelOptions.length) { toastMsg('Add at least one option'); return; }
+      spinningWheel = true; const spinBtn = document.getElementById('spinWheelBtn'); spinBtn.disabled = true;
+      const extra = Math.PI*2*(5+Math.random()*4);
+      const start = performance.now(), startAngle = wheelAngle, duration = 1500;
+      function animate(now) {
+        const t = Math.min((now-start)/duration, 1);
+        const ease = 1 - Math.pow(1-t, 3);
+        wheelAngle = startAngle + extra * ease;
+        drawWheelCanvas();
+        if(t<1) requestAnimationFrame(animate);
+        else {
+          spinningWheel = false; spinBtn.disabled = false;
+          const normAngle = ((-wheelAngle) % (Math.PI*2) + Math.PI*2) % (Math.PI*2);
+          const idx = Math.floor(normAngle / ((Math.PI*2)/wheelOptions.length)) % wheelOptions.length;
+          const winner = wheelOptions[idx];
+          document.getElementById('wheelResultDisplay').innerHTML = `<div class="result-number" style="font-size:1.6rem">${winner}</div>`;
         }
+      }
+      requestAnimationFrame(animate);
+    });
+    updateTags();
+  }
 
-        // Tool detail view
-        function ToolDetail(toolId) {
-            const tool = tools.find(t => t.id === toolId);
-            if (!tool) return Dashboard();
+  // ===================== PASSWORD =====================
+  function renderPassword() {
+    panelBody.innerHTML = `<div class="input-group"><label>Length: <span id="lenVal">16</span></label><input type="range" id="passLen" min="6" max="64" value="16"></div><div style="display:flex; flex-wrap:wrap; gap:12px; margin:12px 0"><label><input type="checkbox" id="chUpper" checked> Uppercase</label><label><input type="checkbox" id="chLower" checked> Lowercase</label><label><input type="checkbox" id="chDigits" checked> Digits</label><label><input type="checkbox" id="chSymbols"> Symbols</label></div><button class="btn-primary" id="genPassBtn">Generate password</button><div class="result-card" id="passDisplay">—</div><div class="strength-bar"><div class="strength-fill" id="strengthFill"></div></div><div id="strengthText" style="font-size:0.7rem; color:var(--text-secondary)"></div>`;
+    function generate() {
+      let len = +document.getElementById('passLen').value;
+      let upper = "ABCDEFGHIJKLMNOPQRSTUVWXYZ", lower = "abcdefghijklmnopqrstuvwxyz", digits = "0123456789", symbols = "!@#$%^&*()_+";
+      let chars = "";
+      if(document.getElementById('chUpper').checked) chars+=upper;
+      if(document.getElementById('chLower').checked) chars+=lower;
+      if(document.getElementById('chDigits').checked) chars+=digits;
+      if(document.getElementById('chSymbols').checked) chars+=symbols;
+      if(!chars) { toastMsg('Select at least one type'); return; }
+      let password = "";
+      for(let i=0;i<len;i++) password += chars[Math.floor(Math.random()*chars.length)];
+      document.getElementById('passDisplay').innerHTML = `<div style="word-break:break-all; font-family:monospace">${password}</div><button class="btn-secondary btn-sm" id="copyPassBtn">Copy</button>`;
+      let strength = 0;
+      if(len>=12) strength+=1; if(len>=16) strength+=1;
+      if(/[A-Z]/.test(password)) strength++; if(/[a-z]/.test(password)) strength++; if(/[0-9]/.test(password)) strength++; if(/[^A-Za-z0-9]/.test(password)) strength++;
+      let percent = Math.min(100, strength*14);
+      document.getElementById('strengthFill').style.width = `${percent}%`;
+      document.getElementById('strengthFill').style.background = percent<30? '#ef4444' : percent<70? '#f59e0b' : '#10b981';
+      document.getElementById('strengthText').innerText = `Strength: ${percent<30?'Weak':percent<70?'Medium':'Strong'}`;
+      document.getElementById('copyPassBtn')?.addEventListener('click', () => copyToClipboard(password));
+    }
+    document.getElementById('passLen').addEventListener('input', (e) => { document.getElementById('lenVal').innerText = e.target.value; generate(); });
+    document.getElementById('genPassBtn').addEventListener('click', generate);
+    generate();
+  }
 
-            return `
-                <div class="animate-slide-in">
-                    <!-- Navigation -->
-                    <nav class="flex items-center justify-between mb-8">
-                        <button onclick="showHome()" class="flex items-center text-slate-600 hover:text-slate-900 font-medium py-2 px-4 rounded-lg hover:bg-white transition-all">
-                            <svg class="w-5 h-5 mr-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <line x1="19" y1="12" x2="5" y2="12"/>
-                                <polyline points="12 19 5 12 12 5"/>
-                            </svg>
-                            Back to Store
-                        </button>
-                        <div class="flex items-center gap-3">
-                            <span class="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-bold">
-                                ${tool.id}.html
-                            </span>
-                            <button class="p-2 text-slate-400 hover:text-slate-600 hover:bg-white rounded-lg transition-all">
-                                <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <circle cx="18" cy="5" r="1"/><circle cx="6" cy="12" r="1"/><circle cx="18" cy="19" r="1"/>
-                                    <line x1="12" y1="5" x2="7" y2="11"/><line x1="17" y1="5" x2="12" y2="11"/>
-                                    <line x1="7" y1="13" x2="12" y2="19"/><line x1="17" y1="13" x2="12" y2="19"/>
-                                </svg>
-                            </button>
-                        </div>
-                    </nav>
+  // ===================== UUID =====================
+  function renderUUID() {
+    panelBody.innerHTML = `<div class="input-group"><label>Number of UUIDs</label><input type="number" id="uuidCount" value="5" min="1" max="25"></div><button class="btn-primary" id="genUuidBtn">Generate UUIDs</button><div id="uuidListContainer" class="result-card" style="margin-top:12px"></div>`;
+    function genUUIDv4() { return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => { let r = Math.random()*16|0, v = c==='x'?r:(r&0x3|0x8); return v.toString(16); }); }
+    function generateList() {
+      let count = Math.min(25, +document.getElementById('uuidCount').value);
+      let list = Array.from({length:count}, genUUIDv4);
+      document.getElementById('uuidListContainer').innerHTML = `<div style="max-height:280px; overflow:auto">${list.map(u => `<div style="display:flex; justify-content:space-between; align-items:center; background:var(--surface-1); border-radius:12px; padding:8px 12px; margin-bottom:8px"><code>${u}</code><button class="copyUuidBtn btn-secondary btn-sm" data-val="${u}">Copy</button></div>`).join('')}</div>`;
+      document.querySelectorAll('.copyUuidBtn').forEach(btn => { btn.addEventListener('click', () => copyToClipboard(btn.getAttribute('data-val'))); });
+    }
+    document.getElementById('genUuidBtn').addEventListener('click', generateList);
+    generateList();
+  }
 
-                    <!-- Tool Content -->
-                    <div class="bg-gradient-to-br from-slate-50 to-white border-2 border-slate-100 rounded-3xl p-8 md:p-12">
-                        <!-- Header -->
-                        <div class="flex flex-col md:flex-row items-start md:items-center gap-6 mb-8">
-                            <div class="bg-gradient-to-br ${tool.color} w-20 h-20 rounded-2xl flex items-center justify-center shadow-xl">
-                                ${getIcon(tool.icon, 'w-10 h-10 text-white')}
-                            </div>
-                            <div class="flex-1">
-                                <div class="flex items-center gap-3 mb-2">
-                                    <span class="text-sm font-semibold text-slate-400 uppercase">${tool.category}</span>
-                                    <span class="w-1 h-1 bg-slate-300 rounded-full"></span>
-                                    <span class="text-sm text-slate-500">🔥 ${tool.popularity}% popularity</span>
-                                </div>
-                                <h2 class="text-3xl md:text-4xl font-bold text-slate-800">${tool.title}</h2>
-                                <p class="text-slate-500 mt-2 text-lg">${tool.description}</p>
-                            </div>
-                        </div>
+  function renderToolContent(toolId) {
+    if (toolId === 'randomizer') renderRandomizer();
+    else if (toolId === 'dice') renderDice();
+    else if (toolId === 'wheel') renderWheel();
+    else if (toolId === 'password') renderPassword();
+    else if (toolId === 'uuid') renderUUID();
+  }
 
-                        <!-- Features Grid -->
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-                            <div class="bg-white rounded-xl p-6 border border-slate-200">
-                                <h4 class="font-bold text-slate-700 mb-4 flex items-center gap-2">
-                                    <span class="w-1 h-4 bg-blue-600 rounded-full"></span>
-                                    Tool Features
-                                </h4>
-                                <ul class="space-y-3">
-                                    ${tool.features.map(f => `
-                                        <li class="flex items-center gap-2 text-slate-600">
-                                            <svg class="w-4 h-4 text-green-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
-                                            ${f}
-                                        </li>
-                                    `).join('')}
-                                </ul>
-                            </div>
-                            <div class="bg-white rounded-xl p-6 border border-slate-200">
-                                <h4 class="font-bold text-slate-700 mb-4 flex items-center gap-2">
-                                    <span class="w-1 h-4 bg-purple-600 rounded-full"></span>
-                                    Quick Stats
-                                </h4>
-                                <div class="space-y-3">
-                                    <div class="flex justify-between items-center">
-                                        <span class="text-slate-500">Version</span>
-                                        <span class="font-medium text-slate-700">2.1.0</span>
-                                    </div>
-                                    <div class="flex justify-between items-center">
-                                        <span class="text-slate-500">Last Updated</span>
-                                        <span class="font-medium text-slate-700">${tool.lastUpdated}</span>
-                                    </div>
-                                    <div class="flex justify-between items-center">
-                                        <span class="text-slate-500">Total Sessions</span>
-                                        <span class="font-medium text-slate-700">12.4K</span>
-                                    </div>
-                                    <div class="flex justify-between items-center">
-                                        <span class="text-slate-500">Success Rate</span>
-                                        <span class="font-medium text-green-600">87%</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Action Buttons -->
-                        <div class="flex flex-col sm:flex-row gap-4">
-                            <button class="flex-1 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold py-3 px-6 rounded-xl hover:shadow-lg transition-all hover:scale-105 flex items-center justify-center gap-2">
-                                <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-                                Launch Tool
-                            </button>
-                            <button class="flex-1 bg-white text-slate-700 font-semibold py-3 px-6 rounded-xl border border-slate-200 hover:bg-slate-50 transition-all flex items-center justify-center gap-2">
-                                <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                                Download Resources
-                            </button>
-                            <button class="p-3 bg-white text-slate-700 rounded-xl border border-slate-200 hover:bg-slate-50 transition-all">
-                                <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            `;
-        }
-
-        // Render function
-        function render() {
-            const app = document.getElementById('app');
-            if (currentView === 'home') {
-                app.innerHTML = Dashboard();
-            } else {
-                app.innerHTML = ToolDetail(currentView);
-            }
-        }
-
-        // Event handlers
-        window.showHome = () => {
-            currentView = 'home';
-            render();
-        };
-
-        window.openTool = (toolId) => {
-            currentView = toolId;
-            render();
-        };
-
-        window.updateSearch = (value) => {
-            searchQuery = value;
-            render();
-        };
-
-        window.selectCategory = (category) => {
-            selectedCategory = category;
-            render();
-        };
-
-        window.clearSearch = () => {
-            searchQuery = '';
-            selectedCategory = 'all';
-            render();
-        };
-
-        // Initial render
-        render();
-    </script>
+  buildToolGrid();
+</script>
 </body>
 </html>
