@@ -1982,7 +1982,7 @@
                 <a onclick="showView('portfolio'); scrollToSection('experience')" class="nav-link" data-section="experience">Experience</a>
                 <a onclick="showView('portfolio'); scrollToSection('projects')" class="nav-link" data-section="projects">Projects</a>
                 <a onclick="showView('portfolio'); scrollToSection('creative')" class="nav-link" data-section="creative">Creative</a>
-                <a onclick="showView('tools')" class="nav-link" style="color: var(--primary);">Tools Hub</a>
+                <a onclick="window.open('toolshub.html', '_blank')" class="nav-link" style="color: var(--primary);">Tools Hub</a>
                 <a onclick="showView('portfolio'); scrollToSection('contact')" class="nav-link" data-section="contact">Contact</a>
             </div>
             <button class="menu-btn" onclick="toggleMenu()">
@@ -2002,7 +2002,7 @@
         <a onclick="showView('portfolio'); scrollToSection('experience'); toggleMenu()">Experience</a>
         <a onclick="showView('portfolio'); scrollToSection('projects'); toggleMenu()">Projects</a>
         <a onclick="showView('portfolio'); scrollToSection('creative'); toggleMenu()">Creative</a>
-        <a onclick="showView('tools'); toggleMenu()" style="color: var(--primary);">Tools Hub</a>
+        <a onclick="window.open('toolshub.html', '_blank'); toggleMenu()" style="color: var(--primary);">Tools Hub</a>
         <a onclick="showView('portfolio'); scrollToSection('contact'); toggleMenu()">Contact</a>
     </div>
 
@@ -2012,7 +2012,7 @@
             <i class="fas fa-file-alt"></i>
             <span>Resume</span>
         </div>
-        <div class="bottom-nav-item" id="bottomToolsBtn" onclick="openToolsModal()">
+        <div class="bottom-nav-item" id="bottomToolsBtn" onclick="window.open('toolshub.html', '_blank')">
             <i class="fas fa-tools"></i>
             <span>Tools Hub</span>
         </div>
@@ -2059,181 +2059,6 @@
         </div>
     </div>
 
-    <!-- Tools Modal -->
-    <div id="toolsModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>Tools Hub</h3>
-                <button class="modal-close" onclick="closeToolsModal()">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            
-            <!-- Social Media Section for Music -->
-            <div class="social-media-section">
-                <h3><i class="fas fa-music"></i> Listen to My Music</h3>
-                <div class="social-media-grid">
-                    <a href="https://youtube.com/@yourchannel" target="_blank" class="social-media-card youtube">
-                        <i class="fab fa-youtube"></i>
-                        <span>YouTube</span>
-                        <span style="font-size: 0.75rem; opacity: 0.9;">My Songs & Videos</span>
-                    </a>
-                    <a href="https://instagram.com/yourusername" target="_blank" class="social-media-card instagram">
-                        <i class="fab fa-instagram"></i>
-                        <span>Instagram</span>
-                        <span style="font-size: 0.75rem; opacity: 0.9;">Daily Updates</span>
-                    </a>
-                    <a href="https://tiktok.com/@yourusername" target="_blank" class="social-media-card tiktok">
-                        <i class="fab fa-tiktok"></i>
-                        <span>TikTok</span>
-                        <span style="font-size: 0.75rem; opacity: 0.9;">Short Clips</span>
-                    </a>
-                    <a href="https://facebook.com/yourusername" target="_blank" class="social-media-card facebook">
-                        <i class="fab fa-facebook"></i>
-                        <span>Facebook</span>
-                        <span style="font-size: 0.75rem; opacity: 0.9;">Connect with me</span>
-                    </a>
-                </div>
-            </div>
-            
-            <div class="tools-list">
-                <div class="tools-list-header">
-                    <h3><i class="fas fa-tools" style="color: var(--primary);"></i> All Tools</h3>
-                    <p>Click on any tool to launch it</p>
-                </div>
-                
-                <div class="tools-list-items">
-                    <!-- Tool 1 - Free -->
-                    <div class="tools-list-item" onclick="launchTool('AI Prompt Generator', 'free')">
-                        <div class="tools-list-icon">
-                            <i class="fas fa-robot"></i>
-                        </div>
-                        <div class="tools-list-content">
-                            <h4>
-                                AI Prompt Generator
-                                <span class="tools-list-badge free">Free</span>
-                            </h4>
-                            <p>Expert-level prompts for ChatGPT & Claude</p>
-                        </div>
-                        <div class="tools-list-arrow">
-                            <i class="fas fa-chevron-right"></i>
-                        </div>
-                    </div>
-                    
-                    <!-- Tool 2 - Premium -->
-                    <div class="tools-list-item" onclick="launchTool('Video SEO Toolkit', 'premium')">
-                        <div class="tools-list-icon">
-                            <i class="fab fa-youtube"></i>
-                        </div>
-                        <div class="tools-list-content">
-                            <h4>
-                                Video SEO Toolkit
-                                <span class="tools-list-badge premium">Premium</span>
-                            </h4>
-                            <p>Advanced metadata for YouTube creators</p>
-                        </div>
-                        <div class="tools-list-arrow">
-                            <i class="fas fa-chevron-right"></i>
-                        </div>
-                    </div>
-                    
-                    <!-- Tool 3 - Free -->
-                    <div class="tools-list-item" onclick="launchTool('PDF Smart Merge', 'free')">
-                        <div class="tools-list-icon">
-                            <i class="fas fa-layer-group"></i>
-                        </div>
-                        <div class="tools-list-content">
-                            <h4>
-                                PDF Smart Merge
-                                <span class="tools-list-badge free">Free</span>
-                            </h4>
-                            <p>Merge and compress PDF files securely</p>
-                        </div>
-                        <div class="tools-list-arrow">
-                            <i class="fas fa-chevron-right"></i>
-                        </div>
-                    </div>
-                    
-                    <!-- Tool 4 - Premium -->
-                    <div class="tools-list-item" onclick="launchTool('Code Snippet Vault', 'premium')">
-                        <div class="tools-list-icon">
-                            <i class="fas fa-code"></i>
-                        </div>
-                        <div class="tools-list-content">
-                            <h4>
-                                Code Snippet Vault
-                                <span class="tools-list-badge premium">Premium</span>
-                            </h4>
-                            <p>500+ optimized React & Tailwind components</p>
-                        </div>
-                        <div class="tools-list-arrow">
-                            <i class="fas fa-chevron-right"></i>
-                        </div>
-                    </div>
-                    
-                    <!-- Tool 5 - Free -->
-                    <div class="tools-list-item" onclick="launchTool('Resume Builder', 'free')">
-                        <div class="tools-list-icon">
-                            <i class="fas fa-file-alt"></i>
-                        </div>
-                        <div class="tools-list-content">
-                            <h4>
-                                Resume Builder
-                                <span class="tools-list-badge free">Free</span>
-                            </h4>
-                            <p>ATS-friendly resume templates</p>
-                        </div>
-                        <div class="tools-list-arrow">
-                            <i class="fas fa-chevron-right"></i>
-                        </div>
-                    </div>
-                    
-                    <!-- Tool 6 - Premium -->
-                    <div class="tools-list-item" onclick="launchTool('Language Partner AI', 'premium')">
-                        <div class="tools-list-icon">
-                            <i class="fas fa-language"></i>
-                        </div>
-                        <div class="tools-list-content">
-                            <h4>
-                                Language Partner AI
-                                <span class="tools-list-badge premium">Premium</span>
-                            </h4>
-                            <p>AI conversation practice for English & Korean</p>
-                        </div>
-                        <div class="tools-list-arrow">
-                            <i class="fas fa-chevron-right"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Pro Pass Card in Modal -->
-            <div class="pro-pass-card" style="margin-top: 2rem; padding: 1.5rem;">
-                <div class="pro-pass-content">
-                    <h3 style="font-size: 1.5rem;">UNLOCK PRO</h3>
-                    <p style="font-size: 0.875rem;">Get lifetime access to all premium tools</p>
-                </div>
-                <button class="pro-pass-btn" style="padding: 0.75rem 1.5rem;" onclick="showNotification('info', 'Pro Pass', 'Coming soon! Get ready for exclusive access.')">
-                    Get Pro Pass
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Notification -->
-    <div id="notification" class="notification">
-        <div class="notification-content">
-            <div class="notification-icon" id="notificationIcon">
-                <i class="fas fa-check"></i>
-            </div>
-            <div class="notification-text">
-                <h4 id="notificationTitle">Success!</h4>
-                <p id="notificationMessage">Your message has been sent successfully.</p>
-            </div>
-        </div>
-        <div class="notification-progress" id="notificationProgress"></div>
-    </div>
-
     <!-- Portfolio View -->
     <div id="portfolio-view" class="view-section">
         <main>
@@ -2257,7 +2082,7 @@
                                 View My Work
                                 <i class="fas fa-chevron-right"></i>
                             </button>
-                            <button class="btn-secondary" onclick="showView('tools')">
+                            <button class="btn-secondary" onclick="window.open('toolshub.html', '_blank')">
                                 <i class="fas fa-tools"></i>
                                 Tools Hub
                             </button>
@@ -2647,134 +2472,7 @@
         </main>
     </div>
 
-    <!-- Tools Hub View -->
-    <div id="tools-view" class="view-section hidden">
-        <section class="tools-section">
-            <div class="container">
-                <div class="tools-header">
-                    <h2>Tools Hub</h2>
-                    <p>Free and premium resources designed to accelerate your growth and simplify your workflow.</p>
-                    
-                    <div class="tools-stats">
-                        <div class="stat-item">
-                            <i class="fas fa-gift"></i>
-                            <span>12+ Free Tools</span>
-                        </div>
-                        <div class="stat-item">
-                            <i class="fas fa-crown"></i>
-                            <span>4+ Premium Tools</span>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Social Media Section in Tools View -->
-                <div class="social-media-section" style="margin-bottom: 3rem;">
-                    <h3><i class="fas fa-music"></i> Listen to My Music</h3>
-                    <div class="social-media-grid">
-                        <a href="https://youtube.com/@yourchannel" target="_blank" class="social-media-card youtube">
-                            <i class="fab fa-youtube"></i>
-                            <span>YouTube</span>
-                            <span style="font-size: 0.75rem; opacity: 0.9;">My Songs & Videos</span>
-                        </a>
-                        <a href="https://instagram.com/yourusername" target="_blank" class="social-media-card instagram">
-                            <i class="fab fa-instagram"></i>
-                            <span>Instagram</span>
-                            <span style="font-size: 0.75rem; opacity: 0.9;">Daily Updates</span>
-                        </a>
-                        <a href="https://tiktok.com/@yourusername" target="_blank" class="social-media-card tiktok">
-                            <i class="fab fa-tiktok"></i>
-                            <span>TikTok</span>
-                            <span style="font-size: 0.75rem; opacity: 0.9;">Short Clips</span>
-                        </a>
-                        <a href="https://facebook.com/yourusername" target="_blank" class="social-media-card facebook">
-                            <i class="fab fa-facebook"></i>
-                            <span>Facebook</span>
-                            <span style="font-size: 0.75rem; opacity: 0.9;">Connect with me</span>
-                        </a>
-                    </div>
-                </div>
-                
-                <div class="tools-grid">
-                    <!-- Tool 1 - Free -->
-                    <div class="tool-card">
-                        <div class="tool-badge free">Free</div>
-                        <div class="tool-icon">
-                            <i class="fas fa-robot"></i>
-                        </div>
-                        <h3>AI Prompt Generator</h3>
-                        <p>Expert-level prompts for ChatGPT & Claude to 10x your productivity.</p>
-                        <button class="tool-btn" onclick="showNotification('info', 'Coming Soon', 'This tool will be available shortly!')">Launch Tool</button>
-                    </div>
-                    
-                    <!-- Tool 2 - Premium -->
-                    <div class="tool-card">
-                        <div class="tool-badge premium">Premium</div>
-                        <div class="tool-icon">
-                            <i class="fab fa-youtube"></i>
-                        </div>
-                        <h3>Video SEO Toolkit</h3>
-                        <p>Advanced metadata and keyword generator for YouTube creators.</p>
-                        <button class="tool-btn" onclick="showNotification('info', 'Premium Feature', 'Upgrade to Pro to access this tool!')">Unlock with Pro</button>
-                    </div>
-                    
-                    <!-- Tool 3 - Free -->
-                    <div class="tool-card">
-                        <div class="tool-badge free">Free</div>
-                        <div class="tool-icon">
-                            <i class="fas fa-layer-group"></i>
-                        </div>
-                        <h3>PDF Smart Merge</h3>
-                        <p>Securely merge and compress PDF files directly in your browser.</p>
-                        <button class="tool-btn" onclick="showNotification('info', 'Coming Soon', 'This tool will be available shortly!')">Launch Tool</button>
-                    </div>
-                    
-                    <!-- Tool 4 - Premium -->
-                    <div class="tool-card">
-                        <div class="tool-badge premium">Premium</div>
-                        <div class="tool-icon">
-                            <i class="fas fa-code"></i>
-                        </div>
-                        <h3>Code Snippet Vault</h3>
-                        <p>A library of 500+ optimized React and Tailwind components.</p>
-                        <button class="tool-btn" onclick="showNotification('info', 'Premium Feature', 'Upgrade to Pro to access this tool!')">Unlock with Pro</button>
-                    </div>
-                    
-                    <!-- Tool 5 - Free -->
-                    <div class="tool-card">
-                        <div class="tool-badge free">Free</div>
-                        <div class="tool-icon">
-                            <i class="fas fa-file-alt"></i>
-                        </div>
-                        <h3>Resume Builder</h3>
-                        <p>Modern, ATS-friendly resume templates used by top engineers.</p>
-                        <button class="tool-btn" onclick="showNotification('info', 'Coming Soon', 'This tool will be available shortly!')">Launch Tool</button>
-                    </div>
-                    
-                    <!-- Tool 6 - Premium -->
-                    <div class="tool-card">
-                        <div class="tool-badge premium">Premium</div>
-                        <div class="tool-icon">
-                            <i class="fas fa-language"></i>
-                        </div>
-                        <h3>Language Partner AI</h3>
-                        <p>AI-driven conversation practice for English & Korean learners.</p>
-                        <button class="tool-btn" onclick="showNotification('info', 'Premium Feature', 'Upgrade to Pro to access this tool!')">Unlock with Pro</button>
-                    </div>
-                </div>
-                
-                <!-- Pro Pass Card -->
-                <div class="pro-pass-card">
-                    <div class="pro-pass-content">
-                        <h3>UNLOCK THE FULL POTENTIAL</h3>
-                        <p>Get lifetime access to all premium tools, upcoming releases, and 1-on-1 engineering consultation with one single pass.</p>
-                    </div>
-                    <button class="pro-pass-btn" onclick="showNotification('info', 'Pro Pass', 'Coming soon! Get ready for exclusive access.')">Get Pro Pass</button>
-                </div>
-            </div>
-        </section>
-    </div>
-
-    <!-- Footer (appears in both views) -->
+    <!-- Footer -->
     <footer>
         <div class="footer-title">Let's build something together.</div>
         <div class="footer-buttons">
@@ -2790,7 +2488,7 @@
                 <i class="fas fa-envelope"></i>
                 Email
             </a>
-            <button class="footer-btn" onclick="showView('tools')">
+            <button class="footer-btn" onclick="window.open('toolshub.html', '_blank')">
                 <i class="fas fa-tools"></i>
                 Tools Hub
             </button>
@@ -2817,11 +2515,8 @@
         const notificationMessage = document.getElementById('notificationMessage');
         const notificationProgress = document.getElementById('notificationProgress');
         const portfolioView = document.getElementById('portfolio-view');
-        const toolsView = document.getElementById('tools-view');
         const bottomResumeBtn = document.getElementById('bottomResumeBtn');
-        const bottomToolsBtn = document.getElementById('bottomToolsBtn');
         const resumeModal = document.getElementById('resumeModal');
-        const toolsModal = document.getElementById('toolsModal');
         
         // Image error tracking
         const imageErrors = { photo1: false, photo2: false };
@@ -2873,16 +2568,9 @@
             
             if (view === 'portfolio') {
                 portfolioView.classList.remove('hidden');
-                toolsView.classList.add('hidden');
                 
                 // Update URL hash to home
                 window.location.hash = '#home';
-            } else {
-                portfolioView.classList.add('hidden');
-                toolsView.classList.remove('hidden');
-                
-                // Remove hash for tools view
-                window.location.hash = '';
             }
             
             // Close mobile menu if open
@@ -2901,40 +2589,12 @@
             
             // Update bottom nav active state
             bottomResumeBtn.classList.add('active');
-            bottomToolsBtn.classList.remove('active');
         }
         
         function closeResumeModal() {
             resumeModal.classList.remove('active');
             document.body.style.overflow = '';
             bottomResumeBtn.classList.remove('active');
-        }
-        
-        // Tools Modal Functions
-        function openToolsModal() {
-            toolsModal.classList.add('active');
-            document.body.style.overflow = 'hidden';
-            
-            // Update bottom nav active state
-            bottomToolsBtn.classList.add('active');
-            bottomResumeBtn.classList.remove('active');
-        }
-        
-        function closeToolsModal() {
-            toolsModal.classList.remove('active');
-            document.body.style.overflow = '';
-            bottomToolsBtn.classList.remove('active');
-        }
-        
-        // Launch Tool Function
-        function launchTool(toolName, type) {
-            closeToolsModal();
-            
-            if (type === 'free') {
-                showNotification('info', toolName, 'This free tool will be available soon!');
-            } else {
-                showNotification('info', 'Premium Tool', `${toolName} requires Pro access. Upgrade to unlock!`);
-            }
         }
         
         // Toggle Mobile Menu
@@ -3106,9 +2766,6 @@
                 if (resumeModal.classList.contains('active')) {
                     closeResumeModal();
                 }
-                if (toolsModal.classList.contains('active')) {
-                    closeToolsModal();
-                }
             }
         });
         
@@ -3130,20 +2787,12 @@
                 if (resumeModal.classList.contains('active')) {
                     closeResumeModal();
                 }
-                if (toolsModal.classList.contains('active')) {
-                    closeToolsModal();
-                }
             }
         });
         
         // Initialize on load
         document.addEventListener('DOMContentLoaded', () => {
             updateActiveLink();
-            
-            // Check if we need to show tools view from URL param
-            if (window.location.hash === '#tools') {
-                showView('tools');
-            }
             
             // Add smooth scroll to all anchor links
             document.querySelectorAll('a[href^="#"]').forEach(anchor => {
@@ -3199,9 +2848,6 @@
         window.showNotification = showNotification;
         window.openResumeModal = openResumeModal;
         window.closeResumeModal = closeResumeModal;
-        window.openToolsModal = openToolsModal;
-        window.closeToolsModal = closeToolsModal;
-        window.launchTool = launchTool;
     </script>
 </body>
 </html>
