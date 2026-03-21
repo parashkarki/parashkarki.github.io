@@ -1,1289 +1,384 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TOOLBOX — The Ultimate Hub</title>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
-<style>
-  :root {
-    --bg: #09090f;
-    --surface: #0f0f1a;
-    --card: #13131f;
-    --border: rgba(255,255,255,0.06);
-    --accent: #7c5cfc;
-    --accent2: #fc5c7d;
-    --accent3: #5cf0fc;
-    --accent4: #fcdb5c;
-    --text: #e8e8f0;
-    --muted: #5a5a7a;
-    --glow: rgba(124,92,252,0.3);
-  }
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  html { scroll-behavior: smooth; }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ToolsHub - All-in-One Utility Suite</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+        }
 
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'Syne', sans-serif;
-    min-height: 100vh;
-    overflow-x: hidden;
-  }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #fdfeff;
+            color: #1e293b;
+            -webkit-tap-highlight-color: transparent;
+        }
 
-  /* ─── NOISE OVERLAY ─── */
-  body::before {
-    content: '';
-    position: fixed; inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
-    pointer-events: none; z-index: 9999; opacity: 0.4;
-  }
+        /* Glassmorphism Effects */
+        .glass-header {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+        }
 
-  /* ─── ORBS ─── */
-  .orb { position: fixed; border-radius: 50%; filter: blur(80px); pointer-events: none; z-index: 0; }
-  .orb-1 { width: 500px; height: 500px; background: radial-gradient(circle, rgba(124,92,252,0.18), transparent 70%); top: -100px; left: -100px; animation: drift1 20s ease-in-out infinite; }
-  .orb-2 { width: 400px; height: 400px; background: radial-gradient(circle, rgba(252,92,125,0.12), transparent 70%); bottom: 0; right: -100px; animation: drift2 18s ease-in-out infinite; }
-  .orb-3 { width: 300px; height: 300px; background: radial-gradient(circle, rgba(92,240,252,0.1), transparent 70%); top: 40%; left: 40%; animation: drift3 25s ease-in-out infinite; }
-  @keyframes drift1 { 0%,100%{transform:translate(0,0)} 33%{transform:translate(60px,40px)} 66%{transform:translate(-30px,70px)} }
-  @keyframes drift2 { 0%,100%{transform:translate(0,0)} 33%{transform:translate(-60px,-40px)} 66%{transform:translate(30px,-70px)} }
-  @keyframes drift3 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(-80px,40px)} }
+        /* Desktop Sidebar Styling */
+        .sidebar-link {
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            border-radius: 0.75rem;
+            color: #64748b;
+            font-weight: 500;
+            cursor: pointer;
+        }
 
-  /* ─── HEADER ─── */
-  header {
-    position: relative; z-index: 10;
-    padding: 40px 40px 0;
-    display: flex; align-items: center; justify-content: space-between;
-  }
-  .logo {
-    font-size: 1.1rem; font-weight: 800; letter-spacing: 0.25em;
-    text-transform: uppercase;
-    background: linear-gradient(135deg, #fff 0%, var(--accent) 100%);
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-  }
-  .logo span { color: var(--accent); -webkit-text-fill-color: var(--accent); }
-  .tagline { font-family: 'DM Mono', monospace; font-size: 0.7rem; color: var(--muted); letter-spacing: 0.1em; }
+        .sidebar-link:hover {
+            background: #f1f5f9;
+            color: var(--primary);
+        }
 
-  /* ─── HERO ─── */
-  .hero {
-    position: relative; z-index: 10;
-    text-align: center; padding: 60px 20px 30px;
-  }
-  .hero-label {
-    font-family: 'DM Mono', monospace; font-size: 0.7rem;
-    color: var(--accent); letter-spacing: 0.3em; text-transform: uppercase;
-    margin-bottom: 16px;
-    display: inline-flex; align-items: center; gap: 8px;
-  }
-  .hero-label::before, .hero-label::after { content: ''; width: 30px; height: 1px; background: var(--accent); display: inline-block; }
-  .hero h1 {
-    font-size: clamp(2.5rem, 7vw, 5.5rem); font-weight: 800;
-    line-height: 1.05; letter-spacing: -0.02em;
-    background: linear-gradient(160deg, #fff 30%, rgba(255,255,255,0.5) 100%);
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-    margin-bottom: 16px;
-  }
-  .hero p { font-family: 'DM Mono', monospace; font-size: 0.85rem; color: var(--muted); max-width: 400px; margin: 0 auto; line-height: 1.7; }
+        .sidebar-link.active {
+            background: #eef2ff;
+            color: var(--primary);
+        }
 
-  /* ─── TOOLS GRID ─── */
-  .tools-section { position: relative; z-index: 10; padding: 40px 40px 80px; max-width: 1100px; margin: 0 auto; }
-  .section-title {
-    font-family: 'DM Mono', monospace; font-size: 0.7rem; color: var(--muted);
-    letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 24px;
-  }
-  .tools-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-    gap: 16px;
-  }
-  .tool-card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 24px 16px 20px;
-    cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-    text-align: center;
-    position: relative;
-    overflow: hidden;
-    animation: fadeUp 0.6s both;
-  }
-  .tool-card:nth-child(1){animation-delay:0.05s} .tool-card:nth-child(2){animation-delay:0.1s}
-  .tool-card:nth-child(3){animation-delay:0.15s} .tool-card:nth-child(4){animation-delay:0.2s}
-  .tool-card:nth-child(5){animation-delay:0.25s} .tool-card:nth-child(6){animation-delay:0.3s}
-  .tool-card:nth-child(7){animation-delay:0.35s} .tool-card:nth-child(8){animation-delay:0.4s}
-  @keyframes fadeUp { from{opacity:0;transform:translateY(30px)} to{opacity:1;transform:translateY(0)} }
+        /* App Icon Animations */
+        .app-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
 
-  .tool-card::before {
-    content: ''; position: absolute; inset: 0;
-    background: var(--tool-glow, var(--glow));
-    opacity: 0; transition: opacity 0.3s;
-    border-radius: inherit;
-  }
-  .tool-card:hover { transform: translateY(-6px) scale(1.03); border-color: var(--tool-color, var(--accent)); box-shadow: 0 20px 60px var(--tool-glow, var(--glow)); }
-  .tool-card:hover::before { opacity: 0.15; }
-  .tool-card.active { border-color: var(--tool-color, var(--accent)); box-shadow: 0 0 0 2px var(--tool-color, var(--accent)), 0 20px 60px var(--tool-glow, var(--glow)); }
+        .app-card:hover {
+            transform: translateY(-5px);
+        }
 
-  .tool-icon {
-    width: 54px; height: 54px; border-radius: 14px;
-    background: var(--tool-bg, rgba(124,92,252,0.15));
-    display: flex; align-items: center; justify-content: center;
-    margin: 0 auto 14px; font-size: 1.6rem;
-    border: 1px solid rgba(255,255,255,0.06);
-    transition: transform 0.3s;
-  }
-  .tool-card:hover .tool-icon { transform: scale(1.15) rotate(-5deg); }
-  .tool-name { font-size: 0.85rem; font-weight: 700; margin-bottom: 4px; color: var(--text); }
-  .tool-desc { font-family: 'DM Mono', monospace; font-size: 0.62rem; color: var(--muted); line-height: 1.5; }
-  .tool-badge {
-    position: absolute; top: 10px; right: 10px;
-    font-family: 'DM Mono', monospace; font-size: 0.55rem; font-weight: 500;
-    padding: 2px 7px; border-radius: 20px; letter-spacing: 0.05em;
-    background: var(--tool-badge-bg, rgba(124,92,252,0.2));
-    color: var(--tool-color, var(--accent));
-    border: 1px solid var(--tool-color, var(--accent));
-  }
+        .app-card:active {
+            transform: scale(0.95);
+        }
 
-  /* ─── TOOL PANEL ─── */
-  .panel-overlay {
-    position: fixed; inset: 0; z-index: 100;
-    background: rgba(9,9,15,0.7); backdrop-filter: blur(8px);
-    display: none; align-items: flex-end; justify-content: center;
-    padding: 20px;
-  }
-  .panel-overlay.open { display: flex; animation: overlayIn 0.3s ease; }
-  @keyframes overlayIn { from{opacity:0} to{opacity:1} }
+        .icon-box {
+            transition: transform 0.3s ease;
+        }
 
-  .panel {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 24px 24px 16px 16px;
-    width: 100%; max-width: 780px;
-    max-height: 88vh;
-    overflow: hidden;
-    display: flex; flex-direction: column;
-    animation: panelUp 0.4s cubic-bezier(0.34, 1.4, 0.64, 1);
-    box-shadow: 0 -20px 80px rgba(0,0,0,0.5), 0 0 0 1px var(--panel-color, var(--accent));
-  }
-  @keyframes panelUp { from{transform:translateY(100px);opacity:0} to{transform:translateY(0);opacity:1} }
+        .app-card:hover .icon-box {
+            transform: scale(1.1);
+        }
 
-  .panel-header {
-    padding: 20px 24px 16px;
-    border-bottom: 1px solid var(--border);
-    display: flex; align-items: center; gap: 14px;
-    flex-shrink: 0;
-  }
-  .panel-icon {
-    width: 42px; height: 42px; border-radius: 12px;
-    background: var(--panel-bg, rgba(124,92,252,0.15));
-    display: flex; align-items: center; justify-content: center;
-    font-size: 1.3rem; flex-shrink: 0;
-  }
-  .panel-title-area { flex: 1; }
-  .panel-title { font-size: 1.1rem; font-weight: 800; }
-  .panel-subtitle { font-family: 'DM Mono', monospace; font-size: 0.65rem; color: var(--muted); margin-top: 2px; }
-  .panel-close {
-    width: 36px; height: 36px; border-radius: 10px;
-    background: rgba(255,255,255,0.05); border: 1px solid var(--border);
-    color: var(--muted); cursor: pointer; font-size: 1rem;
-    display: flex; align-items: center; justify-content: center;
-    transition: all 0.2s; flex-shrink: 0;
-  }
-  .panel-close:hover { background: rgba(255,255,255,0.1); color: var(--text); }
+        /* Gradient Text */
+        .gradient-text {
+            background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
 
-  .panel-body { padding: 24px; overflow-y: auto; flex: 1; }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #e2e8f0;
+            border-radius: 10px;
+        }
 
-  /* ─── RANDOMIZER ─── */
-  .rand-tabs {
-    display: flex; gap: 4px;
-    background: rgba(255,255,255,0.04); border-radius: 12px; padding: 4px;
-    margin-bottom: 24px; overflow-x: auto; flex-shrink: 0;
-  }
-  .rand-tab {
-    padding: 8px 16px; border-radius: 8px; cursor: pointer;
-    font-size: 0.75rem; font-weight: 600; letter-spacing: 0.05em;
-    white-space: nowrap; transition: all 0.2s; color: var(--muted);
-    flex-shrink: 0;
-  }
-  .rand-tab.active { background: var(--accent); color: #fff; }
-  .rand-tab:hover:not(.active) { color: var(--text); background: rgba(255,255,255,0.06); }
-
-  .rand-panel { display: none; }
-  .rand-panel.active { display: block; animation: fadeUp 0.3s both; }
-
-  /* Number randomizer */
-  .num-controls { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
-  .input-group label { font-family: 'DM Mono', monospace; font-size: 0.65rem; color: var(--muted); letter-spacing: 0.1em; display: block; margin-bottom: 6px; }
-  .input-group input, .input-group select, .input-group textarea {
-    width: 100%; background: rgba(255,255,255,0.05); border: 1px solid var(--border);
-    border-radius: 10px; padding: 10px 14px; color: var(--text);
-    font-family: 'DM Mono', monospace; font-size: 0.85rem;
-    outline: none; transition: border-color 0.2s;
-  }
-  .input-group input:focus, .input-group select:focus, .input-group textarea:focus { border-color: var(--accent); }
-  .input-group textarea { resize: vertical; min-height: 80px; }
-  .input-group select option { background: #1a1a2e; }
-
-  .btn {
-    padding: 12px 24px; border-radius: 12px; cursor: pointer; font-family: 'Syne', sans-serif;
-    font-size: 0.85rem; font-weight: 700; letter-spacing: 0.05em; border: none;
-    transition: all 0.2s; display: inline-flex; align-items: center; gap: 8px;
-  }
-  .btn-primary { background: var(--accent); color: #fff; }
-  .btn-primary:hover { background: #9070ff; transform: translateY(-1px); box-shadow: 0 8px 30px rgba(124,92,252,0.4); }
-  .btn-secondary { background: rgba(255,255,255,0.07); color: var(--text); border: 1px solid var(--border); }
-  .btn-secondary:hover { background: rgba(255,255,255,0.12); }
-  .btn-danger { background: rgba(252,92,125,0.15); color: var(--accent2); border: 1px solid rgba(252,92,125,0.3); }
-  .btn-danger:hover { background: rgba(252,92,125,0.25); }
-  .btn-sm { padding: 8px 16px; font-size: 0.75rem; }
-
-  .result-display {
-    background: rgba(255,255,255,0.03); border: 1px solid var(--border);
-    border-radius: 14px; padding: 20px; text-align: center; margin-top: 16px;
-    min-height: 80px; display: flex; align-items: center; justify-content: center;
-    flex-direction: column; gap: 8px;
-  }
-  .result-number {
-    font-size: clamp(2.5rem, 8vw, 4rem); font-weight: 800;
-    background: linear-gradient(135deg, #fff, var(--accent));
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-    animation: popIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-    line-height: 1;
-  }
-  @keyframes popIn { from{transform:scale(0.5);opacity:0} to{transform:scale(1);opacity:1} }
-  .result-label { font-family: 'DM Mono', monospace; font-size: 0.65rem; color: var(--muted); letter-spacing: 0.1em; }
-
-  .results-list {
-    display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-top: 8px;
-  }
-  .result-pill {
-    background: rgba(124,92,252,0.15); border: 1px solid rgba(124,92,252,0.3);
-    border-radius: 8px; padding: 6px 14px; font-family: 'DM Mono', monospace;
-    font-size: 0.85rem; font-weight: 500; color: var(--text);
-    animation: popIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-  }
-  .result-pill.highlight { background: rgba(124,92,252,0.35); border-color: var(--accent); color: #fff; }
-
-  .history-list { margin-top: 16px; }
-  .history-item {
-    display: flex; justify-content: space-between; align-items: center;
-    padding: 8px 12px; border-radius: 8px; font-family: 'DM Mono', monospace;
-    font-size: 0.75rem; border-bottom: 1px solid var(--border);
-    color: var(--muted);
-  }
-  .history-item:last-child { border-bottom: none; }
-  .history-val { color: var(--text); font-weight: 500; }
-
-  .action-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 14px; }
-
-  /* Dice */
-  .dice-grid { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 16px; }
-  .dice-select-btn {
-    padding: 8px 16px; border-radius: 10px; cursor: pointer; font-family: 'DM Mono', monospace;
-    font-size: 0.8rem; font-weight: 500; border: 1px solid var(--border);
-    background: rgba(255,255,255,0.04); color: var(--muted); transition: all 0.2s;
-  }
-  .dice-select-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
-  .dice-select-btn:hover:not(.active) { border-color: var(--accent); color: var(--text); }
-
-  .dice-roll-display {
-    display: flex; gap: 12px; flex-wrap: wrap; justify-content: center;
-    margin: 16px 0; min-height: 70px; align-items: center;
-  }
-  .die {
-    width: 60px; height: 60px; background: rgba(124,92,252,0.15);
-    border: 2px solid rgba(124,92,252,0.4); border-radius: 14px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 1.6rem; font-weight: 800;
-    animation: diceRoll 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-    transition: all 0.2s;
-  }
-  @keyframes diceRoll { from{transform:rotate(180deg) scale(0);opacity:0} to{transform:rotate(0deg) scale(1);opacity:1} }
-
-  /* Wheel */
-  .wheel-container { display: flex; flex-direction: column; align-items: center; gap: 16px; }
-  .wheel-entries { width: 100%; }
-  .wheel-entry-list { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; min-height: 40px; }
-  .wheel-entry-tag {
-    display: inline-flex; align-items: center; gap: 6px;
-    background: rgba(255,255,255,0.07); border: 1px solid var(--border);
-    border-radius: 8px; padding: 5px 10px; font-size: 0.78rem;
-  }
-  .wheel-entry-tag button { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 0.75rem; padding: 0; line-height: 1; }
-  .wheel-entry-tag button:hover { color: var(--accent2); }
-  .wheel-canvas-wrap {
-    position: relative; width: min(280px, 90vw); height: min(280px, 90vw);
-  }
-  #wheelCanvas { border-radius: 50%; }
-  .wheel-pointer {
-    position: absolute; top: -10px; left: 50%; transform: translateX(-50%);
-    width: 0; height: 0;
-    border-left: 10px solid transparent;
-    border-right: 10px solid transparent;
-    border-top: 22px solid #fff;
-    filter: drop-shadow(0 2px 6px rgba(0,0,0,0.5));
-    z-index: 2;
-  }
-  #spinBtn {
-    width: 70px; height: 70px; border-radius: 50%; font-size: 1.1rem;
-    position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
-    background: rgba(9,9,15,0.9); border: 2px solid var(--accent);
-    color: var(--text); cursor: pointer; font-family: 'Syne', sans-serif;
-    font-weight: 800; font-size: 0.75rem; letter-spacing: 0.05em;
-    z-index: 3; transition: all 0.2s;
-  }
-  #spinBtn:hover { background: var(--accent); color: #fff; }
-  #spinBtn:disabled { opacity: 0.5; cursor: not-allowed; }
-
-  /* Coin */
-  .coin-wrap { display: flex; flex-direction: column; align-items: center; gap: 20px; padding: 10px 0; }
-  .coin {
-    width: 120px; height: 120px; border-radius: 50%; cursor: pointer;
-    position: relative; transform-style: preserve-3d;
-    transition: transform 0.1s; perspective: 1000px;
-  }
-  .coin.flipping { animation: coinFlip 0.8s ease-in-out; }
-  @keyframes coinFlip {
-    0%{transform:rotateX(0deg)} 25%{transform:rotateX(720deg)}
-    75%{transform:rotateX(1440deg)} 100%{transform:rotateX(0deg)}
-  }
-  .coin-face {
-    width: 120px; height: 120px; border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 2.5rem; border: 4px solid;
-    position: absolute; inset: 0;
-    box-shadow: inset 0 -4px 10px rgba(0,0,0,0.4), 0 4px 20px rgba(0,0,0,0.3);
-  }
-  .coin-heads { background: radial-gradient(circle at 35% 35%, #f7d44c, #c8a020); border-color: #b8900a; }
-  .coin-tails { background: radial-gradient(circle at 35% 35%, #c0c0d0, #8090a0); border-color: #607080; display: none; }
-  .coin-result { font-size: 1.6rem; font-weight: 800; letter-spacing: 0.05em; }
-  .coin-sub { font-family: 'DM Mono', monospace; font-size: 0.7rem; color: var(--muted); }
-  .coin-stats { display: flex; gap: 20px; }
-  .stat-box { text-align: center; background: rgba(255,255,255,0.04); border: 1px solid var(--border); border-radius: 12px; padding: 12px 20px; }
-  .stat-val { font-size: 1.5rem; font-weight: 800; }
-  .stat-label { font-family: 'DM Mono', monospace; font-size: 0.62rem; color: var(--muted); margin-top: 2px; }
-
-  /* Password */
-  .pass-result {
-    background: rgba(255,255,255,0.04); border: 1px solid var(--border);
-    border-radius: 12px; padding: 16px 20px; font-family: 'DM Mono', monospace;
-    font-size: clamp(0.75rem, 2.5vw, 1rem); word-break: break-all; letter-spacing: 0.08em;
-    color: var(--text); min-height: 56px; margin: 16px 0;
-    display: flex; align-items: center; justify-content: space-between; gap: 12px;
-  }
-  .pass-text { flex: 1; }
-  .strength-bar-wrap { margin-bottom: 16px; }
-  .strength-bar { height: 6px; border-radius: 3px; background: rgba(255,255,255,0.08); overflow: hidden; }
-  .strength-fill { height: 100%; border-radius: 3px; transition: width 0.4s, background 0.4s; }
-  .strength-label { font-family: 'DM Mono', monospace; font-size: 0.65rem; color: var(--muted); margin-top: 6px; }
-
-  /* Checkboxes */
-  .checkbox-group { display: flex; flex-wrap: wrap; gap: 10px; margin: 10px 0; }
-  .custom-check { display: flex; align-items: center; gap: 8px; cursor: pointer; }
-  .custom-check input { appearance: none; width: 18px; height: 18px; border-radius: 5px; border: 1px solid var(--border); background: rgba(255,255,255,0.05); cursor: pointer; position: relative; flex-shrink: 0; }
-  .custom-check input:checked { background: var(--accent); border-color: var(--accent); }
-  .custom-check input:checked::after { content: '✓'; position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); color: #fff; font-size: 11px; font-weight: 700; }
-  .custom-check span { font-family: 'DM Mono', monospace; font-size: 0.75rem; color: var(--muted); }
-
-  /* Colour picker tool */
-  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(55px, 1fr)); gap: 8px; margin: 12px 0; }
-  .color-swatch { width: 100%; aspect-ratio: 1; border-radius: 10px; cursor: pointer; border: 2px solid transparent; transition: all 0.2s; display: flex; align-items: flex-end; justify-content: center; padding: 4px; overflow: hidden; }
-  .color-swatch:hover { transform: scale(1.1); }
-  .color-swatch.selected { border-color: #fff; box-shadow: 0 0 0 2px rgba(255,255,255,0.3); }
-  .color-label { font-family: 'DM Mono', monospace; font-size: 0.5rem; color: rgba(255,255,255,0.7); text-shadow: 0 1px 2px rgba(0,0,0,0.8); }
-
-  /* UUID */
-  .uuid-output { font-family: 'DM Mono', monospace; font-size: 0.8rem; color: var(--accent3); word-break: break-all; line-height: 2; }
-  .uuid-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; background: rgba(255,255,255,0.03); border-radius: 8px; margin-bottom: 6px; }
-  .uuid-item:hover { background: rgba(255,255,255,0.06); }
-
-  /* Countdown */
-  .countdown-display { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin: 16px 0; }
-  .count-box { text-align: center; background: rgba(255,255,255,0.04); border: 1px solid var(--border); border-radius: 14px; padding: 16px 20px; min-width: 70px; }
-  .count-val { font-size: 2rem; font-weight: 800; line-height: 1; }
-  .count-unit { font-family: 'DM Mono', monospace; font-size: 0.6rem; color: var(--muted); margin-top: 4px; letter-spacing: 0.1em; }
-
-  /* ─── RESPONSIVE ─── */
-  @media (max-width: 600px) {
-    header { padding: 24px 20px 0; }
-    .hero { padding: 40px 20px 20px; }
-    .tools-section { padding: 24px 16px 60px; }
-    .tools-grid { grid-template-columns: repeat(3, 1fr); gap: 10px; }
-    .tool-card { padding: 16px 10px 14px; }
-    .tool-icon { width: 44px; height: 44px; font-size: 1.3rem; }
-    .tool-name { font-size: 0.75rem; }
-    .tool-desc { display: none; }
-    .num-controls { grid-template-columns: 1fr; }
-    .panel { border-radius: 20px 20px 0 0; max-height: 92vh; }
-    .panel-body { padding: 16px; }
-    .rand-tabs { gap: 2px; }
-    .rand-tab { padding: 7px 10px; font-size: 0.7rem; }
-    .coin-stats { gap: 12px; }
-    .stat-box { padding: 10px 14px; }
-  }
-  @media (max-width: 380px) {
-    .tools-grid { grid-template-columns: repeat(2, 1fr); }
-  }
-
-  /* ─── COPY TOAST ─── */
-  .toast {
-    position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(20px);
-    background: var(--accent); color: #fff; padding: 10px 22px; border-radius: 30px;
-    font-size: 0.8rem; font-weight: 700; pointer-events: none;
-    opacity: 0; transition: all 0.3s; z-index: 1000;
-    white-space: nowrap;
-  }
-  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-
-  /* ─── RAND HINT ─── */
-  .rand-hint {
-    font-family: 'DM Mono', monospace; font-size: 0.7rem; color: var(--muted);
-    line-height: 1.6; margin-bottom: 16px;
-    padding: 10px 14px; background: rgba(255,255,255,0.03);
-    border-left: 2px solid var(--accent); border-radius: 0 8px 8px 0;
-  }
-
-  /* ─── GROUPS ─── */
-  .grp-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
-    gap: 12px;
-  }
-  .grp-card {
-    background: rgba(255,255,255,0.03);
-    border: 1px solid rgba(255,255,255,0.07);
-    border-radius: 14px; padding: 14px;
-    border-top: 3px solid var(--gc, var(--accent));
-    animation: fadeUp 0.35s both;
-  }
-  .grp-title {
-    display: flex; align-items: center; gap: 8px;
-    font-weight: 700; font-size: 0.85rem; margin-bottom: 10px;
-  }
-  .grp-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
-  .grp-count {
-    margin-left: auto; font-family: 'DM Mono', monospace;
-    font-size: 0.65rem; color: var(--muted);
-    background: rgba(255,255,255,0.07); padding: 2px 8px; border-radius: 10px;
-  }
-  .grp-members { display: flex; flex-direction: column; gap: 5px; }
-  .grp-member {
-    display: flex; align-items: center; gap: 8px;
-    font-size: 0.82rem; padding: 5px 8px;
-    background: rgba(255,255,255,0.04); border-radius: 7px;
-    animation: fadeUp 0.3s both;
-  }
-  .grp-num {
-    font-family: 'DM Mono', monospace; font-size: 0.65rem;
-    color: var(--muted); width: 14px; flex-shrink: 0; text-align: center;
-  }
-
-  /* scroll */
-  ::-webkit-scrollbar { width: 6px; height: 6px; }
-  ::-webkit-scrollbar-track { background: transparent; }
-  ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 3px; }
-</style>
+        /* Responsiveness Tweak for the Grid */
+        @media (min-width: 1024px) {
+            .tools-grid {
+                grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            }
+        }
+    </style>
 </head>
-<body>
+<body class="flex flex-col lg:flex-row min-h-screen">
 
-<div class="orb orb-1"></div>
-<div class="orb orb-2"></div>
-<div class="orb orb-3"></div>
-
-<header>
-  <div class="logo">TOOL<span>BOX</span></div>
-  <div class="tagline">// your utility hub</div>
-</header>
-
-<section class="hero">
-  <div class="hero-label">6 powerful tools</div>
-  <h1>Everything<br>You Need</h1>
-  <p>A sleek collection of everyday utilities. Click any tool below to get started.</p>
-</section>
-
-<section class="tools-section">
-  <div class="section-title">// tools available</div>
-  <div class="tools-grid" id="toolsGrid"></div>
-</section>
-
-<!-- Panel -->
-<div class="panel-overlay" id="panelOverlay">
-  <div class="panel" id="mainPanel">
-    <div class="panel-header">
-      <div class="panel-icon" id="panelIcon"></div>
-      <div class="panel-title-area">
-        <div class="panel-title" id="panelTitle"></div>
-        <div class="panel-subtitle" id="panelSubtitle"></div>
-      </div>
-      <button class="panel-close" onclick="closePanel()">✕</button>
-    </div>
-    <div class="panel-body" id="panelBody"></div>
-  </div>
-</div>
-
-<div class="toast" id="toast"></div>
-
-<script>
-// ─── TOOLS CONFIG ───
-const tools = [
-  {
-    id: 'randomizer',
-    icon: '🎲',
-    name: 'Randomizer',
-    desc: 'Numbers, lists & more',
-    badge: 'PRO',
-    color: '#7c5cfc',
-    glow: 'rgba(124,92,252,0.3)',
-    bg: 'rgba(124,92,252,0.12)',
-  },
-  {
-    id: 'dice',
-    icon: '🎯',
-    name: 'Dice Roller',
-    desc: 'Roll any dice type',
-    badge: 'FUN',
-    color: '#fc5c7d',
-    glow: 'rgba(252,92,125,0.3)',
-    bg: 'rgba(252,92,125,0.12)',
-  },
-  {
-    id: 'wheel',
-    icon: '🎡',
-    name: 'Spin Wheel',
-    desc: 'Decision spinner',
-    badge: 'NEW',
-    color: '#5cf0fc',
-    glow: 'rgba(92,240,252,0.3)',
-    bg: 'rgba(92,240,252,0.12)',
-  },
-  {
-    id: 'coin',
-    icon: '🪙',
-    name: 'Coin Flip',
-    desc: 'Heads or tails?',
-    badge: 'FLIP',
-    color: '#fcdb5c',
-    glow: 'rgba(252,219,92,0.3)',
-    bg: 'rgba(252,219,92,0.12)',
-  },
-  {
-    id: 'password',
-    icon: '🔐',
-    name: 'Password',
-    desc: 'Secure generator',
-    badge: 'SEC',
-    color: '#5cfc8e',
-    glow: 'rgba(92,252,142,0.3)',
-    bg: 'rgba(92,252,142,0.12)',
-  },
-  {
-    id: 'uuid',
-    icon: '🆔',
-    name: 'UUID Gen',
-    desc: 'Unique identifiers',
-    badge: 'DEV',
-    color: '#fc9d5c',
-    glow: 'rgba(252,157,92,0.3)',
-    bg: 'rgba(252,157,92,0.12)',
-  }
-];
-
-// ─── RENDER GRID ───
-const grid = document.getElementById('toolsGrid');
-tools.forEach(t => {
-  const card = document.createElement('div');
-  card.className = 'tool-card';
-  card.id = 'card-' + t.id;
-  card.style.cssText = `--tool-color:${t.color};--tool-glow:${t.glow};--tool-bg:${t.bg};--tool-badge-bg:${t.bg}`;
-  card.innerHTML = `
-    <div class="tool-badge">${t.badge}</div>
-    <div class="tool-icon">${t.icon}</div>
-    <div class="tool-name">${t.name}</div>
-    <div class="tool-desc">${t.desc}</div>
-  `;
-  card.addEventListener('click', () => openTool(t));
-  grid.appendChild(card);
-});
-
-// ─── PANEL ───
-function openTool(t) {
-  document.querySelectorAll('.tool-card').forEach(c => c.classList.remove('active'));
-  document.getElementById('card-' + t.id).classList.add('active');
-  
-  const overlay = document.getElementById('panelOverlay');
-  const panel = document.getElementById('mainPanel');
-  document.getElementById('panelIcon').textContent = t.icon;
-  document.getElementById('panelIcon').style.background = t.bg;
-  document.getElementById('panelTitle').textContent = t.name;
-  panel.style.setProperty('--panel-color', t.color);
-  panel.style.setProperty('--panel-bg', t.bg);
-
-  const subtitles = {
-    randomizer: '// Advanced number & list randomizer',
-    dice: '// Roll dice of any type',
-    wheel: '// Spin to decide',
-    coin: '// Classic coin toss tracker',
-    password: '// Secure password creator',
-    uuid: '// UUID / unique ID generator',
-  };
-  document.getElementById('panelSubtitle').textContent = subtitles[t.id];
-
-  const builders = { randomizer: buildRandomizer, dice: buildDice, wheel: buildWheel, coin: buildCoin, password: buildPassword, uuid: buildUUID };
-  document.getElementById('panelBody').innerHTML = '';
-  builders[t.id]();
-
-  overlay.classList.add('open');
-  document.body.style.overflow = 'hidden';
-}
-
-function closePanel() {
-  document.getElementById('panelOverlay').classList.remove('open');
-  document.body.style.overflow = '';
-  document.querySelectorAll('.tool-card').forEach(c => c.classList.remove('active'));
-}
-document.getElementById('panelOverlay').addEventListener('click', e => { if (e.target === e.currentTarget) closePanel(); });
-
-function toast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg; t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2000);
-}
-
-function copyText(text) { navigator.clipboard.writeText(text).then(() => toast('Copied!')); }
-
-// ──────────────────────────────────────────────
-// 1. RANDOMIZER
-// ──────────────────────────────────────────────
-let randHistory = [];
-function buildRandomizer() {
-  const body = document.getElementById('panelBody');
-  body.innerHTML = `
-    <div class="rand-tabs">
-      <div class="rand-tab active" onclick="switchRandTab('number',this)">🔢 Number</div>
-      <div class="rand-tab" onclick="switchRandTab('multi',this)">🎰 Multiple</div>
-      <div class="rand-tab" onclick="switchRandTab('list',this)">📋 From List</div>
-      <div class="rand-tab" onclick="switchRandTab('groups',this)">👥 Groups</div>
-      <div class="rand-tab" onclick="switchRandTab('sequence',this)">🔀 Sequence</div>
-      <div class="rand-tab" onclick="switchRandTab('weighted',this)">⚖️ Weighted</div>
-    </div>
-
-    <!-- NUMBER -->
-    <div class="rand-panel active" id="rp-number">
-      <p class="rand-hint">Generate a single random number between any two values. Great for quick decisions, lottery picks, or games.</p>
-      <div class="num-controls">
-        <div class="input-group"><label>MIN VALUE</label><input type="number" id="rMin" value="1"></div>
-        <div class="input-group"><label>MAX VALUE</label><input type="number" id="rMax" value="100"></div>
-      </div>
-      <div class="action-row">
-        <button class="btn btn-primary" onclick="rollSingle()">🎲 Randomize</button>
-        <button class="btn btn-secondary btn-sm" onclick="clearHistory()">Clear History</button>
-      </div>
-      <div class="result-display" id="rSingleResult"><span style="color:var(--muted);font-family:'DM Mono',monospace;font-size:0.75rem">Press Randomize to begin</span></div>
-      <div class="history-list" id="rHistory"></div>
-    </div>
-
-    <!-- MULTIPLE -->
-    <div class="rand-panel" id="rp-multi">
-      <p class="rand-hint">Generate a batch of random numbers at once. Useful for lottery draws, selecting multiple winners, or sampling data.</p>
-      <div class="num-controls">
-        <div class="input-group"><label>MIN</label><input type="number" id="rmMin" value="1"></div>
-        <div class="input-group"><label>MAX</label><input type="number" id="rmMax" value="100"></div>
-        <div class="input-group"><label>HOW MANY TO GENERATE</label><input type="number" id="rmCount" value="5" min="1" max="50"></div>
-        <div class="input-group"><label>DUPLICATES</label>
-          <select id="rmDupes"><option value="yes">Allowed</option><option value="no">Unique only</option></select>
+    <!-- DESKTOP SIDEBAR -->
+    <aside class="hidden lg:flex flex-col w-64 bg-white border-r border-slate-200 sticky top-0 h-screen p-6">
+        <div class="flex items-center gap-3 mb-10 cursor-pointer" onclick="filterBySection('all')">
+            <div class="bg-indigo-600 p-2 rounded-xl">
+                <i class="fas fa-layer-group text-white text-xl"></i>
+            </div>
+            <h1 class="text-xl font-bold gradient-text">ToolsHub</h1>
         </div>
-      </div>
-      <div style="margin-bottom:14px">
-        <label class="custom-check"><input type="checkbox" id="rmSort"><span>Sort results low → high</span></label>
-      </div>
-      <button class="btn btn-primary" onclick="rollMulti()">🎲 Generate Numbers</button>
-      <div class="result-display" id="rmResult" style="flex-direction:column;gap:12px">
-        <span style="color:var(--muted);font-family:'DM Mono',monospace;font-size:0.75rem">Press Generate to begin</span>
-      </div>
-    </div>
 
-    <!-- LIST -->
-    <div class="rand-panel" id="rp-list">
-      <p class="rand-hint">Paste any list of words or names, then randomly pick one or more. Perfect for choosing a restaurant, movie, or winner from entries.</p>
-      <div class="input-group" style="margin-bottom:12px">
-        <label>YOUR ITEMS (one per line, or comma-separated)</label>
-        <textarea id="listItems" placeholder="Alice&#10;Bob&#10;Charlie&#10;Diana&#10;&#10;— or —&#10;Pizza, Sushi, Tacos, Burgers" style="min-height:100px"></textarea>
-      </div>
-      <div class="num-controls">
-        <div class="input-group"><label>HOW MANY TO PICK</label><input type="number" id="listCount" value="1" min="1"></div>
-        <div class="input-group"><label>SAME ITEM TWICE?</label>
-          <select id="listDupes"><option value="no">No — unique picks</option><option value="yes">Yes — allow repeats</option></select>
+        <nav class="flex-1 space-y-2">
+            <div onclick="filterBySection('all')" class="sidebar-link nav-item active" data-section="all">
+                <i class="fas fa-home mr-3"></i> Home
+            </div>
+            <div onclick="filterBySection('categories')" class="sidebar-link nav-item" data-section="categories">
+                <i class="fas fa-th-large mr-3"></i> Categories
+            </div>
+            <div onclick="filterBySection('favorites')" class="sidebar-link nav-item" data-section="favorites">
+                <i class="fas fa-star mr-3"></i> Favorites
+            </div>
+            <div onclick="filterBySection('recent')" class="sidebar-link nav-item" data-section="recent">
+                <i class="fas fa-history mr-3"></i> Recent
+            </div>
+        </nav>
+
+        <div class="mt-auto pt-6 border-t border-slate-100">
+            <div onclick="showSettings()" class="sidebar-link nav-item">
+                <i class="fas fa-cog mr-3"></i> Settings
+            </div>
         </div>
-      </div>
-      <div class="action-row">
-        <button class="btn btn-primary" onclick="rollList()">🔀 Pick Random</button>
-        <button class="btn btn-secondary btn-sm" onclick="document.getElementById('listItems').value='';document.getElementById('listResult').innerHTML='<span style=\'color:var(--muted);font-family:DM Mono,monospace;font-size:0.75rem\'>Cleared</span>'">Clear</button>
-      </div>
-      <div class="result-display" id="listResult" style="flex-direction:column;gap:10px">
-        <span style="color:var(--muted);font-family:'DM Mono',monospace;font-size:0.75rem">Add items above and press Pick</span>
-      </div>
+    </aside>
+
+    <!-- MAIN CONTENT AREA -->
+    <div class="flex-1 flex flex-col min-w-0">
+        
+        <!-- HEADER -->
+        <header class="sticky top-0 z-50 glass-header px-6 py-4">
+            <div class="max-w-6xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div class="flex items-center justify-between lg:hidden">
+                    <h1 class="text-2xl font-bold gradient-text">ToolsHub</h1>
+                    <button class="text-slate-500"><i class="fas fa-user-circle text-2xl"></i></button>
+                </div>
+                
+                <div class="hidden lg:block">
+                    <h2 class="text-sm font-medium text-slate-400 uppercase tracking-widest" id="viewTitleLabel">Dashboard</h2>
+                    <p class="text-lg font-bold text-slate-800" id="viewTitleName">Welcome back, User</p>
+                </div>
+
+                <!-- Search Bar -->
+                <div class="relative w-full md:w-96">
+                    <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <i class="fas fa-search text-slate-400"></i>
+                    </span>
+                    <input type="text" id="toolSearch" onkeyup="filterTools()" 
+                           class="block w-full pl-10 pr-3 py-2.5 bg-slate-100 border-none rounded-2xl text-sm placeholder-slate-500 focus:bg-white focus:ring-2 focus:ring-indigo-500 transition-all outline-none" 
+                           placeholder="Search your tools...">
+                </div>
+
+                <div class="hidden lg:flex items-center gap-4">
+                    <button class="p-2 text-slate-400 hover:text-indigo-600 transition"><i class="far fa-bell text-xl"></i></button>
+                    <div class="h-8 w-8 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 font-bold text-xs border border-indigo-200 cursor-pointer">
+                        JD
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- APP GRID AREA -->
+        <main class="max-w-6xl mx-auto w-full px-6 py-8">
+            
+            <section class="mb-10" id="mainToolsSection">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-sm font-bold text-slate-400 uppercase tracking-widest" id="sectionHeading">Available Tools</h2>
+                    <span class="text-xs text-indigo-600 font-semibold cursor-pointer hover:underline" onclick="filterBySection('all')">View All</span>
+                </div>
+
+                <!-- Tools Grid -->
+                <div id="toolsGrid" class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-4 xl:grid-cols-5 gap-6 md:gap-8 tools-grid">
+                    
+                    <!-- Assignments -->
+                    <div class="tool-item" data-category="productivity" data-favorite="true">
+                        <a href="assignments.html" onclick="trackRecent('Assignments')" class="app-card flex flex-col items-center group">
+                            <div class="icon-box w-16 h-16 md:w-20 md:h-20 bg-blue-500 rounded-[1.5rem] flex items-center justify-center shadow-xl shadow-blue-100 mb-3 relative">
+                                <i class="fas fa-tasks text-white text-2xl md:text-3xl"></i>
+                                <div class="absolute -top-1 -right-1 bg-white p-1 rounded-full shadow-sm">
+                                    <i class="fas fa-star text-yellow-400 text-[10px]"></i>
+                                </div>
+                            </div>
+                            <span class="text-xs md:text-sm font-semibold text-slate-700 text-center tool-name">Assignments</span>
+                        </a>
+                    </div>
+
+                    <!-- Randomizer -->
+                    <div class="tool-item" data-category="utility" data-favorite="true">
+                        <a href="randomizer.html" onclick="trackRecent('Randomizer')" class="app-card flex flex-col items-center group">
+                            <div class="icon-box w-16 h-16 md:w-20 md:h-20 bg-purple-500 rounded-[1.5rem] flex items-center justify-center shadow-xl shadow-purple-100 mb-3 relative">
+                                <i class="fas fa-random text-white text-2xl md:text-3xl"></i>
+                                <div class="absolute -top-1 -right-1 bg-white p-1 rounded-full shadow-sm">
+                                    <i class="fas fa-star text-yellow-400 text-[10px]"></i>
+                                </div>
+                            </div>
+                            <span class="text-xs md:text-sm font-semibold text-slate-700 text-center tool-name">Randomizer</span>
+                        </a>
+                    </div>
+
+                    <!-- Calculator -->
+                    <div class="tool-item" data-category="utility" data-favorite="false">
+                        <a href="calculator.html" onclick="trackRecent('Calculator')" class="app-card flex flex-col items-center group">
+                            <div class="icon-box w-16 h-16 md:w-20 md:h-20 bg-orange-500 rounded-[1.5rem] flex items-center justify-center shadow-xl shadow-orange-100 mb-3">
+                                <i class="fas fa-calculator text-white text-2xl md:text-3xl"></i>
+                            </div>
+                            <span class="text-xs md:text-sm font-semibold text-slate-700 text-center tool-name">Calculator</span>
+                        </a>
+                    </div>
+
+                    <!-- Notes -->
+                    <div class="tool-item" data-category="productivity" data-favorite="false">
+                        <a href="notes.html" onclick="trackRecent('Quick Notes')" class="app-card flex flex-col items-center group">
+                            <div class="icon-box w-16 h-16 md:w-20 md:h-20 bg-emerald-500 rounded-[1.5rem] flex items-center justify-center shadow-xl shadow-emerald-100 mb-3">
+                                <i class="fas fa-sticky-note text-white text-2xl md:text-3xl"></i>
+                            </div>
+                            <span class="text-xs md:text-sm font-semibold text-slate-700 text-center tool-name">Quick Notes</span>
+                        </a>
+                    </div>
+
+                    <!-- PDF -->
+                    <div class="tool-item" data-category="document" data-favorite="false">
+                        <a href="pdf.html" onclick="trackRecent('PDF Tools')" class="app-card flex flex-col items-center group">
+                            <div class="icon-box w-16 h-16 md:w-20 md:h-20 bg-rose-500 rounded-[1.5rem] flex items-center justify-center shadow-xl shadow-rose-100 mb-3">
+                                <i class="fas fa-file-pdf text-white text-2xl md:text-3xl"></i>
+                            </div>
+                            <span class="text-xs md:text-sm font-semibold text-slate-700 text-center tool-name">PDF Tools</span>
+                        </a>
+                    </div>
+
+                    <!-- Converter -->
+                    <div class="tool-item" data-category="utility" data-favorite="false">
+                        <a href="units.html" onclick="trackRecent('Converter')" class="app-card flex flex-col items-center group">
+                            <div class="icon-box w-16 h-16 md:w-20 md:h-20 bg-cyan-500 rounded-[1.5rem] flex items-center justify-center shadow-xl shadow-cyan-100 mb-3">
+                                <i class="fas fa-ruler-combined text-white text-2xl md:text-3xl"></i>
+                            </div>
+                            <span class="text-xs md:text-sm font-semibold text-slate-700 text-center tool-name">Converter</span>
+                        </a>
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- NO RESULTS MESSAGE -->
+            <div id="noResults" class="hidden text-center py-20">
+                <div class="bg-slate-50 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-search text-slate-300 text-3xl"></i>
+                </div>
+                <h3 class="text-slate-800 font-bold text-lg">Nothing found here</h3>
+                <p class="text-slate-400">Try a different filter or search term.</p>
+            </div>
+
+        </main>
     </div>
 
-    <!-- GROUPS -->
-    <div class="rand-panel" id="rp-groups">
-      <p class="rand-hint">Divide a fixed list of names or words into a fixed number of balanced random groups. Perfect for teams, class projects, seating arrangements, or any assignment.</p>
-      <div class="input-group" style="margin-bottom:12px">
-        <label>MEMBERS / WORDS (one per line or comma-separated)</label>
-        <textarea id="grpItems" placeholder="Alice&#10;Bob&#10;Charlie&#10;Diana&#10;Eve&#10;Frank&#10;Grace&#10;Hank" style="min-height:110px"></textarea>
-      </div>
-      <div class="num-controls">
-        <div class="input-group">
-          <label>NUMBER OF GROUPS</label>
-          <input type="number" id="grpCount" value="3" min="2" max="50" placeholder="e.g. 3">
-        </div>
-        <div class="input-group">
-          <label>GROUP NAME PREFIX</label>
-          <input type="text" id="grpPrefix" value="Group" placeholder="Team / Class / Squad">
-        </div>
-      </div>
-      <div style="margin-bottom:14px;display:flex;flex-wrap:wrap;gap:12px">
-        <label class="custom-check"><input type="checkbox" id="grpBalance" checked><span>Balance group sizes</span></label>
-        <label class="custom-check"><input type="checkbox" id="grpLabel"><span>Number members within group</span></label>
-      </div>
-      <div class="action-row">
-        <button class="btn btn-primary" onclick="makeGroups()">👥 Create Groups</button>
-        <button class="btn btn-secondary btn-sm" onclick="reshuffleGroups()">🔀 Re-shuffle</button>
-        <button class="btn btn-secondary btn-sm" onclick="copyGroups()">📋 Copy All</button>
-      </div>
-      <div id="grpResult" style="margin-top:16px"></div>
-    </div>
+    <!-- MOBILE BOTTOM NAVIGATION -->
+    <nav class="lg:hidden fixed bottom-0 left-0 right-0 glass-header border-t border-slate-200 px-6 py-3 flex justify-between items-center z-50">
+        <button onclick="filterBySection('all')" class="flex flex-col items-center nav-item active" data-section="all">
+            <i class="fas fa-home text-xl"></i>
+            <span class="text-[10px] font-bold mt-1 uppercase tracking-tighter">Home</span>
+        </button>
+        <button onclick="filterBySection('categories')" class="flex flex-col items-center nav-item" data-section="categories">
+            <i class="fas fa-th-large text-xl"></i>
+            <span class="text-[10px] font-bold mt-1 uppercase tracking-tighter">Apps</span>
+        </button>
+        <button onclick="filterBySection('favorites')" class="flex flex-col items-center nav-item" data-section="favorites">
+            <i class="fas fa-star text-xl"></i>
+            <span class="text-[10px] font-bold mt-1 uppercase tracking-tighter">Favs</span>
+        </button>
+        <button onclick="showSettings()" class="flex flex-col items-center nav-item">
+            <i class="fas fa-cog text-xl"></i>
+            <span class="text-[10px] font-bold mt-1 uppercase tracking-tighter">Set</span>
+        </button>
+    </nav>
 
-    <!-- SEQUENCE -->
-    <div class="rand-panel" id="rp-sequence">
-      <p class="rand-hint">Generate every number in a range, then shuffle the entire order randomly. Useful for creating a random play order, turn rotation, or randomised bracket.</p>
-      <div class="num-controls">
-        <div class="input-group"><label>FROM</label><input type="number" id="seqFrom" value="1"></div>
-        <div class="input-group"><label>TO</label><input type="number" id="seqTo" value="10"></div>
-      </div>
-      <div class="action-row">
-        <button class="btn btn-primary" onclick="rollSequence()">🔀 Shuffle Sequence</button>
-        <button class="btn btn-secondary btn-sm" onclick="copySeqResult()">📋 Copy</button>
-      </div>
-      <div class="result-display" id="seqResult" style="flex-direction:column;gap:12px">
-        <span style="color:var(--muted);font-family:'DM Mono',monospace;font-size:0.75rem">Press Shuffle to begin</span>
-      </div>
-    </div>
+    <script>
+        // Track Recent tools using LocalStorage
+        function trackRecent(toolName) {
+            let recent = JSON.parse(localStorage.getItem('recentTools') || '[]');
+            recent = [toolName, ...recent.filter(t => t !== toolName)].slice(0, 5);
+            localStorage.setItem('recentTools', JSON.stringify(recent));
+        }
 
-    <!-- WEIGHTED -->
-    <div class="rand-panel" id="rp-weighted">
-      <p class="rand-hint">Add items with custom weights. A higher weight means a higher chance of being picked — like a rigged lottery. Great for loot tables, promotions, or skewed decisions.</p>
-      <div style="display:flex;gap:8px;margin-bottom:10px;align-items:flex-end">
-        <div class="input-group" style="flex:1"><label>ITEM NAME</label><input type="text" id="wItem" placeholder="e.g. Pizza"></div>
-        <div class="input-group" style="width:90px"><label>WEIGHT (1–100)</label><input type="number" id="wWeight" value="1" min="1" max="100"></div>
-        <button class="btn btn-secondary btn-sm" style="margin-bottom:0;flex-shrink:0" onclick="addWeighted()">+ Add</button>
-      </div>
-      <div class="action-row" style="margin-bottom:12px">
-        <button class="btn btn-secondary btn-sm" onclick="loadWeightedPreset()">Load Example</button>
-        <button class="btn btn-danger btn-sm" onclick="clearWeighted()">Clear All</button>
-      </div>
-      <div id="weightedList" style="margin-bottom:12px;max-height:180px;overflow-y:auto"></div>
-      <button class="btn btn-primary" onclick="rollWeighted()">🎲 Pick Weighted Random</button>
-      <div class="result-display" id="wResult" style="margin-top:12px">
-        <span style="color:var(--muted);font-family:'DM Mono',monospace;font-size:0.75rem">Add items then pick</span>
-      </div>
-    </div>
-  `;
-}
+        // Search Function
+        function filterTools() {
+            const input = document.getElementById('toolSearch');
+            const filter = input.value.toLowerCase();
+            const tools = document.querySelectorAll('.tool-item');
+            const grid = document.getElementById('toolsGrid');
+            const noResults = document.getElementById('noResults');
+            let visibleCount = 0;
 
-let weightedItems = [];
-let lastGroups = [];
-let lastSeqArr = [];
+            tools.forEach(tool => {
+                const name = tool.querySelector('.tool-name').textContent;
+                if (name.toLowerCase().includes(filter)) {
+                    tool.classList.remove('hidden');
+                    visibleCount++;
+                } else {
+                    tool.classList.add('hidden');
+                }
+            });
 
-function switchRandTab(id, el) {
-  document.querySelectorAll('.rand-tab').forEach(t => t.classList.remove('active'));
-  document.querySelectorAll('.rand-panel').forEach(p => p.classList.remove('active'));
-  el.classList.add('active');
-  document.getElementById('rp-' + id).classList.add('active');
-}
+            noResults.classList.toggle('hidden', visibleCount > 0);
+            grid.classList.toggle('hidden', visibleCount === 0);
+        }
 
-function rollSingle() {
-  const mn = +document.getElementById('rMin').value, mx = +document.getElementById('rMax').value;
-  if (mn > mx) { toast('Min must be ≤ Max'); return; }
-  const n = Math.floor(Math.random() * (mx - mn + 1)) + mn;
-  randHistory.unshift({ val: n, range: `${mn}–${mx}`, time: new Date().toLocaleTimeString() });
-  if (randHistory.length > 8) randHistory.pop();
-  document.getElementById('rSingleResult').innerHTML = `<div class="result-number">${n}</div><div class="result-label">from ${mn} to ${mx}</div>`;
-  renderHistory();
-}
-function clearHistory() { randHistory = []; renderHistory(); }
-function renderHistory() {
-  const el = document.getElementById('rHistory');
-  if (!el) return;
-  el.innerHTML = randHistory.length ? '<div style="font-family:\'DM Mono\',monospace;font-size:0.65rem;color:var(--muted);margin:10px 0 6px;letter-spacing:0.1em">HISTORY</div>' + randHistory.map(h => `<div class="history-item"><span>${h.time} · ${h.range}</span><span class="history-val">${h.val}</span></div>`).join('') : '';
-}
+        // Sidebar & Bottom Nav Filtering Logic
+        function filterBySection(section) {
+            const tools = document.querySelectorAll('.tool-item');
+            const noResults = document.getElementById('noResults');
+            const grid = document.getElementById('toolsGrid');
+            const label = document.getElementById('viewTitleLabel');
+            const name = document.getElementById('viewTitleName');
+            const heading = document.getElementById('sectionHeading');
 
-function rollMulti() {
-  const mn = +document.getElementById('rmMin').value, mx = +document.getElementById('rmMax').value;
-  const cnt = Math.min(Math.max(+document.getElementById('rmCount').value, 1), 50);
-  const dupes = document.getElementById('rmDupes').value === 'yes';
-  const sort = document.getElementById('rmSort').checked;
-  if (mn > mx) { toast('Min must be ≤ Max'); return; }
-  if (!dupes && cnt > (mx - mn + 1)) { toast('Range too small for unique numbers'); return; }
-  let nums = [];
-  if (dupes) { for (let i = 0; i < cnt; i++) nums.push(Math.floor(Math.random() * (mx - mn + 1)) + mn); }
-  else {
-    const pool = []; for (let i = mn; i <= mx; i++) pool.push(i);
-    for (let i = pool.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i+1)); [pool[i],pool[j]] = [pool[j],pool[i]]; }
-    nums = pool.slice(0, cnt);
-  }
-  if (sort) nums.sort((a,b) => a-b);
-  const sum = nums.reduce((a,b)=>a+b,0), avg = (sum/nums.length).toFixed(1), min2 = Math.min(...nums), max2 = Math.max(...nums);
-  document.getElementById('rmResult').innerHTML = `
-    <div class="results-list">${nums.map((n,i)=>`<div class="result-pill ${i===0?'highlight':''}">${n}</div>`).join('')}</div>
-    <div style="display:flex;gap:16px;font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--muted);flex-wrap:wrap;justify-content:center;margin-top:4px">
-      <span>SUM <b style="color:var(--text)">${sum}</b></span>
-      <span>AVG <b style="color:var(--text)">${avg}</b></span>
-      <span>MIN <b style="color:var(--text)">${min2}</b></span>
-      <span>MAX <b style="color:var(--text)">${max2}</b></span>
-      <span>COUNT <b style="color:var(--text)">${nums.length}</b></span>
-    </div>`;
-}
+            // Update UI Active States
+            document.querySelectorAll('.nav-item').forEach(item => {
+                if(item.dataset.section === section) {
+                    item.classList.add('active', 'text-indigo-600');
+                    item.classList.remove('text-slate-400');
+                } else {
+                    item.classList.remove('active', 'text-indigo-600');
+                    if(!item.classList.contains('sidebar-link')) item.classList.add('text-slate-400');
+                }
+            });
 
-function rollList() {
-  const raw = document.getElementById('listItems').value.trim();
-  if (!raw) { toast('Enter some items first'); return; }
-  let items = raw.includes('\n') ? raw.split('\n') : raw.split(',');
-  items = items.map(s => s.trim()).filter(Boolean);
-  if (!items.length) { toast('No valid items found'); return; }
-  const cnt = Math.min(+document.getElementById('listCount').value || 1, items.length);
-  const dupes = document.getElementById('listDupes').value === 'yes';
-  let picked = [];
-  if (dupes) { for (let i = 0; i < cnt; i++) picked.push(items[Math.floor(Math.random() * items.length)]); }
-  else {
-    const shuffled = [...items].sort(() => Math.random()-0.5);
-    picked = shuffled.slice(0, Math.min(cnt, shuffled.length));
-  }
-  document.getElementById('listResult').innerHTML = `
-    <div class="results-list">${picked.map((p,i) => `<div class="result-pill ${i===0?'highlight':''}">${p}</div>`).join('')}</div>
-    <div style="font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--muted);margin-top:6px">picked ${picked.length} of ${items.length} items</div>`;
-}
+            let visibleCount = 0;
 
-// ── GROUPS ──
-function parseGroupItems() {
-  const raw = document.getElementById('grpItems').value.trim();
-  if (!raw) return [];
-  let items = raw.includes('\n') ? raw.split('\n') : raw.split(',');
-  return items.map(s => s.trim()).filter(Boolean);
-}
+            if (section === 'all') {
+                label.textContent = "Dashboard";
+                name.textContent = "Welcome back, User";
+                heading.textContent = "Available Tools";
+                tools.forEach(t => { t.classList.remove('hidden'); visibleCount++; });
+            } 
+            else if (section === 'favorites') {
+                label.textContent = "Collections";
+                name.textContent = "Your Favorites";
+                heading.textContent = "Starred Items";
+                tools.forEach(t => {
+                    const isFav = t.dataset.favorite === 'true';
+                    t.classList.toggle('hidden', !isFav);
+                    if (isFav) visibleCount++;
+                });
+            } 
+            else if (section === 'recent') {
+                label.textContent = "History";
+                name.textContent = "Recently Used";
+                heading.textContent = "Last 5 Tools Used";
+                const recentList = JSON.parse(localStorage.getItem('recentTools') || '[]');
+                tools.forEach(t => {
+                    const toolName = t.querySelector('.tool-name').textContent;
+                    const isRecent = recentList.includes(toolName);
+                    t.classList.toggle('hidden', !isRecent);
+                    if (isRecent) visibleCount++;
+                });
+            } 
+            else if (section === 'categories') {
+                // For categories, we show everything but perhaps could grouped them in a real app
+                // Here we'll just show the labels
+                label.textContent = "Browser";
+                name.textContent = "Explore Categories";
+                heading.textContent = "All Tools by Category";
+                tools.forEach(t => { t.classList.remove('hidden'); visibleCount++; });
+            }
 
-function makeGroups() {
-  const items = parseGroupItems();
-  if (items.length < 2) { toast('Add at least 2 members'); return; }
-  const gCount = Math.min(Math.max(+document.getElementById('grpCount').value || 2, 2), items.length);
-  if (gCount > items.length) { toast('More groups than members!'); return; }
-  // Shuffle items
-  const shuffled = [...items];
-  for (let i = shuffled.length-1; i > 0; i--) { const j = Math.floor(Math.random()*(i+1)); [shuffled[i],shuffled[j]] = [shuffled[j],shuffled[i]]; }
-  // Distribute
-  const groups = Array.from({length: gCount}, () => []);
-  shuffled.forEach((item, idx) => groups[idx % gCount].push(item));
-  lastGroups = groups;
-  renderGroups();
-}
+            noResults.classList.toggle('hidden', visibleCount > 0);
+            grid.classList.toggle('hidden', visibleCount === 0);
+        }
 
-function reshuffleGroups() {
-  const items = parseGroupItems();
-  if (items.length < 2) { toast('Add members first'); return; }
-  makeGroups();
-}
+        function showSettings() {
+            alert("Settings panel coming soon! Here you will be able to customize your theme and profile.");
+        }
 
-const GROUP_COLORS = ['#7c5cfc','#fc5c7d','#5cf0fc','#fcdb5c','#5cfc8e','#fc9d5c','#c05cfc','#5c9ffc','#fc5cdc','#9cfc5c'];
-
-function renderGroups() {
-  const el = document.getElementById('grpResult');
-  if (!el || !lastGroups.length) return;
-  const prefix = document.getElementById('grpPrefix').value.trim() || 'Group';
-  const labelMembers = document.getElementById('grpLabel').checked;
-  el.innerHTML = `
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px">
-      <div style="font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--muted);letter-spacing:0.1em">${lastGroups.length} GROUPS · ${lastGroups.flat().length} MEMBERS</div>
-    </div>
-    <div class="grp-grid">
-      ${lastGroups.map((group, gi) => {
-        const color = GROUP_COLORS[gi % GROUP_COLORS.length];
-        return `
-        <div class="grp-card" style="--gc:${color}">
-          <div class="grp-title">
-            <span class="grp-dot" style="background:${color}"></span>
-            ${prefix} ${gi + 1}
-            <span class="grp-count">${group.length}</span>
-          </div>
-          <div class="grp-members">
-            ${group.map((m, mi) => `<div class="grp-member"><span class="grp-num">${labelMembers ? mi+1 : '·'}</span>${m}</div>`).join('')}
-          </div>
-        </div>`;
-      }).join('')}
-    </div>`;
-}
-
-function copyGroups() {
-  if (!lastGroups.length) { toast('Generate groups first'); return; }
-  const prefix = document.getElementById('grpPrefix').value.trim() || 'Group';
-  const text = lastGroups.map((g, i) => `${prefix} ${i+1}:\n${g.map((m,j)=>`  ${j+1}. ${m}`).join('\n')}`).join('\n\n');
-  copyText(text);
-}
-
-function rollSequence() {
-  const from = +document.getElementById('seqFrom').value, to = +document.getElementById('seqTo').value;
-  if (from > to) { toast('From must be ≤ To'); return; }
-  if (to - from > 99) { toast('Max range is 100 numbers'); return; }
-  const arr = []; for (let i = from; i <= to; i++) arr.push(i);
-  for (let i = arr.length-1; i > 0; i--) { const j = Math.floor(Math.random()*(i+1)); [arr[i],arr[j]] = [arr[j],arr[i]]; }
-  lastSeqArr = arr;
-  document.getElementById('seqResult').innerHTML = `
-    <div class="results-list">${arr.map((n,i) => `<div class="result-pill ${i===0?'highlight':''}">${n}</div>`).join('')}</div>
-    <div style="font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--muted);margin-top:4px">${arr.length} numbers in shuffled order</div>`;
-}
-function copySeqResult() {
-  if (!lastSeqArr.length) { toast('Generate a sequence first'); return; }
-  copyText(lastSeqArr.join(', '));
-}
-
-function loadWeightedPreset() {
-  weightedItems = [{name:'Common',weight:50},{name:'Uncommon',weight:30},{name:'Rare',weight:15},{name:'Epic',weight:4},{name:'Legendary',weight:1}];
-  renderWeighted();
-}
-function addWeighted() {
-  const item = document.getElementById('wItem').value.trim(), weight = Math.max(1, Math.min(100, +document.getElementById('wWeight').value||1));
-  if (!item) { toast('Enter an item name'); return; }
-  weightedItems.push({ name: item, weight });
-  document.getElementById('wItem').value = '';
-  renderWeighted();
-}
-function clearWeighted() { weightedItems = []; renderWeighted(); }
-function renderWeighted() {
-  const el = document.getElementById('weightedList');
-  if (!el) return;
-  const total = weightedItems.reduce((s,i)=>s+i.weight,0);
-  if (!weightedItems.length) { el.innerHTML = `<div style="font-family:'DM Mono',monospace;font-size:0.72rem;color:var(--muted);text-align:center;padding:12px">No items yet — add some above</div>`; return; }
-  el.innerHTML = `
-    <div style="font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--muted);margin-bottom:8px;letter-spacing:0.1em">${weightedItems.length} ITEMS · TOTAL WEIGHT: ${total}</div>
-    ${weightedItems.map((it,idx) => {
-      const pct = total ? (it.weight/total*100).toFixed(1) : 0;
-      return `<div style="display:flex;align-items:center;gap:8px;padding:8px 10px;background:rgba(255,255,255,0.03);border-radius:8px;margin-bottom:5px">
-        <div style="flex:1;min-width:0">
-          <div style="font-size:0.85rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${it.name}</div>
-          <div style="height:4px;background:rgba(255,255,255,0.08);border-radius:2px;margin-top:5px;overflow:hidden">
-            <div style="height:100%;width:${pct}%;background:var(--accent);border-radius:2px;transition:width 0.4s"></div>
-          </div>
-        </div>
-        <span style="font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--muted);white-space:nowrap">${it.weight}× · ${pct}%</span>
-        <button onclick="weightedItems.splice(${idx},1);renderWeighted()" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:0.8rem;padding:2px 4px;flex-shrink:0" title="Remove">✕</button>
-      </div>`;
-    }).join('')}`;
-}
-function rollWeighted() {
-  if (!weightedItems.length) { toast('Add some items first'); return; }
-  const total = weightedItems.reduce((s,i)=>s+i.weight,0);
-  let r = Math.random() * total, cumul = 0, chosen;
-  for (const it of weightedItems) { cumul += it.weight; if (r <= cumul) { chosen = it; break; } }
-  if (!chosen) chosen = weightedItems[weightedItems.length-1];
-  const pct = (chosen.weight/total*100).toFixed(1);
-  document.getElementById('wResult').innerHTML = `<div class="result-number" style="font-size:2rem">${chosen.name}</div><div class="result-label">weight ${chosen.weight} · ${pct}% probability</div>`;
-}
-
-// ──────────────────────────────────────────────
-// 2. DICE
-// ──────────────────────────────────────────────
-let selectedDice = 6, diceCount = 1;
-function buildDice() {
-  const body = document.getElementById('panelBody');
-  body.innerHTML = `
-    <div style="margin-bottom:16px">
-      <div style="font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--muted);margin-bottom:10px;letter-spacing:0.1em">DICE TYPE</div>
-      <div class="dice-grid">
-        ${[4,6,8,10,12,20,100].map(d=>`<button class="dice-select-btn ${d===6?'active':''}" onclick="selectDice(${d},this)">d${d}</button>`).join('')}
-      </div>
-    </div>
-    <div style="display:flex;align-items:center;gap:16px;margin-bottom:16px;flex-wrap:wrap">
-      <div class="input-group" style="max-width:120px"><label>NUMBER OF DICE</label><input type="number" id="diceCount" value="1" min="1" max="20" oninput="diceCount=Math.min(20,Math.max(1,+this.value))"></div>
-      <div class="input-group" style="max-width:120px"><label>ADD MODIFIER</label><input type="number" id="diceMod" value="0" placeholder="+/-"></div>
-    </div>
-    <div class="action-row">
-      <button class="btn btn-primary" onclick="rollDice()">🎯 Roll Dice</button>
-      <button class="btn btn-secondary btn-sm" onclick="rollDice()">Re-roll</button>
-    </div>
-    <div class="dice-roll-display" id="diceDisplay"><span style="color:var(--muted);font-family:'DM Mono',monospace;font-size:0.75rem">Choose dice and roll</span></div>
-    <div class="result-display" id="diceTotalDisplay" style="min-height:60px"></div>
-    <div class="history-list" id="diceHistory"></div>
-  `;
-}
-let diceLog = [];
-function selectDice(n, el) {
-  document.querySelectorAll('.dice-select-btn').forEach(b=>b.classList.remove('active'));
-  el.classList.add('active'); selectedDice = n;
-}
-function rollDice() {
-  const count = Math.min(Math.max(+document.getElementById('diceCount').value||1,1),20);
-  const mod = +document.getElementById('diceMod').value||0;
-  const rolls = Array.from({length:count}, ()=>Math.floor(Math.random()*selectedDice)+1);
-  const sum = rolls.reduce((a,b)=>a+b,0) + mod;
-  const display = document.getElementById('diceDisplay');
-  display.innerHTML = rolls.map(r=>`<div class="die">${r}</div>`).join('');
-  document.getElementById('diceTotalDisplay').innerHTML = `<div class="result-number">${sum}</div><div class="result-label">${rolls.join(' + ')}${mod?` + (${mod>0?'+':''}${mod})`:''} = ${sum}</div>`;
-  diceLog.unshift(`${count}d${selectedDice}${mod?`+${mod}`:''} → ${sum}`);
-  if (diceLog.length > 6) diceLog.pop();
-  document.getElementById('diceHistory').innerHTML = diceLog.length ? '<div style="font-family:\'DM Mono\',monospace;font-size:0.65rem;color:var(--muted);margin:12px 0 6px;letter-spacing:0.1em">HISTORY</div>' + diceLog.map(l=>`<div class="history-item"><span class="history-val">${l}</span></div>`).join('') : '';
-}
-
-// ──────────────────────────────────────────────
-// 3. WHEEL
-// ──────────────────────────────────────────────
-let wheelItems = ['Option 1','Option 2','Option 3','Option 4','Option 5'];
-let wheelAngle = 0, spinning = false;
-const WHEEL_COLORS = ['#7c5cfc','#fc5c7d','#5cf0fc','#fcdb5c','#5cfc8e','#fc9d5c','#c05cfc','#5c9ffc'];
-
-function buildWheel() {
-  const body = document.getElementById('panelBody');
-  body.innerHTML = `
-    <div class="wheel-container">
-      <div class="wheel-entries" style="width:100%">
-        <div style="display:flex;gap:8px;margin-bottom:10px">
-          <input type="text" id="wEntry" placeholder="Add an option..." style="flex:1;background:rgba(255,255,255,0.05);border:1px solid var(--border);border-radius:10px;padding:10px 14px;color:var(--text);font-family:'DM Mono',monospace;font-size:0.85rem;outline:none">
-          <button class="btn btn-primary btn-sm" onclick="addWheelEntry()">+ Add</button>
-        </div>
-        <div class="wheel-entry-list" id="wheelTagList"></div>
-        <div style="font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--muted);margin-bottom:16px">${wheelItems.length} items loaded</div>
-      </div>
-      <div class="wheel-canvas-wrap">
-        <div class="wheel-pointer"></div>
-        <canvas id="wheelCanvas" width="280" height="280"></canvas>
-        <button id="spinBtn" onclick="spinWheel()">SPIN</button>
-      </div>
-      <div class="result-display" id="wheelResult" style="width:100%;min-height:60px">
-        <span style="color:var(--muted);font-family:'DM Mono',monospace;font-size:0.75rem">Spin the wheel to get a result</span>
-      </div>
-    </div>
-  `;
-  renderWheelTags(); drawWheel(wheelAngle);
-  document.getElementById('wEntry').addEventListener('keydown', e => { if(e.key==='Enter') addWheelEntry(); });
-}
-function renderWheelTags() {
-  const el = document.getElementById('wheelTagList');
-  if (!el) return;
-  el.innerHTML = wheelItems.map((it,i)=>`<div class="wheel-entry-tag" style="border-color:${WHEEL_COLORS[i%WHEEL_COLORS.length]}44;color:${WHEEL_COLORS[i%WHEEL_COLORS.length]}">${it}<button onclick="removeWheelItem(${i})">✕</button></div>`).join('');
-}
-function removeWheelItem(i) { wheelItems.splice(i,1); renderWheelTags(); drawWheel(wheelAngle); }
-function addWheelEntry() {
-  const val = document.getElementById('wEntry').value.trim();
-  if (!val) return;
-  wheelItems.push(val); document.getElementById('wEntry').value = '';
-  renderWheelTags(); drawWheel(wheelAngle);
-}
-function drawWheel(angle) {
-  const canvas = document.getElementById('wheelCanvas');
-  if (!canvas) return;
-  const ctx = canvas.getContext('2d'), n = wheelItems.length, cx = 140, cy = 140, r = 134;
-  ctx.clearRect(0,0,280,280);
-  if (!n) { ctx.fillStyle='rgba(255,255,255,0.05)'; ctx.beginPath(); ctx.arc(cx,cy,r,0,Math.PI*2); ctx.fill(); return; }
-  const slice = (Math.PI*2)/n;
-  for (let i=0;i<n;i++) {
-    const start = angle+i*slice, end = start+slice;
-    ctx.beginPath(); ctx.moveTo(cx,cy); ctx.arc(cx,cy,r,start,end); ctx.closePath();
-    ctx.fillStyle = WHEEL_COLORS[i%WHEEL_COLORS.length]+'cc'; ctx.fill();
-    ctx.strokeStyle='rgba(9,9,15,0.8)'; ctx.lineWidth=2; ctx.stroke();
-    ctx.save(); ctx.translate(cx,cy); ctx.rotate(start+slice/2);
-    ctx.textAlign='right'; ctx.fillStyle='#fff';
-    const fs = Math.max(10, Math.min(14, 220/Math.max(wheelItems[i].length,1)));
-    ctx.font = `bold ${fs}px Syne`;
-    ctx.fillText(wheelItems[i].substring(0,14), r-10, 5);
-    ctx.restore();
-  }
-  ctx.beginPath(); ctx.arc(cx,cy,18,0,Math.PI*2);
-  ctx.fillStyle='rgba(9,9,15,0.95)'; ctx.fill();
-  ctx.strokeStyle='var(--accent)'; ctx.lineWidth=2; ctx.stroke();
-}
-function spinWheel() {
-  if (spinning || !wheelItems.length) { if(!wheelItems.length) toast('Add items first'); return; }
-  spinning = true; document.getElementById('spinBtn').disabled = true;
-  const extra = Math.PI*2*(5+Math.random()*5), duration = 4000;
-  const start = performance.now(), startAngle = wheelAngle, endAngle = startAngle + extra;
-  function animate(now) {
-    const t = Math.min((now-start)/duration, 1);
-    const ease = 1-Math.pow(1-t,4);
-    wheelAngle = startAngle + (endAngle-startAngle)*ease;
-    drawWheel(wheelAngle);
-    if (t < 1) { requestAnimationFrame(animate); return; }
-    spinning = false; document.getElementById('spinBtn').disabled = false;
-    const n = wheelItems.length, norm = (((-wheelAngle % (Math.PI*2)) + Math.PI*2) % (Math.PI*2));
-    const idx = Math.floor(norm / (Math.PI*2/n)) % n;
-    const winner = wheelItems[idx];
-    const el = document.getElementById('wheelResult');
-    if (el) el.innerHTML = `<div class="result-number" style="font-size:1.8rem">🎉 ${winner}</div><div class="result-label">spin again to try</div>`;
-  }
-  requestAnimationFrame(animate);
-}
-
-// ──────────────────────────────────────────────
-// 4. COIN
-// ──────────────────────────────────────────────
-let heads=0, tails=0, coinSide='heads';
-function buildCoin() {
-  const body = document.getElementById('panelBody');
-  body.innerHTML = `
-    <div class="coin-wrap">
-      <div class="coin" id="coinEl" onclick="flipCoin()">
-        <div class="coin-face coin-heads" id="coinFace">👑</div>
-      </div>
-      <div id="coinText">
-        <div class="coin-result" id="coinResult" style="text-align:center">—</div>
-        <div class="coin-sub" style="text-align:center">Click coin or button to flip</div>
-      </div>
-      <button class="btn btn-primary" onclick="flipCoin()">🪙 Flip Coin</button>
-      <button class="btn btn-secondary btn-sm" onclick="flipMultiple()">Flip 10×</button>
-      <div class="coin-stats">
-        <div class="stat-box"><div class="stat-val" id="headsCount">0</div><div class="stat-label">HEADS</div></div>
-        <div class="stat-box"><div class="stat-val" id="tailsCount">0</div><div class="stat-label">TAILS</div></div>
-        <div class="stat-box"><div class="stat-val" id="totalCount">0</div><div class="stat-label">TOTAL</div></div>
-      </div>
-      <button class="btn btn-danger btn-sm" onclick="resetCoin()">Reset Stats</button>
-    </div>
-  `;
-}
-function flipCoin() {
-  const coin = document.getElementById('coinEl');
-  coin.classList.remove('flipping');
-  void coin.offsetWidth;
-  coin.classList.add('flipping');
-  setTimeout(() => {
-    const side = Math.random() < 0.5 ? 'heads' : 'tails';
-    coinSide = side;
-    if (side==='heads') heads++; else tails++;
-    document.getElementById('coinResult').textContent = side === 'heads' ? '👑 HEADS' : '🛡 TAILS';
-    document.getElementById('coinFace').textContent = side === 'heads' ? '👑' : '🛡';
-    document.getElementById('coinFace').style.background = side === 'heads' ? 'radial-gradient(circle at 35% 35%, #f7d44c, #c8a020)' : 'radial-gradient(circle at 35% 35%, #c0c0d0, #8090a0)';
-    document.getElementById('headsCount').textContent = heads;
-    document.getElementById('tailsCount').textContent = tails;
-    document.getElementById('totalCount').textContent = heads+tails;
-  }, 400);
-}
-function flipMultiple() {
-  let h=0, t=0;
-  for (let i=0;i<10;i++) { if(Math.random()<0.5) h++; else t++; }
-  heads+=h; tails+=t;
-  document.getElementById('headsCount').textContent = heads;
-  document.getElementById('tailsCount').textContent = tails;
-  document.getElementById('totalCount').textContent = heads+tails;
-  document.getElementById('coinResult').textContent = `H:${h} T:${t} (10 flips)`;
-}
-function resetCoin() { heads=0; tails=0; document.getElementById('headsCount').textContent=0; document.getElementById('tailsCount').textContent=0; document.getElementById('totalCount').textContent=0; document.getElementById('coinResult').textContent='—'; }
-
-// ──────────────────────────────────────────────
-// 5. PASSWORD
-// ──────────────────────────────────────────────
-function buildPassword() {
-  const body = document.getElementById('panelBody');
-  body.innerHTML = `
-    <div class="input-group" style="margin-bottom:16px">
-      <label>LENGTH: <span id="passLenLabel">16</span> characters</label>
-      <input type="range" id="passLen" min="4" max="128" value="16" oninput="document.getElementById('passLenLabel').textContent=this.value;genPassword()" style="width:100%;accent-color:var(--accent)">
-    </div>
-    <div class="checkbox-group" style="margin-bottom:16px">
-      <label class="custom-check"><input type="checkbox" id="pUpper" checked onchange="genPassword()"><span>Uppercase (A–Z)</span></label>
-      <label class="custom-check"><input type="checkbox" id="pLower" checked onchange="genPassword()"><span>Lowercase (a–z)</span></label>
-      <label class="custom-check"><input type="checkbox" id="pNum" checked onchange="genPassword()"><span>Numbers (0–9)</span></label>
-      <label class="custom-check"><input type="checkbox" id="pSym" onchange="genPassword()"><span>Symbols (!@#$...)</span></label>
-      <label class="custom-check"><input type="checkbox" id="pNoAmb" onchange="genPassword()"><span>Exclude ambiguous (l,1,O,0)</span></label>
-    </div>
-    <div class="pass-result" id="passResult">
-      <span class="pass-text" id="passText">—</span>
-      <button class="btn btn-secondary btn-sm" onclick="copyPass()">Copy</button>
-    </div>
-    <div class="strength-bar-wrap">
-      <div class="strength-bar"><div class="strength-fill" id="strengthFill" style="width:0%"></div></div>
-      <div class="strength-label" id="strengthLabel">—</div>
-    </div>
-    <div class="action-row">
-      <button class="btn btn-primary" onclick="genPassword()">🔄 Regenerate</button>
-      <div class="input-group" style="max-width:120px"><label>GENERATE #</label>
-        <select id="genCount"><option>1</option><option>5</option><option>10</option></select>
-      </div>
-      <button class="btn btn-secondary btn-sm" onclick="genMultiPass()">Batch Generate</button>
-    </div>
-    <div id="batchPassList" style="margin-top:12px"></div>
-  `;
-  genPassword();
-}
-function getPassChars() {
-  let chars = '';
-  if (document.getElementById('pUpper').checked) chars += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-  if (document.getElementById('pLower').checked) chars += 'abcdefghijklmnopqrstuvwxyz';
-  if (document.getElementById('pNum').checked) chars += '0123456789';
-  if (document.getElementById('pSym').checked) chars += '!@#$%^&*()_+-=[]{}|;:,.<>?';
-  if (document.getElementById('pNoAmb').checked) chars = chars.replace(/[l1O0]/g,'');
-  return chars;
-}
-function genPassword() {
-  const len = +document.getElementById('passLen').value;
-  const chars = getPassChars();
-  if (!chars) { document.getElementById('passText').textContent = 'Select at least one character type'; return; }
-  let pass = ''; for (let i=0;i<len;i++) pass += chars[Math.floor(Math.random()*chars.length)];
-  document.getElementById('passText').textContent = pass;
-  rateStrength(pass);
-}
-function rateStrength(p) {
-  let score = 0;
-  if (p.length >= 8) score++; if (p.length >= 12) score++; if (p.length >= 20) score++;
-  if (/[A-Z]/.test(p)) score++; if (/[a-z]/.test(p)) score++;
-  if (/[0-9]/.test(p)) score++; if (/[^A-Za-z0-9]/.test(p)) score++;
-  const levels = [{w:10,c:'#fc5c7d',l:'Weak'},{w:30,c:'#fcdb5c',l:'Fair'},{w:55,c:'#fc9d5c',l:'Good'},{w:80,c:'#5cfc8e',l:'Strong'},{w:100,c:'#7c5cfc',l:'Very Strong'}];
-  const idx = Math.min(Math.floor(score/7*5),4);
-  const lv = levels[idx];
-  document.getElementById('strengthFill').style.cssText = `width:${lv.w}%;background:${lv.c}`;
-  document.getElementById('strengthLabel').textContent = `Strength: ${lv.l}`;
-}
-function copyPass() { const t = document.getElementById('passText').textContent; copyText(t); }
-function genMultiPass() {
-  const n = +document.getElementById('genCount').value;
-  const chars = getPassChars(), len = +document.getElementById('passLen').value;
-  if (!chars) { toast('Select char types'); return; }
-  let list = [];
-  for (let i=0;i<n;i++) { let p=''; for(let j=0;j<len;j++) p+=chars[Math.floor(Math.random()*chars.length)]; list.push(p); }
-  document.getElementById('batchPassList').innerHTML = list.map(p=>`<div class="uuid-item"><span class="uuid-output" style="font-size:0.75rem">${p}</span><button class="btn btn-secondary btn-sm" onclick="copyText('${p}')">Copy</button></div>`).join('');
-}
-
-// ──────────────────────────────────────────────
-// 6. UUID
-// ──────────────────────────────────────────────
-function buildUUID() {
-  const body = document.getElementById('panelBody');
-  body.innerHTML = `
-    <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:16px;align-items:flex-end">
-      <div class="input-group" style="max-width:120px"><label>VERSION</label>
-        <select id="uuidVersion"><option value="4">v4 (Random)</option><option value="custom">Custom</option></select>
-      </div>
-      <div class="input-group" style="max-width:100px"><label>COUNT</label>
-        <input type="number" id="uuidCount" value="5" min="1" max="50">
-      </div>
-      <button class="btn btn-primary" onclick="genUUIDs()">⚡ Generate</button>
-    </div>
-    <div id="uuidList"></div>
-    <div class="action-row" style="margin-top:12px">
-      <button class="btn btn-secondary btn-sm" onclick="copyAllUUIDs()">Copy All</button>
-      <button class="btn btn-danger btn-sm" onclick="document.getElementById('uuidList').innerHTML=''">Clear</button>
-    </div>
-  `;
-  genUUIDs();
-}
-let lastUUIDs = [];
-function genUUID4() {
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c=>{
-    const r=Math.random()*16|0, v=c==='x'?r:(r&0x3|0x8); return v.toString(16);
-  });
-}
-function genUUIDs() {
-  const n = Math.min(+document.getElementById('uuidCount').value||5, 50);
-  lastUUIDs = Array.from({length:n}, genUUID4);
-  document.getElementById('uuidList').innerHTML = lastUUIDs.map(id=>`
-    <div class="uuid-item">
-      <span class="uuid-output">${id}</span>
-      <button class="btn btn-secondary btn-sm" onclick="copyText('${id}')">Copy</button>
-    </div>`).join('');
-}
-function copyAllUUIDs() { copyText(lastUUIDs.join('\n')); }
-</script>
+        // Initialize view on load
+        window.onload = () => filterBySection('all');
+    </script>
 </body>
 </html>
