@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assignments Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+        
+        :root {
+            --primary: #10b981;
+            --primary-dark: #059669;
+        }
+
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background: radial-gradient(circle at top right, #f8fafc, #eff6ff);
+        }
+
+        .glass {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .card-hover {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .card-hover:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px -8px rgba(0, 0, 0, 0.08);
+        }
+
+        .nav-link-active {
+            color: var(--primary);
+            position: relative;
+        }
+
+        .nav-link-active::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--primary);
+            border-radius: 2px;
+        }
+
+        /* Smooth View Transitions */
+        .view-transition {
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="min-h-screen text-slate-900 pb-12">
+
+    <!-- App Header -->
+    <header class="glass sticky top-0 z-50 px-6 py-4 flex items-center justify-between mb-2">
+        <div class="flex items-center gap-4">
+            <button id="backButton" class="hidden p-2.5 hover:bg-white/80 rounded-xl transition-all shadow-sm border border-slate-100">
+                <i data-lucide="arrow-left" class="w-5 h-5"></i>
+            </button>
+            <div>
+                <p id="breadCrumb" class="text-[10px] font-bold uppercase tracking-widest text-emerald-600 mb-0.5 opacity-0 transition-opacity">University Portal</p>
+                <h1 id="headerTitle" class="text-xl font-extrabold tracking-tight text-slate-800">Assignments</h1>
+            </div>
+        </div>
+        <div class="flex items-center gap-3">
+            <div class="hidden md:flex flex-col items-end mr-2">
+                <span class="text-xs font-bold text-slate-800">Student Access</span>
+                <span class="text-[10px] text-slate-400">Spring 2024</span>
+            </div>
+            <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-emerald-500 to-teal-400 flex items-center justify-center shadow-lg shadow-emerald-200 text-white">
+                <i data-lucide="user" class="w-5 h-5"></i>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-5xl mx-auto p-4 lg:p-8">
+        <!-- Views Containers -->
+        <div id="dashboardView" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 view-transition"></div>
+        <div id="yearView" class="hidden space-y-4 view-transition"></div>
+        <div id="semesterView" class="hidden space-y-4 view-transition"></div>
+        <div id="departmentView" class="hidden space-y-4 view-transition"></div>
+        <div id="subjectView" class="hidden space-y-6 view-transition"></div>
+    </main>
+
+    <script>
+        /**
+         * ==========================================
+         * HOW TO ADD DATA (COPY & PASTE PATTERNS)
+         * ==========================================
+         * * 1. NEW DEPARTMENT: Copy one object inside 'departments' [ { id: 'new', ... } ]
+         * 2. NEW YEAR: Copy one object inside 'years' [ { id: 'year5', ... } ]
+         * 3. NEW SEMESTER: Copy one object inside 'semesters' [ { id: 'sem3', ... } ]
+         * 4. NEW SUBJECT: Copy one object inside 'subjects' [ { id: 'code', ... } ]
+         * 5. NEW ASSIGNMENT: Add to the 'assignments' array: { title: "Name", url: "file.html" }
+         */
+
+        const courseData = {
+            departments: [
+                {
+                    id: 'ai-big-data',
+                    name: 'AI and Big Data',
+                    icon: 'brain-circuit',
+                    color: 'from-emerald-500 to-teal-500',
+                    years: [
+                        {
+                            id: 'year1',
+                            name: '1st Year',
+                            semesters: [
+                                { id: 'sem1', name: '1st Semester', subjects: [] },
+                                { 
+                                    id: 'sem2', 
+                                    name: '2nd Semester', 
+                                    subjects: [
+                                        { 
+                                            id: 'la', 
+                                            name: 'Linear Algebra (001)', 
+                                            instructor: 'Lee Tae Hyung', 
+                                            assignments: [
+                                                // --- EXAMPLE: ADD ASSIGNMENTS HERE ---
+                                                { title: "Homework Ch.1. Intro", url: "homework_ch1.html" },
+                                                { title: "Homework Ch.2. Vector Foundations, Norms, and Normalization", url: "Homework Ch.2. Vector Foundations, Norms, and Normalization.html" },
+                                                // { title: "NEXT HOMEWORK", url: "link.html" }
+                                            ] 
+                                        },
+                                        { id: 'ailit', name: 'AILiteracy (002)', instructor: 'Saurabh Singh', assignments: [] },
+                                        { id: 'db', name: 'Database (001)', instructor: 'Kim Woon Ki', assignments: [] },
+                                        { id: 'fcp', name: 'Freshmen Capstone Project (004)', instructor: 'Deog Young Song', assignments: [] },
+                                        { id: 'sv2', name: 'Sol-Vision2 (001)', instructor: 'Yun', assignments: [] }
+                                    ] 
+                                }
+                            ]
+                        },
+                        { id: 'year2', name: '2nd Year', semesters: [{ id: 'sem1', name: '1st Semester', subjects: [] }, { id: 'sem2', name: '2nd Semester', subjects: [] }] },
+                        { id: 'year3', name: '3rd Year', semesters: [{ id: 'sem1', name: '1st Semester', subjects: [] }, { id: 'sem2', name: '2nd Semester', subjects: [] }] },
+                        { id: 'year4', name: '4th Year', semesters: [{ id: 'sem1', name: '1st Semester', subjects: [] }, { id: 'sem2', name: '2nd Semester', subjects: [] }] }
+                    ]
+                },
+                // --- PATTERN: COPY FROM HERE TO ADD NEW DEPARTMENT ---
+                {
+                    id: 'global-mgmt',
+                    name: 'Global Management',
+                    icon: 'globe',
+                    color: 'from-blue-500 to-indigo-500',
+                    years: [
+                        {
+                            id: 'year1',
+                            name: '1st Year',
+                            semesters: [
+                                { id: 'sem1', name: '1st Semester', subjects: [] },
+                                { 
+                                    id: 'sem2', 
+                                    name: '2nd Semester', 
+                                    subjects: [
+                                        { id: 'korean2', name: 'Basic Korean2 (002)', instructor: 'Soyeon Park', assignments: [] }
+                                    ] 
+                                }
+                            ]
+                        },
+                        { id: 'year2', name: '2nd Year', semesters: [{ id: 'sem1', name: '1st Semester', subjects: [] }, { id: 'sem2', name: '2nd Semester', subjects: [] }] },
+                        { id: 'year3', name: '3rd Year', semesters: [{ id: 'sem1', name: '1st Semester', subjects: [] }, { id: 'sem2', name: '2nd Semester', subjects: [] }] },
+                        { id: 'year4', name: '4th Year', semesters: [{ id: 'sem1', name: '1st Semester', subjects: [] }, { id: 'sem2', name: '2nd Semester', subjects: [] }] }
+                    ]
+                }
+                // --- END PATTERN ---
+            ]
+        };
+
+        // App State
+        let currentDept = null;
+        let currentYear = null;
+        let currentSem = null;
+        let currentSubject = null;
+
+        // DOM Elements
+        const views = ['dashboardView', 'yearView', 'semesterView', 'departmentView', 'subjectView'];
+        const headerTitle = document.getElementById('headerTitle');
+        const breadCrumb = document.getElementById('breadCrumb');
+        const backButton = document.getElementById('backButton');
+
+        function updateBreadcrumb(text) {
+            if(text) {
+                breadCrumb.innerText = text;
+                breadCrumb.classList.remove('opacity-0');
+            } else {
+                breadCrumb.classList.add('opacity-0');
+            }
+        }
+
+        function renderDashboard() {
+            hideAll();
+            const view = document.getElementById('dashboardView');
+            view.classList.remove('hidden');
+            headerTitle.innerText = "Assignments";
+            updateBreadcrumb("");
+            backButton.classList.add('hidden');
+            
+            view.innerHTML = courseData.departments.map(dept => `
+                <button onclick="openDept('${dept.id}')" class="group relative overflow-hidden flex flex-col items-start p-8 bg-white rounded-[2rem] border border-slate-100 shadow-sm card-hover text-left w-full">
+                    <div class="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
+                        <i data-lucide="${dept.icon}" class="w-24 h-24"></i>
+                    </div>
+                    <div class="bg-gradient-to-br ${dept.color} p-4 rounded-2xl text-white mb-6 shadow-lg shadow-emerald-100">
+                        <i data-lucide="${dept.icon}" class="w-6 h-6"></i>
+                    </div>
+                    <h2 class="text-xl font-bold text-slate-800 mb-2">${dept.name}</h2>
+                    <p class="text-sm text-slate-400 font-medium">Undergraduate Programs</p>
+                    <div class="mt-6 flex items-center gap-2 text-emerald-600 text-xs font-bold uppercase tracking-widest">
+                        Enter Portal <i data-lucide="arrow-right" class="w-4 h-4 group-hover:translate-x-1 transition-transform"></i>
+                    </div>
+                </button>
+            `).join('');
+            lucide.createIcons();
+        }
+
+        function openDept(deptId) {
+            currentDept = courseData.departments.find(d => d.id === deptId);
+            hideAll();
+            const view = document.getElementById('yearView');
+            view.classList.remove('hidden');
+            headerTitle.innerText = currentDept.name;
+            updateBreadcrumb("Select Academic Year");
+            backButton.classList.remove('hidden');
+
+            view.innerHTML = currentDept.years.map(year => `
+                <button onclick="openYear('${year.id}')" class="w-full flex items-center justify-between p-6 bg-white rounded-2xl border border-slate-100 shadow-sm card-hover">
+                    <div class="flex items-center gap-5">
+                        <div class="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center font-black text-lg">
+                            ${year.name.match(/\d+/)[0]}
+                        </div>
+                        <h3 class="font-bold text-slate-800 text-lg">${year.name}</h3>
+                    </div>
+                    <div class="w-10 h-10 rounded-full flex items-center justify-center bg-slate-50 text-slate-300">
+                        <i data-lucide="chevron-right" class="w-5 h-5"></i>
+                    </div>
+                </button>
+            `).join('');
+            lucide.createIcons();
+        }
+
+        function openYear(yearId) {
+            currentYear = currentDept.years.find(y => y.id === yearId);
+            hideAll();
+            const view = document.getElementById('semesterView');
+            view.classList.remove('hidden');
+            headerTitle.innerText = currentYear.name;
+            updateBreadcrumb(currentDept.name);
+
+            view.innerHTML = currentYear.semesters.map(sem => `
+                <button onclick="openSemester('${sem.id}')" class="w-full flex items-center justify-between p-6 bg-white rounded-2xl border border-slate-100 shadow-sm card-hover">
+                    <div class="flex items-center gap-5">
+                        <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center">
+                            <i data-lucide="calendar" class="w-6 h-6"></i>
+                        </div>
+                        <h3 class="font-bold text-slate-800 text-lg">${sem.name}</h3>
+                    </div>
+                    <div class="px-4 py-1.5 rounded-full bg-blue-50 text-blue-600 text-[10px] font-bold uppercase tracking-wider">
+                        Enrollment Open
+                    </div>
+                </button>
+            `).join('');
+            lucide.createIcons();
+        }
+
+        function openSemester(semId) {
+            currentSem = currentYear.semesters.find(s => s.id === semId);
+            hideAll();
+            const view = document.getElementById('departmentView');
+            view.classList.remove('hidden');
+            headerTitle.innerText = currentSem.name;
+            updateBreadcrumb(`${currentYear.name} Portal`);
+
+            view.innerHTML = currentSem.subjects.length > 0 ? currentSem.subjects.map(subj => `
+                <button onclick="openSubject('${subj.id}')" class="w-full flex flex-col md:flex-row md:items-center justify-between p-6 bg-white rounded-2xl border border-slate-100 shadow-sm card-hover gap-4">
+                    <div class="flex items-center gap-5">
+                        <div class="w-14 h-14 bg-slate-50 text-emerald-500 rounded-2xl flex items-center justify-center shadow-inner">
+                            <i data-lucide="book-open" class="w-7 h-7"></i>
+                        </div>
+                        <div class="text-left">
+                            <h3 class="font-bold text-slate-800 text-lg leading-tight">${subj.name}</h3>
+                            <p class="text-xs font-semibold text-slate-400 mt-1 uppercase tracking-wide">Instructor: ${subj.instructor}</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2 self-end md:self-auto">
+                        <span class="text-xs font-bold text-emerald-600 bg-emerald-50 px-3 py-1.5 rounded-lg">${subj.assignments.length} Files</span>
+                        <div class="w-8 h-8 rounded-full bg-slate-50 flex items-center justify-center text-slate-300">
+                             <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                        </div>
+                    </div>
+                </button>
+            `).join('') : `
+                <div class="text-center py-24 glass rounded-[2.5rem] border-2 border-dashed border-slate-200">
+                    <i data-lucide="inbox" class="w-12 h-12 mx-auto text-slate-200 mb-4"></i>
+                    <p class="text-slate-400 font-bold">No courses found for this semester.</p>
+                </div>
+            `;
+            lucide.createIcons();
+        }
+
+        function openSubject(subjId) {
+            currentSubject = currentSem.subjects.find(s => s.id === subjId);
+            hideAll();
+            const view = document.getElementById('subjectView');
+            view.classList.remove('hidden');
+            headerTitle.innerText = "Course Content";
+            updateBreadcrumb(currentSubject.name);
+
+            view.innerHTML = `
+                <div class="bg-gradient-to-r from-slate-900 to-slate-800 p-8 rounded-[2.5rem] text-white shadow-2xl relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-64 h-64 bg-emerald-500/10 rounded-full blur-3xl -mr-20 -mt-20"></div>
+                    <div class="relative z-10">
+                        <div class="flex items-center gap-2 mb-4">
+                            <span class="px-3 py-1 bg-emerald-500 rounded-lg text-[10px] font-black uppercase tracking-widest">Active Course</span>
+                        </div>
+                        <h2 class="text-3xl font-black mb-2 leading-tight">${currentSubject.name}</h2>
+                        <div class="flex items-center gap-4 text-slate-400">
+                            <div class="flex items-center gap-2">
+                                <i data-lucide="user-check" class="w-4 h-4"></i>
+                                <span class="text-xs font-bold">${currentSubject.instructor}</span>
+                            </div>
+                            <div class="w-1 h-1 bg-slate-600 rounded-full"></div>
+                            <div class="flex items-center gap-2">
+                                <i data-lucide="layers" class="w-4 h-4"></i>
+                                <span class="text-xs font-bold">${currentSem.name}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between px-2">
+                        <h3 class="text-xs font-black text-slate-400 uppercase tracking-[0.2em]">Assignment Repository</h3>
+                        <span class="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-1 rounded">Total: ${currentSubject.assignments.length}</span>
+                    </div>
+                    
+                    ${currentSubject.assignments.length > 0 ? currentSubject.assignments.map(asmt => `
+                        <div class="group flex items-center justify-between p-5 bg-white rounded-2xl border border-slate-100 shadow-sm hover:shadow-xl hover:border-emerald-200 transition-all">
+                            <div class="flex items-center gap-5 flex-1 min-w-0">
+                                <div class="w-12 h-12 bg-slate-50 group-hover:bg-emerald-50 text-slate-400 group-hover:text-emerald-500 rounded-2xl flex items-center justify-center transition-colors">
+                                    <i data-lucide="file-text" class="w-6 h-6"></i>
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <h4 class="font-bold text-slate-800 group-hover:text-emerald-700 transition-colors truncate pr-4">${asmt.title}</h4>
+                                    <div class="flex items-center gap-2 mt-1">
+                                         <i data-lucide="link-2" class="w-3 h-3 text-slate-300"></i>
+                                         <p class="text-[10px] text-slate-400 font-mono truncate">${asmt.url}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <a href="${asmt.url}" target="_blank" class="shrink-0 flex items-center gap-2 px-5 py-2.5 bg-slate-900 text-white rounded-xl text-xs font-bold hover:bg-emerald-600 transition-colors shadow-lg shadow-slate-200">
+                                <span>Open</span>
+                                <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+                            </a>
+                        </div>
+                    `).join('') : `
+                        <div class="text-center py-16 glass rounded-[2rem] border-2 border-dashed border-slate-200">
+                            <div class="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <i data-lucide="cloud-off" class="w-8 h-8 text-slate-200"></i>
+                            </div>
+                            <p class="text-slate-400 text-sm font-bold">No files uploaded yet.</p>
+                        </div>
+                    `}
+                </div>
+            `;
+            lucide.createIcons();
+        }
+
+        function hideAll() {
+            views.forEach(v => document.getElementById(v).classList.add('hidden'));
+        }
+
+        backButton.addEventListener('click', () => {
+            const subjOpen = !document.getElementById('subjectView').classList.contains('hidden');
+            const deptOpen = !document.getElementById('departmentView').classList.contains('hidden');
+            const semOpen = !document.getElementById('semesterView').classList.contains('hidden');
+            const yearOpen = !document.getElementById('yearView').classList.contains('hidden');
+
+            if (subjOpen) openSemester(currentSem.id);
+            else if (deptOpen) openYear(currentYear.id);
+            else if (semOpen) openDept(currentDept.id);
+            else if (yearOpen) renderDashboard();
+        });
+
+        // Initialize
+        window.onload = renderDashboard;
+    </script>
+</body>
+</html>

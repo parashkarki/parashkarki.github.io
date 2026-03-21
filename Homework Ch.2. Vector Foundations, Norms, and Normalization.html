@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Homework Assignment: Vector Foundations</title>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 850px;
+            margin: 0 auto;
+            padding: 40px;
+            background-color: #f4f7f9;
+        }
+        .container {
+            background-color: white;
+            padding: 50px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border-radius: 8px;
+        }
+        header {
+            border-bottom: 2px solid #2c3e50;
+            margin-bottom: 30px;
+            padding-bottom: 10px;
+        }
+        h1 {
+            color: #2c3e50;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        .info-item b {
+            color: #555;
+        }
+        .welcome-text {
+            font-size: 0.9em;
+            color: #7f8c8d;
+            margin-bottom: 20px;
+            font-style: italic;
+        }
+        .section-header {
+            background-color: #ecf0f1;
+            padding: 10px 15px;
+            font-weight: bold;
+            color: #2c3e50;
+            margin: 30px 0 20px 0;
+            border-left: 5px solid #3498db;
+        }
+        .question {
+            margin-bottom: 35px;
+        }
+        .question-text {
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 12px;
+            display: block;
+        }
+        .answer {
+            background-color: #fdfefe;
+            border: 1px solid #dcdde1;
+            padding: 15px;
+            margin-top: 10px;
+            border-radius: 4px;
+            border-left: 4px solid #27ae60;
+        }
+        .formula-box {
+            background-color: #f8f9fa;
+            border: 1px solid #e9ecef;
+            padding: 15px;
+            margin-bottom: 20px;
+            font-size: 0.95em;
+        }
+        .checklist {
+            list-style-type: none;
+            padding: 0;
+        }
+        .checklist li::before {
+            content: "☑ ";
+            font-family: monospace;
+            color: #27ae60;
+        }
+        .footer {
+            margin-top: 50px;
+            text-align: center;
+            font-style: italic;
+            color: #7f8c8d;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>Homework Assignment: Vector Foundations, Norms, and Normalization</h1>
+        <div class="info-grid">
+            <div class="info-item"><b>Student Name:</b> KARKI PARASH</div>
+            <div class="info-item"><b>Date:</b> March 21, 2026</div>
+            <div class="info-item"><b>Course Section:</b> Section A</div>
+        </div>
+    </header>
+
+    <p class="welcome-text">
+        Welcome to your first major homework assignment for Linear Algebra. This set of problems is designed to reinforce the geometric and algebraic properties of vectors as covered in our "Vector Foundations" and "Unit Vectors & Norms" materials.
+    </p>
+
+    <div class="formula-box">
+        <strong>Key Formulas:</strong><br>
+        • \(L_1\) Norm (Taxicab Distance): \(||x||_1 = |x_1| + |x_2| + \dots + |x_n|\)<br>
+        • \(L_2\) Norm (Euclidean Distance): \(||x||_2 = \sqrt{x_1^2 + x_2^2 + \dots + x_n^2}\)<br>
+        • \(L_\infty\) Norm (Maximum Norm): \(||x||_\infty = \max(|x_1|, |x_2|, \dots, |x_n|)\)<br>
+        • Normalization (using \(L_2\)): \(u = \frac{v}{||v||_2}\)
+    </div>
+
+    <div class="section-header">Part I: Vector Construction and Notation</div>
+
+    <div class="question">
+        <span class="question-text">Question 1: Movement to Column Vector</span>
+        <p>In Linear Algebra, we define a vector as a specific instruction for displacement. Given the instruction: "Walk 4 units Left and 7 units Up," translate this movement into a vertical column vector in the format \(\begin{bmatrix} x \\ y \end{bmatrix}\).</p>
+        <div class="answer">
+            <strong>Answer:</strong><br>
+            By convention, "Left" corresponds to a negative x-displacement and "Up" corresponds to a positive y-displacement.<br>
+            \[ \vec{v} = \begin{bmatrix} -4 \\ 7 \end{bmatrix} \]
+        </div>
+    </div>
+
+    <div class="question">
+        <span class="question-text">Question 2: Standard Basis Conversion</span>
+        <p>A vector is written in standard basis notation as \(3i - 2j\). Provide the equivalent vertical column vector.</p>
+        <div class="answer">
+            <strong>Answer:</strong><br>
+            Using standard basis vectors \(i = \begin{bmatrix} 1 \\ 0 \end{bmatrix}\) and \(j = \begin{bmatrix} 0 \\ 1 \end{bmatrix}\):<br>
+            \[ 3i - 2j = 3\begin{bmatrix} 1 \\ 0 \end{bmatrix} - 2\begin{bmatrix} 0 \\ 1 \end{bmatrix} = \begin{bmatrix} 3 \\ -2 \end{bmatrix} \]
+        </div>
+    </div>
+
+    <div class="section-header">Part II: Calculating Vector Norms</div>
+
+    <div class="question">
+        <span class="question-text">Question 3: The Taxicab Distance (\(L_1\) Norm)</span>
+        <p>Calculate the \(L_1\) norm for the vector \(v = \begin{bmatrix} -5 \\ 12 \end{bmatrix}\).</p>
+        <div class="answer">
+            <strong>Answer:</strong><br>
+            The \(L_1\) norm is the sum of the absolute values of the components:<br>
+            \[ ||v||_1 = |-5| + |12| = 5 + 12 = 17 \]
+        </div>
+    </div>
+
+    <div class="question">
+        <span class="question-text">Question 4: The Euclidean Norm (\(L_2\) Norm)</span>
+        <p>Calculate the \(L_2\) norm for the same vector \(v = \begin{bmatrix} -5 \\ 12 \end{bmatrix}\).</p>
+        <div class="answer">
+            <strong>Answer:</strong><br>
+            The \(L_2\) norm is the square root of the sum of squares:<br>
+            \[ ||v||_2 = \sqrt{(-5)^2 + 12^2} = \sqrt{25 + 144} = \sqrt{169} = 13 \]
+        </div>
+    </div>
+
+    <div class="question">
+        <span class="question-text">Question 5: The Maximum Norm (\(L_\infty\) Norm)</span>
+        <p>Calculate the \(L_\infty\) norm for the vector \(W = \begin{bmatrix} 8 \\ -10 \end{bmatrix}\).</p>
+        <div class="answer">
+            <strong>Answer:</strong><br>
+            The \(L_\infty\) norm is the maximum absolute value among the components:<br>
+            \[ ||W||_\infty = \max(|8|, |-10|) = \max(8, 10) = 10 \]
+        </div>
+    </div>
+
+    <div class="question">
+        <span class="question-text">Question 6: Comparative Norm Analysis</span>
+        <p>For the vector \(a = \begin{bmatrix} 3 \\ -4 \end{bmatrix}\), calculate \(L_1, L_2,\) and \(L_\infty\) norms. Rank them in descending order to verify the property \(L_1 \ge L_2 \ge L_\infty\).</p>
+        <div class="answer">
+            <strong>Answer:</strong><br>
+            1. \(||a||_1 = |3| + |-4| = 7\)<br>
+            2. \(||a||_2 = \sqrt{3^2 + (-4)^2} = \sqrt{25} = 5\)<br>
+            3. \(||a||_\infty = \max(|3|, |-4|) = 4\)<br>
+            <strong>Ranking:</strong> \(7 \ge 5 \ge 4\). This confirms the property \(L_1 \ge L_2 \ge L_\infty\).
+        </div>
+    </div>
+
+    <div class="section-header">Part III: Unit Vectors and Normalization</div>
+
+    <div class="question">
+        <span class="question-text">Question 7: Unit Vector Definition</span>
+        <p>If a vector \(u\) satisfies the property \(u \cdot u = 1\), what is its \(L_2\) magnitude? Furthermore, what specific term do we use to describe a vector that possesses this magnitude?</p>
+        <div class="answer">
+            <strong>Answer:</strong><br>
+            Since \(||u||_2 = \sqrt{u \cdot u}\), the magnitude is \(\sqrt{1} = 1\). The specific term for such a vector is a <strong>Unit Vector</strong>.
+        </div>
+    </div>
+
+    <div class="question">
+        <span class="question-text">Question 8: Performing Normalization</span>
+        <p>Given the vector \(X = \begin{bmatrix} 6 \\ 8 \end{bmatrix}\), find the unit vector \(u\) that points in the same direction.</p>
+        <div class="answer">
+            <strong>Answer:</strong><br>
+            1. <strong>Step 1:</strong> Calculate \(||X||_2 = \sqrt{6^2 + 8^2} = \sqrt{100} = 10\).<br>
+            2. <strong>Step 2:</strong> Divide components by magnitude: \(u = \frac{1}{10}\begin{bmatrix} 6 \\ 8 \end{bmatrix} = \begin{bmatrix} 0.60 \\ 0.80 \end{bmatrix}\).<br>
+            3. <strong>Conceptual Check:</strong> The direction did not change because normalization involves scalar multiplication by a positive constant (\(1/||X||_2\)), which preserves orientation.
+        </div>
+    </div>
+
+    <div class="question">
+        <span class="question-text">Question 9: Normalization with Negative Components</span>
+        <p>Normalize the vector \(b = \begin{bmatrix} -3 \\ 0 \end{bmatrix}\). Provide your answer in vertical column vector format.</p>
+        <div class="answer">
+            <strong>Answer:</strong><br>
+            1. Calculate magnitude: \(||b||_2 = \sqrt{(-3)^2 + 0^2} = 3\).<br>
+            2. Normalize: \(u = \frac{1}{3}\begin{bmatrix} -3 \\ 0 \end{bmatrix} = \begin{bmatrix} -1.00 \\ 0.00 \end{bmatrix}\).
+        </div>
+    </div>
+
+    <div class="question">
+        <span class="question-text">Question 10: Verification of Normalization</span>
+        <p>Take your resulting unit vector \(u\) from Question 8. Prove that it is a unit vector by calculating its \(L_2\) norm. Explicitly show the SRSS (Square Root of the Sum of Squares) steps.</p>
+        <div class="answer">
+            <strong>Answer:</strong><br>
+            Vector \(u = \begin{bmatrix} 0.60 \\ 0.80 \end{bmatrix}\).<br>
+            Verification using SRSS:<br>
+            \[ ||u||_2 = \sqrt{(0.60)^2 + (0.80)^2} \]
+            \[ ||u||_2 = \sqrt{0.36 + 0.64} \]
+            \[ ||u||_2 = \sqrt{1.00} = 1.00 \]
+            The result equals 1, confirming \(u\) is a unit vector.
+        </div>
+    </div>
+
+    <div class="section-header">Submission Guidelines Checklist</div>
+    <ul class="checklist">
+        <li>All vectors are written in the vertical column format.</li>
+        <li>Decimal answers are rounded to exactly two places.</li>
+        <li>All calculated unit vectors have been verified to have a magnitude of 1.</li>
+        <li>\(L_1\) calculations correctly utilized the absolute values of components.</li>
+        <li>All \(L_\infty\) results are recorded as positive values.</li>
+    </ul>
+
+    <div class="footer">
+        See you in the lecture hall!
+    </div>
+</div>
+
+</body>
+</html>
