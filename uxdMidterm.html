@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>UX Pro Master | Certification</title>
+    <title>UX Pro Academy | Advanced Learning Hub</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -11,7 +11,7 @@
         
         :root {
             --primary: #4F46E5;
-            --primary-light: #EEF2FF;
+            --primary-glow: rgba(79, 70, 229, 0.15);
             --success: #10B981;
             --danger: #EF4444;
             --surface: #FFFFFF;
@@ -22,25 +22,28 @@
             font-family: 'Plus Jakarta Sans', sans-serif;
             background-color: var(--background);
             color: #1E293B;
+            overflow-x: hidden;
             -webkit-tap-highlight-color: transparent;
         }
 
         .app-card {
             background: var(--surface);
             border: 1px solid #E2E8F0;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
-            border-radius: 24px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.04);
+            border-radius: 28px;
+            transition: all 0.3s ease;
         }
 
         .quiz-option {
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
             border: 2px solid #F1F5F9;
         }
 
         .quiz-option:hover:not(.disabled) {
             border-color: var(--primary);
-            background-color: var(--primary-light);
+            background-color: #F5F7FF;
             transform: translateY(-2px);
+            box-shadow: 0 4px 12px var(--primary-glow);
         }
 
         .quiz-option.correct {
@@ -58,205 +61,238 @@
         .view-section {
             display: none;
             opacity: 0;
-            transform: translateY(15px);
-            transition: all 0.4s ease;
+            transform: translateX(20px);
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .view-section.active {
             display: block;
             opacity: 1;
-            transform: translateY(0);
+            transform: translateX(0);
         }
 
         .progress-bar-inner {
-            transition: width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+            transition: width 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
-        /* Desktop Optimization */
-        @media (min-width: 1024px) {
-            .main-container {
-                max-width: 1000px;
-                display: grid;
-                grid-template-columns: 1fr 350px;
-                gap: 2rem;
-            }
-            .sidebar-visible { display: block; }
+        .mnemonic-card {
+            background: linear-gradient(135deg, #ffffff 0%, #f9faff 100%);
+            border-left: 5px solid var(--primary);
         }
 
-        @media (max-width: 1023px) {
-            .sidebar-visible { display: none; }
+        .glass-nav {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+
+        /* Animated background blob */
+        .blob {
+            position: fixed;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, var(--primary-glow) 0%, transparent 70%);
+            z-index: -1;
+            filter: blur(40px);
+            animation: move 20s infinite alternate;
+        }
+
+        @keyframes move {
+            from { transform: translate(-10%, -10%); }
+            to { transform: translate(20%, 20%); }
         }
     </style>
 </head>
 <body>
 
-    <!-- Top Navigation -->
-    <nav class="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-slate-200 px-6 py-4">
-        <div class="max-w-5xl mx-auto flex justify-between items-center">
-            <div onclick="showView('home')" class="flex items-center gap-2 cursor-pointer group">
-                <div class="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center shadow-lg shadow-indigo-200 group-hover:scale-110 transition-transform">
-                    <i class="fas fa-graduation-cap text-white"></i>
+    <div class="blob"></div>
+
+    <!-- Navigation -->
+    <nav class="glass-nav sticky top-0 z-50 border-b border-slate-200 px-6 py-4">
+        <div class="max-w-6xl mx-auto flex justify-between items-center">
+            <div onclick="showView('home')" class="flex items-center gap-3 cursor-pointer group">
+                <div class="w-11 h-11 bg-indigo-600 rounded-2xl flex items-center justify-center shadow-lg shadow-indigo-200 group-hover:rotate-6 transition-transform">
+                    <i class="fas fa-bolt text-white"></i>
                 </div>
                 <div>
-                    <span class="font-extrabold tracking-tight text-xl block leading-none">UX<span class="text-indigo-600">PRO</span></span>
-                    <span class="text-[9px] font-bold uppercase tracking-widest text-slate-400">Academy 2026</span>
+                    <span class="font-extrabold text-xl tracking-tight text-slate-900 block leading-none">UX<span class="text-indigo-600">PRO</span></span>
+                    <span class="text-[9px] font-bold uppercase tracking-widest text-slate-400">Academy Hub</span>
                 </div>
             </div>
             
-            <div id="nav-info" class="hidden flex items-center gap-4">
+            <div id="nav-info" class="hidden flex items-center gap-5">
                 <div class="h-8 w-px bg-slate-200"></div>
-                <span id="mini-progress" class="font-mono text-xs font-bold text-slate-500 bg-slate-100 px-3 py-1 rounded-full">0/30</span>
-                <button onclick="showView('home')" class="text-xs font-bold text-rose-500 hover:bg-rose-50 px-3 py-1 rounded-lg transition-all">ABORT</button>
+                <div class="flex flex-col items-end">
+                    <span id="mini-progress" class="font-mono text-[10px] font-black text-indigo-600">0/30</span>
+                    <div class="w-20 h-1 bg-slate-100 rounded-full mt-1 overflow-hidden">
+                        <div id="mini-bar" class="h-full bg-indigo-600" style="width: 0%"></div>
+                    </div>
+                </div>
+                <button onclick="showView('home')" class="w-8 h-8 rounded-full flex items-center justify-center bg-rose-50 text-rose-500 hover:bg-rose-100 transition-colors">
+                    <i class="fas fa-times"></i>
+                </button>
             </div>
         </div>
     </nav>
 
-    <main class="max-w-5xl mx-auto px-6 py-8">
-        
-        <div class="main-container mx-auto">
+    <main class="max-w-6xl mx-auto px-6 py-8">
+        <div class="flex flex-col lg:flex-row gap-8">
             
-            <!-- LEFT CONTENT -->
-            <div class="space-y-6">
+            <div class="flex-1">
                 
                 <!-- HOME VIEW -->
-                <section id="view-home" class="view-section active space-y-8">
+                <section id="view-home" class="view-section active space-y-10">
                     <div class="py-6">
-                        <h1 class="text-5xl font-black text-slate-900 tracking-tight leading-[1.1] mb-4">
-                            Become a <span class="text-indigo-600 underline decoration-indigo-200 underline-offset-8">Certified</span> UX Architect.
+                        <div class="inline-flex items-center gap-2 bg-indigo-50 text-indigo-600 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest mb-4">
+                            <span class="relative flex h-2 w-2">
+                                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
+                                <span class="relative inline-flex rounded-full h-2 w-2 bg-indigo-500"></span>
+                            </span>
+                            Live Certification
+                        </div>
+                        <h1 class="text-5xl md:text-6xl font-black text-slate-900 leading-[1.1] tracking-tight mb-6">
+                            Architecting <br><span class="text-indigo-600 underline decoration-indigo-200 underline-offset-8">Human</span> Experiences.
                         </h1>
                         <p class="text-slate-500 text-lg max-w-xl leading-relaxed">
-                            Master the 30 core principles of user experience design, cognitive psychology, and interaction logic in one comprehensive track.
+                            Master the 30 foundational principles of UX research, interaction design, and psychology through our interactive certification track.
                         </p>
                     </div>
 
-                    <div class="grid sm:grid-cols-2 gap-4">
-                        <button onclick="startQuiz()" class="group app-card p-6 hover:border-indigo-500 hover:shadow-xl hover:shadow-indigo-500/10 transition-all text-left">
-                            <div class="w-12 h-12 rounded-2xl bg-indigo-600 flex items-center justify-center text-white mb-4 shadow-lg shadow-indigo-200">
-                                <i class="fas fa-play"></i>
+                    <div class="grid md:grid-cols-3 gap-4">
+                        <button onclick="startQuiz()" class="app-card p-6 text-left group hover:border-indigo-500 hover:shadow-2xl transition-all md:col-span-2">
+                            <div class="w-14 h-14 bg-indigo-600 rounded-2xl flex items-center justify-center text-white text-xl mb-6 shadow-xl shadow-indigo-100 group-hover:scale-110 transition-transform">
+                                <i class="fas fa-rocket"></i>
                             </div>
-                            <h3 class="font-bold text-xl mb-1">Interactive Exam</h3>
-                            <p class="text-slate-500 text-sm">30 Randomized questions with instant adaptive feedback.</p>
+                            <h3 class="text-2xl font-black mb-2">Begin Certification</h3>
+                            <p class="text-sm text-slate-400">30 Questions • Randomized • Auto-Advance</p>
                         </button>
-
-                        <button onclick="showView('notes')" class="group app-card p-6 hover:border-amber-500 hover:shadow-xl hover:shadow-amber-500/10 transition-all text-left">
-                            <div class="w-12 h-12 rounded-2xl bg-amber-500 flex items-center justify-center text-white mb-4 shadow-lg shadow-amber-200">
+                        
+                        <button onclick="showView('notes')" class="app-card p-6 text-left group hover:border-amber-400 transition-all">
+                            <div class="w-14 h-14 bg-amber-500 rounded-2xl flex items-center justify-center text-white text-xl mb-6 shadow-xl shadow-amber-100 group-hover:scale-110 transition-transform">
                                 <i class="fas fa-brain"></i>
                             </div>
-                            <h3 class="font-bold text-xl mb-1">Mnemonic Lab</h3>
-                            <p class="text-slate-500 text-sm">Master complex terminology using expert memory shortcuts.</p>
+                            <h3 class="text-xl font-bold mb-1">Mnemonic Lab</h3>
+                            <p class="text-xs text-slate-400">Memory hacks for hard concepts</p>
                         </button>
                     </div>
 
-                    <div class="app-card p-6 flex items-center justify-between group cursor-pointer" onclick="showView('study')">
+                    <div class="app-card p-6 flex items-center justify-between group cursor-pointer hover:bg-slate-50 transition-colors" onclick="showView('study')">
                         <div class="flex items-center gap-4">
-                            <div class="w-10 h-10 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center">
-                                <i class="fas fa-book-open"></i>
+                            <div class="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-slate-500 group-hover:bg-white transition-colors">
+                                <i class="fas fa-list-ul"></i>
                             </div>
                             <div>
-                                <h4 class="font-bold">Theory Database</h4>
-                                <p class="text-xs text-slate-400">Scan through all 30 principles and correct keys.</p>
+                                <h4 class="font-bold text-slate-800 leading-none mb-1">Study Guide</h4>
+                                <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Full Answer Key</p>
                             </div>
                         </div>
-                        <i class="fas fa-arrow-right text-slate-300 group-hover:text-indigo-600 group-hover:translate-x-1 transition-all"></i>
+                        <i class="fas fa-chevron-right text-slate-300 group-hover:text-indigo-600 group-hover:translate-x-1 transition-all"></i>
                     </div>
                 </section>
 
                 <!-- QUIZ VIEW -->
                 <section id="view-quiz" class="view-section space-y-6">
-                    <div class="app-card p-8 md:p-12 space-y-10">
-                        <div class="space-y-4">
-                            <div class="flex justify-between items-center">
-                                <span class="text-[11px] font-black uppercase tracking-[0.2em] text-indigo-600">Question <span id="q-num">1</span> of 30</span>
-                                <span id="feedback-label" class="text-xs font-bold px-3 py-1 rounded-full bg-slate-100 text-slate-500">Wait for selection...</span>
+                    <div class="app-card overflow-hidden">
+                        <div class="bg-slate-50/50 p-6 flex items-center justify-between border-b border-slate-100">
+                            <div class="flex items-center gap-3">
+                                <div class="w-8 h-8 rounded-lg bg-indigo-600 text-white flex items-center justify-center text-xs font-bold" id="q-num-box">1</div>
+                                <h4 class="text-xs font-bold text-slate-500 uppercase tracking-widest">Question <span id="q-num">1</span> of 30</h4>
                             </div>
-                            <div class="h-2 w-full bg-slate-100 rounded-full overflow-hidden">
-                                <div id="q-progress" class="progress-bar-inner h-full bg-indigo-600 rounded-full" style="width: 0%"></div>
-                            </div>
+                            <div id="feedback-label" class="text-[10px] font-black px-3 py-1 rounded-full bg-slate-200 text-slate-500 uppercase">Awaiting Selection</div>
+                        </div>
+                        <div class="h-1.5 w-full bg-slate-100">
+                            <div id="q-progress" class="progress-bar-inner h-full bg-indigo-600" style="width: 0%"></div>
                         </div>
 
-                        <div class="space-y-8">
-                            <h2 id="q-text" class="text-2xl md:text-3xl font-bold text-slate-800 leading-tight"></h2>
+                        <div class="p-8 md:p-12 space-y-12">
+                            <div class="space-y-4">
+                                <h2 id="q-text" class="text-2xl md:text-3xl font-bold text-slate-800 leading-tight"></h2>
+                            </div>
+                            
                             <div id="q-options" class="grid gap-3">
-                                <!-- Options injected here -->
+                                <!-- JS Injected Options -->
                             </div>
                         </div>
                     </div>
                 </section>
 
-                <!-- NOTES VIEW -->
-                <section id="view-notes" class="view-section space-y-6">
+                <!-- MNEMONIC NOTES VIEW -->
+                <section id="view-notes" class="view-section space-y-8">
                     <div class="flex items-center justify-between">
-                        <h2 class="text-3xl font-black text-slate-900 tracking-tight">Mnemonic Lab</h2>
-                        <button onclick="showView('home')" class="text-xs font-bold text-indigo-600">BACK</button>
+                        <div>
+                            <h2 class="text-3xl font-black text-slate-900 leading-none">Mnemonic Lab</h2>
+                            <p class="text-sm text-slate-400 mt-2">Simplify hard concepts with memory hooks.</p>
+                        </div>
+                        <button onclick="showView('home')" class="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-slate-500 hover:bg-slate-200 transition-colors">
+                            <i class="fas fa-arrow-left"></i>
+                        </button>
                     </div>
-                    <div id="notes-grid" class="grid gap-4"></div>
-                </section>
 
-                <!-- STUDY VIEW -->
-                <section id="view-study" class="view-section space-y-6">
-                    <div class="flex items-center justify-between">
-                        <h2 class="text-3xl font-black text-slate-900 tracking-tight">Knowledge Base</h2>
-                        <button onclick="showView('home')" class="text-xs font-bold text-indigo-600">BACK</button>
+                    <div id="notes-grid" class="grid gap-4">
+                        <!-- Mnemonic cards injected -->
                     </div>
-                    <div id="study-list" class="space-y-3"></div>
                 </section>
 
                 <!-- RESULTS VIEW -->
-                <section id="view-results" class="view-section space-y-8 text-center py-10">
-                    <div class="app-card p-10 max-w-lg mx-auto shadow-2xl">
-                        <div class="w-24 h-24 bg-indigo-600 rounded-[2rem] flex items-center justify-center text-white text-4xl mx-auto mb-6 rotate-3 shadow-xl shadow-indigo-200">
-                            <i class="fas fa-trophy"></i>
-                        </div>
-                        <h2 class="text-4xl font-black text-slate-900 mb-2">Exam Results</h2>
-                        <p id="result-rank" class="text-indigo-600 font-bold uppercase tracking-widest text-sm mb-8"></p>
+                <section id="view-results" class="view-section text-center py-12">
+                    <div class="app-card p-12 max-w-lg mx-auto shadow-2xl border-none">
+                        <div id="result-icon" class="w-24 h-24 rounded-[2rem] flex items-center justify-center text-4xl mx-auto mb-6 shadow-xl rotate-3"></div>
+                        <h2 class="text-4xl font-black text-slate-900 mb-2" id="result-title">Calculating...</h2>
+                        <p id="result-rank" class="text-indigo-600 font-bold uppercase tracking-widest text-sm mb-10"></p>
                         
                         <div class="grid grid-cols-2 gap-4 py-8 border-y border-slate-100 mb-8">
                             <div>
                                 <div id="final-score" class="text-5xl font-black text-slate-900">0</div>
-                                <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Questions</div>
+                                <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-2">Correct Hits</div>
                             </div>
                             <div>
                                 <div id="final-percent" class="text-5xl font-black text-indigo-600">0%</div>
-                                <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Accuracy</div>
+                                <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-2">Design IQ</div>
                             </div>
                         </div>
 
-                        <button onclick="startQuiz()" class="w-full py-5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl font-black text-lg transition-all shadow-lg shadow-indigo-100 active:scale-[0.98]">
+                        <button onclick="startQuiz()" class="w-full py-5 bg-indigo-600 text-white rounded-2xl font-black text-lg hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-100 active:scale-[0.98]">
                             RETAKE EXAM
                         </button>
                     </div>
                 </section>
 
+                <!-- STUDY LIST VIEW -->
+                <section id="view-study" class="view-section space-y-6">
+                    <div class="flex items-center justify-between">
+                        <h2 class="text-3xl font-black text-slate-900">Answer Key</h2>
+                        <button onclick="showView('home')" class="font-bold text-indigo-600 text-sm">EXIT GUIDE</button>
+                    </div>
+                    <div id="study-list" class="space-y-3"></div>
+                </section>
+
             </div>
 
-            <!-- RIGHT SIDEBAR (Desktop Only) -->
-            <aside class="sidebar-visible">
-                <div class="sticky top-28 space-y-6">
-                    <div class="app-card p-6 bg-indigo-600 text-white border-none shadow-indigo-100">
-                        <h4 class="font-bold text-lg mb-2">Certification Pro</h4>
-                        <p class="text-indigo-100 text-xs leading-relaxed mb-4">You are currently in the 2026 Training Path. Complete 30 questions to unlock the digital badge.</p>
-                        <div class="flex -space-x-2">
-                            <div class="w-8 h-8 rounded-full border-2 border-indigo-600 bg-slate-200 flex items-center justify-center text-[10px] text-slate-600 font-bold">JD</div>
-                            <div class="w-8 h-8 rounded-full border-2 border-indigo-600 bg-indigo-400 flex items-center justify-center text-[10px] font-bold">AM</div>
-                            <div class="w-8 h-8 rounded-full border-2 border-indigo-600 bg-indigo-800 flex items-center justify-center text-[10px] font-bold">+12</div>
+            <!-- SIDEBAR -->
+            <aside class="w-full lg:w-[320px] shrink-0 space-y-6">
+                <div class="app-card p-6 space-y-6 sticky top-28">
+                    <div class="bg-indigo-600 rounded-2xl p-5 text-white shadow-lg shadow-indigo-100">
+                        <h5 class="text-[10px] font-black uppercase tracking-[0.2em] text-indigo-200 mb-1">User Status</h5>
+                        <p class="font-bold text-lg mb-4">Certified Architect</p>
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-full border-2 border-indigo-400 overflow-hidden">
+                                <img src="https://ui-avatars.com/api/?name=UX+User&background=random" alt="User">
+                            </div>
+                            <div class="text-[10px] font-bold leading-tight">
+                                <p>Progressive Level: 04</p>
+                                <p class="text-indigo-300">UX PRO ACADEMY</p>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="app-card p-6 space-y-4">
-                        <h4 class="font-bold text-sm uppercase tracking-widest text-slate-400">Quick Stats</h4>
-                        <div class="space-y-3">
-                            <div class="flex justify-between items-center text-sm">
-                                <span class="text-slate-500">Modules</span>
-                                <span class="font-bold text-slate-800">12</span>
-                            </div>
-                            <div class="flex justify-between items-center text-sm">
-                                <span class="text-slate-500">Passing Score</span>
-                                <span class="font-bold text-indigo-600">80%</span>
-                            </div>
-                            <div class="flex justify-between items-center text-sm">
-                                <span class="text-slate-500">Est. Time</span>
-                                <span class="font-bold text-slate-800">~6 mins</span>
-                            </div>
+                    <div class="space-y-4">
+                        <h5 class="text-[10px] font-black uppercase tracking-widest text-slate-400">Knowledge Tags</h5>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="text-[10px] font-bold px-2 py-1 bg-slate-100 rounded text-slate-600">Double Diamond</span>
+                            <span class="text-[10px] font-bold px-2 py-1 bg-slate-100 rounded text-slate-600">Gestalt</span>
+                            <span class="text-[10px] font-bold px-2 py-1 bg-slate-100 rounded text-slate-600">Empathy Map</span>
+                            <span class="text-[10px] font-bold px-2 py-1 bg-slate-100 rounded text-slate-600">A/B Testing</span>
+                            <span class="text-[10px] font-bold px-2 py-1 bg-slate-100 rounded text-slate-600">Persona</span>
                         </div>
                     </div>
                 </div>
@@ -266,164 +302,206 @@
 
     <script>
         const QUESTIONS = [
-            { q: "Which model describes the Discover, Define, Develop, and Deliver stages in product design?", a: ["Double Diamond", "Agile Sprints", "Waterfall Method", "Design System"], c: 0 },
-            { q: "What is a 'Persona' in the context of UX Design?", a: ["Marketing segment", "Technical documentation", "Realistic fictional profile of a user", "Project manager profile"], c: 2 },
-            { q: "Which tool tracks emotions and pain points over a timeline of product interaction?", a: ["Wireframe", "User Journey Map", "Mood Board", "Site Map"], c: 1 },
-            { q: "The Empathy Map quadrants are categorized as:", a: ["See, Hear, Think, Do", "Says, Thinks, Does, Feels", "Age, Job, Location, Goals", "Discover, Design, Develop, Deliver"], c: 1 },
-            { q: "What does 'Lo-Fi' prototyping prioritize?", a: ["Visual beauty", "Interactive code", "Layout logic and speed", "Final branding"], c: 2 },
-            { q: "The psychological theory that humans perceive elements as a whole rather than parts is:", a: ["Fitts's Law", "Gestalt Principles", "Hick's Law", "Jakob's Law"], c: 1 },
-            { q: "What is an 'Affinity Diagram' used for?", a: ["Measuring loading speed", "Organizing data into logical groups", "Defining color palettes", "Writing user stories"], c: 1 },
-            { q: "In UX, 'Consistency' ensures that:", a: ["Colors are always bright", "Elements behave uniformly across the product", "The logo is on every page", "Users never have to click more than twice"], c: 1 },
-            { q: "What are 'Pain Points' in a User Journey?", a: ["Design errors", "Difficulties or frustrations users face", "Physical hand pain from clicking", "High price points of the product"], c: 1 },
-            { q: "Which term refers to an even distribution of visual weight in a layout?", a: ["Contrast", "Hierarchy", "Balance", "Alignment"], c: 2 },
-            { q: "A/B Testing is primarily used to:", a: ["Design the logo", "Compare two versions of a feature for performance", "Test the code for bugs", "Write the user manual"], c: 1 },
-            { q: "What is the primary goal of UX (User Experience)?", a: ["Visual appeal", "Sales conversion only", "Enhancing user satisfaction and usability", "Reducing development costs"], c: 2 },
-            { q: "The Discover phase of the Double Diamond focuses on:", a: ["Solving the problem", "Building the prototype", "Broad research and exploration", "Finalizing the UI"], c: 2 },
-            { q: "Which Gestalt principle suggests that elements near each other are perceived as a group?", a: ["Similarity", "Proximity", "Closure", "Continuity"], c: 1 },
-            { q: "What does 'Empathy' mean in design thinking?", a: ["Feeling sorry for the user", "Truly understanding user needs and feelings", "Following user orders exactly", "Designing for yourself"], c: 1 },
-            { q: "Contrast in design is used to:", a: ["Make things look pretty", "Emphasize difference and hierarchy", "Match the brand colors", "Fill empty space"], c: 1 },
-            { q: "A User Journey Map helps identify:", a: ["Programming errors", "Business revenue", "Opportunities for improvement at touchpoints", "Server latency"], c: 2 },
-            { q: "Visual Hierarchy is achieved through:", a: ["Random placement", "Size, color, and spacing to guide the eye", "Using many different fonts", "Animation only"], c: 1 },
-            { q: "Which is a 'High-Fidelity' prototype characteristic?", a: ["Hand-drawn sketches", "Clickable paths with final visuals", "Abstract shapes", "Static wireframes"], c: 1 },
-            { q: "Information Architecture (IA) is about:", a: ["Designing buildings", "Organizing and structuring content", "Writing code", "Buying servers"], c: 1 },
-            { q: "In an Empathy Map, 'Does' refers to:", a: ["User words", "User inner thoughts", "Observed user actions", "User emotions"], c: 2 },
-            { q: "What is the result of the 'Define' stage?", a: ["Final code", "A clear problem statement", "A marketing plan", "User feedback"], c: 1 },
-            { q: "What defines 'Accessibility' in UX?", a: ["Fast internet speed", "Ensuring products are usable by people with disabilities", "Low price points", "Mobile responsiveness only"], c: 1 },
-            { q: "Which law states that the time to acquire a target is a function of distance and size?", a: ["Hick's Law", "Fitts's Law", "Miller's Law", "Occam's Razor"], c: 1 },
-            { q: "What is 'White Space' (Negative Space)?", a: ["Unfinished areas of design", "The space between elements to improve clarity", "Errors in the background", "Space for ads"], c: 1 },
-            { q: "The 'Develop' phase involves:", a: ["Asking 'Why?'", "Brainstorming and iterative prototyping", "Hiring developers", "Launching to the public"], c: 1 },
-            { q: "Usability testing helps a designer understand:", a: ["If the user likes the colors", "If the user can complete specific tasks", "The user's salary", "The user's social media habits"], c: 1 },
-            { q: "A 'Pain Point' found in a map usually leads to:", a: ["A feature removal", "A design opportunity for a solution", "A refund", "A firing"], c: 2 },
-            { q: "Jakob's Law states that users spend most time on:", a: ["Your website", "Other websites", "Social media", "Mobile apps"], c: 1 },
-            { q: "What is a 'Wireframe'?", a: ["Final visual design", "Structural blueprint of an interface", "3D model", "The code structure"], c: 1 }
+            { q: "Which of the following correctly matches a design or user-centered concept with its definition?", a: ["UX — User Expert, which focuses on how people feel when interacting with a product.", "Double Diamond Process — A single-step method focusing on delivery only.", "UX — User Experiment, which involves testing design ideas with real users.", "Double Diamond Process — A British Design Council model that includes the phases Discover, Define, Develop, and Deliver."], c: 3 },
+            { q: "Which of the following best describes creating a simple, non-final version of a good, service, or digital feature—such as a website or kiosk—to model how the final product will look or function?", a: ["Sketching", "A system model", "High-fidelity prototyping", "Low-fidelity prototyping"], c: 3 },
+            { q: "Which concept, emphasized in the Discovery Phase for understanding users, involves analyzing each step of what the user experiences in a situation to understand and share their feelings?", a: ["Empathy Map", "Empathy", "User Journey Map", "Observation"], c: 2 },
+            { q: "( ) is used to study what a user says, thinks, does, and feels to better understand them.", a: ["Empathy Map", "Analysis Document", "How to Understand a User", "User Map"], c: 0 },
+            { q: "( ) is a realistic, fictional profile representing a typical user of a product.", a: ["Mood Board", "A personnel", "Persona", "A person"], c: 2 },
+            { q: "In an Empathy Map, “says” refers to a user’s ( ), while “does” refers to a user’s ( ). Which of the following fits the blanks?", a: ["style, style also", "attitude, behavior", "behavior, attitude", "words, actions"], c: 3 },
+            { q: "In a User Journey Map, the moments where users face difficulties are called ( ), and these should be the main focus when designing UX solutions.", a: ["pain points", "user moments", "journey moments", "push points"], c: 0 },
+            { q: "( ) means that website elements behave and appear uniformly across all pages.", a: ["Balance", "Consistency", "Gestalt Principle", "Contrast"], c: 1 },
+            { q: "( ) is used in UX to both analyze each step a user goes through in a process and identify the challenges or difficulties they face at each stage, helping designers improve the experience.", a: ["Analysis Document", "User Journey Map", "Pain Points", "Empathy Map"], c: 1 },
+            { q: "( ) means an even distribution of weight enabling someone or something to remain upright and steady.", a: ["Gestalt Principle", "Consistency", "Contrast", "Balance"], c: 3 },
+            { q: "( ) helps us understand our visual experience by perceiving the overall design as a whole rather than focusing on individual elements.", a: ["Gestalt Principle", "Hierarchy", "Balance", "Contrast"], c: 0 },
+            { q: "( ) is the arrangement of visually different elements to emphasize that they are distinct from one another.", a: ["Consistency", "Hierarchy", "Alignment", "Contrast"], c: 3 },
+            { q: "You are designing an Empathy Map for a new mobile app. You notice that users often say one thing, but their actions tell a different story. Which section of the Empathy Map would help you capture this difference and better understand the user?", a: ["Does", "Thinks", "Feels", "Says"], c: 0 },
+            { q: "In a complete persona, which of the following sections is not typically required?", a: ["Bibliography", "Demographics", "Needs", "Goals"], c: 0 },
+            { q: "During a UX research session, your team has collected dozens of user feedback notes from interviews and usability tests. You notice some comments are very similar, but scattered across different topics. Which UX tool would help your team organize these ideas into groups to spot patterns and generate insights?", a: ["Usability Test", "Affinity Diagram", "Wireframe", "Customer Journey Map"], c: 1 },
+            { q: "A UX team is tackling a complex problem. They start by exploring the problem widely, then define the key challenge, generate ideas, and finally deliver solutions. This process involves two cycles of divergent and convergent thinking across four phases: Discover, Define, Develop, and Deliver. What is the name of this design framework?", a: ["Doable Design Thinking Process", "Double Design Thinking Process", "Double Diamond Process", "Design Thinking Process"], c: 2 },
+            { q: "A UX designer quickly creates a rough version of a website to show the layout and basic functionality to stakeholders. This version does not include final design details or full interactivity. What type of prototyping is this?", a: ["Low-fidelity prototyping", "None of these", "High-fidelity prototyping", "Sketching"], c: 0 },
+            { q: "A company launches a new mobile app and a self-service kiosk at a store. Both are designed to deliver value to users, either as tangible items or digital features. What term best describes these offerings?", a: ["A product", "A demonstration", "A system", "A project"], c: 0 },
+            { q: "During the Discovery Phase of UX research, a designer spends time observing and talking with users to truly understand what they feel and experience. What skill is being emphasized here?", a: ["Empathy", "Insight Gathering", "Observation", "User Testing"], c: 0 },
+            { q: "A user persona is designed to capture actionable insights that guide design decisions, not to document the research process itself. Considering this purpose, which of the following components would most likely detract from the analytical value of a complete persona?", a: ["A comprehensive bibliography detailing academic sources", "Demographic and psychographic profiles", "Pain points and motivations", "Narrative scenarios"], c: 0 },
+            { q: "In the UX design process, what is the primary purpose of creating an Affinity Diagram?", a: ["To evaluate how users interact with a prototype", "To design the final visual layout of a product", "To organize similar ideas or data to discover patterns and key insights", "To measure user satisfaction after a product is released"], c: 2 },
+            { q: "Which of the following is not typically included as a section in a standard Empathy Map?", a: ["What the user exercises", "What the user thinks", "What the user does", "What the user says"], c: 0 },
+            { q: "In UX design, understanding users deeply involves recognizing their thoughts, feelings, actions, and needs. Which of the following options best captures empathy and aligns with UX tools?", a: ["I cannot feel for others but I enjoy spending time with others", "I can feel for others’ difficulties, but I only track demographic data", "I cannot understand a situation but I rely solely on Affinity Diagrams", "I can feel for others, and I use tools like Empathy Maps to record says, thinks, does, and feels"], c: 3 },
+            { q: "In UX design, understanding user needs, organizing ideas, and testing early concepts are essential steps. Which combination correctly matches these concepts?", a: ["User Expense, Design Thinking Process, High-fidelity prototyping", "User Experiment, Double Design Thinking Process, None of these", "User Exchange, Doable Design Thinking Process, Sketching", "User Experience, Double Diamond Process, Low-fidelity prototyping"], c: 3 },
+            { q: "You are designing a self-service kiosk. Which combination of UX tools and concepts would best help you?", a: ["Creative Thinking, Emphasis, Demonstration", "Empathy Map, Data, System", "None of these, Experimentation, Project", "User Journey Map, Empathy, Product"], c: 3 },
+            { q: "Which scenario best illustrates good UX practice?", a: ["A UX designer creates a User Journey Map to document visitor phases and emotions", "A designer randomly changes features", "A manager ignores user feedback", "A team launches without testing users"], c: 0 },
+            { q: "Which tool is used to analyze what a user says, thinks, does, and feels?", a: ["Empathy Map", "Analysis Document", "User Journey Map", "How to Understand a User"], c: 0 },
+            { q: "A UX designer observes users’ thoughts, actions, and feelings. Which tool helps organize this?", a: ["Empathy Map", "Analysis Document", "User Journey Map", "How to Understand a User"], c: 0 },
+            { q: "During Obama’s campaign, testing different versions of websites/emails is called:", a: ["A/B Testing", "Empathy Map", "Affinity Diagram", "Double Diamond Process"], c: 0 },
+            { q: "In an Empathy Map, ‘says’ is about a user’s ( ), and ‘does’ is about a user’s ( ).", a: ["style, behavior", "attitude, behavior", "behavior, attitude", "style, attitude"], c: 1 }
         ];
 
-        const NOTES = [
-            { t: "Double Diamond", m: "D4 Protocol", n: "Discover/Define (Problem) -> Develop/Deliver (Solution)", tr: "Accordion: Open (Broad) vs Closed (Specific)." },
-            { t: "Empathy Map", m: "S.T.D.F", n: "Says, Thinks, Does, Feels", tr: "Face test: What comes out (Says) vs What's inside (Feels)." },
-            { t: "Gestalt Principles", m: "The 'Whole' Law", n: "Proximity, Similarity, Continuity, Closure", tr: "The brain is lazy: it groups things to save energy." },
-            { t: "User Journey", m: "Emotional Map", n: "Tracks sentiment over a timeline", tr: "Look for the 'valley' - that's where the pain points live." },
-            { t: "Prototyping", m: "Lo-Hi Scale", n: "Lo-Fi (Sketch) to Hi-Fi (Simulated Product)", tr: "Fail fast with paper, win late with pixels." }
+        const MNEMONICS = [
+            { 
+                title: "Double Diamond", 
+                hook: "The 4D Loop", 
+                detail: "Discover -> Define -> Develop -> Deliver", 
+                hack: "The first diamond is for the 'Problem'. The second is for the 'Solution'. Broaden your mind, then focus it. Repeat." 
+            },
+            { 
+                title: "Empathy Map", 
+                hook: "S.T.D.F", 
+                detail: "Says, Thinks, Does, Feels", 
+                hack: "S&T are internal/verbal. D&F are behavioral/emotional. Use 'Does' when the user acts differently than they speak!" 
+            },
+            { 
+                title: "Gestalt", 
+                hook: "Whole > Parts", 
+                detail: "The brain groups things automatically.", 
+                hack: "If elements are close (Proximity) or look the same (Similarity), the user thinks they are related. Don't fight the brain's lazy nature." 
+            },
+            { 
+                title: "User Journey vs Persona", 
+                hook: "Timeline vs Target", 
+                detail: "Journey = The Experience Timeline. Persona = The User Portrait.", 
+                hack: "A Persona is 'Who'. The Journey Map is 'What they go through'." 
+            },
+            { 
+                title: "Lo-Fi vs Hi-Fi", 
+                hook: "Logic vs Look", 
+                detail: "Low-Fidelity = Layout/Wireframe. High-Fidelity = Final Visuals.", 
+                hack: "Test the flow with Lo-Fi. Test the feel with Hi-Fi." 
+            }
         ];
 
         let state = {
-            view: 'home',
             currentIdx: 0,
             score: 0,
-            shuffled: [],
             answered: false,
             timer: null
         };
 
         function showView(v) {
-            state.view = v;
-            document.querySelectorAll('.view-section').forEach(s => s.classList.remove('active'));
-            const active = document.getElementById(`view-${v}`);
-            active.classList.add('active');
+            const sections = document.querySelectorAll('.view-section');
+            sections.forEach(s => s.classList.remove('active'));
             
-            document.getElementById('nav-info').classList.toggle('hidden', v === 'home');
+            setTimeout(() => {
+                const target = document.getElementById(`view-${v}`);
+                target.classList.add('active');
+            }, 50);
+
+            document.getElementById('nav-info').classList.toggle('hidden', v === 'home' || v === 'results');
             window.scrollTo({ top: 0, behavior: 'smooth' });
             
-            if (v === 'notes') renderNotes();
-            if (v === 'study') renderStudy();
+            if(v === 'notes') renderMnemonics();
+            if(v === 'study') renderStudy();
         }
 
         function startQuiz() {
             state.score = 0;
             state.currentIdx = 0;
-            state.shuffled = [...QUESTIONS].sort(() => Math.random() - 0.5);
             showView('quiz');
             renderQuestion();
         }
 
         function renderQuestion() {
             state.answered = false;
-            if(state.timer) clearTimeout(state.timer);
-
-            const q = state.shuffled[state.currentIdx];
+            const q = QUESTIONS[state.currentIdx];
+            
             document.getElementById('q-num').innerText = state.currentIdx + 1;
             document.getElementById('mini-progress').innerText = `${state.currentIdx + 1}/30`;
-            document.getElementById('q-progress').style.width = `${((state.currentIdx + 1) / 30) * 100}%`;
+            
+            const progress = ((state.currentIdx) / 30) * 100;
+            document.getElementById('q-progress').style.width = `${progress}%`;
+            document.getElementById('mini-bar').style.width = `${progress}%`;
+            
             document.getElementById('q-text').innerText = q.q;
-            
-            const feedback = document.getElementById('feedback-label');
-            feedback.innerText = "Select your answer";
-            feedback.className = "text-xs font-bold px-3 py-1 rounded-full bg-slate-100 text-slate-500";
 
-            const optionsBox = document.getElementById('q-options');
-            optionsBox.innerHTML = '';
-            
+            const feedback = document.getElementById('feedback-label');
+            feedback.innerText = "Awaiting Selection";
+            feedback.className = "text-[10px] font-black px-3 py-1 rounded-full bg-slate-100 text-slate-500 uppercase";
+
+            const container = document.getElementById('q-options');
+            container.innerHTML = '';
+
             q.a.forEach((opt, i) => {
                 const btn = document.createElement('button');
-                btn.className = "quiz-option w-full text-left p-5 rounded-2xl bg-white flex items-center gap-4 group";
+                btn.className = "quiz-option w-full text-left p-6 rounded-[20px] bg-white flex items-center gap-5 group";
                 btn.innerHTML = `
-                    <div class="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center text-xs font-black text-slate-400 group-hover:bg-indigo-600 group-hover:text-white transition-all">${String.fromCharCode(65+i)}</div>
-                    <span class="font-bold text-slate-700">${opt}</span>
+                    <div class="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center text-xs font-black text-slate-400 group-hover:bg-indigo-600 group-hover:text-white transition-all shrink-0">${String.fromCharCode(65+i)}</div>
+                    <span class="font-bold text-slate-700 leading-snug">${opt}</span>
                 `;
-                btn.onclick = () => selectOption(i, btn);
-                optionsBox.appendChild(btn);
+                btn.onclick = () => handleSelect(i, btn);
+                container.appendChild(btn);
             });
         }
 
-        function selectOption(idx, el) {
-            if (state.answered) return;
+        function handleSelect(idx, btn) {
+            if(state.answered) return;
             state.answered = true;
             
-            const q = state.shuffled[state.currentIdx];
-            const isCorrect = idx === q.c;
+            const q = QUESTIONS[state.currentIdx];
+            const correct = idx === q.c;
             const feedback = document.getElementById('feedback-label');
             
-            // Disable all buttons
-            document.querySelectorAll('.quiz-option').forEach(b => b.classList.add('disabled'));
+            document.querySelectorAll('.quiz-option').forEach(b => b.classList.add('disabled', 'opacity-50'));
+            btn.classList.remove('opacity-50');
 
-            if (isCorrect) {
+            if(correct) {
                 state.score++;
-                el.classList.add('correct');
-                feedback.innerText = "Correct! Switching...";
-                feedback.className = "text-xs font-bold px-3 py-1 rounded-full bg-emerald-100 text-emerald-700";
+                btn.classList.add('correct');
+                feedback.innerText = "Sharp Thinking!";
+                feedback.className = "text-[10px] font-black px-3 py-1 rounded-full bg-emerald-100 text-emerald-700 uppercase";
             } else {
-                el.classList.add('wrong');
+                btn.classList.add('wrong');
                 document.querySelectorAll('.quiz-option')[q.c].classList.add('correct');
-                feedback.innerText = "Incorrect. Next in 1.2s...";
-                feedback.className = "text-xs font-bold px-3 py-1 rounded-full bg-rose-100 text-rose-700";
+                document.querySelectorAll('.quiz-option')[q.c].classList.remove('opacity-50');
+                feedback.innerText = "Learning Moment";
+                feedback.className = "text-[10px] font-black px-3 py-1 rounded-full bg-rose-100 text-rose-700 uppercase";
             }
 
-            // AUTO NEXT TIMER
-            state.timer = setTimeout(() => {
-                if (state.currentIdx < 29) {
+            // AUTO NEXT
+            setTimeout(() => {
+                if(state.currentIdx < 29) {
                     state.currentIdx++;
                     renderQuestion();
                 } else {
-                    finishQuiz();
+                    finish();
                 }
             }, 1200);
         }
 
-        function finishQuiz() {
+        function finish() {
             showView('results');
             document.getElementById('final-score').innerText = state.score;
-            const perc = Math.round((state.score / 30) * 100);
+            const perc = Math.round((state.score/30)*100);
             document.getElementById('final-percent').innerText = `${perc}%`;
             
-            let rank = "Apprentice Designer";
-            if (perc >= 60) rank = "Research Associate";
-            if (perc >= 80) rank = "Senior UX Architect";
-            if (perc === 100) rank = "Product Master";
+            const icon = document.getElementById('result-icon');
+            const title = document.getElementById('result-title');
+            
+            if(perc >= 80) {
+                icon.className = "w-24 h-24 rounded-[2rem] flex items-center justify-center text-4xl mx-auto mb-6 shadow-xl bg-indigo-600 text-white shadow-indigo-100";
+                icon.innerHTML = '<i class="fas fa-crown"></i>';
+                title.innerText = "Certified Expert";
+            } else {
+                icon.className = "w-24 h-24 rounded-[2rem] flex items-center justify-center text-4xl mx-auto mb-6 shadow-xl bg-amber-500 text-white shadow-amber-100";
+                icon.innerHTML = '<i class="fas fa-lightbulb"></i>';
+                title.innerText = "Keep Growing";
+            }
+
+            let rank = "Novice Researcher";
+            if(perc >= 60) rank = "Systems Thinker";
+            if(perc >= 80) rank = "UX Visionary";
+            if(perc === 100) rank = "Master Architect";
             document.getElementById('result-rank').innerText = rank;
         }
 
-        function renderNotes() {
+        function renderMnemonics() {
             const grid = document.getElementById('notes-grid');
-            grid.innerHTML = NOTES.map(n => `
-                <div class="app-card p-6 bg-white hover:shadow-lg transition-all border-l-4 border-indigo-600">
-                    <div class="flex justify-between items-center mb-4">
-                        <h4 class="text-xl font-bold text-slate-900">${n.t}</h4>
-                        <span class="text-[9px] font-black bg-indigo-50 text-indigo-600 px-3 py-1 rounded-full tracking-widest uppercase">${n.m}</span>
+            grid.innerHTML = MNEMONICS.map(m => `
+                <div class="mnemonic-card p-6 rounded-3xl shadow-sm hover:shadow-md transition-shadow">
+                    <div class="flex justify-between items-start mb-4">
+                        <h4 class="text-xl font-black text-slate-800">${m.title}</h4>
+                        <span class="text-[9px] font-black bg-indigo-100 text-indigo-700 px-2 py-1 rounded uppercase tracking-widest">${m.hook}</span>
                     </div>
-                    <p class="text-sm text-slate-500 leading-relaxed mb-4">${n.n}</p>
-                    <div class="p-4 bg-slate-50 rounded-xl border border-dashed border-slate-200">
-                        <span class="text-[9px] font-black text-slate-400 block mb-1 uppercase tracking-widest">Memory Hack</span>
-                        <p class="text-xs italic font-bold text-slate-700">"${n.tr}"</p>
+                    <p class="text-sm text-slate-500 mb-4 leading-relaxed">${m.detail}</p>
+                    <div class="bg-indigo-600/5 p-4 rounded-2xl border border-indigo-100/50">
+                        <span class="text-[10px] font-black text-indigo-600 uppercase tracking-widest block mb-1">Memory Tip</span>
+                        <p class="text-xs font-bold text-slate-700 italic">"${m.hack}"</p>
                     </div>
                 </div>
             `).join('');
@@ -432,13 +510,15 @@
         function renderStudy() {
             const list = document.getElementById('study-list');
             list.innerHTML = QUESTIONS.map((q, i) => `
-                <div class="app-card p-5 bg-white flex items-center gap-4">
-                    <div class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-[10px] font-mono text-slate-500 shrink-0">${i+1}</div>
-                    <div class="grow">
-                        <p class="text-sm font-bold text-slate-800 mb-1">${q.q}</p>
-                        <div class="flex items-center gap-2">
-                             <div class="w-2 h-2 rounded-full bg-emerald-500"></div>
-                             <p class="text-xs text-emerald-600 font-bold uppercase tracking-tight">${q.a[q.c]}</p>
+                <div class="app-card p-5 hover:border-emerald-200 transition-colors">
+                    <div class="flex gap-4">
+                        <span class="text-[10px] font-black text-slate-300 shrink-0 mt-1">${(i+1).toString().padStart(2, '0')}</span>
+                        <div>
+                            <p class="text-sm font-bold text-slate-800 mb-3 leading-snug">${q.q}</p>
+                            <div class="inline-flex items-center gap-2 bg-emerald-50 px-3 py-2 rounded-xl border border-emerald-100">
+                                <i class="fas fa-check-double text-emerald-500 text-[10px]"></i>
+                                <span class="text-xs text-emerald-800 font-bold">${q.a[q.c]}</span>
+                            </div>
                         </div>
                     </div>
                 </div>
