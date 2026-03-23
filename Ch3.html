@@ -1,0 +1,1637 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter 3: Introduction to SQL</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy: #0f1f3d;
+  --blue: #1a3a6b;
+  --teal: #0e7490;
+  --cyan: #06b6d4;
+  --gold: #f59e0b;
+  --mint: #10b981;
+  --rose: #f43f5e;
+  --lavender: #818cf8;
+  --bg: #f0f4f8;
+  --card: #ffffff;
+  --text: #1e293b;
+  --muted: #64748b;
+  --border: #e2e8f0;
+  --code-bg: #0f172a;
+  --code-text: #e2e8f0;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.7;
+}
+
+/* ── SIDEBAR ── */
+#sidebar {
+  position: fixed; left: 0; top: 0; bottom: 0;
+  width: 260px;
+  background: var(--navy);
+  overflow-y: auto;
+  z-index: 100;
+  transition: transform 0.3s ease;
+  scrollbar-width: thin;
+  scrollbar-color: var(--teal) transparent;
+}
+#sidebar::-webkit-scrollbar { width: 4px; }
+#sidebar::-webkit-scrollbar-thumb { background: var(--teal); border-radius: 2px; }
+
+.sidebar-header {
+  padding: 28px 20px 16px;
+  background: linear-gradient(135deg, var(--teal), var(--blue));
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+.sidebar-header h2 { font-family: 'Playfair Display', serif; color: #fff; font-size: 1.1rem; }
+.sidebar-header p { color: rgba(255,255,255,0.6); font-size: 0.75rem; margin-top: 4px; }
+
+.sidebar-nav { padding: 16px 0; }
+
+.nav-section-label {
+  font-size: 0.65rem; letter-spacing: 0.1em; text-transform: uppercase;
+  color: rgba(255,255,255,0.35); padding: 8px 20px 4px; font-weight: 600;
+}
+
+.nav-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 20px; cursor: pointer; transition: all 0.2s;
+  color: rgba(255,255,255,0.65); font-size: 0.82rem;
+  border-left: 3px solid transparent;
+  text-decoration: none;
+}
+.nav-item:hover { background: rgba(255,255,255,0.07); color: #fff; }
+.nav-item.active {
+  background: rgba(6,182,212,0.15); color: var(--cyan);
+  border-left-color: var(--cyan);
+}
+.nav-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; flex-shrink: 0; }
+
+/* ── MAIN CONTENT ── */
+#main {
+  margin-left: 260px;
+  min-height: 100vh;
+}
+
+/* ── HERO ── */
+.hero {
+  background: linear-gradient(135deg, var(--navy) 0%, var(--blue) 50%, var(--teal) 100%);
+  padding: 80px 60px;
+  position: relative; overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+}
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: rgba(6,182,212,0.2); border: 1px solid rgba(6,182,212,0.4);
+  color: var(--cyan); padding: 6px 16px; border-radius: 100px;
+  font-size: 0.8rem; font-weight: 500; margin-bottom: 24px;
+}
+.hero h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(2.2rem, 4vw, 3.5rem);
+  color: #fff; font-weight: 900; line-height: 1.15;
+  margin-bottom: 20px;
+}
+.hero h1 span { color: var(--cyan); }
+.hero p {
+  color: rgba(255,255,255,0.7); font-size: 1.1rem; max-width: 580px;
+  margin-bottom: 36px;
+}
+.hero-stats {
+  display: flex; gap: 40px; flex-wrap: wrap;
+}
+.hero-stat { text-align: center; }
+.hero-stat .num { font-family: 'Playfair Display', serif; font-size: 2rem; color: var(--cyan); font-weight: 700; }
+.hero-stat .lbl { color: rgba(255,255,255,0.5); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; }
+
+/* ── TABS ── */
+.tabs-bar {
+  background: var(--card);
+  border-bottom: 2px solid var(--border);
+  display: flex; gap: 0;
+  position: sticky; top: 0; z-index: 50;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+}
+.tab-btn {
+  padding: 16px 28px; cursor: pointer; border: none; background: none;
+  font-family: 'DM Sans', sans-serif; font-size: 0.9rem; font-weight: 500;
+  color: var(--muted); border-bottom: 3px solid transparent; margin-bottom: -2px;
+  transition: all 0.2s; white-space: nowrap; display: flex; align-items: center; gap: 8px;
+}
+.tab-btn:hover { color: var(--teal); background: var(--bg); }
+.tab-btn.active { color: var(--teal); border-bottom-color: var(--teal); }
+.tab-icon { font-size: 1.1rem; }
+
+/* ── CONTENT AREA ── */
+.content-area { padding: 50px 60px; max-width: 1100px; }
+
+.tab-pane { display: none; }
+.tab-pane.active { display: block; }
+
+/* ── SECTION HEADERS ── */
+.section-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 2rem; color: var(--navy); font-weight: 700;
+  margin-bottom: 8px;
+}
+.section-subtitle { color: var(--muted); margin-bottom: 40px; font-size: 1rem; }
+
+/* ── CARDS ── */
+.card {
+  background: var(--card); border-radius: 16px;
+  border: 1px solid var(--border);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  margin-bottom: 32px; overflow: hidden;
+}
+.card-header {
+  display: flex; align-items: center; gap: 16px;
+  padding: 24px 28px; border-bottom: 1px solid var(--border);
+}
+.card-icon {
+  width: 48px; height: 48px; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.4rem; flex-shrink: 0;
+}
+.card-header h3 {
+  font-family: 'Playfair Display', serif; font-size: 1.25rem;
+  color: var(--navy); font-weight: 700;
+}
+.card-header p { color: var(--muted); font-size: 0.85rem; margin-top: 2px; }
+.card-body { padding: 28px; }
+
+/* ── TOPIC COLORS ── */
+.topic-ddl .card-icon { background: #eff6ff; }
+.topic-select .card-icon { background: #f0fdf4; }
+.topic-where .card-icon { background: #fef3c7; }
+.topic-agg .card-icon { background: #fdf2f8; }
+.topic-null .card-icon { background: #fef2f2; }
+.topic-sub .card-icon { background: #f5f3ff; }
+.topic-set .card-icon { background: #ecfeff; }
+.topic-mod .card-icon { background: #fff7ed; }
+
+/* ── CODE BLOCKS ── */
+.code-wrap { position: relative; margin: 16px 0; }
+pre {
+  background: var(--code-bg); color: var(--code-text);
+  border-radius: 12px; padding: 20px 24px;
+  font-family: 'JetBrains Mono', monospace; font-size: 0.83rem;
+  overflow-x: auto; line-height: 1.65;
+}
+.copy-btn {
+  position: absolute; top: 10px; right: 10px;
+  background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.15);
+  color: rgba(255,255,255,0.7); padding: 4px 10px; border-radius: 6px;
+  cursor: pointer; font-size: 0.75rem; transition: all 0.2s;
+}
+.copy-btn:hover { background: rgba(255,255,255,0.2); color: #fff; }
+.copy-btn.copied { color: var(--mint); border-color: var(--mint); }
+
+.kw { color: #7dd3fc; font-weight: 600; }
+.str { color: #86efac; }
+.cmt { color: #64748b; font-style: italic; }
+.fn { color: #fcd34d; }
+.num-lit { color: #f9a8d4; }
+
+/* ── REAL LIFE BOXES ── */
+.reallife {
+  background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+  border: 1px solid #86efac; border-radius: 12px;
+  padding: 20px 24px; margin: 20px 0;
+}
+.reallife-label {
+  display: flex; align-items: center; gap: 8px;
+  font-weight: 600; color: #15803d; font-size: 0.82rem;
+  text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 10px;
+}
+.reallife p { color: #166534; font-size: 0.92rem; }
+
+.example-box {
+  background: #fffbeb; border: 1px solid #fde68a; border-radius: 12px;
+  padding: 20px 24px; margin: 20px 0;
+}
+.example-label {
+  display: flex; align-items: center; gap: 8px;
+  font-weight: 600; color: #92400e; font-size: 0.82rem;
+  text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 10px;
+}
+
+.tip-box {
+  background: #f5f3ff; border: 1px solid #c4b5fd; border-radius: 12px;
+  padding: 20px 24px; margin: 20px 0;
+}
+.tip-label {
+  font-weight: 600; color: #6d28d9; font-size: 0.82rem;
+  text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 10px;
+  display: flex; align-items: center; gap: 8px;
+}
+
+/* ── TABLE ── */
+.sql-table {
+  width: 100%; border-collapse: collapse; border-radius: 12px;
+  overflow: hidden; font-size: 0.88rem; margin: 16px 0;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+.sql-table th {
+  background: var(--navy); color: #fff;
+  padding: 12px 16px; text-align: left; font-weight: 600; font-size: 0.8rem;
+  text-transform: uppercase; letter-spacing: 0.04em;
+}
+.sql-table td { padding: 11px 16px; border-bottom: 1px solid var(--border); }
+.sql-table tr:last-child td { border-bottom: none; }
+.sql-table tr:nth-child(even) td { background: #f8fafc; }
+.sql-table tr:hover td { background: #eff6ff; }
+
+/* ── INLINE BADGE ── */
+.badge {
+  display: inline-flex; align-items: center;
+  padding: 2px 10px; border-radius: 100px; font-size: 0.75rem; font-weight: 600;
+}
+.badge-blue { background: #dbeafe; color: #1d4ed8; }
+.badge-green { background: #dcfce7; color: #15803d; }
+.badge-red { background: #fee2e2; color: #b91c1c; }
+.badge-gold { background: #fef3c7; color: #92400e; }
+
+/* ── GRID ── */
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 16px 0; }
+.grid-3 { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; margin: 16px 0; }
+
+.mini-card {
+  background: var(--bg); border: 1px solid var(--border);
+  border-radius: 12px; padding: 18px; text-align: center;
+}
+.mini-card .icon { font-size: 1.8rem; margin-bottom: 8px; }
+.mini-card h4 { font-weight: 600; color: var(--navy); font-size: 0.9rem; margin-bottom: 4px; }
+.mini-card p { color: var(--muted); font-size: 0.8rem; }
+
+/* ── TIMELINE ── */
+.timeline { position: relative; padding-left: 32px; }
+.timeline::before {
+  content: ''; position: absolute; left: 10px; top: 0; bottom: 0;
+  width: 2px; background: linear-gradient(to bottom, var(--cyan), var(--teal));
+}
+.tl-item { position: relative; margin-bottom: 28px; }
+.tl-item::before {
+  content: ''; position: absolute; left: -28px; top: 6px;
+  width: 12px; height: 12px; border-radius: 50%;
+  background: var(--cyan); border: 2px solid white;
+  box-shadow: 0 0 0 3px rgba(6,182,212,0.3);
+}
+.tl-year { font-size: 0.75rem; color: var(--cyan); font-weight: 700; letter-spacing: 0.05em; margin-bottom: 4px; }
+.tl-desc { color: var(--text); font-size: 0.9rem; }
+
+/* ── QUIZ SECTION ── */
+.quiz-card {
+  background: var(--card); border-radius: 20px;
+  border: 1px solid var(--border); margin-bottom: 28px;
+  overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+.quiz-header {
+  background: linear-gradient(135deg, var(--navy), var(--blue));
+  padding: 20px 28px; display: flex; align-items: center; gap: 16px;
+}
+.quiz-num {
+  width: 40px; height: 40px; background: var(--cyan); border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; color: var(--navy); font-size: 1rem; flex-shrink: 0;
+}
+.quiz-header h4 { color: #fff; font-size: 1rem; font-weight: 500; }
+.quiz-body { padding: 24px 28px; }
+.quiz-option {
+  display: flex; align-items: flex-start; gap: 12px;
+  padding: 12px 16px; border-radius: 10px; cursor: pointer;
+  transition: all 0.2s; margin-bottom: 10px;
+  border: 2px solid var(--border); background: var(--bg);
+}
+.quiz-option:hover { border-color: var(--teal); background: #f0fdf4; }
+.quiz-option.selected-correct { border-color: var(--mint); background: #f0fdf4; }
+.quiz-option.selected-wrong { border-color: var(--rose); background: #fff1f2; }
+.quiz-option.reveal-correct { border-color: var(--mint); background: #f0fdf4; }
+.opt-letter {
+  width: 28px; height: 28px; border-radius: 8px;
+  background: var(--border); display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: 0.8rem; color: var(--muted); flex-shrink: 0;
+  transition: all 0.2s;
+}
+.selected-correct .opt-letter { background: var(--mint); color: #fff; }
+.selected-wrong .opt-letter { background: var(--rose); color: #fff; }
+.reveal-correct .opt-letter { background: var(--mint); color: #fff; }
+.opt-text { font-size: 0.9rem; color: var(--text); padding-top: 3px; }
+.quiz-feedback {
+  display: none; margin-top: 16px; padding: 16px;
+  border-radius: 10px; font-size: 0.9rem;
+}
+.quiz-feedback.correct { background: #f0fdf4; border: 1px solid #86efac; color: #166534; display: block; }
+.quiz-feedback.wrong { background: #fff1f2; border: 1px solid #fecdd3; color: #9f1239; display: block; }
+.quiz-score {
+  text-align: center; padding: 40px;
+  font-family: 'Playfair Display', serif;
+}
+.quiz-score .big-num { font-size: 4rem; color: var(--teal); font-weight: 900; }
+
+/* ── QNA SECTION ── */
+.qna-item {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 16px; margin-bottom: 16px; overflow: hidden;
+}
+.qna-question {
+  padding: 20px 24px; cursor: pointer;
+  display: flex; justify-content: space-between; align-items: flex-start; gap: 16px;
+  transition: background 0.2s;
+}
+.qna-question:hover { background: var(--bg); }
+.qna-question h4 { font-weight: 600; color: var(--navy); font-size: 0.95rem; }
+.qna-q-badge { font-size: 0.75rem; color: var(--teal); font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; }
+.qna-chevron { color: var(--muted); transition: transform 0.3s; flex-shrink: 0; font-size: 1.2rem; margin-top: 2px; }
+.qna-item.open .qna-chevron { transform: rotate(180deg); }
+.qna-answer {
+  display: none; padding: 0 24px 24px;
+  color: var(--text); font-size: 0.92rem;
+}
+.qna-item.open .qna-answer { display: block; }
+.qna-answer pre { margin-top: 12px; }
+
+/* ── OPERATOR TABLE ── */
+.op-grid { display: grid; grid-template-columns: auto auto; gap: 0; border-radius: 12px; overflow: hidden; border: 1px solid var(--border); }
+.op-cell { padding: 12px 18px; font-size: 0.88rem; border-bottom: 1px solid var(--border); }
+.op-cell:last-child, .op-cell:nth-last-child(2) { border-bottom: none; }
+.op-cell.header { background: var(--navy); color: #fff; font-weight: 700; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.04em; }
+.op-cell:nth-child(4n+3), .op-cell:nth-child(4n+4) { background: #f8fafc; }
+code.inline {
+  background: var(--code-bg); color: var(--cyan);
+  padding: 2px 8px; border-radius: 5px; font-family: 'JetBrains Mono', monospace;
+  font-size: 0.82rem;
+}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 900px) {
+  #sidebar { transform: translateX(-260px); }
+  #sidebar.open { transform: translateX(0); }
+  #main { margin-left: 0; }
+  .content-area { padding: 30px 20px; }
+  .hero { padding: 50px 24px; }
+  .grid-2, .grid-3 { grid-template-columns: 1fr; }
+  .tabs-bar { overflow-x: auto; }
+  .hamburger { display: flex; }
+}
+.hamburger {
+  display: none; position: fixed; top: 16px; left: 16px; z-index: 200;
+  background: var(--navy); border: none; border-radius: 10px;
+  width: 44px; height: 44px; align-items: center; justify-content: center;
+  cursor: pointer; flex-direction: column; gap: 5px;
+}
+.hamburger span { width: 22px; height: 2px; background: #fff; border-radius: 1px; }
+.overlay {
+  display: none; position: fixed; inset: 0;
+  background: rgba(0,0,0,0.5); z-index: 90;
+}
+.overlay.open { display: block; }
+
+/* ── PROGRESS BAR ── */
+.progress-bar-wrap { background: var(--border); border-radius: 100px; height: 6px; margin: 8px 0; }
+.progress-bar { height: 6px; border-radius: 100px; background: linear-gradient(to right, var(--cyan), var(--teal)); transition: width 0.5s; }
+
+/* ── CHIP ── */
+.chip {
+  display: inline-block; padding: 4px 12px; border-radius: 100px;
+  font-size: 0.78rem; font-weight: 600; margin: 3px;
+}
+
+/* ── ANCHOR OFFSETS ── */
+section[id] { scroll-margin-top: 80px; }
+</style>
+</head>
+<body>
+
+<!-- hamburger -->
+<button class="hamburger" id="hamburger">
+  <span></span><span></span><span></span>
+</button>
+<div class="overlay" id="overlay"></div>
+
+<!-- ─────────────── SIDEBAR ─────────────── -->
+<aside id="sidebar">
+  <div class="sidebar-header">
+    <h2>Chapter 3</h2>
+    <p>Introduction to SQL</p>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-section-label">Sections</div>
+    <a class="nav-item" href="#" onclick="switchTab('book');scrollTo('s-overview');return false;"><span class="nav-dot"></span>Overview & History</a>
+    <a class="nav-item" href="#" onclick="switchTab('book');scrollTo('s-ddl');return false;"><span class="nav-dot"></span>Data Definition (DDL)</a>
+    <a class="nav-item" href="#" onclick="switchTab('book');scrollTo('s-types');return false;"><span class="nav-dot"></span>Domain Types</a>
+    <a class="nav-item" href="#" onclick="switchTab('book');scrollTo('s-create');return false;"><span class="nav-dot"></span>Create Table</a>
+    <a class="nav-item" href="#" onclick="switchTab('book');scrollTo('s-select');return false;"><span class="nav-dot"></span>SELECT Clause</a>
+    <a class="nav-item" href="#" onclick="switchTab('book');scrollTo('s-where');return false;"><span class="nav-dot"></span>WHERE Clause</a>
+    <a class="nav-item" href="#" onclick="switchTab('book');scrollTo('s-from');return false;"><span class="nav-dot"></span>FROM & Joins</a>
+    <a class="nav-item" href="#" onclick="switchTab('book');scrollTo('s-string');return false;"><span class="nav-dot"></span>String Operations</a>
+    <a class="nav-item" href="#" onclick="switchTab('book');scrollTo('s-set');return false;"><span class="nav-dot"></span>Set Operations</a>
+    <a class="nav-item" href="#" onclick="switchTab('book');scrollTo('s-null');return false;"><span class="nav-dot"></span>Null Values</a>
+    <a class="nav-item" href="#" onclick="switchTab('book');scrollTo('s-agg');return false;"><span class="nav-dot"></span>Aggregate Functions</a>
+    <a class="nav-item" href="#" onclick="switchTab('book');scrollTo('s-sub');return false;"><span class="nav-dot"></span>Subqueries</a>
+    <a class="nav-item" href="#" onclick="switchTab('book');scrollTo('s-mod');return false;"><span class="nav-dot"></span>Modifying the DB</a>
+    <div class="nav-section-label" style="margin-top:8px">Practice</div>
+    <a class="nav-item" href="#" onclick="switchTab('quiz');return false;"><span class="nav-dot"></span>Quiz</a>
+    <a class="nav-item" href="#" onclick="switchTab('qna');return false;"><span class="nav-dot"></span>Q &amp; A</a>
+  </nav>
+</aside>
+
+<!-- ─────────────── MAIN ─────────────── -->
+<div id="main">
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-badge">📘 Database Systems · Chapter 3</div>
+    <h1>Introduction to <span>SQL</span></h1>
+    <p>Master the Structured Query Language — from basic queries to complex subqueries — with real-life examples and clear explanations.</p>
+    <div class="hero-stats">
+      <div class="hero-stat"><div class="num">13</div><div class="lbl">Topics</div></div>
+      <div class="hero-stat"><div class="num">40+</div><div class="lbl">Code Examples</div></div>
+      <div class="hero-stat"><div class="num">20</div><div class="lbl">Quiz Questions</div></div>
+      <div class="hero-stat"><div class="num">15</div><div class="lbl">Q&amp;A Pairs</div></div>
+    </div>
+  </div>
+
+  <!-- TABS -->
+  <div class="tabs-bar">
+    <button class="tab-btn active" onclick="switchTab('book')"><span class="tab-icon">📖</span> Chapter Content</button>
+    <button class="tab-btn" onclick="switchTab('quiz')"><span class="tab-icon">🧠</span> Quiz</button>
+    <button class="tab-btn" onclick="switchTab('qna')"><span class="tab-icon">💬</span> Q &amp; A</button>
+  </div>
+
+  <!-- ═══════════ BOOK TAB ═══════════ -->
+  <div id="tab-book" class="tab-pane active">
+  <div class="content-area">
+
+    <!-- OVERVIEW -->
+    <section id="s-overview">
+    <div class="section-title">What is SQL?</div>
+    <div class="section-subtitle">The universal language for talking to databases</div>
+
+    <div class="card">
+      <div class="card-header topic-ddl">
+        <div class="card-icon">🌍</div>
+        <div><h3>Overview of SQL</h3><p>Why SQL matters and where it came from</p></div>
+      </div>
+      <div class="card-body">
+        <p>SQL (Structured Query Language) is the standard language used to <strong>create, read, update, and delete</strong> data in relational databases. Think of a database as a massive digital filing cabinet, and SQL is the language you use to ask it for exactly what you need.</p>
+
+        <div class="reallife">
+          <div class="reallife-label">🌎 Real Life Analogy</div>
+          <p>Imagine a giant library with millions of books. SQL is like the <strong>librarian's request form</strong> — you write exactly what book you want, from which shelf, sorted in which order, and the librarian (database) finds it for you instantly. Companies like <strong>Netflix, Amazon, and Google</strong> all use SQL databases behind the scenes every second.</p>
+        </div>
+
+        <div class="grid-3">
+          <div class="mini-card">
+            <div class="icon">🏦</div>
+            <h4>Banking</h4>
+            <p>Track every transaction and balance in real time</p>
+          </div>
+          <div class="mini-card">
+            <div class="icon">🛒</div>
+            <h4>E-Commerce</h4>
+            <p>Amazon uses SQL to store 350M+ product listings</p>
+          </div>
+          <div class="mini-card">
+            <div class="icon">🏥</div>
+            <h4>Healthcare</h4>
+            <p>Patient records, prescriptions, appointment scheduling</p>
+          </div>
+        </div>
+
+        <h4 style="margin:24px 0 12px; color:var(--navy)">History of SQL</h4>
+        <div class="timeline">
+          <div class="tl-item"><div class="tl-year">1970s</div><div class="tl-desc">IBM developed "SEQUEL" (Structured English Query Language) as part of the <strong>System R</strong> research project at IBM San Jose Research Lab.</div></div>
+          <div class="tl-item"><div class="tl-year">1986</div><div class="tl-desc"><strong>SQL-86</strong>: ANSI and ISO officially standardize SQL, making it a recognized international standard.</div></div>
+          <div class="tl-item"><div class="tl-year">1992</div><div class="tl-desc"><strong>SQL-92</strong>: Major upgrade — the version most databases still base themselves on today.</div></div>
+          <div class="tl-item"><div class="tl-year">1999</div><div class="tl-desc"><strong>SQL:1999</strong> — Added object-oriented features. Name changed from "SQL-99" to be Y2K compliant!</div></div>
+          <div class="tl-item"><div class="tl-year">Today</div><div class="tl-desc">MySQL, PostgreSQL, Oracle, SQL Server, MariaDB — all speak SQL. It's the most used query language in the world.</div></div>
+        </div>
+
+        <h4 style="margin:24px 0 12px; color:var(--navy)">Six Parts of SQL</h4>
+        <table class="sql-table">
+          <tr><th>Part</th><th>Full Name</th><th>What it Does</th></tr>
+          <tr><td><span class="badge badge-blue">DML</span></td><td>Data Manipulation Language</td><td>SELECT, INSERT, UPDATE, DELETE data</td></tr>
+          <tr><td><span class="badge badge-green">DDL</span></td><td>Data Definition Language</td><td>CREATE, DROP, ALTER tables and schemas</td></tr>
+          <tr><td><span class="badge badge-gold">Integrity</span></td><td>Constraints</td><td>Enforce rules like primary keys, not null</td></tr>
+          <tr><td><span class="badge badge-blue">View</span></td><td>View Definition</td><td>Create virtual tables from queries</td></tr>
+          <tr><td><span class="badge badge-green">Auth</span></td><td>Authorization</td><td>Control who can access what</td></tr>
+          <tr><td><span class="badge badge-red">Embedded</span></td><td>Embedded SQL</td><td>Use SQL inside Python, Java, C, etc.</td></tr>
+        </table>
+      </div>
+    </div>
+    </section>
+
+    <!-- DDL -->
+    <section id="s-ddl">
+    <div class="section-title" style="margin-top:20px">Data Definition Language</div>
+    <div class="section-subtitle">Designing the structure of your database</div>
+
+    <div class="card topic-ddl">
+      <div class="card-header">
+        <div class="card-icon">🏗️</div>
+        <div><h3>DDL — Building the Blueprint</h3><p>Define what your data looks like before storing it</p></div>
+      </div>
+      <div class="card-body">
+        <p>DDL is like designing the <strong>blueprint of a building</strong> before construction begins. You decide how many rooms (tables), what goes in each room (columns), and the rules for each room (constraints).</p>
+
+        <div class="reallife">
+          <div class="reallife-label">🌎 Real Life Analogy</div>
+          <p>Think of DDL like designing a <strong>Google Form</strong>. Before anyone fills it out, you decide: What questions exist? What type of answer is allowed (text, number, date)? Which questions are required? That's exactly what DDL does for a database table.</p>
+        </div>
+
+        <p style="margin-top:16px">DDL lets you specify:</p>
+        <ul style="margin:12px 0 0 20px; display:flex; flex-direction:column; gap:6px; color:var(--text)">
+          <li>The <strong>schema</strong> — what columns each table has</li>
+          <li>The <strong>data type</strong> of each column (text, number, date…)</li>
+          <li><strong>Integrity constraints</strong> — rules the data must follow</li>
+          <li><strong>Indexes</strong> for fast search</li>
+          <li><strong>Security</strong> — who can see and edit what</li>
+        </ul>
+      </div>
+    </div>
+    </section>
+
+    <!-- DOMAIN TYPES -->
+    <section id="s-types">
+    <div class="card">
+      <div class="card-header topic-select">
+        <div class="card-icon">🔢</div>
+        <div><h3>Domain Types in SQL</h3><p>Every column needs a data type — pick the right container</p></div>
+      </div>
+      <div class="card-body">
+        <div class="reallife">
+          <div class="reallife-label">🌎 Real Life Analogy</div>
+          <p>Data types are like <strong>different kinds of storage containers</strong>. You'd store eggs in a carton (fixed size), water in a flexible bottle (variable), and temperature as a decimal thermometer reading. SQL is the same — pick the right container for your data.</p>
+        </div>
+        <table class="sql-table" style="margin-top:16px">
+          <tr><th>Type</th><th>Example</th><th>Real Life Use</th></tr>
+          <tr><td><code class="inline">char(n)</code></td><td><code class="inline">char(2)</code> → "KR"</td><td>Country codes, fixed ID formats</td></tr>
+          <tr><td><code class="inline">varchar(n)</code></td><td><code class="inline">varchar(50)</code> → "Alice Smith"</td><td>Names, emails, product titles</td></tr>
+          <tr><td><code class="inline">int</code></td><td>42, -7, 1000</td><td>Age, quantity, year</td></tr>
+          <tr><td><code class="inline">smallint</code></td><td>0–32767</td><td>Small counts, ratings (1–5)</td></tr>
+          <tr><td><code class="inline">numeric(p,d)</code></td><td><code class="inline">numeric(8,2)</code> → 99999.99</td><td>Prices, salaries, GPS coordinates</td></tr>
+          <tr><td><code class="inline">float(n)</code></td><td>3.14159265</td><td>Scientific measurements</td></tr>
+          <tr><td><code class="inline">real</code></td><td>1.7E+308</td><td>Very large/precise numbers</td></tr>
+        </table>
+      </div>
+    </div>
+    </section>
+
+    <!-- CREATE TABLE -->
+    <section id="s-create">
+    <div class="card">
+      <div class="card-header topic-ddl">
+        <div class="card-icon">📋</div>
+        <div><h3>CREATE TABLE & Constraints</h3><p>Building tables and enforcing data rules</p></div>
+      </div>
+      <div class="card-body">
+        <div class="reallife">
+          <div class="reallife-label">🌎 Real Life Analogy</div>
+          <p>Creating a table is like designing a <strong>spreadsheet template</strong> for your company. You name the columns (ID, Name, Salary), set what type of data goes in each, and add rules: "ID must be unique," "Name can't be blank," "Department must exist in our department list."</p>
+        </div>
+
+        <div class="example-box">
+          <div class="example-label">💡 Example: Create an Instructor Table</div>
+          <div class="code-wrap">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><span class="kw">CREATE TABLE</span> instructor (
+    ID          <span class="fn">char</span>(<span class="num-lit">5</span>),
+    name        <span class="fn">varchar</span>(<span class="num-lit">20</span>) <span class="kw">NOT NULL</span>,
+    dept_name   <span class="fn">varchar</span>(<span class="num-lit">20</span>),
+    salary      <span class="fn">numeric</span>(<span class="num-lit">8</span>,<span class="num-lit">2</span>),
+    <span class="kw">PRIMARY KEY</span> (ID),
+    <span class="kw">FOREIGN KEY</span> (dept_name) <span class="kw">REFERENCES</span> department
+);</pre>
+          </div>
+        </div>
+
+        <h4 style="margin:20px 0 10px; color:var(--navy)">The Three Key Constraints</h4>
+        <div class="grid-3">
+          <div class="mini-card">
+            <div class="icon">🔑</div>
+            <h4>PRIMARY KEY</h4>
+            <p>Uniquely identifies each row — like your national ID number. No duplicates, never null.</p>
+          </div>
+          <div class="mini-card">
+            <div class="icon">🔗</div>
+            <h4>FOREIGN KEY</h4>
+            <p>Links to another table's primary key — like a passport referencing your country's records.</p>
+          </div>
+          <div class="mini-card">
+            <div class="icon">🚫</div>
+            <h4>NOT NULL</h4>
+            <p>The field must always have a value — like a form field marked as "Required".</p>
+          </div>
+        </div>
+
+        <h4 style="margin:24px 0 12px; color:var(--navy)">Updating Table Structure</h4>
+        <div class="code-wrap">
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><span class="cmt">-- Add a new column</span>
+<span class="kw">ALTER TABLE</span> instructor <span class="kw">ADD</span> email <span class="fn">varchar</span>(<span class="num-lit">50</span>);
+
+<span class="cmt">-- Remove a column</span>
+<span class="kw">ALTER TABLE</span> instructor <span class="kw">DROP</span> email;
+
+<span class="cmt">-- Delete ALL data from a table (but keep the table)</span>
+<span class="kw">DELETE FROM</span> student;
+
+<span class="cmt">-- Delete the table entirely</span>
+<span class="kw">DROP TABLE</span> instructor;</pre>
+        </div>
+      </div>
+    </div>
+    </section>
+
+    <!-- SELECT -->
+    <section id="s-select">
+    <div class="section-title" style="margin-top:20px">Basic Query Structure</div>
+    <div class="section-subtitle">Ask the database for exactly what you need</div>
+
+    <div class="card topic-select">
+      <div class="card-header">
+        <div class="card-icon">🔍</div>
+        <div><h3>The SELECT Clause</h3><p>Choosing which columns to display in results</p></div>
+      </div>
+      <div class="card-body">
+        <div class="reallife">
+          <div class="reallife-label">🌎 Real Life Analogy</div>
+          <p>SELECT is like choosing <strong>which columns to show in a spreadsheet</strong>. Imagine an Excel sheet with 20 columns about employees. You only want to see "Name" and "Salary" — you tell Excel to show just those two. That's SELECT.</p>
+        </div>
+
+        <div class="grid-2">
+          <div>
+            <h4 style="margin-bottom:10px; color:var(--navy)">Basic Structure</h4>
+<pre><span class="kw">SELECT</span> A1, A2, ..., An
+<span class="kw">FROM</span>   r1, r2, ..., rm
+<span class="kw">WHERE</span>  condition;</pre>
+          </div>
+          <div>
+            <h4 style="margin-bottom:10px; color:var(--navy)">Get all instructors' names</h4>
+<pre><span class="kw">SELECT</span> name
+<span class="kw">FROM</span>   instructor;</pre>
+          </div>
+        </div>
+
+        <div class="tip-box">
+          <div class="tip-label">💡 SQL is Case-Insensitive</div>
+          <p><code class="inline">select</code> = <code class="inline">SELECT</code> = <code class="inline">Select</code>. Convention is to write keywords in UPPERCASE for readability.</p>
+        </div>
+
+        <h4 style="margin:20px 0 10px; color:var(--navy)">Removing Duplicates with DISTINCT</h4>
+        <div class="reallife">
+          <div class="reallife-label">🌎 Real Life Analogy</div>
+          <p>Imagine asking "Which cities do our employees live in?" You don't want "New York" listed 500 times — just once. <code class="inline">DISTINCT</code> removes duplicates, like a unique list filter.</p>
+        </div>
+        <div class="code-wrap">
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><span class="cmt">-- Without DISTINCT: shows "Comp. Sci." once per instructor</span>
+<span class="kw">SELECT</span> dept_name <span class="kw">FROM</span> instructor;
+
+<span class="cmt">-- With DISTINCT: shows each department name only once</span>
+<span class="kw">SELECT DISTINCT</span> dept_name <span class="kw">FROM</span> instructor;
+
+<span class="cmt">-- ALL keyword (default) keeps duplicates</span>
+<span class="kw">SELECT ALL</span> dept_name <span class="kw">FROM</span> instructor;
+
+<span class="cmt">-- * means "all columns"</span>
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> instructor;
+
+<span class="cmt">-- Arithmetic: Show monthly salary</span>
+<span class="kw">SELECT</span> ID, name, salary/<span class="num-lit">12</span> <span class="kw">AS</span> monthly_salary
+<span class="kw">FROM</span>   instructor;</pre>
+        </div>
+      </div>
+    </div>
+    </section>
+
+    <!-- WHERE -->
+    <section id="s-where">
+    <div class="card topic-where">
+      <div class="card-header">
+        <div class="card-icon">🎯</div>
+        <div><h3>The WHERE Clause</h3><p>Filtering rows to find exactly what you need</p></div>
+      </div>
+      <div class="card-body">
+        <div class="reallife">
+          <div class="reallife-label">🌎 Real Life Analogy</div>
+          <p>WHERE is like the <strong>search filter on a shopping site</strong>. On Amazon, you filter: "Show me only headphones, under $50, with 4+ stars." Each filter condition narrows the results — that's exactly what WHERE does with your data.</p>
+        </div>
+
+        <div class="code-wrap">
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><span class="cmt">-- Find instructors in Computer Science</span>
+<span class="kw">SELECT</span> name
+<span class="kw">FROM</span>   instructor
+<span class="kw">WHERE</span>  dept_name = <span class="str">'Comp. Sci.'</span>;
+
+<span class="cmt">-- Multiple conditions: CS instructors earning > $70,000</span>
+<span class="kw">SELECT</span> name
+<span class="kw">FROM</span>   instructor
+<span class="kw">WHERE</span>  dept_name = <span class="str">'Comp. Sci.'</span> <span class="kw">AND</span> salary > <span class="num-lit">70000</span>;
+
+<span class="cmt">-- BETWEEN: salary in a range (inclusive)</span>
+<span class="kw">SELECT</span> name
+<span class="kw">FROM</span>   instructor
+<span class="kw">WHERE</span>  salary <span class="kw">BETWEEN</span> <span class="num-lit">90000</span> <span class="kw">AND</span> <span class="num-lit">100000</span>;
+
+<span class="cmt">-- ORDER BY: sort results alphabetically</span>
+<span class="kw">SELECT DISTINCT</span> name
+<span class="kw">FROM</span>   instructor
+<span class="kw">ORDER BY</span> name <span class="kw">ASC</span>;  <span class="cmt">-- or DESC for reverse</span></pre>
+        </div>
+
+        <h4 style="margin:20px 0 10px; color:var(--navy)">Comparison Operators</h4>
+        <table class="sql-table">
+          <tr><th>Operator</th><th>Meaning</th><th>Example</th></tr>
+          <tr><td><code class="inline">=</code></td><td>Equals</td><td><code class="inline">salary = 50000</code></td></tr>
+          <tr><td><code class="inline">&lt;&gt;</code></td><td>Not equal</td><td><code class="inline">dept &lt;&gt; 'History'</code></td></tr>
+          <tr><td><code class="inline">&lt; &gt; &lt;= &gt;=</code></td><td>Less / Greater</td><td><code class="inline">salary &gt; 70000</code></td></tr>
+          <tr><td><code class="inline">BETWEEN</code></td><td>In a range (inclusive)</td><td><code class="inline">salary BETWEEN 50000 AND 80000</code></td></tr>
+          <tr><td><code class="inline">AND OR NOT</code></td><td>Logical connectors</td><td><code class="inline">A = 1 AND B &lt; 10</code></td></tr>
+        </table>
+      </div>
+    </div>
+    </section>
+
+    <!-- FROM & JOINS -->
+    <section id="s-from">
+    <div class="card topic-select">
+      <div class="card-header">
+        <div class="card-icon">🔗</div>
+        <div><h3>FROM Clause, Joins & Rename</h3><p>Combining data from multiple tables</p></div>
+      </div>
+      <div class="card-body">
+        <div class="reallife">
+          <div class="reallife-label">🌎 Real Life Analogy</div>
+          <p>The FROM clause with a JOIN is like <strong>matching two spreadsheets together</strong>. Table A has employee details. Table B has which courses they teach. You want to combine them: "Show me teacher names AND the courses they teach." That requires linking both sheets by a common column (ID).</p>
+        </div>
+
+        <div class="code-wrap">
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><span class="cmt">-- Join instructor and teaches tables on matching ID</span>
+<span class="kw">SELECT</span> name, course_id
+<span class="kw">FROM</span>   instructor, teaches
+<span class="kw">WHERE</span>  instructor.ID = teaches.ID;
+
+<span class="cmt">-- Only Art department instructors</span>
+<span class="kw">SELECT</span> name, course_id
+<span class="kw">FROM</span>   instructor, teaches
+<span class="kw">WHERE</span>  instructor.ID = teaches.ID
+  <span class="kw">AND</span>  instructor.dept_name = <span class="str">'Art'</span>;</pre>
+        </div>
+
+        <h4 style="margin:20px 0 10px; color:var(--navy)">Rename with AS (Aliases)</h4>
+        <div class="reallife">
+          <div class="reallife-label">🌎 Real Life Analogy</div>
+          <p>AS is like giving a <strong>nickname</strong>. In a meeting, instead of saying "the database administrator of the southern regional office," you say "Dave." Same concept — <code class="inline">instructor AS T</code> means "call this table T for short."</p>
+        </div>
+        <div class="code-wrap">
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><span class="cmt">-- Find instructors earning more than any Biology instructor</span>
+<span class="kw">SELECT DISTINCT</span> T.name
+<span class="kw">FROM</span>   instructor <span class="kw">AS</span> T, instructor <span class="kw">AS</span> S
+<span class="kw">WHERE</span>  T.salary > S.salary
+  <span class="kw">AND</span>  S.dept_name = <span class="str">'Comp. Sci.'</span>;</pre>
+        </div>
+        <div class="tip-box">
+          <div class="tip-label">🧠 Self Join</div>
+          <p>Notice we use the <em>same table twice</em> with different aliases. This is called a <strong>self-join</strong> — comparing rows within the same table. Useful for hierarchies like employee → supervisor relationships.</p>
+        </div>
+      </div>
+    </div>
+    </section>
+
+    <!-- STRING -->
+    <section id="s-string">
+    <div class="card topic-where">
+      <div class="card-header">
+        <div class="card-icon">🔤</div>
+        <div><h3>String Operations</h3><p>Pattern matching and text manipulation</p></div>
+      </div>
+      <div class="card-body">
+        <div class="reallife">
+          <div class="reallife-label">🌎 Real Life Analogy</div>
+          <p>String operations are like a <strong>smart search box</strong>. In Google, typing "intro*" might match "Introduction," "Introductory," "Intro to Physics." SQL's LIKE operator does the same inside your database.</p>
+        </div>
+
+        <h4 style="margin-bottom:12px; color:var(--navy)">Wildcards in LIKE</h4>
+        <div class="grid-2">
+          <div class="mini-card" style="text-align:left; padding:20px">
+            <h4 style="font-size:1.4rem; color:var(--teal); margin-bottom:8px">%</h4>
+            <p>Matches <strong>any sequence</strong> of characters (including empty)</p>
+            <p style="margin-top:8px; font-size:0.8rem; color:var(--muted)"><code class="inline">'%dar%'</code> → matches "cedar", "Goldardson", "darko"</p>
+          </div>
+          <div class="mini-card" style="text-align:left; padding:20px">
+            <h4 style="font-size:1.4rem; color:var(--teal); margin-bottom:8px">_</h4>
+            <p>Matches <strong>exactly one</strong> character</p>
+            <p style="margin-top:8px; font-size:0.8rem; color:var(--muted)"><code class="inline">'_ _ _'</code> → matches exactly 3-character strings like "SQL", "ABC"</p>
+          </div>
+        </div>
+
+        <div class="code-wrap" style="margin-top:16px">
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><span class="cmt">-- Find names containing "dar"</span>
+<span class="kw">SELECT</span> name <span class="kw">FROM</span> instructor <span class="kw">WHERE</span> name <span class="kw">LIKE</span> <span class="str">'%dar%'</span>;
+
+<span class="cmt">-- Names starting with "Intro"</span>
+<span class="kw">WHERE</span> title <span class="kw">LIKE</span> <span class="str">'Intro%'</span>
+
+<span class="cmt">-- Exactly 3 characters</span>
+<span class="kw">WHERE</span> code <span class="kw">LIKE</span> <span class="str">'_ _ _'</span>
+
+<span class="cmt">-- Escape: search for literal 100% (use backslash)</span>
+<span class="kw">WHERE</span> discount <span class="kw">LIKE</span> <span class="str">'100\%'</span> <span class="kw">ESCAPE</span> <span class="str">'\'</span>
+
+<span class="cmt">-- String functions</span>
+<span class="fn">UPPER</span>(<span class="str">'hello'</span>)         <span class="cmt">-- → 'HELLO'</span>
+<span class="fn">LOWER</span>(<span class="str">'HELLO'</span>)         <span class="cmt">-- → 'hello'</span>
+<span class="fn">LENGTH</span>(<span class="str">'SQL'</span>)          <span class="cmt">-- → 3</span>
+<span class="fn">SUBSTRING</span>(<span class="str">'Database'</span>, <span class="num-lit">1</span>, <span class="num-lit">4</span>)  <span class="cmt">-- → 'Data'</span>
+<span class="fn">CONCAT</span>(<span class="str">'Hello'</span>, <span class="str">' World'</span>)    <span class="cmt">-- → 'Hello World'</span></pre>
+        </div>
+      </div>
+    </div>
+    </section>
+
+    <!-- SET OPERATIONS -->
+    <section id="s-set">
+    <div class="card topic-set">
+      <div class="card-header">
+        <div class="card-icon">🔵</div>
+        <div><h3>Set Operations</h3><p>UNION, INTERSECT, EXCEPT — combining query results</p></div>
+      </div>
+      <div class="card-body">
+        <div class="reallife">
+          <div class="reallife-label">🌎 Real Life Analogy</div>
+          <p>Set operations are like Venn diagrams! Imagine two lists: <strong>List A</strong> = students who passed Math. <strong>List B</strong> = students who passed Science. UNION = everyone who passed either. INTERSECT = students who passed both. EXCEPT = students who passed Math but NOT Science.</p>
+        </div>
+
+        <div class="grid-3">
+          <div class="mini-card">
+            <div class="icon">🔵🟡</div>
+            <h4>UNION</h4>
+            <p>Combines results from both queries. Removes duplicates automatically.</p>
+          </div>
+          <div class="mini-card">
+            <div class="icon">🟢</div>
+            <h4>INTERSECT</h4>
+            <p>Only rows that appear in BOTH queries (the overlap).</p>
+          </div>
+          <div class="mini-card">
+            <div class="icon">🔴</div>
+            <h4>EXCEPT</h4>
+            <p>Rows in the first query that are NOT in the second.</p>
+          </div>
+        </div>
+
+        <div class="code-wrap" style="margin-top:20px">
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><span class="cmt">-- UNION: courses in Fall 2017 OR Spring 2018</span>
+(<span class="kw">SELECT</span> course_id <span class="kw">FROM</span> section <span class="kw">WHERE</span> sem = <span class="str">'Fall'</span>   <span class="kw">AND</span> year = <span class="num-lit">2017</span>)
+<span class="kw">UNION</span>
+(<span class="kw">SELECT</span> course_id <span class="kw">FROM</span> section <span class="kw">WHERE</span> sem = <span class="str">'Spring'</span> <span class="kw">AND</span> year = <span class="num-lit">2018</span>);
+
+<span class="cmt">-- INTERSECT: courses offered in BOTH semesters</span>
+(<span class="kw">SELECT</span> course_id <span class="kw">FROM</span> section <span class="kw">WHERE</span> sem = <span class="str">'Fall'</span>   <span class="kw">AND</span> year = <span class="num-lit">2017</span>)
+<span class="kw">INTERSECT</span>
+(<span class="kw">SELECT</span> course_id <span class="kw">FROM</span> section <span class="kw">WHERE</span> sem = <span class="str">'Spring'</span> <span class="kw">AND</span> year = <span class="num-lit">2018</span>);
+
+<span class="cmt">-- EXCEPT: Fall 2017 but NOT Spring 2018</span>
+(<span class="kw">SELECT</span> course_id <span class="kw">FROM</span> section <span class="kw">WHERE</span> sem = <span class="str">'Fall'</span>   <span class="kw">AND</span> year = <span class="num-lit">2017</span>)
+<span class="kw">EXCEPT</span>
+(<span class="kw">SELECT</span> course_id <span class="kw">FROM</span> section <span class="kw">WHERE</span> sem = <span class="str">'Spring'</span> <span class="kw">AND</span> year = <span class="num-lit">2018</span>);
+
+<span class="cmt">-- To KEEP duplicates, add ALL:</span>
+<span class="kw">UNION ALL</span> / <span class="kw">INTERSECT ALL</span> / <span class="kw">EXCEPT ALL</span></pre>
+        </div>
+      </div>
+    </div>
+    </section>
+
+    <!-- NULL -->
+    <section id="s-null">
+    <div class="card topic-null">
+      <div class="card-header">
+        <div class="card-icon">❓</div>
+        <div><h3>Null Values</h3><p>The mystery of "unknown" data</p></div>
+      </div>
+      <div class="card-body">
+        <div class="reallife">
+          <div class="reallife-label">🌎 Real Life Analogy</div>
+          <p>NULL is like a <strong>blank field on a form</strong>. If a job application asks "Middle name" and someone leaves it blank — that's NULL. It doesn't mean their middle name is "" (empty) — it means we simply <em>don't know</em> or it <em>doesn't exist</em>. NULL ≠ 0, NULL ≠ "".</p>
+        </div>
+
+        <div class="grid-2">
+          <div>
+            <h4 style="margin-bottom:10px; color:var(--navy)">Key Rules</h4>
+            <ul style="margin-left:20px; display:flex; flex-direction:column; gap:8px; font-size:0.9rem">
+              <li><strong>Any arithmetic with NULL = NULL</strong><br><code class="inline">5 + NULL → NULL</code></li>
+              <li><strong>Any comparison with NULL = UNKNOWN</strong><br><code class="inline">NULL = NULL → UNKNOWN</code></li>
+              <li>Use <code class="inline">IS NULL</code> / <code class="inline">IS NOT NULL</code> to check</li>
+            </ul>
+          </div>
+          <div>
+            <h4 style="margin-bottom:10px; color:var(--navy)">Boolean Logic with NULL</h4>
+            <table class="sql-table">
+              <tr><th>Expression</th><th>Result</th></tr>
+              <tr><td>TRUE AND UNKNOWN</td><td>UNKNOWN</td></tr>
+              <tr><td>FALSE AND UNKNOWN</td><td>FALSE</td></tr>
+              <tr><td>TRUE OR UNKNOWN</td><td>TRUE</td></tr>
+              <tr><td>FALSE OR UNKNOWN</td><td>UNKNOWN</td></tr>
+            </table>
+          </div>
+        </div>
+
+        <div class="code-wrap" style="margin-top:16px">
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><span class="cmt">-- Find instructors with no salary entered</span>
+<span class="kw">SELECT</span> name
+<span class="kw">FROM</span>   instructor
+<span class="kw">WHERE</span>  salary <span class="kw">IS NULL</span>;
+
+<span class="cmt">-- Find instructors who DO have a salary</span>
+<span class="kw">SELECT</span> name
+<span class="kw">FROM</span>   instructor
+<span class="kw">WHERE</span>  salary <span class="kw">IS NOT NULL</span>;</pre>
+        </div>
+      </div>
+    </div>
+    </section>
+
+    <!-- AGGREGATE -->
+    <section id="s-agg">
+    <div class="card topic-agg">
+      <div class="card-header">
+        <div class="card-icon">📊</div>
+        <div><h3>Aggregate Functions</h3><p>Computing summary statistics on your data</p></div>
+      </div>
+      <div class="card-body">
+        <div class="reallife">
+          <div class="reallife-label">🌎 Real Life Analogy</div>
+          <p>Aggregate functions are like the <strong>summary row at the bottom of a spreadsheet</strong>. Excel's SUM(), AVERAGE(), MAX(), MIN(), COUNT() — SQL has exact equivalents. Your HR team might ask: "What's the average salary per department? Who earns the most? How many employees do we have?"</p>
+        </div>
+
+        <div class="grid-3" style="margin:16px 0">
+          <div class="mini-card">
+            <div class="icon">➕</div>
+            <h4>SUM()</h4>
+            <p>Total of all values in a column</p>
+          </div>
+          <div class="mini-card">
+            <div class="icon">📈</div>
+            <h4>AVG()</h4>
+            <p>Average (mean) of all values</p>
+          </div>
+          <div class="mini-card">
+            <div class="icon">⬆️</div>
+            <h4>MAX()</h4>
+            <p>Largest value in the column</p>
+          </div>
+          <div class="mini-card">
+            <div class="icon">⬇️</div>
+            <h4>MIN()</h4>
+            <p>Smallest value in the column</p>
+          </div>
+          <div class="mini-card">
+            <div class="icon">🔢</div>
+            <h4>COUNT()</h4>
+            <p>Number of rows (or non-null values)</p>
+          </div>
+        </div>
+
+        <div class="code-wrap">
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><span class="cmt">-- Average salary in Computer Science</span>
+<span class="kw">SELECT</span> <span class="fn">AVG</span>(salary)
+<span class="kw">FROM</span>   instructor
+<span class="kw">WHERE</span>  dept_name = <span class="str">'Comp. Sci.'</span>;
+
+<span class="cmt">-- Count distinct teachers in Spring 2018</span>
+<span class="kw">SELECT</span> <span class="fn">COUNT</span>(<span class="kw">DISTINCT</span> ID)
+<span class="kw">FROM</span>   teaches
+<span class="kw">WHERE</span>  semester = <span class="str">'Spring'</span> <span class="kw">AND</span> year = <span class="num-lit">2018</span>;
+
+<span class="cmt">-- GROUP BY: average salary per department</span>
+<span class="kw">SELECT</span> dept_name, <span class="fn">AVG</span>(salary) <span class="kw">AS</span> avg_salary
+<span class="kw">FROM</span>   instructor
+<span class="kw">GROUP BY</span> dept_name;
+
+<span class="cmt">-- HAVING: only departments with avg > 42000</span>
+<span class="kw">SELECT</span> dept_name, <span class="fn">AVG</span>(salary) <span class="kw">AS</span> avg_salary
+<span class="kw">FROM</span>   instructor
+<span class="kw">GROUP BY</span> dept_name
+<span class="kw">HAVING</span> <span class="fn">AVG</span>(salary) > <span class="num-lit">42000</span>;</pre>
+        </div>
+
+        <div class="tip-box" style="margin-top:16px">
+          <div class="tip-label">💡 WHERE vs HAVING</div>
+          <p><strong>WHERE</strong> filters <em>individual rows</em> BEFORE grouping. <strong>HAVING</strong> filters <em>groups</em> AFTER aggregation. Think: WHERE picks which students take the test; HAVING picks which class averages are above passing grade.</p>
+        </div>
+      </div>
+    </div>
+    </section>
+
+    <!-- SUBQUERIES -->
+    <section id="s-sub">
+    <div class="card topic-sub">
+      <div class="card-header">
+        <div class="card-icon">🪆</div>
+        <div><h3>Nested Subqueries</h3><p>Queries inside queries — like Russian dolls</p></div>
+      </div>
+      <div class="card-body">
+        <div class="reallife">
+          <div class="reallife-label">🌎 Real Life Analogy</div>
+          <p>A subquery is like <strong>answering a question to answer another question</strong>. "Which students scored above the class average?" — you first need to know what the average is (inner query), then use that result to find students above it (outer query). One question feeds into another.</p>
+        </div>
+
+        <h4 style="margin:16px 0 10px; color:var(--navy)">IN / NOT IN</h4>
+        <div class="code-wrap">
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><span class="cmt">-- Courses taught in Fall 2017 AND Spring 2018</span>
+<span class="kw">SELECT DISTINCT</span> course_id
+<span class="kw">FROM</span>   section
+<span class="kw">WHERE</span>  semester = <span class="str">'Fall'</span> <span class="kw">AND</span> year = <span class="num-lit">2017</span>
+  <span class="kw">AND</span>  course_id <span class="kw">IN</span> (
+    <span class="kw">SELECT</span> course_id
+    <span class="kw">FROM</span>   section
+    <span class="kw">WHERE</span>  semester = <span class="str">'Spring'</span> <span class="kw">AND</span> year = <span class="num-lit">2018</span>
+  );
+
+<span class="cmt">-- Instructors who are not Mozart or Einstein</span>
+<span class="kw">SELECT DISTINCT</span> name
+<span class="kw">FROM</span>   instructor
+<span class="kw">WHERE</span>  name <span class="kw">NOT IN</span> (<span class="str">'Mozart'</span>, <span class="str">'Einstein'</span>);</pre>
+        </div>
+
+        <h4 style="margin:20px 0 10px; color:var(--navy)">SOME / ALL — Comparing to a Set</h4>
+        <div class="reallife">
+          <div class="reallife-label">🌎 Real Life Analogy</div>
+          <p><strong>SOME</strong> = "better than at least one person in the group." If you scored higher than <em>any</em> student in Class B, you used SOME. <strong>ALL</strong> = "better than everyone in the group." You must beat <em>every single</em> student in Class B.</p>
+        </div>
+        <div class="code-wrap">
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><span class="cmt">-- Salary > at least one Biology instructor (SOME = > MIN)</span>
+<span class="kw">SELECT</span> name
+<span class="kw">FROM</span>   instructor
+<span class="kw">WHERE</span>  salary > <span class="kw">SOME</span> (
+    <span class="kw">SELECT</span> salary <span class="kw">FROM</span> instructor <span class="kw">WHERE</span> dept_name = <span class="str">'Biology'</span>
+);
+
+<span class="cmt">-- Salary > ALL Biology instructors (ALL = > MAX)</span>
+<span class="kw">SELECT</span> name
+<span class="kw">FROM</span>   instructor
+<span class="kw">WHERE</span>  salary > <span class="kw">ALL</span> (
+    <span class="kw">SELECT</span> salary <span class="kw">FROM</span> instructor <span class="kw">WHERE</span> dept_name = <span class="str">'Biology'</span>
+);</pre>
+        </div>
+
+        <table class="sql-table" style="margin-top:16px">
+          <tr><th>Clause</th><th>Equivalent To</th><th>Meaning</th></tr>
+          <tr><td><code class="inline">&gt; SOME</code></td><td><code class="inline">&gt; MIN()</code></td><td>Greater than the smallest value</td></tr>
+          <tr><td><code class="inline">&lt; SOME</code></td><td><code class="inline">&lt; MAX()</code></td><td>Less than the largest value</td></tr>
+          <tr><td><code class="inline">= SOME</code></td><td><code class="inline">IN</code></td><td>Matches at least one value</td></tr>
+          <tr><td><code class="inline">&gt; ALL</code></td><td><code class="inline">&gt; MAX()</code></td><td>Greater than every value</td></tr>
+          <tr><td><code class="inline">&lt; ALL</code></td><td><code class="inline">&lt; MIN()</code></td><td>Less than every value</td></tr>
+        </table>
+
+        <h4 style="margin:20px 0 10px; color:var(--navy)">EXISTS & NOT EXISTS</h4>
+        <div class="code-wrap">
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><span class="cmt">-- Courses in Fall 2017 that also ran in Spring 2018</span>
+<span class="kw">SELECT</span> course_id
+<span class="kw">FROM</span>   section <span class="kw">AS</span> S
+<span class="kw">WHERE</span>  semester = <span class="str">'Fall'</span> <span class="kw">AND</span> year = <span class="num-lit">2017</span>
+  <span class="kw">AND EXISTS</span> (
+    <span class="kw">SELECT</span> *
+    <span class="kw">FROM</span>   section <span class="kw">AS</span> T
+    <span class="kw">WHERE</span>  semester = <span class="str">'Spring'</span> <span class="kw">AND</span> year = <span class="num-lit">2018</span>
+      <span class="kw">AND</span>  S.course_id = T.course_id
+  );</pre>
+        </div>
+
+        <h4 style="margin:20px 0 10px; color:var(--navy)">WITH Clause — Temporary Named Results</h4>
+        <div class="reallife">
+          <div class="reallife-label">🌎 Real Life Analogy</div>
+          <p>WITH is like creating a <strong>temporary sticky note</strong> with a calculated result, then using that result in your main question. "First, figure out the max budget across all departments. Then, show me which departments have that budget."</p>
+        </div>
+        <div class="code-wrap">
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><span class="cmt">-- WITH clause: find departments with the maximum budget</span>
+<span class="kw">WITH</span> max_budget(value) <span class="kw">AS</span> (
+    <span class="kw">SELECT</span> <span class="fn">MAX</span>(budget) <span class="kw">FROM</span> department
+)
+<span class="kw">SELECT</span> department.name
+<span class="kw">FROM</span>   department, max_budget
+<span class="kw">WHERE</span>  department.budget = max_budget.value;</pre>
+        </div>
+      </div>
+    </div>
+    </section>
+
+    <!-- MODIFICATION -->
+    <section id="s-mod">
+    <div class="section-title" style="margin-top:20px">Modifying the Database</div>
+    <div class="section-subtitle">INSERT, DELETE, UPDATE — keeping your data fresh</div>
+
+    <div class="card topic-mod">
+      <div class="card-header">
+        <div class="card-icon">✏️</div>
+        <div><h3>INSERT, DELETE, UPDATE</h3><p>Adding, removing, and changing data</p></div>
+      </div>
+      <div class="card-body">
+        <div class="reallife">
+          <div class="reallife-label">🌎 Real Life Analogy</div>
+          <p>These three operations are like managing a physical <strong>address book</strong>: INSERT = writing a new contact. DELETE = erasing a contact. UPDATE = crossing out an old phone number and writing the new one. All essential!</p>
+        </div>
+
+        <h4 style="margin:16px 0 10px; color:var(--navy)">INSERT</h4>
+        <div class="code-wrap">
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><span class="cmt">-- Add a new course</span>
+<span class="kw">INSERT INTO</span> course
+<span class="kw">VALUES</span> (<span class="str">'CS-437'</span>, <span class="str">'Database Systems'</span>, <span class="str">'Comp. Sci.'</span>, <span class="num-lit">4</span>);
+
+<span class="cmt">-- Explicit columns (best practice)</span>
+<span class="kw">INSERT INTO</span> course (course_id, title, dept_name, credits)
+<span class="kw">VALUES</span> (<span class="str">'CS-437'</span>, <span class="str">'Database Systems'</span>, <span class="str">'Comp. Sci.'</span>, <span class="num-lit">4</span>);
+
+<span class="cmt">-- Insert NULL for unknown value</span>
+<span class="kw">INSERT INTO</span> student
+<span class="kw">VALUES</span> (<span class="str">'3003'</span>, <span class="str">'Green'</span>, <span class="str">'Finance'</span>, <span class="kw">NULL</span>);</pre>
+        </div>
+
+        <h4 style="margin:20px 0 10px; color:var(--navy)">DELETE</h4>
+        <div class="code-wrap">
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><span class="cmt">-- Delete all instructors</span>
+<span class="kw">DELETE FROM</span> instructor;
+
+<span class="cmt">-- Delete only Finance department instructors</span>
+<span class="kw">DELETE FROM</span> instructor
+<span class="kw">WHERE</span>  dept_name = <span class="str">'Finance'</span>;
+
+<span class="cmt">-- Delete instructors earning below average (computed once first)</span>
+<span class="kw">DELETE FROM</span> instructor
+<span class="kw">WHERE</span>  salary < (<span class="kw">SELECT</span> <span class="fn">AVG</span>(salary) <span class="kw">FROM</span> instructor);</pre>
+        </div>
+
+        <h4 style="margin:20px 0 10px; color:var(--navy)">UPDATE</h4>
+        <div class="code-wrap">
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><span class="cmt">-- Give everyone a 5% raise</span>
+<span class="kw">UPDATE</span> instructor
+<span class="kw">SET</span>    salary = salary * <span class="num-lit">1.05</span>;
+
+<span class="cmt">-- Only give raise to those earning < 70000</span>
+<span class="kw">UPDATE</span> instructor
+<span class="kw">SET</span>    salary = salary * <span class="num-lit">1.05</span>
+<span class="kw">WHERE</span>  salary < <span class="num-lit">70000</span>;
+
+<span class="cmt">-- CASE: tiered raises (3% for high earners, 5% for others)</span>
+<span class="kw">UPDATE</span> instructor
+<span class="kw">SET</span>    salary = <span class="kw">CASE</span>
+    <span class="kw">WHEN</span> salary <= <span class="num-lit">100000</span> <span class="kw">THEN</span> salary * <span class="num-lit">1.05</span>
+    <span class="kw">ELSE</span>                         salary * <span class="num-lit">1.03</span>
+<span class="kw">END</span>;</pre>
+        </div>
+
+        <div class="tip-box">
+          <div class="tip-label">⚠️ Order Matters with UPDATE</div>
+          <p>If you run two UPDATE statements separately — "give 3% to those above 100k" then "give 5% to those below 100k" — someone who was just raised from 99k to 102k now gets BOTH raises! The <code class="inline">CASE</code> statement handles this safely in a single pass.</p>
+        </div>
+      </div>
+    </div>
+    </section>
+
+  </div>
+  </div>
+
+  <!-- ═══════════ QUIZ TAB ═══════════ -->
+  <div id="tab-quiz" class="tab-pane">
+  <div class="content-area">
+    <div class="section-title">Chapter 3 Quiz</div>
+    <div class="section-subtitle">Test your SQL knowledge — 20 questions across all topics</div>
+
+    <div id="quiz-container"></div>
+
+    <div style="text-align:center; margin:32px 0">
+      <button onclick="submitQuiz()" style="background:linear-gradient(135deg,var(--teal),var(--cyan)); color:#fff; border:none; padding:14px 48px; border-radius:12px; font-size:1rem; font-weight:600; cursor:pointer; font-family:'DM Sans',sans-serif; box-shadow:0 4px 14px rgba(14,116,144,0.3)">Submit Quiz →</button>
+      <button onclick="resetQuiz()" style="background:var(--border); color:var(--text); border:none; padding:14px 32px; border-radius:12px; font-size:1rem; font-weight:600; cursor:pointer; font-family:'DM Sans',sans-serif; margin-left:12px">Reset</button>
+    </div>
+
+    <div id="quiz-result" style="display:none" class="card">
+      <div class="card-body quiz-score">
+        <div style="font-size:1rem; color:var(--muted); margin-bottom:8px">Your Score</div>
+        <div class="big-num" id="score-num">0/20</div>
+        <div id="score-msg" style="color:var(--muted); margin-top:12px; font-size:1rem; font-family:'DM Sans',sans-serif"></div>
+        <div style="margin-top:24px">
+          <div class="progress-bar-wrap" style="max-width:300px; margin:0 auto">
+            <div class="progress-bar" id="score-bar" style="width:0%"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+
+  <!-- ═══════════ QNA TAB ═══════════ -->
+  <div id="tab-qna" class="tab-pane">
+  <div class="content-area">
+    <div class="section-title">Questions & Answers</div>
+    <div class="section-subtitle">Deep-dive explanations to common SQL questions</div>
+    <div id="qna-container"></div>
+  </div>
+  </div>
+
+</div><!-- end #main -->
+
+<script>
+// ── TAB SWITCHING ──
+function switchTab(name) {
+  document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  document.querySelectorAll('.tab-btn').forEach((b,i) => {
+    if (['book','quiz','qna'][i] === name) b.classList.add('active');
+  });
+}
+function scrollTo(id) {
+  const el = document.getElementById(id);
+  if (el) el.scrollIntoView({ behavior: 'smooth' });
+}
+function copyCode(btn) {
+  const code = btn.nextElementSibling.textContent;
+  navigator.clipboard.writeText(code).then(() => {
+    btn.textContent = '✓ Copied'; btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000);
+  });
+}
+
+// ── HAMBURGER ──
+const ham = document.getElementById('hamburger');
+const sidebar = document.getElementById('sidebar');
+const overlay = document.getElementById('overlay');
+ham.addEventListener('click', () => {
+  sidebar.classList.toggle('open');
+  overlay.classList.toggle('open');
+});
+overlay.addEventListener('click', () => {
+  sidebar.classList.remove('open');
+  overlay.classList.remove('open');
+});
+
+// ── QUIZ DATA ──
+const questions = [
+  { q: "What does SQL stand for?", opts: ["Simple Query Logic", "Structured Query Language", "Sequential Query Logic", "Standard Question Language"], ans: 1, explain: "SQL = Structured Query Language. It was originally called SEQUEL (Structured English Query Language) by IBM." },
+  { q: "Which SQL command is used to retrieve data from a database?", opts: ["GET", "FETCH", "SELECT", "PULL"], ans: 2, explain: "SELECT is the DML command for reading/retrieving data. It's the most commonly used SQL command." },
+  { q: "What keyword removes duplicate rows from a SELECT result?", opts: ["UNIQUE", "DISTINCT", "NODUPE", "DIFFERENT"], ans: 1, explain: "SELECT DISTINCT removes duplicate rows. Without it, all rows (including duplicates) are returned." },
+  { q: "Which data type stores a fixed-length character string?", opts: ["varchar(n)", "char(n)", "text", "string(n)"], ans: 1, explain: "char(n) stores fixed-length strings — always n characters, padded with spaces if shorter. varchar(n) is variable length." },
+  { q: "What does PRIMARY KEY guarantee?", opts: ["Values are always numeric", "Values are unique and not null", "Values can be duplicated", "Values are encrypted"], ans: 1, explain: "PRIMARY KEY ensures each row has a unique identifier that is never null. It's the main way to identify a specific row." },
+  { q: "Which clause is used to filter rows in a SELECT query?", opts: ["FILTER", "HAVING", "WHERE", "LIMIT"], ans: 2, explain: "WHERE filters individual rows BEFORE any grouping. HAVING filters groups AFTER aggregation." },
+  { q: "What does NULL represent in SQL?", opts: ["Zero (0)", "Empty string", "Unknown or missing value", "False"], ans: 2, explain: "NULL means the value is unknown or doesn't exist. It is NOT the same as 0 or an empty string ''."},
+  { q: "What is the result of: 5 + NULL?", opts: ["5", "NULL", "0", "Error"], ans: 1, explain: "Any arithmetic operation involving NULL returns NULL. This is because the result is 'unknown'." },
+  { q: "Which aggregate function counts the number of rows?", opts: ["SUM()", "AVG()", "NUM()", "COUNT()"], ans: 3, explain: "COUNT(*) counts all rows. COUNT(column) counts rows where that column is NOT NULL." },
+  { q: "What does GROUP BY do?", opts: ["Sorts results", "Groups rows with the same value for aggregation", "Filters duplicate rows", "Joins two tables"], ans: 1, explain: "GROUP BY groups rows that have the same value in specified columns, so aggregate functions (AVG, SUM, etc.) apply to each group separately." },
+  { q: "Which clause filters GROUPS after aggregation?", opts: ["WHERE", "FILTER", "HAVING", "GROUP FILTER"], ans: 2, explain: "HAVING is like WHERE but for groups. WHERE runs before GROUP BY; HAVING runs after." },
+  { q: "What does UNION do?", opts: ["Joins two tables", "Combines results of two queries and removes duplicates", "Multiplies two result sets", "Finds common rows"], ans: 1, explain: "UNION combines results from two SELECT statements and automatically removes duplicates. Use UNION ALL to keep duplicates." },
+  { q: "What does the LIKE operator with '%' wildcard match?", opts: ["Exactly one character", "Only digits", "Any sequence of characters", "Only letters"], ans: 2, explain: "% matches any sequence of zero or more characters. '_' matches exactly one character." },
+  { q: "What does a FOREIGN KEY do?", opts: ["Makes a column unique", "Links to the primary key of another table", "Prevents NULL values", "Creates an index"], ans: 1, explain: "FOREIGN KEY references a PRIMARY KEY in another table, ensuring referential integrity — you can't have a dept_name that doesn't exist in the department table." },
+  { q: "What does '>  SOME' equivalent to in SQL?", opts: ["> AVG()", "> MIN()", "> MAX()", "> COUNT()"], ans: 1, explain: "> SOME means 'greater than at least one value in the set', which is equivalent to > MIN(). Similarly, > ALL equals > MAX()." },
+  { q: "Which statement correctly checks for NULL?", opts: ["WHERE salary = NULL", "WHERE salary == NULL", "WHERE salary IS NULL", "WHERE salary != NULL"], ans: 2, explain: "You MUST use IS NULL or IS NOT NULL. Using = NULL always evaluates to UNKNOWN, not TRUE, so no rows would be returned." },
+  { q: "What does the WITH clause create?", opts: ["A permanent table", "A temporary named result for use in one query", "A view", "An index"], ans: 1, explain: "WITH (Common Table Expression) creates a temporary named result set that exists only for the duration of the current query." },
+  { q: "What is the correct order of clauses in a SELECT query?", opts: ["FROM → WHERE → SELECT", "SELECT → FROM → WHERE", "WHERE → FROM → SELECT", "SELECT → WHERE → FROM"], ans: 1, explain: "You write: SELECT ... FROM ... WHERE ... GROUP BY ... HAVING ... ORDER BY. But the execution order is: FROM → WHERE → GROUP BY → HAVING → SELECT → ORDER BY." },
+  { q: "Which command adds a new column to an existing table?", opts: ["INSERT COLUMN", "ALTER TABLE ... ADD", "UPDATE TABLE", "MODIFY TABLE"], ans: 1, explain: "ALTER TABLE tablename ADD columnname datatype; adds a new column. Existing rows get NULL for the new column." },
+  { q: "What does INTERSECT return?", opts: ["All rows from both queries", "Rows in the first query only", "Rows that appear in BOTH queries", "Rows in neither query"], ans: 2, explain: "INTERSECT returns only rows that appear in BOTH result sets — the overlap, like the center of a Venn diagram." }
+];
+
+let userAnswers = {};
+let submitted = false;
+
+function buildQuiz() {
+  const container = document.getElementById('quiz-container');
+  container.innerHTML = '';
+  questions.forEach((q, i) => {
+    const card = document.createElement('div');
+    card.className = 'quiz-card';
+    card.innerHTML = `
+      <div class="quiz-header">
+        <div class="quiz-num">${i+1}</div>
+        <h4>${q.q}</h4>
+      </div>
+      <div class="quiz-body" id="qbody-${i}">
+        ${q.opts.map((o,j) => `
+          <div class="quiz-option" onclick="selectAnswer(${i},${j})" id="opt-${i}-${j}">
+            <div class="opt-letter">${'ABCD'[j]}</div>
+            <div class="opt-text">${o}</div>
+          </div>`).join('')}
+        <div class="quiz-feedback" id="qfb-${i}"></div>
+      </div>`;
+    container.appendChild(card);
+  });
+}
+
+function selectAnswer(qi, oi) {
+  if (submitted) return;
+  userAnswers[qi] = oi;
+  document.querySelectorAll(`[id^="opt-${qi}-"]`).forEach(el => {
+    el.classList.remove('selected-correct','selected-wrong');
+    el.querySelector('.opt-letter').style.background = '';
+    el.querySelector('.opt-letter').style.color = '';
+  });
+  document.getElementById(`opt-${qi}-${oi}`).style.borderColor = 'var(--teal)';
+  document.getElementById(`opt-${qi}-${oi}`).style.background = '#f0fdfa';
+}
+
+function submitQuiz() {
+  submitted = true;
+  let score = 0;
+  questions.forEach((q, i) => {
+    const selected = userAnswers[i];
+    const fb = document.getElementById(`qfb-${i}`);
+    document.querySelectorAll(`[id^="opt-${i}-"]`).forEach(el => {
+      el.style.borderColor = ''; el.style.background = '';
+    });
+    if (selected === undefined) {
+      document.getElementById(`opt-${i}-${q.ans}`).classList.add('reveal-correct');
+      fb.className = 'quiz-feedback wrong'; fb.textContent = '⚠️ Not answered. Correct answer: ' + 'ABCD'[q.ans] + '. ' + q.explain;
+    } else if (selected === q.ans) {
+      document.getElementById(`opt-${i}-${selected}`).classList.add('selected-correct');
+      fb.className = 'quiz-feedback correct'; fb.textContent = '✅ Correct! ' + q.explain;
+      score++;
+    } else {
+      document.getElementById(`opt-${i}-${selected}`).classList.add('selected-wrong');
+      document.getElementById(`opt-${i}-${q.ans}`).classList.add('reveal-correct');
+      fb.className = 'quiz-feedback wrong'; fb.textContent = '❌ Incorrect. Correct answer: ' + 'ABCD'[q.ans] + '. ' + q.explain;
+    }
+  });
+  const pct = Math.round(score/questions.length*100);
+  const msgs = ['Keep studying! You got this 💪', 'Good effort! Review the topics again 📚', 'Not bad! Almost there 🎯', 'Great job! Strong SQL foundation 🌟', 'Excellent! SQL master! 🏆'];
+  const msgIdx = Math.floor(pct/25);
+  document.getElementById('quiz-result').style.display = 'block';
+  document.getElementById('score-num').textContent = score + '/' + questions.length;
+  document.getElementById('score-msg').textContent = msgs[Math.min(msgIdx,4)];
+  document.getElementById('score-bar').style.width = pct + '%';
+  document.getElementById('quiz-result').scrollIntoView({ behavior: 'smooth' });
+}
+
+function resetQuiz() {
+  userAnswers = {}; submitted = false;
+  document.getElementById('quiz-result').style.display = 'none';
+  buildQuiz();
+}
+
+// ── QNA DATA ──
+const qnas = [
+  { q: "What is the difference between WHERE and HAVING?", a: "WHERE filters individual rows BEFORE grouping happens. HAVING filters groups AFTER the GROUP BY clause creates them. You cannot use aggregate functions (like AVG, SUM) in a WHERE clause — use HAVING instead.", code: `-- WHERE: filters rows before grouping
+SELECT dept_name, AVG(salary)
+FROM instructor
+WHERE dept_name != 'History'  -- removes History rows first
+GROUP BY dept_name;
+
+-- HAVING: filters groups after aggregation
+SELECT dept_name, AVG(salary) AS avg_sal
+FROM instructor
+GROUP BY dept_name
+HAVING AVG(salary) > 60000;  -- only departments with high average` },
+  { q: "What is the difference between UNION and JOIN?", a: "UNION stacks rows from two queries vertically — they must have the same number of columns and compatible types. JOIN combines columns horizontally from two tables based on a matching condition. UNION adds more rows; JOIN adds more columns.", code: `-- UNION: combine two lists of course IDs (vertical)
+(SELECT course_id FROM section WHERE year = 2017)
+UNION
+(SELECT course_id FROM section WHERE year = 2018);
+
+-- JOIN: combine instructor info + courses taught (horizontal)
+SELECT name, course_id
+FROM instructor JOIN teaches ON instructor.ID = teaches.ID;` },
+  { q: "Why can't I use '= NULL' to check for null values?", a: "Because NULL represents 'unknown', comparing anything to NULL gives UNKNOWN (not TRUE or FALSE). The expression 'salary = NULL' always evaluates to UNKNOWN, so no rows are ever returned. You must use 'IS NULL' which is specifically designed to check for null.", code: `-- WRONG: never returns any rows
+SELECT name FROM instructor WHERE salary = NULL;
+
+-- CORRECT: use IS NULL
+SELECT name FROM instructor WHERE salary IS NULL;
+
+-- CORRECT: use IS NOT NULL
+SELECT name FROM instructor WHERE salary IS NOT NULL;` },
+  { q: "What is a subquery and when should I use one?", a: "A subquery is a SELECT statement nested inside another query. Use them when you need to: (1) compare against a computed value (like an average), (2) check membership in a dynamically computed list, or (3) use the result of one query as input to another. If the subquery runs the same for every row, it's a non-correlated subquery. If it references the outer query, it's a correlated subquery.", code: `-- Non-correlated: inner query runs once
+SELECT name FROM instructor
+WHERE salary > (SELECT AVG(salary) FROM instructor);
+
+-- Correlated: inner query runs for each outer row
+SELECT dept_name,
+       (SELECT COUNT(*) FROM instructor i
+        WHERE i.dept_name = d.dept_name) AS num_instructors
+FROM department d;` },
+  { q: "What is the difference between SOME and ALL?", a: "SOME (same as ANY) returns true if the condition is satisfied for AT LEAST ONE value in the subquery result. ALL returns true only if the condition is satisfied for EVERY value in the subquery result. Think: SOME = 'at least one'; ALL = 'every single one'.", code: `-- SOME: salary > at least one Biology instructor's salary
+SELECT name FROM instructor
+WHERE salary > SOME (
+  SELECT salary FROM instructor WHERE dept_name = 'Biology'
+);
+-- Equivalent to: WHERE salary > MIN(Biology salaries)
+
+-- ALL: salary > every Biology instructor's salary
+SELECT name FROM instructor
+WHERE salary > ALL (
+  SELECT salary FROM instructor WHERE dept_name = 'Biology'
+);
+-- Equivalent to: WHERE salary > MAX(Biology salaries)` },
+  { q: "How does GROUP BY work and what are the rules?", a: "GROUP BY collapses all rows with the same value(s) in the specified column(s) into one row, so you can apply aggregate functions to each group. The key rule: any column in your SELECT that is NOT inside an aggregate function MUST appear in the GROUP BY list.", code: `-- CORRECT: dept_name is in GROUP BY
+SELECT dept_name, AVG(salary) AS avg_salary
+FROM instructor
+GROUP BY dept_name;
+
+-- WRONG: ID is in SELECT but not in GROUP BY
+SELECT dept_name, ID, AVG(salary)  -- ERROR!
+FROM instructor
+GROUP BY dept_name;
+
+-- CORRECT: both non-aggregated columns in GROUP BY
+SELECT dept_name, ID, AVG(salary)
+FROM instructor
+GROUP BY dept_name, ID;` },
+  { q: "What is a FOREIGN KEY and why is it important?", a: "A FOREIGN KEY is a column (or set of columns) in one table that references the PRIMARY KEY of another table. It enforces 'referential integrity' — you can't insert a value in the foreign key column that doesn't exist in the referenced table. This prevents 'orphaned' records, like a student being enrolled in a department that doesn't exist.", code: `-- Department table (referenced)
+CREATE TABLE department (
+    dept_name VARCHAR(20) PRIMARY KEY,
+    building  VARCHAR(15)
+);
+
+-- Instructor table (references department)
+CREATE TABLE instructor (
+    ID        CHAR(5) PRIMARY KEY,
+    name      VARCHAR(20) NOT NULL,
+    dept_name VARCHAR(20),
+    FOREIGN KEY (dept_name) REFERENCES department
+);
+-- Now you CANNOT insert an instructor with dept_name = 'Hogwarts'
+-- unless 'Hogwarts' exists in the department table!` },
+  { q: "What is the WITH clause (CTE) and when is it useful?", a: "WITH defines a Common Table Expression (CTE) — a temporary named result set that can be referenced in the main query. It's useful when: (1) you need to reuse a subquery multiple times, (2) a complex query becomes hard to read with nested subqueries, or (3) you need to build multi-step logic. CTEs exist only for the duration of the statement.", code: `-- Without WITH: hard to read nested subqueries
+SELECT dept_name FROM (
+  SELECT dept_name, SUM(salary) as total
+  FROM instructor GROUP BY dept_name
+) AS dept_totals
+WHERE total > (SELECT AVG(total) FROM (...) AS x);
+
+-- With WITH: much cleaner
+WITH dept_total AS (
+  SELECT dept_name, SUM(salary) AS value
+  FROM instructor GROUP BY dept_name
+),
+dept_avg AS (
+  SELECT AVG(value) AS avg_val FROM dept_total
+)
+SELECT dept_name
+FROM dept_total, dept_avg
+WHERE dept_total.value > dept_avg.avg_val;` },
+  { q: "What is the difference between DELETE, DROP, and TRUNCATE?", a: "DELETE removes specific rows based on a WHERE condition (or all rows if no WHERE given), but the table structure remains. DROP completely removes the entire table including its structure. TRUNCATE (not covered in this chapter but common) removes all rows instantly, faster than DELETE, but keeps the table structure.", code: `-- DELETE: remove specific rows
+DELETE FROM instructor WHERE dept_name = 'Finance';
+
+-- DELETE all rows (table still exists, just empty)
+DELETE FROM instructor;
+
+-- DROP: removes the entire table permanently
+DROP TABLE instructor;
+
+-- After DROP, the table is gone — you'd need CREATE TABLE again
+-- After DELETE, the table is empty but still usable` },
+  { q: "How does the CASE statement work in UPDATE?", a: "The CASE statement in SQL is like an if-then-else in programming. In an UPDATE, it lets you apply different changes to different rows in a single statement. This is important because multiple separate UPDATE statements can interfere with each other — a row might get updated by the first statement and then match the second condition too.", code: `-- DANGEROUS: two separate UPDATEs can double-update some rows
+UPDATE instructor SET salary = salary * 1.03 WHERE salary > 100000;
+UPDATE instructor SET salary = salary * 1.05 WHERE salary <= 100000;
+-- A salary of 99000 gets raised to 103950 (>100000), then gets 5% again!
+
+-- SAFE: single CASE statement evaluates original values
+UPDATE instructor
+SET salary = CASE
+  WHEN salary <= 100000 THEN salary * 1.05
+  ELSE salary * 1.03
+END;` },
+  { q: "What is the difference between char(n) and varchar(n)?", a: "char(n) stores a FIXED-length string of exactly n characters. If you store 'Hi' in char(10), it pads with 8 spaces to make it 10 characters. varchar(n) stores VARIABLE-length strings, up to n characters — 'Hi' uses only 2 characters of storage. varchar is more storage-efficient; char is sometimes faster for fixed-size fields.", code: `-- char(5): always stores 5 characters (pads with spaces)
+ID CHAR(5)       -- 'A1234' = 'A1234', 'A1' = 'A1   '
+
+-- varchar(20): stores only as many characters as needed
+name VARCHAR(20) -- 'Alice' uses 5 chars, 'Bob' uses 3 chars
+
+-- When to use which:
+-- char: fixed formats like country codes, zip codes, IDs
+-- varchar: names, emails, descriptions (variable length)` },
+  { q: "What is a self-join and when do you use it?", a: "A self-join is when you join a table to itself by giving it two different aliases. This is useful for hierarchical or comparative data within the same table — like finding employees who earn more than their manager, or finding all pairs of instructors in the same department.", code: `-- Find instructors earning more than some CS instructor
+SELECT DISTINCT T.name
+FROM instructor AS T, instructor AS S
+WHERE T.salary > S.salary AND S.dept_name = 'Comp. Sci.';
+-- T and S are both the instructor table, just named differently
+
+-- Employee-supervisor hierarchy (emp-super table)
+-- Find Bob's supervisor
+SELECT supervisor FROM emp_super WHERE employee = 'Bob';
+
+-- Find supervisor's supervisor
+SELECT S2.supervisor
+FROM emp_super S1, emp_super S2
+WHERE S1.employee = 'Bob' AND S2.employee = S1.supervisor;` },
+  { q: "How do set operations differ from joins?", a: "Set operations (UNION, INTERSECT, EXCEPT) combine rows from two queries that have the same structure (same columns, same types). They operate on entire rows, treating them as sets. Joins combine COLUMNS from multiple tables based on matching conditions. Set operations = rows from same structure; Joins = columns from related tables.", code: `-- UNION: all courses in either semester (same columns)
+(SELECT course_id FROM section WHERE year = 2017)
+UNION
+(SELECT course_id FROM section WHERE year = 2018);
+
+-- INTERSECT: courses in both semesters
+(SELECT course_id FROM section WHERE sem = 'Fall' AND year = 2017)
+INTERSECT
+(SELECT course_id FROM section WHERE sem = 'Spring' AND year = 2018);
+
+-- JOIN: combine course info with section info (different columns)
+SELECT c.title, s.semester
+FROM course c JOIN section s ON c.course_id = s.course_id;` },
+  { q: "What does EXISTS do, and how is it different from IN?", a: "EXISTS checks if a subquery returns ANY rows at all — it returns TRUE or FALSE regardless of what those rows contain. IN checks if a value matches any value in a subquery's result list. EXISTS is often more efficient for large datasets because it stops as soon as it finds the first match, while IN compares against the entire list.", code: `-- IN: course_id must be in the list of spring 2018 courses
+SELECT course_id FROM section
+WHERE semester = 'Fall' AND year = 2017
+AND course_id IN (
+  SELECT course_id FROM section WHERE semester='Spring' AND year=2018
+);
+
+-- EXISTS: check if a matching spring 2018 row exists
+SELECT course_id FROM section AS S
+WHERE semester = 'Fall' AND year = 2017
+AND EXISTS (
+  SELECT * FROM section AS T
+  WHERE semester = 'Spring' AND year = 2018
+  AND S.course_id = T.course_id  -- correlated!
+);` },
+  { q: "Why does the order of multiple UPDATE statements matter?", a: "If you have two UPDATE statements that can affect overlapping rows, the first update changes values that the second update then uses as its input. This means a row could get updated twice or not at all depending on whether the first update pushed it into or out of the second statement's condition. Always use a single CASE statement when updates have overlapping conditions.", code: `-- Example: raise high earners by 3%, others by 5%
+-- PROBLEM with separate statements:
+UPDATE instructor SET salary = salary * 1.03 WHERE salary > 100000;
+-- Now someone who was at $95,000 is at $97,850 -- still ≤ 100000
+-- Then:
+UPDATE instructor SET salary = salary * 1.05 WHERE salary <= 100000;
+-- They get ANOTHER raise to $102,742.50! Double-raised!
+
+-- SOLUTION: CASE evaluates all conditions based on ORIGINAL values
+UPDATE instructor
+SET salary = CASE
+  WHEN salary <= 100000 THEN salary * 1.05
+  ELSE salary * 1.03
+END;` }
+];
+
+function buildQNA() {
+  const container = document.getElementById('qna-container');
+  container.innerHTML = '';
+  qnas.forEach((item, i) => {
+    const div = document.createElement('div');
+    div.className = 'qna-item';
+    div.innerHTML = `
+      <div class="qna-question" onclick="toggleQNA(${i})">
+        <div>
+          <div class="qna-q-badge">Q${i+1}</div>
+          <h4>${item.q}</h4>
+        </div>
+        <div class="qna-chevron">⌄</div>
+      </div>
+      <div class="qna-answer">
+        <p style="margin-bottom:12px; color:var(--text)">${item.a}</p>
+        <div class="code-wrap">
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+          <pre>${item.code.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</pre>
+        </div>
+      </div>`;
+    container.appendChild(div);
+  });
+}
+
+function toggleQNA(i) {
+  const item = document.querySelectorAll('.qna-item')[i];
+  item.classList.toggle('open');
+}
+
+// ── INIT ──
+buildQuiz();
+buildQNA();
+
+// Active sidebar based on scroll
+window.addEventListener('scroll', () => {
+  const sections = ['s-overview','s-ddl','s-types','s-create','s-select','s-where','s-from','s-string','s-set','s-null','s-agg','s-sub','s-mod'];
+  let current = '';
+  sections.forEach(id => {
+    const el = document.getElementById(id);
+    if (el && window.scrollY + 200 >= el.offsetTop) current = id;
+  });
+  document.querySelectorAll('.nav-item').forEach(a => {
+    a.classList.remove('active');
+    if (a.getAttribute('onclick') && a.getAttribute('onclick').includes(current)) a.classList.add('active');
+  });
+});
+</script>
+</body>
+</html>
