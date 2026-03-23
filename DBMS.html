@@ -1,0 +1,1409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>Ch.1 · Database Systems</title>
+<link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,400;0,700;0,900;1,400&family=Inter:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{
+  --pg:#fefcf4;--pg2:#f8f2e0;--pg3:#f0e8cc;
+  --ink:#18130a;--sub:#3a2e1e;--mut:#7a6a52;
+  --ln:#e2d0a8;--ln2:#c8b07a;
+  --gld:#b07808;--gld2:#d49010;--gldl:#f2c040;
+  --red:#b82410;--tel:#087060;--blu:#1848a0;
+  --grn:#146028;--pur:#5818a0;--org:#be5808;
+  --hy:rgba(252,210,0,.34);--hg:rgba(20,180,80,.2);
+  --hb:rgba(30,100,220,.18);--hp:rgba(220,40,110,.17);--ho:rgba(200,90,8,.2);
+}
+html,body{width:100%;height:100%;overflow:hidden;font-family:'Inter',sans-serif;background:#120e06}
+body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:radial-gradient(ellipse 70% 50% at 18% 25%,rgba(80,45,5,.32),transparent 55%),
+  radial-gradient(ellipse 60% 60% at 82% 78%,rgba(50,25,5,.26),transparent 55%),
+  linear-gradient(150deg,#1c1005,#120e06 45%,#181008)}
+
+/* ══ LAYOUT ══ */
+#app{position:fixed;inset:0;z-index:1;display:flex;flex-direction:column;background:var(--pg)}
+#app::before{content:'';position:absolute;inset:0;pointer-events:none;z-index:0;
+  background:repeating-linear-gradient(180deg,transparent,transparent 31px,rgba(140,110,50,.055) 31px,rgba(140,110,50,.055) 32px)}
+
+/* ── TOPBAR ── */
+#topbar{
+  position:relative;z-index:20;flex-shrink:0;height:50px;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 1.5rem 0 1rem;
+  background:linear-gradient(180deg,rgba(254,252,244,.99),rgba(248,242,224,.97));
+  border-bottom:2px solid var(--ln2);box-shadow:0 1px 8px rgba(0,0,0,.08)}
+.tb-brand{display:flex;align-items:center;gap:.5rem}
+.tb-badge{background:var(--red);color:#fff;font-size:.6rem;font-weight:800;
+  letter-spacing:.14em;text-transform:uppercase;padding:.22rem .7rem;border-radius:100px}
+.tb-title{font-family:'Merriweather',serif;font-size:.84rem;font-weight:700;color:var(--ink);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:42vw}
+.tb-nav{display:flex;gap:.35rem}
+.tbtn{display:flex;align-items:center;gap:.28rem;padding:.3rem .82rem;border-radius:100px;
+  font-size:.72rem;font-weight:700;cursor:pointer;border:1.5px solid;transition:all .16s;
+  white-space:nowrap;font-family:'Inter',sans-serif}
+.tb-b{border-color:var(--gld);color:var(--gld)}
+.tb-b:hover,.tb-b.on{background:var(--gld);color:#fff}
+.tb-q{border-color:var(--red);color:var(--red)}
+.tb-q:hover,.tb-q.on{background:var(--red);color:#fff}
+.tb-a{border-color:var(--tel);color:var(--tel)}
+.tb-a:hover,.tb-a.on{background:var(--tel);color:#fff}
+
+/* ── MAIN BODY (sidebar + content) ── */
+#body{position:relative;z-index:5;flex:1;display:flex;overflow:hidden}
+
+/* ── SIDEBAR ── */
+#sb{
+  width:220px;flex-shrink:0;
+  display:flex;flex-direction:column;
+  background:linear-gradient(180deg,#1e1508,#140f05);
+  border-right:1px solid rgba(200,160,80,.18);
+  overflow:hidden;transition:width .22s ease;
+}
+#sb.off{width:0;border-right:none}
+#sb-head{
+  flex-shrink:0;padding:.72rem .9rem .6rem;
+  border-bottom:1px solid rgba(200,160,80,.15);
+  display:flex;align-items:center;justify-content:space-between;
+}
+.sb-ttl{font-family:'Merriweather',serif;font-size:.7rem;font-weight:700;
+  color:rgba(240,192,64,.82);letter-spacing:.06em;text-transform:uppercase}
+#sb-tog{background:none;border:none;cursor:pointer;
+  color:rgba(240,192,64,.6);font-size:.95rem;padding:.05rem .2rem;
+  transition:color .15s;line-height:1}
+#sb-tog:hover{color:rgba(240,192,64,1)}
+#sb-list{flex:1;overflow-y:auto;padding:.3rem 0 .8rem;
+  scrollbar-width:thin;scrollbar-color:rgba(180,130,40,.3) transparent}
+#sb-list::-webkit-scrollbar{width:3px}
+#sb-list::-webkit-scrollbar-thumb{background:rgba(180,130,40,.3);border-radius:2px}
+.si{
+  display:flex;align-items:center;gap:.48rem;
+  padding:.4rem .88rem;cursor:pointer;
+  border-left:3px solid transparent;transition:all .14s;
+}
+.si:hover{background:rgba(200,160,60,.1);border-left-color:rgba(200,160,60,.45)}
+.si.on{background:rgba(200,160,60,.17);border-left-color:var(--gld2)}
+.si.vis:not(.on){border-left-color:rgba(200,160,60,.22)}
+.si-n{font-family:'Fira Code',monospace;font-size:.56rem;color:rgba(200,160,60,.48);
+  font-weight:700;flex-shrink:0;width:20px;text-align:right}
+.si.on .si-n{color:var(--gld2)}
+.si-l{font-size:.71rem;font-weight:600;color:rgba(220,200,160,.62);line-height:1.32}
+.si:hover .si-l{color:rgba(240,220,180,.9)}
+.si.on .si-l{color:rgba(245,225,170,1);font-weight:700}
+.si.vis:not(.on) .si-l{color:rgba(220,200,140,.78)}
+
+/* collapsed open button */
+#sb-open{
+  position:fixed;left:0;top:50%;transform:translateY(-50%);z-index:100;
+  width:20px;height:42px;border-radius:0 8px 8px 0;
+  background:rgba(28,18,5,.88);border:1px solid rgba(200,160,60,.3);border-left:none;
+  cursor:pointer;display:none;align-items:center;justify-content:center;
+  color:rgba(240,192,64,.7);font-size:.7rem;transition:all .16s}
+#sb-open:hover{background:var(--gld);color:#fff;border-color:var(--gld)}
+#sb-open.show{display:flex}
+
+/* ── SCROLL ── */
+#scroll{flex:1;overflow-y:auto;overflow-x:hidden;padding:1.8rem 0 1.4rem;
+  scrollbar-width:thin;scrollbar-color:var(--ln2) transparent;position:relative}
+#scroll::-webkit-scrollbar{width:4px}
+#scroll::-webkit-scrollbar-thumb{background:var(--ln2);border-radius:4px}
+
+/* content column */
+#col{width:min(800px,92%);margin:0 auto;padding-bottom:2rem}
+
+/* ── FOOTER ── */
+#footer{
+  position:relative;z-index:20;flex-shrink:0;height:42px;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 1.4rem 0 1rem;
+  background:linear-gradient(0deg,rgba(240,232,208,.98),rgba(248,242,224,.96));
+  border-top:1px solid var(--ln)}
+.f-l{display:flex;align-items:center;gap:.65rem}
+.f-pg{font-family:'Fira Code',monospace;font-size:.6rem;color:var(--mut);letter-spacing:.04em}
+.f-dots{display:flex;gap:.2rem;align-items:center;overflow:hidden;max-width:55vw}
+.dot{width:6px;height:6px;border-radius:50%;background:var(--ln2);
+  cursor:pointer;transition:all .14s;flex-shrink:0}
+.dot:hover{background:var(--gld2);transform:scale(1.5)}
+.dot.on{background:var(--red);transform:scale(1.8);box-shadow:0 0 5px rgba(184,36,16,.4)}
+.dot.vis{background:var(--gld)}
+.f-r{font-size:.58rem;font-weight:600;color:var(--mut);letter-spacing:.04em;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:22vw}
+
+/* corners */
+.cz{position:fixed;bottom:0;width:80px;height:80px;cursor:pointer;z-index:50;overflow:hidden}
+.cz.cl{left:220px}.cz.cr{right:0}
+.cz.cl.sboff{left:0}
+.cz .f1,.cz .f2{position:absolute;bottom:0;width:0;height:0;border-style:solid;transition:all .25s cubic-bezier(.34,1.4,.64,1);opacity:0}
+.cz.cr .f1{right:0;border-width:0 0 50px 50px;border-color:transparent transparent var(--pg3) transparent;filter:drop-shadow(0 -3px 6px rgba(0,0,0,.2))}
+.cz.cr .f2{right:1px;bottom:1px;border-width:0 0 46px 46px;border-color:transparent transparent rgba(0,0,0,.08) transparent;filter:blur(3px)}
+.cz.cl .f1{left:0;border-width:0 50px 50px 0;border-color:transparent var(--pg3) transparent transparent;filter:drop-shadow(0 -3px 6px rgba(0,0,0,.2))}
+.cz.cl .f2{left:1px;bottom:1px;border-width:0 46px 46px 0;border-color:transparent rgba(0,0,0,.08) transparent transparent;filter:blur(3px)}
+.cz:hover .f1,.cz:hover .f2{opacity:1}
+.cz.cr:hover .f1{border-width:0 0 70px 70px}.cz.cr:hover .f2{border-width:0 0 66px 66px}
+.cz.cl:hover .f1{border-width:0 70px 70px 0}.cz.cl:hover .f2{border-width:0 66px 66px 0}
+.cz .ca{position:absolute;bottom:8px;font-size:1.1rem;color:rgba(140,90,10,.85);
+  opacity:0;transition:all .2s;z-index:2;font-weight:900}
+.cz.cr .ca{right:10px}.cz.cl .ca{left:10px}
+.cz:hover .ca{opacity:1;bottom:14px}
+/* nav arrows */
+.na{position:fixed;top:50%;transform:translateY(-50%);z-index:60;
+  width:38px;height:38px;border-radius:50%;border:1.5px solid rgba(170,110,8,.22);
+  background:rgba(18,14,6,.52);color:rgba(230,180,50,.32);font-size:1.3rem;cursor:pointer;
+  transition:all .18s;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
+.na.pv{left:228px}.na.pv.sboff{left:8px}.na.nx{right:8px}
+.na:hover{background:var(--gld);border-color:var(--gld);color:#fff;transform:translateY(-50%) scale(1.1)}
+.na:disabled{opacity:.08;pointer-events:none}
+/* flip shadow */
+#fsh{position:fixed;inset:0;z-index:80;pointer-events:none;opacity:0}
+@keyframes swr{0%{opacity:0;background:linear-gradient(90deg,transparent 35%,rgba(0,0,0,.1) 65%,rgba(0,0,0,.28) 100%)}25%{opacity:1}100%{opacity:0}}
+@keyframes swl{0%{opacity:0;background:linear-gradient(270deg,transparent 35%,rgba(0,0,0,.1) 65%,rgba(0,0,0,.28) 100%)}25%{opacity:1}100%{opacity:0}}
+.sr{animation:swr .38s ease-in-out}.sl{animation:swl .38s ease-in-out}
+
+/* ══ OVERLAYS ══ */
+.ov{position:fixed;inset:0;z-index:200;display:none;align-items:center;justify-content:center;
+  background:rgba(10,6,1,.82);backdrop-filter:blur(10px);padding:.8rem}
+.ov.on{display:flex}
+.pnl{width:min(700px,96vw);max-height:calc(100vh - 1.6rem);
+  display:flex;flex-direction:column;background:var(--pg);border-radius:18px;
+  overflow:hidden;border:1.5px solid var(--ln2);box-shadow:0 32px 90px rgba(0,0,0,.7)}
+.pnl-hd{flex-shrink:0;padding:.95rem 1.5rem;display:flex;align-items:flex-start;justify-content:space-between;gap:1rem}
+.pnl-hd h2{font-family:'Merriweather',serif;font-size:1.15rem;font-weight:700;color:#fff}
+.pnl-hd p{font-size:.7rem;color:rgba(255,255,255,.55);margin-top:.15rem}
+.pnl-q{background:linear-gradient(135deg,#380d04,#8a1c0c)}
+.pnl-a{background:linear-gradient(135deg,#04221c,#086050)}
+.pnl-x{width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,.18);
+  border:none;cursor:pointer;color:#fff;font-size:.95rem;
+  display:flex;align-items:center;justify-content:center;transition:background .14s;flex-shrink:0}
+.pnl-x:hover{background:rgba(255,255,255,.32)}
+.pnl-b{flex:1;overflow-y:auto;padding:1.2rem 1.5rem}
+.pnl-b::-webkit-scrollbar{width:3px}.pnl-b::-webkit-scrollbar-thumb{background:var(--ln);border-radius:3px}
+.pnl-f{flex-shrink:0;padding:.8rem 1.5rem;border-top:1px solid var(--ln);
+  display:flex;align-items:center;justify-content:space-between;background:var(--pg2)}
+.qprow{display:flex;align-items:center;gap:.7rem;flex-shrink:0}
+.qpw{width:90px;height:5px;background:rgba(255,255,255,.15);border-radius:100px;overflow:hidden}
+.qpf{height:100%;background:linear-gradient(90deg,var(--red),var(--gldl));border-radius:100px;transition:width .38s}
+
+/* ══ CONTENT ══ */
+/* Cover */
+.cvr{display:flex;flex-direction:column;gap:1.5rem;padding:.2rem 0 1.2rem}
+.cvr-hero{
+  background:linear-gradient(145deg,#1e1208,#291908);border-radius:18px;
+  padding:2.2rem 2rem 2rem;text-align:center;color:#fff;
+  border:1px solid rgba(200,155,40,.22);
+  box-shadow:0 8px 32px rgba(0,0,0,.4),inset 0 1px 0 rgba(200,155,40,.1);
+  position:relative;overflow:hidden}
+.cvr-hero::before{content:'';position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(ellipse 70% 50% at 50% -10%,rgba(200,140,20,.2),transparent 60%)}
+.cvr-tag{display:inline-block;background:rgba(255,255,255,.1);
+  border:1px solid rgba(240,190,60,.3);color:rgba(240,190,60,.85);
+  font-size:.66rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+  padding:.22rem .85rem;border-radius:100px;margin-bottom:1.2rem}
+.cvr-ring{width:82px;height:82px;border-radius:50%;margin:0 auto .9rem;
+  background:linear-gradient(135deg,rgba(200,140,20,.28),rgba(180,100,10,.18));
+  border:2px solid rgba(200,155,40,.38);display:flex;align-items:center;justify-content:center;
+  box-shadow:0 0 30px rgba(200,140,20,.22)}
+.cvr-ico{font-size:2.5rem;line-height:1;animation:bob 3.5s ease-in-out infinite;display:block}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+.cvr-ch{font-family:'Merriweather',serif;font-size:.9rem;font-weight:900;
+  color:rgba(240,190,60,.72);letter-spacing:.2em;text-transform:uppercase;margin-bottom:.25rem}
+.cvr-h{font-family:'Merriweather',serif;font-size:1.8rem;font-weight:900;
+  color:#fff;line-height:1.2;margin-bottom:.8rem}
+.cvr-h em{color:var(--gld2);font-style:italic}
+.cvr-desc{font-size:.88rem;color:rgba(255,255,255,.58);line-height:1.72;
+  max-width:420px;margin:0 auto .95rem}
+.cvr-pills{display:flex;gap:.4rem;justify-content:center;flex-wrap:wrap;margin-bottom:1.1rem}
+.cpill{font-size:.64rem;font-weight:700;padding:.18rem .62rem;border-radius:100px;letter-spacing:.04em}
+.cp-r{background:rgba(185,40,20,.28);border:1px solid rgba(185,40,20,.55);color:#fca5a5}
+.cp-b{background:rgba(30,80,180,.28);border:1px solid rgba(30,80,180,.55);color:#93c5fd}
+.cp-g{background:rgba(22,100,48,.28);border:1px solid rgba(22,100,48,.55);color:#86efac}
+.cp-t{background:rgba(10,120,110,.28);border:1px solid rgba(10,120,110,.55);color:#5eead4}
+.cvr-btn{display:inline-flex;align-items:center;gap:.45rem;
+  background:linear-gradient(135deg,var(--gld),var(--gld2));color:#fff;border:none;cursor:pointer;
+  padding:.65rem 1.7rem;border-radius:100px;font-size:.95rem;font-weight:800;
+  font-family:'Inter',sans-serif;box-shadow:0 4px 18px rgba(180,120,10,.5);
+  transition:all .2s;letter-spacing:.02em}
+.cvr-btn:hover{transform:translateY(-2px);box-shadow:0 6px 24px rgba(180,120,10,.65)}
+.cvr-topics{background:var(--pg2);border:1.5px solid var(--ln);border-radius:14px;padding:1.1rem 1.2rem}
+.cvr-tops-title{font-family:'Merriweather',serif;font-size:.84rem;font-weight:700;
+  color:var(--ink);margin-bottom:.72rem;display:flex;align-items:center;gap:.4rem}
+.cvr-tops-title::before{content:'';display:block;width:3px;height:1em;background:var(--gld2);border-radius:2px}
+.cvr-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:.38rem}
+.ctopic{display:flex;align-items:center;gap:.38rem;padding:.38rem .55rem;border-radius:7px;
+  cursor:pointer;border:1px solid var(--ln);background:var(--pg);transition:all .14s}
+.ctopic:hover{background:var(--pg3);border-color:var(--gld2);transform:translateY(-1px)}
+.ct-i{font-size:.95rem;flex-shrink:0}.ct-l{font-size:.71rem;font-weight:600;color:var(--sub);line-height:1.3}
+
+/* Page heading */
+.pgh{display:flex;align-items:center;gap:.5rem;margin-bottom:1.4rem;padding-bottom:.8rem;border-bottom:2px solid var(--ln2)}
+.pgh-i{font-size:1.4rem;flex-shrink:0}
+.pgh-t{font-family:'Merriweather',serif;font-size:1.35rem;font-weight:700;color:var(--ink);line-height:1.22}
+.pgh-t em{color:var(--red);font-style:italic}
+
+/* Section heading */
+.sh{font-family:'Merriweather',serif;font-size:.97rem;font-weight:700;color:var(--ink);
+  margin:.95rem 0 .42rem;display:flex;align-items:center;gap:.38rem;line-height:1.3}
+.sh::before{content:'';display:block;width:3px;height:.9em;background:var(--gld2);border-radius:2px;flex-shrink:0}
+
+/* Body text */
+.p{font-size:.94rem;color:var(--sub);line-height:1.82;margin-bottom:.58rem}
+.p strong{color:var(--ink);font-weight:700}
+.p.sm{font-size:.85rem;line-height:1.72}
+
+/* Highlights */
+.hy{background:var(--hy);padding:.04em .16em;border-radius:.15em;font-weight:700}
+.hg{background:var(--hg);padding:.04em .16em;border-radius:.15em;font-weight:700}
+.hb{background:var(--hb);padding:.04em .16em;border-radius:.15em;font-weight:700}
+.hp{background:var(--hp);padding:.04em .16em;border-radius:.15em;font-weight:700}
+.ho{background:var(--ho);padding:.04em .16em;border-radius:.15em;font-weight:700}
+
+/* Callout boxes */
+.bx{border-radius:11px;padding:.82rem 1.05rem;margin:.65rem 0;
+  font-size:.9rem;line-height:1.78;position:relative}
+.bxh{font-size:.6rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;
+  display:flex;align-items:center;gap:.3rem;margin-bottom:.3rem}
+.bx-k{background:linear-gradient(135deg,#fffde7,#fff9c4);border-left:4px solid var(--gld2);color:#5c3d08}
+.bx-k .bxh{color:var(--gld)}
+.bx-i{background:linear-gradient(135deg,#fff0ee,#fde0dc);border-left:4px solid var(--red);color:#7a1a0a}
+.bx-i .bxh{color:var(--red)}
+.bx-t{background:linear-gradient(135deg,#edfaf7,#c8f0e8);border-left:4px solid var(--tel);color:#074a40}
+.bx-t .bxh{color:var(--tel)}
+.bx-r{background:linear-gradient(135deg,#edf3ff,#d0e2ff);border-left:4px solid var(--blu);color:#102060}
+.bx-r .bxh{color:var(--blu)}
+.bx-g{background:linear-gradient(135deg,#edf8f0,#c8ecd4);border-left:4px solid var(--grn);color:#0a3c18}
+.bx-g .bxh{color:var(--grn)}
+.bx-w{background:linear-gradient(135deg,#f5eeff,#e4d0f8);border-left:4px solid var(--pur);color:#340d70}
+.bx-w .bxh{color:var(--pur)}
+
+/* Cards */
+.cards{display:grid;gap:.48rem;margin:.58rem 0}
+.c2{grid-template-columns:1fr 1fr}.c3{grid-template-columns:1fr 1fr 1fr}
+.card{background:var(--pg2);border:1.5px solid var(--ln);border-radius:10px;
+  padding:.65rem .8rem;transition:transform .14s,box-shadow .14s}
+.card:hover{transform:translateY(-2px);box-shadow:0 4px 14px rgba(0,0,0,.09)}
+.ci{font-size:1.4rem;display:block;margin-bottom:.24rem}
+.card h4{font-size:.86rem;font-weight:700;color:var(--ink);margin-bottom:.13rem;line-height:1.3}
+.card p{font-size:.76rem;color:var(--mut);line-height:1.52}
+.c-r{border-top:3px solid var(--red)}.c-b{border-top:3px solid var(--blu)}
+.c-g{border-top:3px solid var(--grn)}.c-t{border-top:3px solid var(--tel)}
+.c-p{border-top:3px solid var(--pur)}.c-o{border-top:3px solid var(--org)}.c-y{border-top:3px solid var(--gld2)}
+
+/* Table */
+.tbl{width:100%;border-collapse:collapse;margin:.6rem 0;font-size:.83rem;border-radius:9px;overflow:hidden}
+.tbl thead tr{background:var(--ink);color:#fff}
+.tbl th{padding:.42rem .65rem;text-align:left;font-weight:700;font-size:.82rem;letter-spacing:.02em}
+.tbl td{padding:.38rem .65rem;border-bottom:1px solid var(--ln);color:var(--sub);font-size:.82rem;line-height:1.5}
+.tbl tr:nth-child(even) td{background:var(--pg2)}
+.tbl tr:hover td{background:rgba(170,110,8,.06)}
+.tbl .ok{color:var(--grn);font-weight:700}.tbl .no{color:var(--red);font-weight:700}.tbl .mi{color:var(--org);font-weight:700}
+.tbl th.hr{background:#5a1005}.tbl th.hg_{background:#0a3a1c}
+
+/* VS panels */
+.vs{display:grid;grid-template-columns:1fr 1fr;gap:.48rem;margin:.58rem 0}
+.vc{border-radius:10px;overflow:hidden}
+.vh{padding:.4rem .68rem;text-align:center;font-weight:700;font-size:.78rem;color:#fff;display:flex;align-items:center;justify-content:center;gap:.35rem}
+.vc.vr .vh{background:var(--red)}.vc.vg .vh{background:var(--grn)}
+.vc.vb .vh{background:var(--blu)}.vc.vt .vh{background:var(--tel)}
+.vbd{background:var(--pg2);border:1.5px solid var(--ln);border-top:none;border-radius:0 0 10px 10px}
+.vi{display:flex;align-items:flex-start;gap:.42rem;padding:.32rem .62rem;border-bottom:1px dashed rgba(190,160,90,.28)}
+.vi:last-child{border-bottom:none}
+.vi .vic{font-size:.88rem;flex-shrink:0;margin-top:.05rem}
+.vi p{font-size:.79rem;color:var(--sub);line-height:1.52}
+
+/* Steps */
+.steps{display:flex;flex-direction:column;gap:.4rem;margin:.58rem 0}
+.step{display:flex;gap:.58rem;align-items:flex-start;padding:.52rem .75rem;border-radius:10px;background:var(--pg2);border:1.5px solid var(--ln)}
+.sn{width:26px;height:26px;border-radius:50%;background:var(--red);color:#fff;font-weight:800;font-size:.75rem;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.sc h4{font-size:.88rem;font-weight:700;color:var(--ink);margin-bottom:.07rem;line-height:1.3}
+.sc p{font-size:.78rem;color:var(--mut);line-height:1.55}
+
+/* Layers */
+.layers{display:flex;flex-direction:column;gap:.27rem;margin:.58rem 0}
+.layer{border-radius:9px;padding:.45rem .85rem;text-align:center;font-size:.84rem;font-weight:700;transition:transform .14s;cursor:default}
+.layer:hover{transform:scale(1.01)}
+.layer small{display:block;font-size:.74em;font-weight:500;opacity:.82;margin-top:.06rem;line-height:1.4}
+.ly-t{background:linear-gradient(135deg,#edfaf7,#c8f0e8);border:2px solid var(--tel);color:#074a40}
+.ly-b{background:linear-gradient(135deg,#edf3ff,#d0e2ff);border:2px solid var(--blu);color:#102060}
+.ly-y{background:linear-gradient(135deg,#fffde7,#fff9c4);border:2px solid var(--gld2);color:#5c3d08}
+.la{text-align:center;font-size:.84rem;color:var(--mut);font-weight:600;line-height:1.2}
+
+/* ACID */
+.acid{display:grid;grid-template-columns:repeat(4,1fr);gap:.45rem;margin:.58rem 0}
+.ac{border-radius:10px;padding:.65rem .6rem;text-align:center;border:2px solid}
+.aL{font-family:'Merriweather',serif;font-size:2.1rem;font-weight:900;line-height:1;display:block;margin-bottom:.14rem}
+.ac h4{font-size:.76rem;font-weight:700;margin-bottom:.1rem}
+.ac p{font-size:.68rem;line-height:1.48;opacity:.88}
+.acA{background:#fff0ee;border-color:var(--red);color:#7a1a0a}.acA .aL{color:var(--red)}
+.acC{background:#edf3ff;border-color:var(--blu);color:#102060}.acC .aL{color:var(--blu)}
+.acI{background:#edf8f0;border-color:var(--grn);color:#0a3c18}.acI .aL{color:var(--grn)}
+.acD{background:#f5eeff;border-color:var(--pur);color:#340d70}.acD .aL{color:var(--pur)}
+
+/* Users */
+.ugrid{display:grid;grid-template-columns:repeat(2,1fr);gap:.45rem;margin:.58rem 0}
+.uc{border-radius:10px;padding:.65rem;text-align:center;border:2px solid}
+.uc .ui{font-size:1.6rem;display:block;margin-bottom:.22rem}
+.uc h4{font-size:.82rem;font-weight:700;margin-bottom:.13rem;color:var(--ink)}
+.uc p{font-size:.72rem;line-height:1.46;color:var(--mut)}
+
+/* Timeline */
+.tl{position:relative;padding-left:1.6rem;margin:.55rem 0}
+.tl::before{content:'';position:absolute;left:.4rem;top:.28rem;bottom:.28rem;width:2px;background:linear-gradient(to bottom,var(--red),var(--org),var(--tel));border-radius:2px}
+.tli{position:relative;margin-bottom:.88rem}
+.tli::before{content:'';position:absolute;left:-1.24rem;top:.3rem;width:10px;height:10px;border-radius:50%;background:var(--red);border:2px solid var(--pg);box-shadow:0 0 0 2px var(--red)}
+.tly{font-family:'Fira Code',monospace;font-size:.62rem;color:var(--red);font-weight:700;letter-spacing:.04em}
+.tli h4{font-size:.88rem;font-weight:700;color:var(--ink);margin:.05rem 0 .16rem;line-height:1.3}
+.tli p{font-size:.8rem;color:var(--mut);line-height:1.58}
+
+/* Code */
+.cd{background:#14100a;color:#e8dcc8;border-radius:9px;padding:.7rem 1rem;
+  font-family:'Fira Code',monospace;font-size:.78rem;line-height:1.65;margin:.58rem 0;
+  overflow-x:auto;border:1px solid rgba(255,255,255,.07);position:relative}
+.cd .kw{color:#90caf9}.cd .st{color:#a5d6a7}.cd .cm{color:#6b7280;font-style:italic}
+.cd::after{content:'SQL';position:absolute;top:.38rem;right:.68rem;font-size:.54rem;font-weight:700;color:rgba(255,255,255,.18);letter-spacing:.1em}
+
+/* Lists */
+.ul{list-style:none;padding:0;margin:.45rem 0}
+.ul li{font-size:.88rem;color:var(--sub);padding:.22rem 0 .22rem 1.38rem;position:relative;line-height:1.74;border-bottom:1px dashed rgba(180,150,80,.26)}
+.ul li:last-child{border-bottom:none}
+.ul li::before{position:absolute;left:0;top:.28rem}
+.u-ar li::before{content:'→';color:var(--red);font-weight:800;font-size:.78rem}
+.u-ck li::before{content:'✔';color:var(--grn);font-size:.75rem}
+.u-do li::before{content:'◆';color:var(--gld2);font-size:.52rem;top:.42rem}
+.u-nm{counter-reset:n}.u-nm li{counter-increment:n}
+.u-nm li::before{content:counter(n);font-family:'Fira Code',monospace;font-size:.65rem;background:var(--red);color:#fff;border-radius:50%;width:17px;height:17px;display:inline-flex;align-items:center;justify-content:center;font-weight:700;top:.3rem}
+
+/* Stats */
+.stats{display:flex;gap:.42rem;margin:.5rem 0;flex-wrap:wrap}
+.stat{flex:1;min-width:90px;background:var(--pg2);border:1.5px solid var(--ln);border-radius:9px;padding:.52rem .68rem;text-align:center}
+.sv{font-family:'Merriweather',serif;font-size:1.5rem;font-weight:900;line-height:1;display:block;margin-bottom:.15rem}
+.sl{font-size:.6rem;font-weight:700;color:var(--mut);letter-spacing:.04em;text-transform:uppercase;line-height:1.3}
+
+/* Badges */
+.bg{display:inline-flex;padding:.1rem .44rem;border-radius:100px;font-size:.6rem;font-weight:800;letter-spacing:.04em;vertical-align:middle;margin:0 .1rem}
+.bgr{background:#fde8e8;color:#b01008}.bgb{background:#dbeafe;color:#1848a0}
+.bgg{background:#dcfce7;color:#146028}.bgy{background:#fef9c3;color:#805c08}
+.bgt{background:#ccfbf1;color:#086050}.bgp{background:#ede9fe;color:#5818a0}
+code.ic{font-family:'Fira Code',monospace;background:rgba(170,110,8,.12);padding:.05em .28em;border-radius:.2em;font-size:.84em;color:var(--gld)}
+.dv{display:flex;align-items:center;gap:.45rem;margin:.65rem 0;opacity:.38}
+.dv::before,.dv::after{content:'';flex:1;height:1px;background:var(--ln2)}
+.dv span{font-size:.56rem;color:var(--mut);white-space:nowrap;letter-spacing:.08em;text-transform:uppercase}
+
+/* End card */
+.endcard{margin-top:1.4rem;background:linear-gradient(145deg,#1e1208,#291908);
+  border-radius:18px;padding:1.8rem 1.6rem;text-align:center;
+  border:1px solid rgba(200,155,40,.22);box-shadow:0 8px 32px rgba(0,0,0,.32);position:relative;overflow:hidden}
+.endcard::before{content:'';position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(ellipse 60% 50% at 50% 0%,rgba(200,140,20,.16),transparent 55%)}
+.end-ico{font-size:2.5rem;display:block;margin-bottom:.6rem}
+.end-h{font-family:'Merriweather',serif;font-size:1.4rem;font-weight:900;color:#fff;margin-bottom:.52rem}
+.end-p{font-size:.88rem;color:rgba(255,255,255,.58);line-height:1.68;max-width:370px;margin:0 auto .9rem}
+.end-btns{display:flex;gap:.6rem;justify-content:center;flex-wrap:wrap}
+.ebtn{display:inline-flex;align-items:center;gap:.32rem;padding:.55rem 1.2rem;border-radius:100px;font-size:.85rem;font-weight:700;cursor:pointer;border:none;font-family:'Inter',sans-serif;transition:all .18s}
+.eb-q{background:linear-gradient(135deg,#8a1c0c,#c02010);color:#fff}
+.eb-q:hover{transform:translateY(-2px);box-shadow:0 4px 16px rgba(180,40,20,.5)}
+.eb-a{background:linear-gradient(135deg,#04221c,#086050);color:#fff}
+.eb-a:hover{transform:translateY(-2px);box-shadow:0 4px 16px rgba(8,90,70,.5)}
+.eb-back{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:rgba(255,255,255,.78)}
+.eb-back:hover{background:rgba(255,255,255,.2);color:#fff}
+
+/* Quiz */
+.q-num{font-family:'Fira Code',monospace;font-size:.64rem;color:var(--red);font-weight:700;letter-spacing:.1em;margin-bottom:.3rem}
+.q-txt{font-family:'Merriweather',serif;font-size:.96rem;color:var(--ink);font-weight:700;line-height:1.5;margin-bottom:.9rem}
+.q-opts{display:flex;flex-direction:column;gap:.42rem}
+.qo{display:flex;align-items:flex-start;gap:.62rem;padding:.6rem .9rem;border-radius:9px;
+  border:1.5px solid var(--ln);cursor:pointer;transition:all .16s;background:var(--pg2)}
+.qo:hover{border-color:var(--red);background:#fff0ee}
+.ql{width:25px;height:25px;border-radius:50%;background:rgba(184,36,16,.1);color:var(--red);font-weight:800;font-size:.7rem;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:.08rem}
+.qo span{font-size:.87rem;color:var(--sub);line-height:1.5}
+.qo.ok{border-color:var(--grn);background:#edf8f0}.qo.ok .ql{background:var(--grn);color:#fff}
+.qo.no{border-color:var(--red);background:#fff0ee}.qo.no .ql{background:var(--red);color:#fff}
+.qo.dm{opacity:.28;pointer-events:none}
+.qfb{margin-top:.65rem;padding:.62rem .9rem;border-radius:8px;font-size:.83rem;line-height:1.65;display:none}
+.qfb.sh{display:block;animation:fu .25s ease}
+.qfb.ok{background:#edf8f0;border:1px solid #86c899;color:#0a3c18}
+.qfb.no{background:#fff0ee;border:1px solid #f0a090;color:#7a1a0a}
+.qbtn{padding:.48rem 1.15rem;border-radius:100px;font-weight:700;font-size:.82rem;cursor:pointer;border:none;transition:all .16s;font-family:'Inter',sans-serif}
+.qbn{background:var(--ink);color:#fff}.qbn:hover{background:var(--red)}
+.qbp{background:transparent;color:var(--mut);border:1.5px solid var(--ln)}.qbp:hover{border-color:var(--ink);color:var(--ink)}
+.qbs{background:var(--red);color:#fff}.qbs:hover{background:#901808}
+.qbtn:disabled{opacity:.26;cursor:not-allowed;pointer-events:none}
+.rw{padding:1.5rem;text-align:center}
+.rs{font-family:'Merriweather',serif;font-size:3.5rem;font-weight:900;color:var(--red);line-height:1}
+.rt{font-size:.9rem;color:var(--mut);margin-bottom:.65rem}
+.rm{font-size:.88rem;color:var(--ink);margin-bottom:.9rem;line-height:1.6}
+.rb-bg{height:9px;background:var(--ln);border-radius:100px;overflow:hidden;margin:.65rem 0}
+.rb{height:100%;border-radius:100px;background:linear-gradient(90deg,var(--red),var(--gldl));transition:width 1.1s cubic-bezier(.22,1,.36,1)}
+.rev{text-align:left;margin-top:.9rem}
+.rri{padding:.48rem .72rem;border-radius:7px;margin-bottom:.34rem;font-size:.76rem;border:1px solid var(--ln)}
+.rri.ok{background:#edf8f0;border-color:#86c899;color:#0a3c18}
+.rri.no{background:#fff0ee;border-color:#f0a090;color:#7a1a0a}
+
+/* QnA */
+.ai{border:1.5px solid var(--ln);border-radius:10px;margin-bottom:.58rem;overflow:hidden}
+.aiq{display:flex;justify-content:space-between;align-items:center;padding:.68rem .95rem;cursor:pointer;background:var(--pg2);gap:.65rem;transition:background .14s}
+.aiq:hover{background:#edf8f0}
+.aiql{display:flex;flex-direction:column;gap:.14rem}
+.aicat{font-size:.58rem;font-weight:800;letter-spacing:.08em;color:var(--tel);text-transform:uppercase}
+.aiqt{font-size:.83rem;font-weight:700;color:var(--ink);line-height:1.35}
+.aiar{font-size:.88rem;transition:transform .26s;color:var(--mut);flex-shrink:0}
+.ai.op .aiar{transform:rotate(180deg)}
+.aian{max-height:0;overflow:hidden;transition:max-height .42s ease}
+.ai.op .aian{max-height:1600px}
+.aians{padding:.85rem .9rem;font-size:.82rem;color:var(--sub);line-height:1.76;border-top:1px dashed var(--ln)}
+.aians strong{color:var(--ink);font-weight:700}
+.aians em{color:var(--tel);font-style:normal;font-weight:700}
+.ap{display:block;padding-left:.95rem;margin:.12rem 0;position:relative;font-size:.79rem;color:var(--sub)}
+.ap::before{content:'›';position:absolute;left:.18rem;color:var(--red);font-weight:900}
+
+@keyframes fu{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* Responsive */
+@media(max-width:900px){#sb{width:190px}.cz.cl{left:190px}.na.pv{left:198px}}
+@media(max-width:700px){
+  #sb{width:0;border-right:none}#sb-open.show{display:flex}
+  .cz.cl,.cz.cl.sboff{left:0}.na.pv,.na.pv.sboff{left:8px}
+  #col{width:min(800px,94%)}
+  .acid{grid-template-columns:repeat(2,1fr)}.vs{grid-template-columns:1fr}
+  .c3{grid-template-columns:1fr 1fr}.cvr-grid{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:480px){.c3,.c2{grid-template-columns:1fr}.cvr-grid{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+<div id="fsh"></div>
+
+<div id="app">
+  <!-- TOPBAR -->
+  <div id="topbar">
+    <div class="tb-brand">
+      <div class="tb-badge">CH·1</div>
+      <div class="tb-title" id="PTITLE">Introduction to Database Systems</div>
+    </div>
+    <div class="tb-nav">
+      <button class="tbtn tb-b on" onclick="showV('b')">📖 Book</button>
+      <button class="tbtn tb-q" onclick="showV('q')">🧠 Quiz</button>
+      <button class="tbtn tb-a" onclick="showV('a')">❓ Q&amp;A</button>
+    </div>
+  </div>
+
+  <!-- BODY -->
+  <div id="body">
+    <div id="sb">
+      <div id="sb-head">
+        <span class="sb-ttl">📚 Contents</span>
+        <button id="sb-tog" onclick="togSB()" title="Collapse">◀</button>
+      </div>
+      <div id="sb-list"></div>
+    </div>
+    <div id="scroll"><div id="col"></div></div>
+  </div>
+
+  <!-- FOOTER -->
+  <div id="footer">
+    <div class="f-l">
+      <span class="f-pg" id="FPNUM">1 / 35</span>
+      <div class="f-dots" id="FDOTS"></div>
+    </div>
+    <div class="f-r" id="FRIGHT"></div>
+  </div>
+</div>
+
+<!-- collapsed sidebar button -->
+<button id="sb-open" onclick="togSB()" title="Open contents">▶</button>
+
+<!-- corners -->
+<div class="cz cl" id="CL" onclick="F(-1)"><div class="f2"></div><div class="f1"></div><div class="ca">‹</div></div>
+<div class="cz cr" id="CR" onclick="F(1)"><div class="f2"></div><div class="f1"></div><div class="ca">›</div></div>
+<button class="na pv" id="NP" onclick="F(-1)">‹</button>
+<button class="na nx" id="NN" onclick="F(1)">›</button>
+
+<!-- QUIZ -->
+<div class="ov" id="OQ">
+  <div class="pnl">
+    <div class="pnl-hd pnl-q">
+      <div><h2>🧠 Chapter 1 Quiz</h2><p>30 questions · All topics from the lecture</p></div>
+      <div class="qprow">
+        <div class="qpw"><div class="qpf" id="QPROG"></div></div>
+        <button class="pnl-x" onclick="showV('b')">✕</button>
+      </div>
+    </div>
+    <div class="pnl-b" id="QBODY"></div>
+    <div class="pnl-f" id="QFOOT"></div>
+  </div>
+</div>
+
+<!-- Q&A -->
+<div class="ov" id="OA">
+  <div class="pnl">
+    <div class="pnl-hd pnl-a">
+      <div><h2>❓ Questions &amp; Answers</h2><p>20 detailed exam-ready answers — click any question to expand</p></div>
+      <button class="pnl-x" onclick="showV('b')">✕</button>
+    </div>
+    <div class="pnl-b" id="ABODY"></div>
+  </div>
+</div>
+
+<script>
+// ══════════════ PAGE DATA ══════════════
+const PGS=[
+{t:"Welcome",h:`<div class="cvr">
+<div class="cvr-hero">
+<div class="cvr-tag">Database System Concepts · 7th Edition</div>
+<div class="cvr-ring"><span class="cvr-ico">🗄️</span></div>
+<div class="cvr-ch">Chapter 1</div>
+<h1 class="cvr-h"><em>Introduction to</em><br>Database Systems</h1>
+<p class="cvr-desc">Your complete visual study guide — every lecture slide, every concept, comparison tables, real-world examples, and full exam preparation.</p>
+<div class="cvr-pills">
+<span class="cpill cp-r">35 Pages</span>
+<span class="cpill cp-b">30 Quiz Questions</span>
+<span class="cpill cp-g">20 Q&amp;A Answers</span>
+<span class="cpill cp-t">All Lecture Topics</span>
+</div>
+<button class="cvr-btn" onclick="F(1)">Start Reading →</button>
+</div>
+<div class="cvr-topics">
+<div class="cvr-tops-title">📋 What's Inside — Click any topic to jump directly</div>
+<div class="cvr-grid">
+<div class="ctopic" onclick="G(2)"><span class="ct-i">🗄️</span><span class="ct-l">What is DBMS?</span></div>
+<div class="ctopic" onclick="G(5)"><span class="ct-i">⚠️</span><span class="ct-l">File System Problems</span></div>
+<div class="ctopic" onclick="G(6)"><span class="ct-i">⚖️</span><span class="ct-l">File vs DBMS Table</span></div>
+<div class="ctopic" onclick="G(7)"><span class="ct-i">⚡</span><span class="ct-l">Atomicity &amp; Concurrency</span></div>
+<div class="ctopic" onclick="G(9)"><span class="ct-i">👁️</span><span class="ct-l">View of Data</span></div>
+<div class="ctopic" onclick="G(11)"><span class="ct-i">🗂️</span><span class="ct-l">Data Models</span></div>
+<div class="ctopic" onclick="G(12)"><span class="ct-i">📊</span><span class="ct-l">Relational Model</span></div>
+<div class="ctopic" onclick="G(15)"><span class="ct-i">🔓</span><span class="ct-l">Physical Independence</span></div>
+<div class="ctopic" onclick="G(16)"><span class="ct-i">💬</span><span class="ct-l">DDL</span></div>
+<div class="ctopic" onclick="G(17)"><span class="ct-i">🔄</span><span class="ct-l">DML &amp; SQL</span></div>
+<div class="ctopic" onclick="G(22)"><span class="ct-i">📦</span><span class="ct-l">Storage Manager</span></div>
+<div class="ctopic" onclick="G(24)"><span class="ct-i">🔍</span><span class="ct-l">Query Processor</span></div>
+<div class="ctopic" onclick="G(27)"><span class="ct-i">🧪</span><span class="ct-l">ACID Properties</span></div>
+<div class="ctopic" onclick="G(29)"><span class="ct-i">🏢</span><span class="ct-l">3-Tier Architecture</span></div>
+<div class="ctopic" onclick="G(30)"><span class="ct-i">👥</span><span class="ct-l">Database Users</span></div>
+<div class="ctopic" onclick="G(34)"><span class="ct-i">✅</span><span class="ct-l">Summary &amp; Exam</span></div>
+</div>
+</div>
+</div>`},
+{t:"Chapter Outline",h:`<div class="pgh"><span class="pgh-i">📋</span><h2 class="pgh-t">Chapter <em>Outline</em></h2></div>
+<p class="p">This chapter is your <span class="hy">complete foundation</span> of database systems. Master every topic below and you will understand how every major application in the world stores and manages data.</p>
+<div class="cards c2">
+<div class="card c-r"><span class="ci">🏢</span><h4>Applications</h4><p>Banks, airlines, universities, social media, navigation — databases are everywhere</p></div>
+<div class="card c-o"><span class="ci">🎯</span><h4>Purpose</h4><p>Why file systems failed and DBMS was invented to solve 7 critical problems</p></div>
+<div class="card c-t"><span class="ci">👁️</span><h4>View of Data</h4><p>3 levels of abstraction — Physical, Logical, View</p></div>
+<div class="card c-b"><span class="ci">💬</span><h4>DB Languages</h4><p>DDL creates structure; DML and SQL query and modify data</p></div>
+<div class="card c-g"><span class="ci">🏗️</span><h4>DB Design</h4><p>Logical design (what to store) and Physical design (how to store it)</p></div>
+<div class="card c-y"><span class="ci">⚙️</span><h4>DB Engine</h4><p>Storage Manager + Query Processor + Transaction Manager</p></div>
+<div class="card c-p"><span class="ci">🌐</span><h4>Architecture</h4><p>Centralised, Client-Server, Parallel, Distributed, Three-Tier</p></div>
+<div class="card c-r"><span class="ci">👥</span><h4>Users &amp; DBA</h4><p>4 types of users — from naive end-users to database administrator</p></div>
+</div>
+<div class="bx bx-t"><span class="bxh">💡 How to navigate</span>Click the <strong>gold corner</strong> (bottom-right) to go forward, or press <strong>→ ←</strong> arrow keys. Click any item in the left sidebar to jump directly to any page. Use the Quiz and Q&amp;A buttons in the top bar to practise.</div>`},
+{t:"What is a DBMS?",h:`<div class="pgh"><span class="pgh-i">🗄️</span><h2 class="pgh-t">What is a <em>DBMS?</em></h2></div>
+<p class="p">A <span class="hy"><strong>Database Management System (DBMS)</strong></span> contains information about a particular enterprise and consists of three elements:</p>
+<div class="cards c3">
+<div class="card c-r"><span class="ci">🔗</span><h4>Interrelated Data</h4><p>A collection of logically connected data stored together — not scattered in separate files</p></div>
+<div class="card c-b"><span class="ci">⚙️</span><h4>Programs to Access</h4><p>A set of programs to access, modify, and manage the data efficiently and safely</p></div>
+<div class="card c-g"><span class="ci">🌱</span><h4>Efficient Environment</h4><p>Both convenient and efficient to use for all user types</p></div>
+</div>
+<div class="bx bx-i"><span class="bxh">⭐ From the Lecture</span>Database systems manage data that is: <strong>Highly valuable · Relatively large · Accessed by multiple users and applications, often at the same time.</strong><br>A modern DBMS is a complex software system whose task is to manage a large, complex collection of data. <em>"Databases touch all aspects of our lives."</em></div>
+<div class="stats">
+<div class="stat"><span class="sv" style="color:var(--red)">3</span><span class="sl">Core<br>Components</span></div>
+<div class="stat"><span class="sv" style="color:var(--blu)">4</span><span class="sl">User<br>Types</span></div>
+<div class="stat"><span class="sv" style="color:var(--tel)">3</span><span class="sl">Abstraction<br>Levels</span></div>
+<div class="stat"><span class="sv" style="color:var(--gld)">4</span><span class="sl">ACID<br>Properties</span></div>
+<div class="stat"><span class="sv" style="color:var(--grn)">3</span><span class="sl">Engine<br>Components</span></div>
+</div>
+<div class="bx bx-t"><span class="bxh">🎯 Analogy</span>🛒 A DBMS is like a <strong>supermarket</strong>. Products (data) are organised on shelves. Multiple customers (users) shop simultaneously. The inventory system (DBMS) tracks everything in real time. Without it — a random pile!</div>`},
+{t:"DB Applications — Enterprise & Finance",h:`<div class="pgh"><span class="pgh-i">🏢</span><h2 class="pgh-t">Application <em>Examples</em></h2></div>
+<div class="sh"><span>🏭</span> Enterprise Information</div>
+<table class="tbl"><thead><tr><th>Domain</th><th>Data Stored</th><th>Real Example</th></tr></thead><tbody>
+<tr><td>🛒 <strong>Sales</strong></td><td>Customers, products, purchases</td><td>Amazon, Coupang</td></tr>
+<tr><td>💰 <strong>Accounting</strong></td><td>Payments, receipts, assets, liabilities</td><td>SAP, QuickBooks</td></tr>
+<tr><td>👥 <strong>Human Resources</strong></td><td>Employees, salaries, payroll taxes, benefits</td><td>Workday, SAP HR</td></tr>
+<tr><td>🏭 <strong>Manufacturing</strong></td><td>Production, inventory, orders, supply chain</td><td>Tesla ERP</td></tr>
+</tbody></table>
+<div class="sh"><span>🏦</span> Banking &amp; Finance</div>
+<ul class="ul u-ar">
+<li><strong>Customer information</strong> — accounts, loans, and banking transactions</li>
+<li><strong>Credit card transactions</strong> — every tap recorded in milliseconds</li>
+<li><strong>Finance</strong> — real-time stock prices, bond trades, market data streams 24/7</li>
+</ul>
+<div class="sh"><span>🎓</span> Universities</div>
+<ul class="ul u-ar"><li>Registration, grades, GPA computation, transcripts, class rosters — <em>this is you right now!</em></li></ul>
+<div class="bx bx-r"><span class="bxh">🌍 Real-World Example</span>📱 When you tap to pay, at least <strong>3 DBMS systems</strong> communicate in under 2 seconds — your bank, the Visa/Mastercard network, and the merchant. Each handles <strong>millions of transactions per day!</strong></div>`},
+{t:"DB Applications — Web & More",h:`<div class="pgh"><span class="pgh-i">🌐</span><h2 class="pgh-t">Applications <em>(Continued)</em></h2></div>
+<div class="cards c2">
+<div class="card c-t"><span class="ci">✈️</span><h4>Airlines</h4><p>Reservations, seat maps, schedules, check-in. Millions of bookings daily worldwide.</p></div>
+<div class="card c-b"><span class="ci">📱</span><h4>Telecommunication</h4><p>Call records, texts, data usage, monthly billing, prepaid card balances.</p></div>
+<div class="card c-o"><span class="ci">🛍️</span><h4>Online Retail</h4><p>Order tracking, personalised recommendations. Amazon: <strong>1,600+ orders/second!</strong></p></div>
+<div class="card c-p"><span class="ci">📢</span><h4>Online Advertisements</h4><p>Every ad is targeted using your profile, browsing history, and purchase patterns.</p></div>
+<div class="card c-b"><span class="ci">📄</span><h4>Document Databases</h4><p>User-generated content — posts, comments, articles at massive web-scale.</p></div>
+<div class="card c-g"><span class="ci">🗺️</span><h4>Navigation Systems</h4><p>Locations + exact routes of roads, trains, and buses. Google Maps = <strong>billions of road segments!</strong></p></div>
+</div>
+<div class="bx bx-k"><span class="bxh">🔑 Key Insight</span><span class="hy"><strong>Databases are everywhere.</strong></span> If you use a smartphone, you interact with dozens of database systems every single day — banking, maps, social media, streaming, shopping — without even realising it.</div>`},
+{t:"Purpose — File System Problems",h:`<div class="pgh"><span class="pgh-i">🎯</span><h2 class="pgh-t">Purpose of Database Systems</h2></div>
+<p class="p">In the early days, apps were built on <span class="hp"><strong>file systems</strong></span>. This caused <strong>7 serious problems</strong> — the exact reason DBMS was invented:</p>
+<div class="steps">
+<div class="step"><div class="sn">1</div><div class="sc"><h4>🔁 Data Redundancy &amp; Inconsistency</h4><p>Same data in multiple files in different formats. Update one, miss others → inconsistent data everywhere.</p></div></div>
+<div class="step"><div class="sn">2</div><div class="sc"><h4>🔍 Difficulty Accessing Data</h4><p>Must write a <strong>new program for every new task</strong>. No general-purpose query mechanism — slow and expensive.</p></div></div>
+<div class="step"><div class="sn">3</div><div class="sc"><h4>🏝️ Data Isolation</h4><p>Data scattered in multiple files with <strong>incompatible formats</strong>. Combining data was extremely difficult.</p></div></div>
+<div class="step"><div class="sn">4</div><div class="sc"><h4>⚖️ Integrity Problems</h4><p>Constraints like <code class="ic">account_balance &gt; 0</code> buried in program code — not at the data level. Hard to add or change rules.</p></div></div>
+<div class="step"><div class="sn">5</div><div class="sc"><h4>💥 Atomicity Failures</h4><p>System crashes leave <strong>partial updates</strong> applied with no rollback. Money deducted but never credited!</p></div></div>
+<div class="step"><div class="sn">6</div><div class="sc"><h4>👥 Concurrent Access Problems</h4><p>Uncontrolled simultaneous access causes <strong>lost updates</strong>. Two users update the same record → corrupt data.</p></div></div>
+<div class="step"><div class="sn">7</div><div class="sc"><h4>🔒 Security Problems</h4><p>Nearly impossible to give users access to <em>some</em> data but not all. No fine-grained access control.</p></div></div>
+</div>
+<div class="bx bx-i"><span class="bxh">⭐ Key Conclusion</span><span class="hg"><strong>Because of these 7 problems, centralised database systems replaced file systems. DBMS solves ALL of them.</strong></span></div>`},
+{t:"File System vs DBMS — Comparison",h:`<div class="pgh"><span class="pgh-i">⚖️</span><h2 class="pgh-t">File System vs DBMS — <em>Full Comparison</em></h2></div>
+<table class="tbl"><thead><tr><th>Feature</th><th class="hr">❌ File System</th><th class="hg_">✅ DBMS</th></tr></thead><tbody>
+<tr><td>🔁 <strong>Data Redundancy</strong></td><td class="no">High — data duplicated in many files</td><td class="ok">Minimised — single source of truth</td></tr>
+<tr><td>🔍 <strong>Data Access</strong></td><td class="no">Write new program for every query</td><td class="ok">General-purpose SQL query language</td></tr>
+<tr><td>🏝️ <strong>Data Isolation</strong></td><td class="no">Multiple incompatible formats</td><td class="ok">Unified schema and query interface</td></tr>
+<tr><td>⚖️ <strong>Integrity</strong></td><td class="no">Constraints buried in program code</td><td class="ok">Declared in schema, auto-enforced</td></tr>
+<tr><td>💥 <strong>Atomicity</strong></td><td class="no">No rollback — partial updates possible</td><td class="ok">Full ACID transaction support</td></tr>
+<tr><td>👥 <strong>Concurrency</strong></td><td class="no">No control — lost updates occur</td><td class="ok">Concurrency-control manager</td></tr>
+<tr><td>🔒 <strong>Security</strong></td><td class="no">All-or-nothing file permissions</td><td class="ok">Fine-grained role-based access</td></tr>
+<tr><td>📊 <strong>Data Sharing</strong></td><td class="no">Must copy data between programs</td><td class="ok">Multiple apps share same database</td></tr>
+<tr><td>💾 <strong>Backup &amp; Recovery</strong></td><td class="no">Manual and unreliable</td><td class="ok">Automatic with point-in-time recovery</td></tr>
+<tr><td>📈 <strong>Scalability</strong></td><td class="no">Very limited — one process</td><td class="ok">Thousands of concurrent users</td></tr>
+</tbody></table>
+<div class="bx bx-k"><span class="bxh">🔑 Bottom Line</span><span class="hg"><strong>Every limitation of the file system approach is solved by DBMS.</strong></span> This is why virtually all modern applications use a database system.</div>`},
+{t:"Atomicity, Concurrency & Security",h:`<div class="pgh"><span class="pgh-i">⚡</span><h2 class="pgh-t">Atomicity, Concurrency &amp; <em>Security</em></h2></div>
+<div class="sh"><span>💥</span> Atomicity of Updates <span class="bg bgr">EXAM TOPIC</span></div>
+<div class="bx bx-i"><span class="bxh">⭐ Classic Fund Transfer Example</span><strong>Transfer ₩100,000 from Account A to Account B:</strong><br>📍 Step 1 — Debit A ₩100,000 &nbsp;&nbsp; 📍 Step 2 — Credit B ₩100,000<br><br>⚠️ Server crashes after Step 1 only! → ₩100,000 deducted but never added to B. <strong>Money disappears!</strong><br><br>✅ Solution: the transaction must <span class="hy">either complete ENTIRELY or not happen at all.</span></div>
+<div class="sh"><span>🔄</span> The Lost Update Problem <span class="bg bgb">EXAM TOPIC</span></div>
+<div class="vs">
+<div class="vc vr"><div class="vh">❌ Without Concurrency Control</div><div class="vbd">
+<div class="vi"><div class="vic">1️⃣</div><p>Teller A reads balance = ₩100,000</p></div>
+<div class="vi"><div class="vic">2️⃣</div><p>Teller B reads balance = ₩100,000 (same time!)</p></div>
+<div class="vi"><div class="vic">3️⃣</div><p>Teller A withdraws ₩50,000 → writes ₩50,000</p></div>
+<div class="vi"><div class="vic">4️⃣</div><p>Teller B withdraws ₩50,000 → <strong>overwrites</strong> with ₩50,000</p></div>
+<div class="vi"><div class="vic">💀</div><p><span class="hp">Shows ₩50,000, should be ₩0! ₩50,000 created from nothing!</span></p></div>
+</div></div>
+<div class="vc vg"><div class="vh">✅ With DBMS Concurrency Control</div><div class="vbd">
+<div class="vi"><div class="vic">🔒</div><p>Transaction Manager locks the account</p></div>
+<div class="vi"><div class="vic">1️⃣</div><p>Teller A reads, withdraws ₩50,000, writes ₩50,000 ✔</p></div>
+<div class="vi"><div class="vic">2️⃣</div><p>Teller B waits for lock, then reads ₩50,000</p></div>
+<div class="vi"><div class="vic">3️⃣</div><p>Teller B withdraws ₩50,000 → writes ₩0 ✔</p></div>
+<div class="vi"><div class="vic">✅</div><p><span class="hg">Result: ₩0 — correct! Lost update prevented.</span></p></div>
+</div></div></div>`},
+{t:"University Database Example",h:`<div class="pgh"><span class="pgh-i">🎓</span><h2 class="pgh-t">University Database <em>Example</em></h2></div>
+<p class="p">This textbook uses a <span class="hy"><strong>university database</strong></span> to illustrate all concepts throughout the course.</p>
+<table class="tbl"><thead><tr><th>Table</th><th>Key Attributes</th><th>Sample Record</th></tr></thead><tbody>
+<tr><td>👨‍🎓 <strong>student</strong></td><td>ID, name, dept_name, tot_cred</td><td>12345, "Kim", "Comp. Sci.", 90</td></tr>
+<tr><td>👩‍🏫 <strong>instructor</strong></td><td>ID, name, dept_name, salary</td><td>10101, "Srinivasan", "Comp. Sci.", 65000</td></tr>
+<tr><td>📚 <strong>course</strong></td><td>course_id, title, dept_name, credits</td><td>"CS-101", "Intro DB", "Comp. Sci.", 4</td></tr>
+<tr><td>📝 <strong>takes</strong></td><td>student_id, course_id, semester, grade</td><td>12345, "CS-101", "Fall", "A"</td></tr>
+<tr><td>🏛️ <strong>department</strong></td><td>dept_name, building, budget</td><td>"Comp. Sci.", "Taylor", ₩100,000</td></tr>
+</tbody></table>
+<div class="sh"><span>💻</span> Application Program Examples</div>
+<ul class="ul u-ck">
+<li>Add new students, instructors, and courses to the database</li>
+<li>Register students for courses and generate class rosters</li>
+<li>Assign grades, compute GPA, and generate official transcripts</li>
+</ul>
+<div class="bx bx-r"><span class="bxh">🌍 This Is You!</span>📱 Right now, when you check your grades or download a transcript — a university database system <strong>exactly like this one</strong> is running behind the scenes!</div>`},
+{t:"View of Data & Abstraction",h:`<div class="pgh"><span class="pgh-i">👁️</span><h2 class="pgh-t">View of Data &amp; <em>Abstraction</em></h2></div>
+<p class="p">A major purpose of a database is to provide users with an <span class="hg"><strong>abstract view of the data</strong></span> — hiding the complexity of how data is stored.</p>
+<div class="bx bx-k"><span class="bxh">🔑 Data Abstraction Defined</span>Hide the complexity of data structures to represent data from users through <strong>several levels of data abstraction</strong>. Each level sees only what it needs.</div>
+<div class="layers">
+<div class="layer ly-t">👁️ VIEW LEVEL — The highest level<br><small>Application programs hide data type details. Views can hide information (e.g., salary) for security. Different users get different views of the same data.</small></div>
+<div class="la">↕ hides complexity ↕</div>
+<div class="layer ly-b">🧩 LOGICAL LEVEL — The middle level<br><small>Describes WHAT data is stored and the relationships among the data. The schema. Where programmers and DBAs work.</small></div>
+<div class="la">↕ hides physical storage ↕</div>
+<div class="layer ly-y">💾 PHYSICAL LEVEL — The lowest level<br><small>Describes HOW a record (e.g., instructor) is stored on disk — file format, block sizes, compression, index structures, byte layout.</small></div>
+</div>
+<div class="bx bx-t"><span class="bxh">🎯 ATM Analogy</span>🏧 <strong>View:</strong> You see "₩500,000 balance." &nbsp;<strong>Logical:</strong> Bank stores account_id, balance, currency in a table. &nbsp;<strong>Physical:</strong> Binary bytes on disk in a specific byte format. <em>You only need the View level!</em></div>`},
+{t:"Three Abstraction Levels — Details",h:`<div class="pgh"><span class="pgh-i">🏗️</span><h2 class="pgh-t">Three Levels — <em>Details</em></h2></div>
+<div class="vs">
+<div class="vc vb"><div class="vh">💾 Physical Level</div><div class="vbd">
+<div class="vi"><div class="vic">📋</div><p>Describes HOW a record is stored on disk</p></div>
+<div class="vi"><div class="vic">🔧</div><p>File organisation, block sizes, compression</p></div>
+<div class="vi"><div class="vic">🔖</div><p>B+-tree index structures, byte offsets</p></div>
+<div class="vi"><div class="vic">👤</div><p><strong>Who:</strong> Storage engineers, DBAs (physical design)</p></div>
+</div></div>
+<div class="vc vt"><div class="vh">🧩 Logical Level</div><div class="vbd">
+<div class="vi"><div class="vic">📋</div><p>Describes WHAT data is stored and relationships</p></div>
+<div class="vi"><div class="vic">🔧</div><p>Table schemas, column types, constraints</p></div>
+<div class="vi"><div class="vic">📝</div><p>Lecture: <code style="font-family:'Fira Code',monospace;font-size:.72rem;background:#edf8f0;padding:.1rem .28rem;border-radius:.2rem">type instructor = record ID:string; name:string; dept_name:string; salary:integer; end;</code></p></div>
+<div class="vi"><div class="vic">👤</div><p><strong>Who:</strong> Programmers, DBAs (logical design)</p></div>
+</div></div></div>
+<div class="sh"><span>👁️</span> View Level — Same Data, Different Views</div>
+<table class="tbl"><thead><tr><th>User</th><th>View Shown</th><th>Hidden From Them</th></tr></thead><tbody>
+<tr><td>👨‍⚕️ Doctor</td><td>Patient medical history</td><td>Billing info, admin records</td></tr>
+<tr><td>👩‍💼 Billing Staff</td><td>Charges and insurance info</td><td>Medical diagnoses</td></tr>
+<tr><td>👮 Admin</td><td>Contact information only</td><td>Medical and billing data</td></tr>
+</tbody></table>
+<div class="bx bx-k"><span class="bxh">🔑 Key Principle</span>"The interfaces between the various levels should be well defined so that <span class="hy"><strong>changes in some parts do not seriously influence others.</strong></span>" — This is data independence!</div>`},
+{t:"Data Models",h:`<div class="pgh"><span class="pgh-i">🗂️</span><h2 class="pgh-t">Data <em>Models</em></h2></div>
+<p class="p">A <span class="hy"><strong>data model</strong></span> is a collection of tools for describing: <span class="bg bgr">Data</span> <span class="bg bgb">Relationships</span> <span class="bg bgg">Semantics</span> <span class="bg bgy">Constraints</span></p>
+<table class="tbl"><thead><tr><th>Model</th><th>Description</th><th>Structure</th><th>Status</th></tr></thead><tbody>
+<tr><td>📊 <strong>Relational</strong></td><td>Data in tables with rows &amp; columns</td><td>Tables linked by keys</td><td><span class="bg bgr">Industry Standard</span></td></tr>
+<tr><td>🔗 <strong>Entity-Relationship</strong></td><td>Visual entities and relationships — for design</td><td>ER diagrams</td><td><span class="bg bgg">Design Tool</span></td></tr>
+<tr><td>🏛️ <strong>Object-based</strong></td><td>Object-oriented and Object-relational models</td><td>Objects with methods</td><td><span class="bg bgb">Advanced</span></td></tr>
+<tr><td>🌐 <strong>Semi-structured (XML)</strong></td><td>eXtensible Markup Language — flexible</td><td>Nested tags</td><td><span class="bg bgt">Web/APIs</span></td></tr>
+<tr><td>🌳 <strong>Hierarchical</strong></td><td>Tree parent-child structure — older model</td><td>Tree branches</td><td><span class="bg bgp">Legacy</span></td></tr>
+<tr><td>🔀 <strong>Network</strong></td><td>Graph structure — older model</td><td>Pointer nodes</td><td><span class="bg bgp">Legacy</span></td></tr>
+</tbody></table>
+<div class="bx bx-i"><span class="bxh">⭐ Most Important!</span>The <span class="hy"><strong>Relational Model</strong></span> (Ted Codd, 1970) is the foundation of nearly all modern databases: MySQL, PostgreSQL, Oracle, SQL Server, SQLite. It organises all data into simple <strong>tables</strong> and uses SQL to query them.</div>`},
+{t:"The Relational Model",h:`<div class="pgh"><span class="pgh-i">📊</span><h2 class="pgh-t">The Relational <em>Model</em></h2></div>
+<p class="p"><span class="hg">All data is stored in <strong>tables (relations)</strong></span>. Each table has named <span class="hb"><strong>columns (attributes)</strong></span> and <span class="ho"><strong>rows (tuples/records)</strong></span>.</p>
+<table class="tbl"><thead><tr><th>ID <span class="bg bgy">PK</span></th><th>name</th><th>dept_name</th><th>salary</th></tr></thead><tbody>
+<tr><td><strong>10101</strong></td><td>Srinivasan</td><td>Comp. Sci.</td><td>65,000</td></tr>
+<tr><td><strong>12121</strong></td><td>Wu</td><td>Finance</td><td>90,000</td></tr>
+<tr><td><strong>15151</strong></td><td>Mozart</td><td>Music</td><td>40,000</td></tr>
+<tr><td><strong>22222</strong></td><td>Einstein</td><td>Physics</td><td>95,000</td></tr>
+<tr><td><strong>32343</strong></td><td>El Said</td><td>History</td><td>60,000</td></tr>
+</tbody></table>
+<p class="p sm" style="color:var(--mut)">↑ The <em>instructor</em> relation — example from the textbook</p>
+<div class="cards c2" style="margin-top:.6rem">
+<div class="card c-b"><span class="ci">🔑</span><h4>Primary Key (PK)</h4><p>Uniquely identifies each row. Cannot be NULL or duplicate. Here: ID is the primary key.</p></div>
+<div class="card c-r"><span class="ci">🔗</span><h4>Foreign Key (FK)</h4><p>Links one table to another. dept_name in instructor refers to dept_name in department table.</p></div>
+</div>
+<div class="bx bx-i"><span class="bxh">⭐ Ted Codd — ACM Turing Award 1981</span>👨‍🔬 Ted Codd (IBM) defined the relational data model in 1970. IBM Research → <strong>System R</strong>. UC Berkeley (Stonebraker) → <strong>Ingres</strong>. <strong>Oracle</strong> → first commercial relational database (1979).</div>`},
+{t:"Sample Relational Database",h:`<div class="pgh"><span class="pgh-i">📊</span><h2 class="pgh-t">Sample Relational <em>Database</em></h2></div>
+<p class="p">Multiple related tables linked by <span class="hb"><strong>foreign keys</strong></span>:</p>
+<p class="p sm" style="font-weight:700;margin-bottom:.12rem">📋 department table:</p>
+<table class="tbl"><thead><tr><th>dept_name <span class="bg bgy">PK</span></th><th>building</th><th>budget</th></tr></thead><tbody>
+<tr><td><strong>Comp. Sci.</strong></td><td>Taylor</td><td>100,000</td></tr>
+<tr><td><strong>Finance</strong></td><td>Painter</td><td>120,000</td></tr>
+<tr><td><strong>Music</strong></td><td>Packard</td><td>80,000</td></tr>
+</tbody></table>
+<p class="p sm" style="font-weight:700;margin:.45rem 0 .12rem">📋 course table:</p>
+<table class="tbl"><thead><tr><th>course_id <span class="bg bgy">PK</span></th><th>title</th><th>dept_name <span class="bg bgb">FK</span></th><th>credits</th></tr></thead><tbody>
+<tr><td><strong>CS-101</strong></td><td>Intro. to Computer Sci.</td><td>Comp. Sci.</td><td>4</td></tr>
+<tr><td><strong>MU-199</strong></td><td>Music Video Production</td><td>Music</td><td>3</td></tr>
+<tr><td><strong>FI-301</strong></td><td>Corporate Finance</td><td>Finance</td><td>3</td></tr>
+</tbody></table>
+<div class="bx bx-k"><span class="bxh">🔑 Foreign Key Explained</span>The <span class="hb">dept_name</span> in <em>course</em> must match a <span class="hb">dept_name</span> in <em>department</em>. You cannot add a course for a non-existent department. This is <strong>referential integrity</strong> — automatically enforced by DBMS.</div>`},
+{t:"Instances and Schemas",h:`<div class="pgh"><span class="pgh-i">🧬</span><h2 class="pgh-t">Instances and <em>Schemas</em></h2></div>
+<p class="p">Analogous to <span class="hy"><strong>types and variables</strong></span> in programming languages:</p>
+<div class="vs">
+<div class="vc vb"><div class="vh">📐 Schema = Blueprint</div><div class="vbd">
+<div class="vi"><div class="vic">📋</div><p>The overall <strong>logical structure</strong> of the database</p></div>
+<div class="vi"><div class="vic">⏱️</div><p>Changes <strong>infrequently</strong> — modified only by DBAs</p></div>
+<div class="vi"><div class="vic">🔤</div><p>Analogous to <em>type information</em> of a variable</p></div>
+<div class="vi"><div class="vic">💡</div><p>"DB has an instructor table with columns ID, name, dept_name, salary"</p></div>
+</div></div>
+<div class="vc vt"><div class="vh">📸 Instance = Actual Data</div><div class="vbd">
+<div class="vi"><div class="vic">📋</div><p>The <strong>actual content</strong> at a particular point in time</p></div>
+<div class="vi"><div class="vic">⏱️</div><p>Changes <strong>constantly</strong> — every INSERT / UPDATE / DELETE</p></div>
+<div class="vi"><div class="vic">🔤</div><p>Analogous to the <em>value of a variable</em> right now</p></div>
+<div class="vi"><div class="vic">💡</div><p>The actual rows currently in the instructor table</p></div>
+</div></div></div>
+<div class="cards c2" style="margin-top:.5rem">
+<div class="card c-y"><span class="ci">📐</span><h4>Logical Schema</h4><p>Overall logical structure — what developers and apps depend on</p></div>
+<div class="card c-p"><span class="ci">💾</span><h4>Physical Schema</h4><p>How data is laid out on storage (files, blocks, indices)</p></div>
+</div>
+<div class="bx bx-k"><span class="bxh">🔑 Programming Analogy</span><code class="ic">Schema</code> = class definition in Java (blueprint, written once).<br><code class="ic">Instance</code> = current object state (actual values, change constantly).</div>`},
+{t:"Physical Data Independence",h:`<div class="pgh"><span class="pgh-i">🔓</span><h2 class="pgh-t">Physical Data <em>Independence</em></h2></div>
+<div class="bx bx-i"><span class="bxh">⭐ Exact Definition from Lecture</span><strong>Physical Data Independence</strong> — the ability to <span class="hy">modify the physical schema without changing the logical schema</span> or application programs.<br><br>"The interfaces between levels should be well defined so that <span class="hg"><strong>changes in some parts do not seriously influence others.</strong></span>"</div>
+<div class="vs">
+<div class="vc vr"><div class="vh">❌ Without Independence</div><div class="vbd">
+<div class="vi"><div class="vic">💾</div><p>Change storage from HDD → SSD</p></div>
+<div class="vi"><div class="vic">💻</div><p>Must rewrite <strong>ALL</strong> application code</p></div>
+<div class="vi"><div class="vic">💸</div><p>Extremely expensive — weeks or months</p></div>
+</div></div>
+<div class="vc vg"><div class="vh">✅ With Physical Independence</div><div class="vbd">
+<div class="vi"><div class="vic">💾</div><p>Change storage from HDD → SSD</p></div>
+<div class="vi"><div class="vic">💻</div><p><strong>Zero</strong> application code changes needed</p></div>
+<div class="vi"><div class="vic">🚀</div><p>Add index for speed — apps automatically faster</p></div>
+</div></div></div>
+<div class="bx bx-r"><span class="bxh">🌍 Netflix Example</span>🎬 Netflix upgraded its entire storage from HDDs to NVMe SSDs across all data centres. <span class="hg"><strong>Not a single line of application code changed.</strong></span> Users just noticed everything was faster.</div>`},
+{t:"Data Definition Language (DDL)",h:`<div class="pgh"><span class="pgh-i">💬</span><h2 class="pgh-t">Data Definition Language <em>(DDL)</em></h2></div>
+<p class="p"><span class="hy"><strong>DDL</strong></span> is the notation for <em>defining</em> the database schema. DDL creates structure — it does NOT insert data.</p>
+<div class="cd"><span class="kw">CREATE TABLE</span> instructor (
+    ID          <span class="kw">char</span>(5),
+    name        <span class="kw">varchar</span>(20),
+    dept_name   <span class="kw">varchar</span>(20),
+    salary      <span class="kw">numeric</span>(8,2),
+    <span class="kw">PRIMARY KEY</span> (ID)  <span class="cm">-- uniquely identifies each row</span>
+);
+<span class="cm">-- Creates the blueprint. No data inserted yet!</span></div>
+<div class="sh"><span>📚</span> DDL Creates — in the Data Dictionary</div>
+<table class="tbl"><thead><tr><th>Item Stored</th><th>Description</th><th>Example</th></tr></thead><tbody>
+<tr><td>📊 <strong>Database Schema</strong></td><td>Table names, column names, data types</td><td>instructor(ID char(5), name varchar(20)...)</td></tr>
+<tr><td>⚖️ <strong>Integrity Constraints</strong></td><td>Rules about valid data and relationships</td><td>PRIMARY KEY (ID), FOREIGN KEY</td></tr>
+<tr><td>🔑 <strong>Authorization</strong></td><td>Who can access what data</td><td>GRANT SELECT ON instructor TO user</td></tr>
+</tbody></table>
+<div class="bx bx-k"><span class="bxh">🔑 Data Dictionary</span>A special internal database storing <span class="hy">metadata (data about data)</span>. The query optimizer reads it to estimate execution costs.</div>`},
+{t:"DML — Procedural vs Declarative",h:`<div class="pgh"><span class="pgh-i">🔄</span><h2 class="pgh-t">DML — Procedural vs <em>Declarative</em></h2></div>
+<p class="p"><span class="hy"><strong>DML (Data Manipulation Language)</strong></span> is the language for accessing and updating data. Also known as a <strong>query language</strong>. Two fundamental types:</p>
+<div class="vs">
+<div class="vc vr"><div class="vh">📋 Procedural DML</div><div class="vbd">
+<div class="vi"><div class="vic">📌</div><p>Specifies <strong>WHAT</strong> AND <strong>HOW</strong> to get data</p></div>
+<div class="vi"><div class="vic">⚙️</div><p>User provides step-by-step instructions</p></div>
+<div class="vi"><div class="vic">📚</div><p>도서관에서 책 찾기 — 상세 경로 설명<br>(Give turn-by-turn directions yourself)</p></div>
+<div class="vi"><div class="vic">📊</div><p>Harder to learn, maximum control</p></div>
+</div></div>
+<div class="vc vg"><div class="vh">✨ Declarative DML</div><div class="vbd">
+<div class="vi"><div class="vic">📌</div><p>Specifies only <strong>WHAT</strong> — system figures out HOW</p></div>
+<div class="vi"><div class="vic">⚙️</div><p>Optimizer automatically chooses best plan</p></div>
+<div class="vi"><div class="vic">📚</div><p>도서관 사서에게 요청<br>(Ask the librarian — they handle it!)</p></div>
+<div class="vi"><div class="vic">📊</div><p><span class="hg">Easier to learn and use</span> — lecture states this!</p></div>
+</div></div></div>
+<div class="bx bx-i"><span class="bxh">⭐ Key Facts</span>• Declarative DMLs are usually <span class="hg"><strong>easier to learn and use</strong></span> than procedural DMLs.<br>• The portion involving information retrieval is called a <strong>query language</strong>.<br>• <span class="hy">SQL is the world's most widely used declarative DML</span> — industry standard since the 1980s.</div>`},
+{t:"SQL Query Language",h:`<div class="pgh"><span class="pgh-i">🗃️</span><h2 class="pgh-t">SQL <em>Query Language</em></h2></div>
+<p class="p">SQL is <span class="hg"><strong>nonprocedural</strong></span>. A query takes tables as input and always returns a single table.</p>
+<div class="cd"><span class="cm">-- Find all instructors in the Computer Science department</span>
+<span class="kw">SELECT</span> name
+<span class="kw">FROM</span>   instructor
+<span class="kw">WHERE</span>  dept_name = <span class="st">'Comp. Sci.'</span>;
+<span class="cm">-- Returns: one table with matching names</span></div>
+<table class="tbl"><thead><tr><th>SQL Command</th><th>Category</th><th>Purpose</th></tr></thead><tbody>
+<tr><td><code class="ic">CREATE TABLE</code></td><td><span class="bg bgy">DDL</span></td><td>Define table structure</td></tr>
+<tr><td><code class="ic">SELECT ... FROM ... WHERE</code></td><td><span class="bg bgb">DML Query</span></td><td>Retrieve data from tables</td></tr>
+<tr><td><code class="ic">INSERT INTO</code></td><td><span class="bg bgb">DML</span></td><td>Add new rows</td></tr>
+<tr><td><code class="ic">UPDATE ... SET</code></td><td><span class="bg bgb">DML</span></td><td>Modify existing rows</td></tr>
+<tr><td><code class="ic">DELETE FROM</code></td><td><span class="bg bgb">DML</span></td><td>Remove rows</td></tr>
+<tr><td><code class="ic">GRANT / REVOKE</code></td><td><span class="bg bgr">DCL</span></td><td>Control user access</td></tr>
+</tbody></table>
+<div class="bx bx-i"><span class="bxh">⭐ SQL Limitation — NOT Turing-Complete</span><span class="hp"><strong>SQL is NOT a Turing machine equivalent language.</strong></span><br>Does NOT support: ❌ User input ❌ Screen output ❌ Network communication ❌ Complex control flow<br>→ Must be embedded in a <strong>host language</strong> (Java, Python, C/C++)</div>`},
+{t:"DB Access from Application Programs",h:`<div class="pgh"><span class="pgh-i">🖥️</span><h2 class="pgh-t">DB Access from <em>Applications</em></h2></div>
+<p class="p">SQL is <span class="hp"><strong>not as powerful as a universal Turing machine</strong></span>. It cannot handle user I/O, networking, or complex computations.</p>
+<div class="vs">
+<div class="vc vr"><div class="vh">❌ What SQL Cannot Do</div><div class="vbd">
+<div class="vi"><div class="vic">🚫</div><p>Accept input from users (forms, keyboard)</p></div>
+<div class="vi"><div class="vic">🚫</div><p>Display output to screens or GUIs</p></div>
+<div class="vi"><div class="vic">🚫</div><p>Communicate over a network</p></div>
+<div class="vi"><div class="vic">🚫</div><p>Complex loops, conditionals, algorithms</p></div>
+<div class="vi"><div class="vic">📝</div><p><em>이것들은 프로그램 영역 (programming domain)</em></p></div>
+</div></div>
+<div class="vc vg"><div class="vh">✅ How Apps Connect to DB</div><div class="vbd">
+<div class="vi"><div class="vic">📝</div><p><strong>Embedded SQL</strong> — SQL inside host language code</p></div>
+<div class="vi"><div class="vic">🔗</div><p><strong>ODBC</strong> — Open Database Connectivity (C/C++)</p></div>
+<div class="vi"><div class="vic">☕</div><p><strong>JDBC</strong> — Java Database Connectivity (Java)</p></div>
+<div class="vi"><div class="vic">🐍</div><p><strong>Python DB-API</strong> — Standard Python interface</p></div>
+</div></div></div>
+<div class="cd"><span class="cm">// Java JDBC Example — host language + SQL</span>
+String sql = <span class="st">"SELECT name FROM instructor WHERE dept_name=?"</span>;
+PreparedStatement ps = conn.prepareStatement(sql);
+ps.setString(1, <span class="st">"Comp. Sci."</span>);
+ResultSet rs = ps.executeQuery(); <span class="cm">// SQL sent to DBMS</span>
+<span class="cm">// Java then displays results on screen</span></div>`},
+{t:"Database Design",h:`<div class="pgh"><span class="pgh-i">🏗️</span><h2 class="pgh-t">Database <em>Design</em></h2></div>
+<p class="p">The process of designing the <span class="hy"><strong>general structure</strong></span> of the database — finding a "good" collection of relation schemas.</p>
+<div class="vs">
+<div class="vc vb"><div class="vh">🧠 Logical Design</div><div class="vbd">
+<div class="vi"><div class="vic">📋</div><p>Deciding on the <strong>database schema</strong></p></div>
+<div class="vi"><div class="vic">💼</div><p><strong>Business:</strong> What attributes to record?</p></div>
+<div class="vi"><div class="vic">💻</div><p><strong>CS:</strong> What relation schemas and how to distribute attributes?</p></div>
+<div class="vi"><div class="vic">🎯</div><p>Goal: No redundancy, no incompleteness</p></div>
+</div></div>
+<div class="vc vt"><div class="vh">💾 Physical Design</div><div class="vbd">
+<div class="vi"><div class="vic">📋</div><p>Deciding on the <strong>physical layout</strong></p></div>
+<div class="vi"><div class="vic">📁</div><p>File organisation — heap, sorted, hash</p></div>
+<div class="vi"><div class="vic">🔖</div><p>Index structures — B+-tree, hash, bitmap</p></div>
+<div class="vi"><div class="vic">🎯</div><p>Goal: Maximum performance for expected queries</p></div>
+</div></div></div>
+<div class="bx bx-i"><span class="bxh">⭐ What Good Design Avoids</span><span class="hp">❌ Redundancy</span> — same info in multiple places → update anomalies<br><span class="hp">❌ Incompleteness</span> — missing important attributes<br><span class="hp">❌ Poor relationships</span> — losing connections between entities</div>
+<div class="bx bx-t"><span class="bxh">🎯 Hospital Analogy</span>🏥 <strong>Logical Design</strong> = floor plan (where are ICU, wards, pharmacy?). <strong>Physical Design</strong> = construction materials. Always plan logical structure before physical implementation!</div>`},
+{t:"Database Engine — Overview",h:`<div class="pgh"><span class="pgh-i">⚙️</span><h2 class="pgh-t">Database <em>Engine</em></h2></div>
+<p class="p">A database system is <span class="hy"><strong>partitioned into modules</strong></span> dealing with each responsibility. Three main components:</p>
+<div class="layers">
+<div class="layer ly-t">📦 Storage Manager<br><small>Interface between low-level disk data and application programs/queries. Handles efficient storing, retrieving, and updating.</small></div>
+<div class="la">+</div>
+<div class="layer ly-b">🔍 Query Processor Component<br><small>Parses SQL, optimises execution plans (picks lowest cost), and executes queries efficiently.</small></div>
+<div class="la">+</div>
+<div class="layer ly-y">🔐 Transaction Management Component<br><small>Ensures database consistency despite system failures and concurrent access by multiple users.</small></div>
+</div>
+<div class="sh"><span>🧩</span> Sub-Components at a Glance</div>
+<div class="vs">
+<div class="vc vb"><div class="vh">📦 Storage Manager</div><div class="vbd">
+<div class="vi"><div class="vic">🔐</div><p>Auth &amp; Integrity Manager</p></div>
+<div class="vi"><div class="vic">🔄</div><p>Transaction Manager</p></div>
+<div class="vi"><div class="vic">📁</div><p>File Manager</p></div>
+<div class="vi"><div class="vic">🧠</div><p>Buffer Manager</p></div>
+</div></div>
+<div class="vc vt"><div class="vh">🔍 Query Processor</div><div class="vbd">
+<div class="vi"><div class="vic">📖</div><p>DDL Interpreter</p></div>
+<div class="vi"><div class="vic">⚡</div><p>DML Compiler (Optimizer)</p></div>
+<div class="vi"><div class="vic">▶️</div><p>Query Evaluation Engine</p></div>
+</div></div></div>`},
+{t:"Storage Manager — Components",h:`<div class="pgh"><span class="pgh-i">📦</span><h2 class="pgh-t">Storage Manager — <em>Components</em></h2></div>
+<p class="p">Provides the <span class="hy"><strong>interface between low-level disk data</strong></span> and application programs/queries.</p>
+<table class="tbl"><thead><tr><th>Component</th><th>Responsibility</th><th>Analogy</th></tr></thead><tbody>
+<tr><td>🔐 <strong>Auth &amp; Integrity Manager</strong></td><td>Tests integrity constraints; checks access rights before every operation</td><td>Security Guard</td></tr>
+<tr><td>🔄 <strong>Transaction Manager</strong></td><td>Ensures ACID properties; manages undo/redo logs for crash recovery</td><td>Bank Vault Lock</td></tr>
+<tr><td>📁 <strong>File Manager</strong></td><td>Manages disk space allocation; determines data placement in files and blocks</td><td>Building Manager</td></tr>
+<tr><td>🧠 <strong>Buffer Manager</strong></td><td>Caches hot database pages in RAM to avoid slow disk reads</td><td>Waiter topping water</td></tr>
+</tbody></table>
+<div class="bx bx-k"><span class="bxh">🔑 Buffer Manager — Most Critical for Performance</span>RAM access is <span class="hg"><strong>~1,000× faster than SSD</strong></span> and <span class="hg"><strong>~100,000× faster than HDD.</strong></span> By keeping frequently accessed pages in the buffer pool (RAM cache), the Buffer Manager prevents most queries from touching slow disk storage. This is why databases handle thousands of queries per second!</div>`},
+{t:"Storage Manager — Data Structures",h:`<div class="pgh"><span class="pgh-i">📦</span><h2 class="pgh-t">Storage Manager — <em>Data Structures</em></h2></div>
+<div class="cards c3">
+<div class="card c-r"><span class="ci">📄</span><h4>Data Files</h4><p>Store the database itself — the actual records (rows) of every table, physically on disk as fixed-size blocks/pages.</p></div>
+<div class="card c-b"><span class="ci">📚</span><h4>Data Dictionary</h4><p>Stores metadata — schema, integrity constraints, authorization rules, and statistics used by the query optimizer.</p></div>
+<div class="card c-g"><span class="ci">🔖</span><h4>Indices</h4><p>Provide fast access. A database index provides pointers to those data items holding a particular value — like a book index!</p></div>
+</div>
+<div class="sh"><span>⚡</span> Index Performance Comparison</div>
+<table class="tbl"><thead><tr><th>Scenario</th><th class="hr">Without Index</th><th class="hg_">With B+-Tree Index</th><th>Speedup</th></tr></thead><tbody>
+<tr><td>Find student ID=12345 (10M rows)</td><td class="no">Full scan ~5 seconds</td><td class="ok">Lookup ~0.001 seconds</td><td class="mi">5,000× faster</td></tr>
+<tr><td>Find all "Comp. Sci." courses</td><td class="no">Scan entire table</td><td class="ok">Direct pointer jump</td><td class="mi">100–1,000× faster</td></tr>
+</tbody></table>
+<div class="bx bx-t"><span class="bxh">🎯 Book Index Analogy</span>📖 A book index lists topics A-Z with page numbers. A database index lists column values in sorted order with row pointers. Both serve the same purpose: <strong>find what you need fast without reading everything!</strong></div>`},
+{t:"Query Processor — Components",h:`<div class="pgh"><span class="pgh-i">🔍</span><h2 class="pgh-t">Query Processor — <em>Components</em></h2></div>
+<div class="steps">
+<div class="step"><div class="sn">1</div><div class="sc"><h4>📖 DDL Interpreter</h4><p>Interprets DDL statements (e.g., <code class="ic">CREATE TABLE</code>) and <strong>records definitions in the data dictionary</strong>. When you create a table, the DDL interpreter saves its schema.</p></div></div>
+<div class="step"><div class="sn">2</div><div class="sc"><h4>⚡ DML Compiler — The Query Optimizer</h4><p>Translates DML statements into an evaluation plan. <strong>Performs query optimization</strong> — picks the <span class="hy">lowest cost evaluation plan</span> from among the various alternatives. The most sophisticated component!</p></div></div>
+<div class="step"><div class="sn">3</div><div class="sc"><h4>▶️ Query Evaluation Engine</h4><p>Executes the low-level instructions generated by the DML compiler and returns the result table to the calling application.</p></div></div>
+</div>
+<div class="bx bx-i"><span class="bxh">⭐ Why Optimization is Critical</span><span class="hp">Two logically equivalent SQL queries can differ in execution time by a factor of 1,000× or more!</span> The optimizer considers different join algorithms, join orderings, and index scans vs full table scans, then picks the lowest estimated cost plan.</div>`},
+{t:"Query Processing — 3 Steps",h:`<div class="pgh"><span class="pgh-i">🔍</span><h2 class="pgh-t">Query Processing — <em>3 Steps</em></h2></div>
+<p class="p">Every SQL query goes through <span class="hy"><strong>exactly 3 steps</strong></span> before results are returned:</p>
+<div class="layers">
+<div class="layer ly-t">📝 Step 1 · Parsing &amp; Translation<br><small>SQL text parsed (syntax check) → validated against data dictionary (table/column names, types) → translated into a relational algebra expression. Syntax errors caught here immediately.</small></div>
+<div class="la">↓ internal representation passes to the optimizer</div>
+<div class="layer ly-b" style="border-width:2.5px">⚡ Step 2 · Optimization — Most Important!<br><small>Generate multiple alternative execution plans → estimate cost of each using data dictionary statistics (table sizes, column distributions) → SELECT the plan with the LOWEST estimated cost. Can make a 1,000× difference!</small></div>
+<div class="la">↓ optimal execution plan</div>
+<div class="layer ly-y">▶️ Step 3 · Evaluation<br><small>Execute the chosen physical plan step by step, accessing data through the storage manager (buffer manager for RAM cache), and return the result table to the calling application.</small></div>
+</div>
+<div class="bx bx-t"><span class="bxh">🎯 Google Maps Analogy</span>🗺️ You type "Navigate to Seoul Station." Maps considers multiple routes, estimates travel time for each, and picks the fastest route. You press Go — it handles the rest. <em>That's exactly what the query optimizer does for every SQL query!</em></div>`},
+{t:"Transaction Management",h:`<div class="pgh"><span class="pgh-i">🔐</span><h2 class="pgh-t">Transaction <em>Management</em></h2></div>
+<p class="p">A <span class="hy"><strong>transaction</strong></span> is a collection of operations performing a single logical function in a database application.</p>
+<div class="bx bx-i"><span class="bxh">⭐ What Transaction Management Does</span>Ensures the database remains in a <strong>consistent (correct) state</strong> despite: system failures (power cuts, OS crashes), transaction failures, and concurrent access by multiple users.<br><br>The <strong>Concurrency-Control Manager</strong> controls interaction among concurrent transactions to ensure consistency.</div>
+<div class="vs">
+<div class="vc vr"><div class="vh">❌ Without Transaction Mgmt</div><div class="vbd">
+<div class="vi"><div class="vic">💀</div><p>Partial updates leave DB in corrupt state</p></div>
+<div class="vi"><div class="vic">💀</div><p>Concurrent users overwrite each other's changes</p></div>
+<div class="vi"><div class="vic">💀</div><p>Crash during transfer = money lost forever</p></div>
+</div></div>
+<div class="vc vg"><div class="vh">✅ With Transaction Mgmt</div><div class="vbd">
+<div class="vi"><div class="vic">✅</div><p>All-or-nothing guarantee (Atomicity)</p></div>
+<div class="vi"><div class="vic">✅</div><p>Concurrent transactions correctly serialised</p></div>
+<div class="vi"><div class="vic">✅</div><p>Crash recovery restores consistent state</p></div>
+</div></div></div>`},
+{t:"ACID Properties",h:`<div class="pgh"><span class="pgh-i">🧪</span><h2 class="pgh-t">ACID <em>Properties</em></h2></div>
+<p class="p"><span class="bg bgr">MUST MEMORISE FOR EXAM</span> — The four ACID properties guarantee reliable transaction processing:</p>
+<div class="acid">
+<div class="ac acA"><span class="aL">A</span><h4>Atomicity</h4><p>All operations complete OR none do. No partial transactions ever.</p></div>
+<div class="ac acC"><span class="aL">C</span><h4>Consistency</h4><p>DB always in a valid state. All constraints hold before AND after.</p></div>
+<div class="ac acI"><span class="aL">I</span><h4>Isolation</h4><p>Concurrent transactions don't see each other's partial state.</p></div>
+<div class="ac acD"><span class="aL">D</span><h4>Durability</h4><p>Committed changes are permanent — survive crashes and failures.</p></div>
+</div>
+<table class="tbl"><thead><tr><th>Property</th><th>Prevents</th><th>Mechanism</th></tr></thead><tbody>
+<tr><td>⚛️ <strong>Atomicity</strong></td><td>Lost updates from partial transactions</td><td>Undo log — rollback on failure</td></tr>
+<tr><td>✅ <strong>Consistency</strong></td><td>Constraint violations entering the DB</td><td>Constraint checking before commit</td></tr>
+<tr><td>🔒 <strong>Isolation</strong></td><td>Dirty reads, lost updates, phantom reads</td><td>Concurrency control (locks, MVCC)</td></tr>
+<tr><td>💪 <strong>Durability</strong></td><td>Data loss after confirmed commit</td><td>Redo log — WAL (Write-Ahead Log)</td></tr>
+</tbody></table>
+<div class="bx bx-r"><span class="bxh">🌍 ATM Example</span>🏧 Withdraw ₩100,000: Check balance → Deduct → Dispense cash. Machine crashes after deduction? Transaction Manager <span class="hg"><strong>rolls back the deduction automatically.</strong></span> Your money is always safe!</div>`},
+{t:"Database Architecture Types",h:`<div class="pgh"><span class="pgh-i">🌐</span><h2 class="pgh-t">Database Architecture <em>Types</em></h2></div>
+<table class="tbl"><thead><tr><th>Architecture</th><th>Description</th><th>Example</th></tr></thead><tbody>
+<tr><td>💻 <strong>Centralised</strong></td><td>One to a few cores, shared memory and disk</td><td>SQLite, local apps</td></tr>
+<tr><td>🖥️ <strong>Client-Server</strong></td><td>One server executes work for multiple client machines</td><td>MySQL + web app</td></tr>
+<tr><td>⚡ <strong>Parallel (Shared Memory)</strong></td><td>Many cores sharing the same RAM</td><td>High-end OLTP servers</td></tr>
+<tr><td>💿 <strong>Parallel (Shared Disk)</strong></td><td>Multiple processors sharing disk storage</td><td>Oracle RAC</td></tr>
+<tr><td>🚀 <strong>Parallel (Shared Nothing)</strong></td><td>Independent nodes — scale out horizontally</td><td>Amazon Redshift</td></tr>
+<tr><td>🌍 <strong>Distributed</strong></td><td>Geographically distributed; schema/data heterogeneity</td><td>Google Spanner</td></tr>
+</tbody></table>
+<div class="bx bx-k"><span class="bxh">🔑 Client-Server — Most Common</span>One server machine executes work on behalf of multiple client machines. The client sends SQL requests; the server processes and responds. <span class="hy">The most common architecture for business applications worldwide.</span></div>`},
+{t:"Two-Tier vs Three-Tier Architecture",h:`<div class="pgh"><span class="pgh-i">🏢</span><h2 class="pgh-t">Two-Tier vs <em>Three-Tier</em></h2></div>
+<div class="vs">
+<div class="vc vr"><div class="vh">2️⃣ Two-Tier</div><div class="vbd">
+<div class="vi"><div class="vic">👤</div><p><strong>Client:</strong> App runs here, contains direct DB calls</p></div>
+<div class="vi"><div class="vic">🖥️</div><p><strong>Server:</strong> Database server</p></div>
+<div class="vi"><div class="vic">⚠️</div><p>DB exposed to clients — security risk</p></div>
+<div class="vi"><div class="vic">💡</div><p>Example: Desktop accounting app → MySQL</p></div>
+</div></div>
+<div class="vc vg"><div class="vh">3️⃣ Three-Tier</div><div class="vbd">
+<div class="vi"><div class="vic">👤</div><p><strong>Tier 1:</strong> Client — browser, NO direct DB calls</p></div>
+<div class="vi"><div class="vic">⚙️</div><p><strong>Tier 2:</strong> App Server — business logic, forms interface</p></div>
+<div class="vi"><div class="vic">🗄️</div><p><strong>Tier 3:</strong> DB Server — only app server connects here</p></div>
+<div class="vi"><div class="vic">💡</div><p>Example: Browser → Spring Boot → PostgreSQL</p></div>
+</div></div></div>
+<table class="tbl" style="margin-top:.5rem"><thead><tr><th>Aspect</th><th class="hr">Two-Tier</th><th class="hg_">Three-Tier</th></tr></thead><tbody>
+<tr><td>🔒 <strong>Security</strong></td><td class="no">DB exposed to clients</td><td class="ok">DB hidden behind app server</td></tr>
+<tr><td>📈 <strong>Scalability</strong></td><td class="no">Limited to single DB pool</td><td class="ok">Multiple app servers share one DB</td></tr>
+<tr><td>🔧 <strong>Maintenance</strong></td><td class="no">Business logic changes need client update</td><td class="ok">Update app server only</td></tr>
+<tr><td>🌐 <strong>Flexibility</strong></td><td class="no">Requires specific client software</td><td class="ok">Any browser, mobile, API client</td></tr>
+</tbody></table>`},
+{t:"Database Users — 4 Types",h:`<div class="pgh"><span class="pgh-i">👥</span><h2 class="pgh-t">Database Users — <em>4 Types</em></h2></div>
+<div class="ugrid">
+<div class="uc" style="background:#fffde7;border-color:#f0a800"><span class="ui">👤</span><h4>Naive Users</h4><p>Interact via pre-written app interfaces. Don't know SQL or that a DB exists. Bank app users, Coupang shoppers, students checking grades.</p></div>
+<div class="uc" style="background:#f5f0ff;border-color:#7820c0"><span class="ui">💻</span><h4>Application Programmers</h4><p>Write programs using DML calls — embedded SQL, JDBC, ODBC. Build the interfaces naive users interact with.</p></div>
+<div class="uc" style="background:#edfaf2;border-color:#206838"><span class="ui">📊</span><h4>Sophisticated Users</h4><p>Formulate complex SQL queries directly. Data analysts, scientists, researchers. Use SQL clients, BI tools, notebooks.</p></div>
+<div class="uc" style="background:#fff0f0;border-color:#b82410"><span class="ui">🛡️</span><h4>Database Administrator</h4><p>Has <strong>central control</strong> over the entire system. Defines schema, manages security, backups, and performance tuning.</p></div>
+</div>
+<table class="tbl" style="margin-top:.5rem"><thead><tr><th>User Type</th><th>SQL Knowledge</th><th>How They Interact</th><th>Access Level</th></tr></thead><tbody>
+<tr><td>👤 <strong>Naive</strong></td><td class="no">None</td><td>Forms, mobile apps, web UI</td><td class="mi">View level only</td></tr>
+<tr><td>💻 <strong>App Programmer</strong></td><td class="mi">Good</td><td>JDBC, ODBC, ORM</td><td class="mi">Logical level</td></tr>
+<tr><td>📊 <strong>Sophisticated</strong></td><td class="ok">Advanced</td><td>SQL clients, BI tools</td><td class="mi">Read/Write logical</td></tr>
+<tr><td>🛡️ <strong>DBA</strong></td><td class="ok">Expert</td><td>Admin console, direct DB</td><td class="ok">Full control</td></tr>
+</tbody></table>`},
+{t:"Database Administrator (DBA)",h:`<div class="pgh"><span class="pgh-i">🛡️</span><h2 class="pgh-t">Database Administrator <em>(DBA)</em></h2></div>
+<p class="p">A person who has <span class="hy"><strong>central control</strong></span> over the system is called the DBA.</p>
+<table class="tbl"><thead><tr><th>DBA Function</th><th>Description</th><th>SQL Command</th></tr></thead><tbody>
+<tr><td>📐 <strong>Schema Definition</strong></td><td>Creates the original database schema using DDL</td><td><code class="ic">CREATE TABLE</code></td></tr>
+<tr><td>💾 <strong>Storage Structure</strong></td><td>Physical design decisions — which indexes to create</td><td><code class="ic">CREATE INDEX</code></td></tr>
+<tr><td>🔧 <strong>Schema Modification</strong></td><td>Alters the database structure as requirements evolve</td><td><code class="ic">ALTER TABLE</code></td></tr>
+<tr><td>🔑 <strong>Authorization</strong></td><td>Role-based permission management</td><td><code class="ic">GRANT / REVOKE</code></td></tr>
+<tr><td>💾 <strong>Backup</strong></td><td>Periodically backing up the database</td><td><code class="ic">pg_dump</code></td></tr>
+<tr><td>💿 <strong>Disk Space</strong></td><td>Ensuring enough free disk space; upgrading as required</td><td>TABLESPACE</td></tr>
+<tr><td>📊 <strong>Monitoring</strong></td><td>Monitoring jobs running on the database for performance</td><td>EXPLAIN ANALYZE</td></tr>
+</tbody></table>
+<div class="bx bx-r"><span class="bxh">🌍 Why DBA Is Critical</span>😱 When Facebook went down for <strong>6 hours in 2021</strong>, it was triggered by a single misconfigured command. A DBA-level mistake can take down services used by <strong>billions of people.</strong></div>`},
+{t:"History — 1950s to 1980s",h:`<div class="pgh"><span class="pgh-i">📅</span><h2 class="pgh-t">History of Database Systems</h2></div>
+<div class="tl">
+<div class="tli"><div class="tly">1950s — EARLY 1960s</div><h4>🎞️ Magnetic Tapes &amp; Punched Cards</h4>
+<p>Data processing using magnetic tapes — <span class="hp"><strong>sequential access only</strong></span>. Like rewinding a cassette to find one song — must read records 1–499 to reach record 500. Punched cards for input. No concept of a "database system."</p></div>
+<div class="tli"><div class="tly">LATE 1960s — 1970s</div><h4>💾 Hard Disks &amp; The Relational Revolution</h4>
+<p><strong>Hard disks enabled direct (random) access</strong> — jump to any record instantly! Network and hierarchical models in widespread use. <span class="hy"><strong>Ted Codd (IBM) defines the relational data model</strong></span> — would win the ACM Turing Award 1981. IBM Research builds <strong>System R</strong>. UC Berkeley (Stonebraker) builds <strong>Ingres</strong>. <strong>Oracle</strong> releases first commercial relational database (1979). High-performance transaction processing emerges for banking.</p></div>
+<div class="tli"><div class="tly">1980s</div><h4>📊 SQL Becomes the Industrial Standard</h4>
+<p>Research prototypes evolve into commercial systems. <span class="hg"><strong>SQL becomes the industrial standard</strong></span> (SQL-86, SQL-92). Parallel and distributed DB systems (Wisconsin, IBM, Teradata). Object-oriented databases explored. IBM DB2, Oracle, Sybase dominate commercially.</p></div>
+</div>
+<div class="bx bx-k"><span class="bxh">🔑 Ted Codd's Legacy</span>Codd's 1970 paper is arguably the <strong>most important paper in database history</strong>. It introduced tables, relational algebra, normalisation theory, and physical data independence. All modern databases are based on his work.</div>`},
+{t:"History — 1990s to 2010s",h:`<div class="pgh"><span class="pgh-i">📅</span><h2 class="pgh-t">History <em>(Continued)</em></h2></div>
+<div class="tl">
+<div class="tli"><div class="tly">1990s</div><h4>🌐 Data Warehouses &amp; Web Commerce</h4>
+<p>Large decision support and data-mining applications. <strong>Multi-terabyte data warehouses</strong>. <span class="hb"><strong>Emergence of Web commerce</strong></span> — every dot-com website needs a database backend. OLAP for business intelligence. MySQL and PostgreSQL emerge as open-source alternatives.</p></div>
+<div class="tli"><div class="tly">2000s</div><h4>🚀 Big Data &amp; NoSQL Revolution</h4>
+<p>Big data storage systems: <strong>Google BigTable (2004), Yahoo PNuts, Amazon DynamoDB</strong>. <span class="hp"><strong>"NoSQL" systems</strong></span> — MongoDB, Cassandra, Redis. Big data analysis: <strong>MapReduce (Google 2004) and Apache Hadoop</strong>. Traditional RDBMS cannot handle web-scale data volumes.</p></div>
+<div class="tli"><div class="tly">2010s</div><h4>⚡ SQL Reloaded &amp; In-Memory Databases</h4>
+<p><span class="hg"><strong>SQL front-ends to MapReduce</strong></span> — Apache Hive and Spark SQL bring SQL back to big data. <strong>Massively parallel database systems</strong> (Redshift, Snowflake). <strong>Multi-core main-memory databases</strong> — SAP HANA, VoltDB. NewSQL combines SQL reliability with NoSQL scale.</p></div>
+</div>
+<div class="bx bx-k"><span class="bxh">🔑 2020s &amp; Beyond</span>☁️ Cloud-native databases (AWS Aurora, Azure CosmosDB), vector databases for AI/ML, serverless databases, and AI-powered query optimization are the current frontier!</div>`},
+{t:"Summary & Exam Prep",h:`<div class="pgh"><span class="pgh-i">✅</span><h2 class="pgh-t">Summary &amp; <em>Exam Prep</em></h2></div>
+<ul class="ul u-ck">
+<li><span class="hy"><strong>DBMS</strong></span> = software managing highly valuable, large, multi-user data safely and efficiently</li>
+<li>File systems caused <strong>7 problems</strong>: redundancy · inconsistency · isolation · integrity · atomicity · concurrency · security → <span class="hg">DBMS solved ALL</span></li>
+<li><strong>3 abstraction levels:</strong> <span class="hg">Physical</span> (HOW stored) → <span class="hb">Logical</span> (WHAT stored) → <span class="hp">View</span> (what users see)</li>
+<li><span class="hy"><strong>Relational Model</strong></span> — Ted Codd, 1970, ACM Turing Award 1981 — data in tables, the industry standard</li>
+<li><strong>Schema</strong> = blueprint (type). <strong>Instance</strong> = actual data (value). <strong>Physical Schema</strong> = storage layout</li>
+<li><span class="hg"><strong>Physical Data Independence</strong></span> = change physical storage without changing logical schema or app code</li>
+<li><strong>DDL</strong> defines schema → Data Dictionary. <strong>DML/SQL</strong> = declarative, non-procedural, NOT Turing-complete</li>
+<li><strong>DB Engine</strong> = Storage Manager (Auth, Transaction, File, Buffer) + Query Processor (DDL Interpreter, DML Compiler/Optimizer, Eval Engine) + Transaction Manager</li>
+<li><span class="hy"><strong>ACID:</strong></span> Atomicity · Consistency · Isolation · Durability</li>
+<li><strong>3-Tier:</strong> Client → App Server (business logic, forms interface) → Database Server</li>
+<li><strong>4 User Types:</strong> Naive · App Programmer · Sophisticated · DBA</li>
+<li><strong>History:</strong> Tapes (1950s) → Hard disks+Codd (1970s) → SQL (1980s) → Web (1990s) → NoSQL (2000s) → In-memory (2010s)</li>
+</ul>
+<div class="bx bx-i"><span class="bxh">⭐ Top Exam Topics</span>ACID properties · 3 abstraction levels · Relational model &amp; Ted Codd · Physical data independence · Query optimization (lowest cost plan) · 3-tier architecture · 7 file system problems · Storage Manager 4 components + 3 data structures · Procedural vs Declarative DML</div>
+<div class="endcard">
+<span class="end-ico">🎓</span>
+<h3 class="end-h">Chapter 1 Complete!</h3>
+<p class="end-p">You have covered every concept from the lecture slides. Now test yourself with the Quiz and Q&amp;A to make sure you are ready for the exam.</p>
+<div class="end-btns">
+<button class="ebtn eb-q" onclick="showV('q')">🧠 Take the Quiz</button>
+<button class="ebtn eb-a" onclick="showV('a')">❓ Review Q&amp;A</button>
+<button class="ebtn eb-back" onclick="G(0)">⬆ Back to Cover</button>
+</div>
+</div>`}
+];
+
+// ══════════════ ENGINE ══════════════
+let cur=0,busy=false,sbOn=true;
+const TOT=PGS.length,seen=new Set([0]);
+
+function render(pg,dir){
+  if(busy&&dir!==0)return;
+  busy=true;
+  const sh=document.getElementById('fsh');
+  sh.className='';void sh.offsetWidth;
+  if(dir>0)sh.className='sr';else if(dir<0)sh.className='sl';
+  document.getElementById('col').innerHTML=PGS[pg].h;
+  document.getElementById('scroll').scrollTop=0;
+  document.getElementById('FPNUM').textContent=(pg+1)+' / '+TOT;
+  document.getElementById('FRIGHT').textContent=PGS[pg].t;
+  document.getElementById('PTITLE').textContent=PGS[pg].t;
+  document.getElementById('CL').style.display=pg===0?'none':'flex';
+  document.getElementById('CR').style.display=pg===TOT-1?'none':'flex';
+  document.getElementById('NP').disabled=pg===0;
+  document.getElementById('NN').disabled=pg===TOT-1;
+  seen.add(pg);updateDots();updateSB(pg);
+  setTimeout(()=>busy=false,400);
+}
+
+function F(dir){const n=cur+dir;if(n<0||n>=TOT||busy)return;cur=n;render(cur,dir)}
+function G(pg){const d=pg>cur?1:pg<cur?-1:0;cur=Math.max(0,Math.min(TOT-1,pg));render(cur,d);showV('b')}
+
+function updateDots(){
+  document.querySelectorAll('.dot').forEach((d,i)=>{
+    d.classList.toggle('on',i===cur);
+    d.classList.toggle('vis',seen.has(i)&&i!==cur);
+  });
+}
+function buildDots(){
+  const c=document.getElementById('FDOTS');
+  for(let i=0;i<TOT;i++){
+    const d=document.createElement('div');d.className='dot';
+    d.title='Page '+(i+1)+': '+PGS[i].t;
+    d.onclick=(()=>{const p=i;return()=>G(p)})();
+    c.appendChild(d);
+  }
+}
+
+// Sidebar
+function buildSB(){
+  document.getElementById('sb-list').innerHTML=PGS.map((pg,i)=>`
+    <div class="si${i===0?' on vis':''}" id="si${i}" onclick="G(${i})">
+      <span class="si-n">${String(i+1).padStart(2,'0')}</span>
+      <span class="si-l">${pg.t}</span>
+    </div>`).join('');
+}
+function updateSB(pg){
+  document.querySelectorAll('.si').forEach((el,i)=>{
+    el.classList.toggle('on',i===pg);
+    if(seen.has(i))el.classList.add('vis');
+  });
+  const a=document.getElementById('si'+pg);
+  if(a)a.scrollIntoView({block:'nearest',behavior:'smooth'});
+}
+function togSB(){
+  sbOn=!sbOn;
+  const sb=document.getElementById('sb');
+  const btn=document.getElementById('sb-open');
+  const tog=document.getElementById('sb-tog');
+  const cl=document.getElementById('CL');
+  const np=document.getElementById('NP');
+  if(sbOn){
+    sb.style.width=window.innerWidth>900?'220px':'190px';
+    sb.style.borderRight='1px solid rgba(200,160,80,.18)';
+    btn.classList.remove('show');tog.textContent='◀';
+    cl.classList.remove('sboff');np.classList.remove('sboff');
+  } else {
+    sb.style.width='0';sb.style.borderRight='none';
+    btn.classList.add('show');tog.textContent='▶';
+    cl.classList.add('sboff');np.classList.add('sboff');
+  }
+}
+
+// Keys & touch
+document.addEventListener('keydown',e=>{
+  if(document.querySelector('.ov.on'))return;
+  if(e.key==='ArrowRight'||e.key===' '||e.key==='ArrowDown'){e.preventDefault();F(1)}
+  if(e.key==='ArrowLeft'||e.key==='ArrowUp'){e.preventDefault();F(-1)}
+});
+let tx=null;
+document.getElementById('scroll').addEventListener('touchstart',e=>{tx=e.touches[0].clientX},{passive:true});
+document.getElementById('scroll').addEventListener('touchend',e=>{
+  if(tx===null)return;
+  if(Math.abs(e.changedTouches[0].clientX-tx)>50)F(e.changedTouches[0].clientX-tx<0?1:-1);
+  tx=null;
+},{passive:true});
+
+// ══════════════ QUIZ ══════════════
+const QZ=[
+{q:"What does DBMS stand for and what three elements does it consist of?",o:["Data Backup Management System — files, programs, users","Database Management System — interrelated data, programs to access it, and a convenient+efficient environment","Database Monitoring System — logging, indexing, caching","Distributed Binary Management Server — nodes, queries, replication"],a:1,e:"DBMS = Database Management System. Its three elements: (1) a collection of interrelated data, (2) a set of programs to access the data, and (3) an environment that is both convenient and efficient to use."},
+{q:"Which file-system problem occurs when the same data is duplicated in multiple files, causing inconsistencies when one copy is updated but others are not?",o:["Data Isolation","Atomicity Failure","Data Redundancy and Inconsistency","Concurrent Access Problem"],a:2,e:"Data Redundancy and Inconsistency — data stored in multiple file formats resulting in duplication. Updating one copy while missing others causes inconsistency across the system."},
+{q:"Ted Codd defined the relational data model in 1970. Which award did he receive?",o:["Nobel Prize in Computing 1975","Fields Medal 1972","ACM Turing Award 1981","IEEE Von Neumann Medal 1980"],a:2,e:"Ted Codd received the ACM Turing Award in 1981 for defining the relational data model. IBM Research built System R and UC Berkeley built Ingres as research prototypes."},
+{q:"A bank transfer debits Account A then credits Account B. The server crashes between these steps. Which ACID property ensures the database is restored to a consistent state?",o:["Consistency","Isolation","Durability","Atomicity"],a:3,e:"Atomicity = 'all or nothing'. If any step fails, ALL changes are rolled back. The fund transfer either completes fully or is entirely cancelled."},
+{q:"Which level of the three data abstraction levels describes HOW a record is physically stored on disk, including file formats, block sizes, and index structures?",o:["View Level","Logical Level","Application Level","Physical Level"],a:3,e:"The Physical Level describes HOW data is stored on disk — file formats, block sizes, compression, B+-tree index structures, byte layout."},
+{q:"Which type of DML requires a user to specify only WHAT data is needed, without specifying how to retrieve it?",o:["Procedural DML — specifies WHAT and HOW","Turing-complete DML","Declarative (Non-procedural) DML — specifies only WHAT","Embedded DML"],a:2,e:"Declarative (Non-procedural) DML requires only WHAT data is needed — the system determines HOW. SQL is the most widely used declarative DML. The lecture explicitly states 'Declarative DMLs are usually easier to learn and use.'"},
+{q:"Which Storage Manager component manages the cache of frequently accessed database pages in RAM to avoid slow disk reads?",o:["Authorization and Integrity Manager","File Manager","Transaction Manager","Buffer Manager"],a:3,e:"The Buffer Manager maintains the buffer pool — a RAM cache of hot database pages. RAM is ~1,000× faster than SSD, so keeping hot pages in RAM dramatically speeds up queries."},
+{q:"In three-tier architecture, what sits between the client browser and the database server?",o:["Firewall and Security Layer","Application Server (Middle Tier)","Network Load Balancer","Database Proxy Cache"],a:1,e:"Three-tier: Client (browser, NO direct DB calls) → Application Server (business logic, forms interface) → Database Server. The client communicates with the app server through a forms interface."},
+{q:"What is the key difference between a database Schema and an Instance?",o:["Schema = actual current data; Instance = structural definition","Schema = structural blueprint (type); Instance = actual data at a point in time (value)","They are synonymous — both refer to DB structure","Schema = physical storage; Instance = SQL query results"],a:1,e:"Schema is the overall logical structure (analogous to type information of a variable). Instance is the actual content at a particular point in time (analogous to the value of a variable). Schemas change rarely; instances change constantly."},
+{q:"Which decade saw the rise of 'NoSQL' systems like Google BigTable, MapReduce, and MongoDB?",o:["1970s","1990s","2010s","2000s"],a:3,e:"The 2000s saw big data storage systems (Google BigTable 2004, Yahoo PNuts, Amazon DynamoDB) and 'NoSQL' systems (MongoDB, Cassandra, Redis). MapReduce (2004) sparked the Hadoop ecosystem."},
+{q:"Which Query Processor component performs query optimization — generating multiple execution plans and selecting the lowest-cost one?",o:["DDL Interpreter","Query Evaluation Engine","DML Compiler","Transaction Manager"],a:2,e:"The DML Compiler translates DML statements AND performs query optimization — picks the lowest cost plan. Two equivalent queries can differ by 1,000×!"},
+{q:"What does Physical Data Independence specifically enable?",o:["Ability to query without knowing SQL","Ability to modify the physical schema without changing the logical schema or applications","Ability to distribute data geographically","Ability to encrypt data at hardware level"],a:1,e:"Physical Data Independence = ability to modify the physical schema (change storage, add index) without changing the logical schema or application programs."},
+{q:"What does the Data Dictionary store?",o:["Actual user data — all database records","Backup copies of tables","Metadata — database schema, integrity constraints, authorization, and statistics","Network configuration settings"],a:2,e:"The Data Dictionary stores metadata: database schema, integrity constraints, authorization rules, and statistical information — used by the query optimizer for cost estimation."},
+{q:"Which type of database user writes application programs using embedded SQL, JDBC, or ODBC?",o:["Naive User","Application Programmer","Database Administrator","Sophisticated User"],a:1,e:"Application Programmers write programs using DML calls (embedded SQL, JDBC, ODBC). They build the web apps, mobile apps, and desktop software that naive users interact with."},
+{q:"What does the Concurrency-Control Manager do?",o:["Backs up the database periodically","Controls interaction among concurrent transactions to ensure consistency","Optimises query execution plans","Manages physical disk space allocation"],a:1,e:"The Concurrency-Control Manager controls the interaction among concurrent transactions to ensure database consistency — preventing lost updates, dirty reads, and phantom reads."},
+{q:"Why is SQL NOT sufficient as a standalone language for building complete applications?",o:["SQL is too slow for production use","SQL does not support user input, display output, or network communication (이것들은 프로그램 영역)","SQL has no data types for complex objects","SQL can only read data, not insert or update"],a:1,e:"SQL does not support user input, display output, or network communication. Such computations must be in a host language (C/C++, Java, Python) with embedded SQL queries."},
+{q:"Magnetic tapes in the 1950s–60s had which fundamental data access limitation?",o:["Random access — jump to any record","Direct access — skip to a block","Indexed access — use a sorted key file","Sequential access ONLY — must read all records before the target"],a:3,e:"Magnetic tapes provided ONLY sequential access. To find record N, you had to read all records before it. Hard disks in the late 1960s solved this with random access."},
+{q:"What were the two pioneering relational database research prototypes built in the 1970s?",o:["Oracle and MySQL","System R (IBM Research) and Ingres (UC Berkeley, Stonebraker)","BigTable and DynamoDB","DB2 and PostgreSQL"],a:1,e:"IBM Research built System R and UC Berkeley (Michael Stonebraker) built Ingres — both pioneering relational DB prototypes in the 1970s."},
+{q:"What are the three physical data structures implemented by the Storage Manager?",o:["Tables, Views, and Stored Procedures","Data Files (actual records), Data Dictionary (metadata/schema), and Indices (fast access pointers)","Schemas, Instances, and Physical Schemas","Buffer Pool, Transaction Log, and Checkpoint Files"],a:1,e:"The Storage Manager implements: (1) Data Files — store actual records on disk, (2) Data Dictionary — stores metadata/schema, and (3) Indices — provide fast access via pointers to data items holding particular values."},
+{q:"The DBA function 'Schema Definition' refers to what?",o:["Running periodic backup jobs","Creating the original database schema using DDL statements","Managing network firewall rules","Optimising slow SQL queries"],a:1,e:"Schema definition = the DBA creates the original database schema (table definitions, constraints, relationships) using DDL (Data Definition Language) statements like CREATE TABLE."},
+{q:"What was the major database trend in the 2010s?",o:["Complete death of SQL","SQL reloaded — SQL front-ends to MapReduce (Apache Hive, Spark SQL) and massively parallel + multi-core in-memory databases","Return to hierarchical databases","Elimination of transaction management"],a:1,e:"The 2010s saw 'SQL reloaded' — SQL front-ends to MapReduce (Apache Hive, Spark SQL), plus massively parallel database systems (Redshift) and multi-core main-memory databases (SAP HANA, VoltDB)."},
+{q:"In ACID, what does Isolation specifically guarantee?",o:["Committed changes survive system failures","DB moves from one consistent state to another","Concurrent transactions do not see each other's partial (intermediate) state","All operations complete or none do"],a:2,e:"Isolation ensures concurrent transactions don't interfere — each executes as if it were the only one running. Without isolation you get dirty reads, lost updates, and phantom reads."},
+{q:"What is the correct flow for a three-tier web application request?",o:["Database Server pulls request from Client","Client Browser (Tier 1) → Application Server (Tier 2, business logic, forms interface) → Database Server (Tier 3)","Client Browser connects directly to the Database","Load Balancer → DB Cluster → Cache → Client"],a:1,e:"Three-tier: Client browser (Tier 1, NO direct DB calls) sends request to Application Server (Tier 2, forms interface, business logic) which queries Database Server (Tier 3)."},
+{q:"Which file-system problem occurs when integrity constraints like 'account balance > 0' cannot be properly enforced?",o:["Data Isolation","Concurrency Problem","Integrity Problems — constraints buried in program code, not at data level","Security Problem"],a:2,e:"Integrity Problems — constraints like 'account balance > 0' become buried in program code rather than being stated explicitly. This makes it hard to add new constraints or change existing ones."},
+{q:"What distinguishes the Logical Schema from the Physical Schema?",o:["Logical = how data is stored on disk; Physical = what tables exist","Logical = overall logical structure (what data and relationships); Physical = overall physical structure (how data is stored on disk)","Logical = current data contents; Physical = query execution plans","Logical = user views; Physical = backup copies"],a:1,e:"Logical Schema = overall logical structure — what tables exist, their columns, relationships, constraints. Physical Schema = overall physical structure — file organisation, block sizes, index structures."},
+{q:"Which component of the Database Engine is responsible for the interaction with the OS file manager and efficient storing/retrieving/updating of data?",o:["Query Processor — handles SQL parsing and optimization","Storage Manager — provides interface between disk data and applications","Transaction Manager — ensures ACID properties","Authorization Manager — checks user permissions"],a:1,e:"The Storage Manager provides the interface between low-level data stored in the database and application programs and queries. It is responsible for interaction with the OS file manager and efficient storing, retrieving, and updating of data."},
+{q:"What is the purpose of an Index in a database system?",o:["To store backup copies of tables","To encrypt sensitive data on disk","To provide fast access to data items by storing pointers to records holding particular values","To define the table structure and constraints"],a:2,e:"A database index provides pointers to those data items that hold a particular value — like a book index with page numbers. It allows O(log n) lookup instead of O(n) full table scan. Example: find GPA=4.0 in 0.001s instead of 5 seconds."},
+{q:"In the relational model, what is a 'tuple'?",o:["A column/attribute of a table","A single row/record in a relation (table)","A foreign key constraint","A data type for complex objects"],a:1,e:"In the relational model, a tuple is a single row (record) in a relation (table). Each tuple represents one entity — e.g., one instructor with their ID, name, dept_name, and salary values."},
+{q:"What is a 'Foreign Key' in a relational database?",o:["A key that uniquely identifies each row in its own table","An attribute whose value must match a value in another table's primary key — enforcing referential integrity","A key used to encrypt sensitive data","A temporary key used only during transactions"],a:1,e:"A Foreign Key is an attribute whose value must match a value in another table's primary key. For example, dept_name in 'instructor' must match a dept_name in 'department'. This enforces referential integrity automatically."},
+{q:"According to the lecture, what does the DBA's 'Routine Maintenance' function include?",o:["Writing new SQL queries for users","Periodically backing up the database, ensuring enough free disk space, and monitoring jobs running on the database","Designing new tables and relationships","Installing new programming frameworks"],a:1,e:"Routine maintenance includes: periodically backing up the database, ensuring that enough free disk space is available for normal operations and upgrading disk space as required, and monitoring jobs running on the database."}
+];
+
+let qi=0,qa={},qd=false;
+function initQ(){qi=0;qa={};qd=false;renderQ()}
+function renderQ(){
+  if(qd){showRes();return}
+  const q=QZ[qi],pk=qa[qi];const L=['A','B','C','D'];
+  document.getElementById('QPROG').style.width=((qi+1)/QZ.length*100)+'%';
+  document.getElementById('QBODY').innerHTML=`
+<div class="q-num">QUESTION ${qi+1} OF ${QZ.length}</div>
+<div class="q-txt">${q.q}</div>
+<div class="q-opts">${q.o.map((o,i)=>{
+  let c='qo';
+  if(pk!==undefined){if(i===q.a)c+=' ok';else if(i===pk)c+=' no';else c+=' dm';}
+  return`<div class="${c}" onclick="${pk===undefined?`pickQ(${i})`:''}" style="${pk!==undefined?'cursor:default':''}">
+<div class="ql">${L[i]}</div><span>${o}</span></div>`;
+}).join('')}</div>
+${pk!==undefined?`<div class="qfb ${pk===q.a?'ok':'no'} sh">${pk===q.a?'✅ Correct! ':'❌ Incorrect. '}${q.e}</div>`:''}`;
+  const all=Object.keys(qa).length===QZ.length;
+  document.getElementById('QFOOT').innerHTML=`
+<button class="qbtn qbp" onclick="mQ(-1)" ${qi===0?'disabled':''}>← Prev</button>
+<span style="font-size:.72rem;color:var(--mut);font-family:'Fira Code',monospace">${qi+1} / ${QZ.length}</span>
+${qi<QZ.length-1?`<button class="qbtn qbn" onclick="mQ(1)">Next →</button>`:`<button class="qbtn qbs" onclick="subQ()" ${!all?'disabled':''}>Results 🎯</button>`}`;
+}
+function pickQ(i){if(qa[qi]!==undefined)return;qa[qi]=i;renderQ()}
+function mQ(d){qi=Math.max(0,Math.min(QZ.length-1,qi+d));renderQ()}
+function subQ(){qd=true;showRes()}
+function showRes(){
+  const sc=QZ.reduce((s,q,i)=>s+(qa[i]===q.a?1:0),0);
+  const pc=Math.round(sc/QZ.length*100);
+  const msg=pc>=90?"🏆 Excellent! You've mastered Chapter 1!":pc>=75?"🌟 Great work! Strong understanding.":pc>=60?"📖 Good effort — review incorrect answers.":"💪 Keep studying — re-read the book and try again!";
+  document.getElementById('QBODY').innerHTML=`<div class="rw">
+<div class="rs">${sc}</div><div class="rt">out of ${QZ.length} · ${pc}%</div>
+<div class="rb-bg"><div class="rb" id="RB" style="width:0"></div></div>
+<div class="rm">${msg}</div>
+<button class="qbtn qbs" onclick="initQ()" style="margin-bottom:1rem">🔄 Try Again</button>
+<div class="rev"><div style="font-weight:700;font-size:.8rem;color:var(--ink);margin-bottom:.4rem">📋 Full Review:</div>
+${QZ.map((q,i)=>`<div class="rri ${qa[i]===q.a?'ok':'no'}"><strong>Q${i+1}:</strong> ${q.q}<br><span>${qa[i]===q.a?'✓ Correct':'✗ '+(qa[i]!==undefined?'Your: '+q.o[qa[i]]:'—')+' | Correct: '+q.o[q.a]}</span></div>`).join('')}
+</div></div>`;
+  document.getElementById('QFOOT').innerHTML='';
+  setTimeout(()=>{const b=document.getElementById('RB');if(b)b.style.width=pc+'%'},100);
+}
+
+// ══════════════ Q&A ══════════════
+const QNA=[
+{cat:"Fundamentals",q:"List and explain all 7 file-system problems that led to DBMS.",a:`<span class="ap"><strong>1. Data Redundancy &amp; Inconsistency:</strong> Same data in multiple files in different formats. Update one, miss others → inconsistent data. Example: patient phone in 3 hospital files, only 1 updated.</span>
+<span class="ap"><strong>2. Difficulty Accessing Data:</strong> Need a new program for each new task — no general-purpose query mechanism.</span>
+<span class="ap"><strong>3. Data Isolation:</strong> Data in multiple files with incompatible formats — combining data extremely hard.</span>
+<span class="ap"><strong>4. Integrity Problems:</strong> Constraints like "balance &gt; 0" buried in program code, not at data level. Hard to add or change rules.</span>
+<span class="ap"><strong>5. Atomicity Failures:</strong> Crashes during partial updates (debit done, credit not) left DB corrupted with no rollback.</span>
+<span class="ap"><strong>6. Concurrent Access Problems:</strong> Two users read balance=₩100, both withdraw ₩50, both write ₩50 → ₩50 appears from nowhere (Lost Update Problem).</span>
+<span class="ap"><strong>7. Security Problems:</strong> Nearly impossible to give users access to some data but not all — no fine-grained control.</span>
+<em>Because of these 7 problems, centralised database systems replaced file systems.</em>`},
+{cat:"Comparison",q:"Compare File System vs DBMS across 8 key dimensions.",a:`<span class="ap"><strong>Data Redundancy:</strong> File system = high redundancy, data duplicated → inconsistency. DBMS = single source of truth, minimal redundancy, automatic consistency enforcement.</span>
+<span class="ap"><strong>Data Access:</strong> File system = write new program for every query. DBMS = general-purpose SQL handles any query without new programming.</span>
+<span class="ap"><strong>Integrity Constraints:</strong> File system = constraints buried in program code. DBMS = constraints declared in schema, enforced automatically at the data level.</span>
+<span class="ap"><strong>Atomicity:</strong> File system = no rollback mechanism, partial updates possible. DBMS = full ACID transaction support with undo/redo logs.</span>
+<span class="ap"><strong>Concurrency:</strong> File system = no control → lost updates occur. DBMS = Concurrency-Control Manager prevents lost updates, dirty reads, phantom reads.</span>
+<span class="ap"><strong>Security:</strong> File system = all-or-nothing file permissions. DBMS = fine-grained role-based access control (GRANT/REVOKE on specific tables and columns).</span>
+<span class="ap"><strong>Data Sharing:</strong> File system = must copy data between programs. DBMS = multiple applications share the same database simultaneously.</span>
+<span class="ap"><strong>Backup/Recovery:</strong> File system = manual and unreliable. DBMS = automatic backup with point-in-time recovery.</span>`},
+{cat:"Abstraction",q:"Explain the three levels of data abstraction with lecture examples.",a:`<strong>Physical Level (lowest):</strong> Describes HOW a record (e.g., instructor) is stored on disk — physical file format, block sizes, compression, B+-tree index structures, byte offsets. Most users never see this.
+<span class="ap">Lecture example: type instructor = record ID:string; name:string; dept_name:string; salary:integer; end;</span>
+<strong>Logical Level (middle):</strong> Describes WHAT data is stored and relationships. The schema that programmers and DBAs work with.
+<strong>View Level (highest):</strong> Application programs hide details of data types. Views can hide information (e.g., salary) for security. Different users see different views.
+<span class="ap">Example: Doctor sees medical history. Billing sees charges. Admin sees contact info. All from the same physical data.</span>
+<em>Key principle: "The interfaces between levels should be well defined so that changes in some parts do not seriously influence others." — data independence!</em>`},
+{cat:"Languages",q:"What is DDL vs DML? Give SQL examples from the lecture and explain the Data Dictionary.",a:`<strong>DDL (Data Definition Language):</strong> Defines the database schema. DDL compiler generates table templates stored in the data dictionary. Does NOT insert data.
+<span class="ap">Example: CREATE TABLE instructor (ID char(5), name varchar(20), dept_name varchar(20), salary numeric(8,2));</span>
+Stores in Data Dictionary: schema, integrity constraints (Primary Key: ID), and authorization.
+<strong>DML (Data Manipulation Language):</strong> Language for accessing and updating data. Two types: Procedural (WHAT + HOW) and Declarative/Non-procedural (WHAT only — SQL is declarative).
+<span class="ap">Example: select name from instructor where dept_name = 'Comp. Sci.'</span>
+<strong>Data Dictionary:</strong> A special internal database storing metadata — schema, integrity constraints, authorization rules, and statistical information used by the query optimizer for cost estimation.`},
+{cat:"ACID",q:"Explain all 4 ACID properties with the fund transfer example.",a:`A transaction is a collection of operations performing a single logical function. Transfer ₩100,000 from Account A to Account B:
+<span class="ap"><strong>A — Atomicity:</strong> "Transfer should either complete or not happen at all." If server crashes after debiting A but before crediting B, atomicity ensures the debit is ROLLED BACK — money never lost. Implemented via undo log.</span>
+<span class="ap"><strong>C — Consistency:</strong> DB must be in a valid state before and after. All constraints hold — balance ≥ 0, total money conserved. If a constraint would be violated, the transaction rolls back.</span>
+<span class="ap"><strong>I — Isolation:</strong> "Two people reading balance=100 and both withdrawing 50 at same time" → Lost Update. Isolation ensures each transaction executes as if it were the only one running. Implemented via locks or MVCC.</span>
+<span class="ap"><strong>D — Durability:</strong> Once committed, changes are permanent — even if system fails immediately afterward. Implemented via redo log (WAL — Write-Ahead Log).</span>`},
+{cat:"Architecture",q:"Compare Two-Tier vs Three-Tier architecture — when to use each.",a:`<strong>Two-Tier:</strong> "The application resides at the client machine, where it invokes database system functionality at the server machine." Client contains direct DB calls.
+<span class="ap">Use case: Desktop applications, internal tools, small-scale deployments.</span>
+<span class="ap">Pros: Simple, lower latency. Cons: DB exposed to clients (security risk), hard to scale, business logic changes require updating all clients.</span>
+<strong>Three-Tier:</strong> "The client machine acts as a front end and does not contain any direct database calls. The client communicates with an application server through a forms interface. The application server communicates with the database system."
+<span class="ap">Use case: ALL modern web applications, mobile apps, public-facing systems.</span>
+<span class="ap">Pros: DB never exposed to internet (security), multiple app servers share one DB (scalability), change business logic by updating only app server (maintainability), any client type uses same app server (flexibility).</span>`},
+{cat:"Storage Manager",q:"Describe the Storage Manager — its 4 components and 3 data structures.",a:`<strong>Definition:</strong> A program module providing the interface between low-level data stored in the database and application programs and queries. Responsible for: interaction with the OS file manager, and efficient storing, retrieving, and updating of data.
+<strong>Four Components:</strong>
+<span class="ap"><strong>1. Authorization and Integrity Manager:</strong> Tests integrity constraints before any write. Checks access authorization before any data operation.</span>
+<span class="ap"><strong>2. Transaction Manager:</strong> Ensures ACID properties. Manages undo log (rollback on failure) and redo log (recovery after crash).</span>
+<span class="ap"><strong>3. File Manager:</strong> Manages disk space allocation — determines which data goes in which physical file and block.</span>
+<span class="ap"><strong>4. Buffer Manager:</strong> Manages buffer pool (RAM cache of hot pages). RAM ~1,000× faster than SSD — critical for performance. Uses LRU replacement algorithm.</span>
+<strong>Three Physical Data Structures:</strong>
+<span class="ap"><strong>1. Data Files:</strong> Store the actual database records — every row of every table on disk as fixed-size blocks.</span>
+<span class="ap"><strong>2. Data Dictionary:</strong> Stores metadata — schema, constraints, authorization, and statistics for query optimization.</span>
+<span class="ap"><strong>3. Indices:</strong> Provide fast access — pointers to data items holding particular values. B+-tree allows O(log n) lookup vs O(n) full scan.</span>`},
+{cat:"Query Processing",q:"Walk through all 3 query processing steps. Why is step 2 (optimization) the most important?",a:`<strong>Step 1 — Parsing and Translation:</strong> SQL string is parsed (syntax checked), validated against the data dictionary, and translated into a relational algebra expression. Syntax errors reported immediately.
+<strong>Step 2 — Optimization (Most Important!):</strong> The DML Compiler performs query optimization — picks the lowest cost evaluation plan from among the various alternatives. The optimizer:
+<span class="ap">Generates multiple alternative physical execution plans (different join algorithms, join orderings, index scan vs full table scan).</span>
+<span class="ap">Estimates cost of each plan using data dictionary statistics (table row counts, column value distributions, index availability).</span>
+<span class="ap">Selects the plan with the lowest estimated total cost. Two equivalent queries can differ by 1,000×!</span>
+<strong>Step 3 — Evaluation:</strong> The Query Evaluation Engine executes the chosen physical plan, accessing data through the storage manager (Buffer Manager serves RAM-cached pages), and returns the result relation.`},
+{cat:"Data Models",q:"Compare all 6 data models — what each is and when to use it.",a:`<strong>Relational Model</strong> (Ted Codd, 1970): Data in tables with rows and columns, linked by foreign keys. SQL is the query language. Use for virtually all business data. Examples: MySQL, PostgreSQL, Oracle.
+<span class="ap"><strong>Entity-Relationship (ER) Model:</strong> Visual tool — entities, attributes, relationships. Use for: designing the logical schema before building the database. Not directly implemented as a database.</span>
+<span class="ap"><strong>Object-based Models:</strong> Combine OOP concepts with DB management. Use for: complex data with rich behaviour — CAD/CAM, multimedia. Examples: PostgreSQL object-relational features.</span>
+<span class="ap"><strong>Semi-structured (XML/JSON):</strong> Flexible, self-describing data. Use for: web services, APIs, document storage. Examples: MongoDB (JSON), Firebase.</span>
+<span class="ap"><strong>Hierarchical Model (older):</strong> Tree structure — single root, each child has one parent. Legacy systems only (IBM IMS). Cannot represent many-to-many relationships naturally.</span>
+<span class="ap"><strong>Network Model (older):</strong> Graph structure with pointer-linked records. Legacy systems only. Complex navigation, difficult to query.</span>`},
+{cat:"Users",q:"Describe all 4 types of database users and how each interacts with the system.",a:`<strong>1. Naive Users:</strong> Unsophisticated users who interact through pre-written application programs. No knowledge of SQL or that a database exists. Use forms, mobile apps, web pages. Examples: students checking grades, bank customers at ATM, shoppers on Coupang.
+<strong>2. Application Programmers:</strong> IT professionals who write the application programs that naive users interact with. Use embedded SQL, JDBC (Java), ODBC (C/C++), Python DB-API, or ORM frameworks (Hibernate, Django ORM).
+<strong>3. Sophisticated Users (Analysts):</strong> Business analysts, data scientists, researchers who formulate requests directly in SQL without writing full programs. Write complex multi-table JOINs, aggregations, window functions. Use SQL clients, BI tools (Tableau, Power BI), Jupyter notebooks.
+<strong>4. Database Administrator (DBA):</strong> Has central control. Functions: schema definition (CREATE TABLE), storage structure definition (CREATE INDEX), schema modification (ALTER TABLE), granting authorization (GRANT/REVOKE), routine maintenance — periodically backing up the database, ensuring enough free disk space, and monitoring jobs running on the database for performance issues.`},
+{cat:"History",q:"Trace the complete evolution of database systems from the 1950s through the 2010s.",a:`<strong>1950s and early 1960s:</strong> Data processing using magnetic tapes — ONLY sequential access. Punched cards for input. No concept of a database system.
+<strong>Late 1960s and 1970s:</strong> Hard disks enable direct (random) access. Network and hierarchical models in widespread use. Ted Codd (IBM) defines the relational data model (1970). IBM Research builds System R; UC Berkeley (Stonebraker) builds Ingres. Oracle releases first commercial relational DB (1979). High-performance transaction processing emerges.
+<span class="ap"><strong>1980s:</strong> Research prototypes → commercial systems. SQL becomes the industrial standard. Parallel and distributed DB systems (Wisconsin, IBM, Teradata). IBM DB2, Oracle, Sybase dominate.</span>
+<span class="ap"><strong>1990s:</strong> Multi-terabyte data warehouses. Emergence of Web commerce. OLAP for business intelligence. MySQL and PostgreSQL as open-source alternatives.</span>
+<span class="ap"><strong>2000s:</strong> Google BigTable (2004), Yahoo PNuts, Amazon DynamoDB. "NoSQL" systems — MongoDB, Cassandra, Redis. MapReduce and Apache Hadoop.</span>
+<span class="ap"><strong>2010s:</strong> SQL reloaded — Apache Hive and Spark SQL. Massively parallel databases (Redshift, Snowflake). Multi-core main-memory databases (SAP HANA, VoltDB). NewSQL combines SQL reliability with NoSQL scale.</span>`},
+{cat:"Engine",q:"Describe all 3 Database Engine components with their sub-components.",a:`The lecture: "A database system is partitioned into modules that deal with each of the responsibilities of the overall system."
+<strong>1. Storage Manager:</strong> Interface between low-level disk data and applications/queries. Responsible for OS file manager interaction and efficient storing/retrieving/updating.
+<span class="ap">Four sub-components: (1) Authorization &amp; Integrity Manager — tests constraints, checks access rights. (2) Transaction Manager — ensures ACID, manages undo/redo logs. (3) File Manager — disk space allocation. (4) Buffer Manager — RAM cache (buffer pool), hot page management.</span>
+<span class="ap">Three data structures: Data Files (actual records), Data Dictionary (metadata/schema), Indices (fast access pointers).</span>
+<strong>2. Query Processor Component:</strong>
+<span class="ap">DDL Interpreter — interprets CREATE/ALTER/DROP statements, records in data dictionary.</span>
+<span class="ap">DML Compiler — translates SELECT/INSERT/UPDATE/DELETE into evaluation plans, performs query optimization (lowest cost plan selection).</span>
+<span class="ap">Query Evaluation Engine — executes the low-level instructions, returns result relation.</span>
+<strong>3. Transaction Management Component:</strong> Ensures DB remains consistent despite system failures and concurrent access. The Concurrency-Control Manager controls interaction among concurrent transactions to ensure consistency.`},
+{cat:"Transactions",q:"What is a transaction and how does the Lost Update Problem demonstrate why transaction management is essential?",a:`<strong>Definition:</strong> A transaction is a collection of operations that performs a single logical function. Example: "Transfer ₩100,000 from Account A to Account B" = one transaction with two operations: (1) debit A, (2) credit B.
+<strong>The Lost Update Problem (demonstrates need for Isolation):</strong>
+<span class="ap">Time 1: Teller A reads Account X balance = ₩100,000</span>
+<span class="ap">Time 2: Teller B reads Account X balance = ₩100,000 (same time!)</span>
+<span class="ap">Time 3: Teller A withdraws ₩50,000 → computes ₩50,000 → writes ₩50,000</span>
+<span class="ap">Time 4: Teller B withdraws ₩50,000 → computes ₩50,000 → OVERWRITES with ₩50,000</span>
+<span class="ap">Result: Balance shows ₩50,000 but should be ₩0! Teller A's withdrawal was "lost"!</span>
+<strong>The Solution:</strong> The Concurrency-Control Manager uses locking or MVCC to ensure Teller B cannot read Account X until Teller A's transaction fully commits. The Transaction-Management Component ensures the database remains in a consistent (correct) state despite system failures and concurrent access.`},
+{cat:"Independence",q:"What is Physical Data Independence and why is it critically important?",a:`<strong>Exact lecture definition:</strong> Physical Data Independence — the ability to modify the physical schema without changing the logical schema.
+Lecture: "The interfaces between the various levels and components should be well defined so that changes in some parts do not seriously influence others."
+<strong>Why it's critically important:</strong>
+<span class="ap"><strong>Performance tuning without code changes:</strong> A DBA can add a B+-tree index on a frequently-queried column. This changes the physical schema but application queries automatically run faster — developers write zero new code.</span>
+<span class="ap"><strong>Hardware migration:</strong> Migrate from HDDs to NVMe SSDs, or from on-premise to Amazon RDS cloud. Application code unchanged — Netflix did exactly this.</span>
+<span class="ap"><strong>Independent evolution:</strong> Storage engineers and application developers work independently. Storage team optimises physical layer while app team adds new features.</span>
+<em>Without physical data independence, every hardware upgrade would require rewriting all applications — economically catastrophic.</em>`},
+{cat:"Relational Model",q:"What is the Relational Model? Explain all key concepts: relation, tuple, attribute, primary key, foreign key.",a:`<strong>Relational Model</strong> (Ted Codd, 1970): All data is stored in tables (relations). The model organises all data into simple two-dimensional tables and uses set-based SQL operations to query them. Ted Codd received the ACM Turing Award 1981 for this work.
+<strong>Key Concepts:</strong>
+<span class="ap"><strong>Relation (Table):</strong> A named two-dimensional structure with a fixed set of columns. Example: the "instructor" table.</span>
+<span class="ap"><strong>Tuple (Row/Record):</strong> A single row in a table representing one entity. Example: (10101, 'Srinivasan', 'Comp. Sci.', 65000).</span>
+<span class="ap"><strong>Attribute (Column):</strong> A named property with a specified data type. Example: ID char(5), name varchar(20), salary numeric(8,2).</span>
+<span class="ap"><strong>Primary Key (PK):</strong> An attribute that uniquely identifies each row. Cannot be NULL or duplicate. Example: ID in instructor table.</span>
+<span class="ap"><strong>Foreign Key (FK):</strong> An attribute whose value must match a value in another table's primary key. Links tables together. Example: dept_name in instructor must match dept_name in department. This enforces referential integrity.</span>`},
+{cat:"Summary",q:"What are the top exam topics and key definitions to memorise for Chapter 1?",a:`<span class="ap"><strong>1. ACID Properties:</strong> Atomicity (all-or-nothing) · Consistency (valid state always) · Isolation (no interference between concurrent transactions) · Durability (committed = permanent). Know each with a bank transfer example.</span>
+<span class="ap"><strong>2. Three Abstraction Levels:</strong> Physical (HOW stored) → Logical (WHAT stored, where programmers work) → View (user-specific, security). Know what each level hides.</span>
+<span class="ap"><strong>3. Relational Model:</strong> Ted Codd, 1970, ACM Turing Award 1981. Data in tables (relations), rows (tuples), columns (attributes), linked by foreign keys.</span>
+<span class="ap"><strong>4. Physical Data Independence:</strong> Ability to modify physical schema without changing logical schema or apps. Lecture quote about interfaces being well-defined.</span>
+<span class="ap"><strong>5. Query Optimization:</strong> DML Compiler picks LOWEST COST plan. Two equivalent queries can differ 1,000×. Uses data dictionary statistics.</span>
+<span class="ap"><strong>6. Three-Tier Architecture:</strong> Client (no direct DB) → App Server (business logic, forms interface) → DB Server. Why: security, scalability, maintainability.</span>
+<span class="ap"><strong>7. 7 File System Problems → All Solved by DBMS</strong></span>
+<span class="ap"><strong>8. Storage Manager:</strong> 4 components (Auth&amp;Integrity, Transaction, File, Buffer Managers) + 3 data structures (Data Files, Data Dictionary, Indices).</span>
+<span class="ap"><strong>9. Procedural vs Declarative DML:</strong> Procedural = WHAT+HOW. Declarative (SQL) = WHAT only. "Declarative is easier to learn and use."</span>
+<span class="ap"><strong>10. University DB Application Programs:</strong> Add students/instructors/courses · Register for courses · Compute GPA and generate transcripts.</span>`}
+];
+
+function buildQnA(){
+  document.getElementById('ABODY').innerHTML=QNA.map((item,i)=>`
+<div class="ai" id="A${i}">
+<div class="aiq" onclick="tA(${i})">
+<div class="aiql"><div class="aicat">${item.cat}</div><div class="aiqt">Q${i+1}. ${item.q}</div></div>
+<div class="aiar">▾</div>
+</div>
+<div class="aian"><div class="aians">${item.a}</div></div>
+</div>`).join('');
+}
+function tA(i){document.getElementById('A'+i).classList.toggle('op')}
+
+// ══════════════ VIEW ══════════════
+function showV(v){
+  document.querySelectorAll('.ov').forEach(o=>o.classList.remove('on'));
+  document.querySelectorAll('.tbtn').forEach(b=>b.classList.remove('on'));
+  if(v==='q')document.getElementById('OQ').classList.add('on');
+  else if(v==='a')document.getElementById('OA').classList.add('on');
+  const map={b:'tb-b',q:'tb-q',a:'tb-a'};
+  document.querySelector('.'+map[v]).classList.add('on');
+}
+
+// ══════════════ INIT ══════════════
+buildDots();buildSB();buildQnA();initQ();
+// Render page 0 immediately — no animation
+document.getElementById('col').innerHTML=PGS[0].h;
+document.getElementById('FPNUM').textContent='1 / '+TOT;
+document.getElementById('FRIGHT').textContent=PGS[0].t;
+document.getElementById('PTITLE').textContent=PGS[0].t;
+document.getElementById('CL').style.display='none';
+document.getElementById('CR').style.display='flex';
+document.getElementById('NP').disabled=true;
+document.getElementById('NN').disabled=false;
+updateDots();updateSB(0);
+</script>
+</body>
+</html>
