@@ -1,0 +1,1416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SGP Interview Prep – Woosong University</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --green:       #16a34a;
+  --green-light: #dcfce7;
+  --green-mid:   #bbf7d0;
+  --green-dark:  #14532d;
+  --green-hover: #15803d;
+  --gold:        #d97706;
+  --gold-light:  #fef3c7;
+  --red:         #dc2626;
+  --red-light:   #fee2e2;
+  --blue:        #2563eb;
+  --blue-light:  #dbeafe;
+  --purple:      #7c3aed;
+  --purple-light:#ede9fe;
+  --orange:      #ea580c;
+  --orange-light:#ffedd5;
+  --bg:          #f0fdf4;
+  --sidebar-bg:  #ffffff;
+  --card-bg:     #ffffff;
+  --text:        #0f172a;
+  --text-muted:  #64748b;
+  --text-light:  #94a3b8;
+  --border:      #e2e8f0;
+  --border-green:#bbf7d0;
+  --shadow:      0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md:   0 4px 16px rgba(0,0,0,0.08);
+  --shadow-lg:   0 8px 32px rgba(0,0,0,0.1);
+  --radius:      12px;
+  --radius-sm:   8px;
+  --sidebar-w:   260px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  display: flex;
+}
+
+/* ═══════════════════════════════
+   SIDEBAR
+═══════════════════════════════ */
+.sidebar {
+  width: var(--sidebar-w);
+  min-height: 100vh;
+  background: var(--sidebar-bg);
+  border-right: 1px solid var(--border);
+  position: fixed;
+  top: 0; left: 0;
+  display: flex;
+  flex-direction: column;
+  z-index: 100;
+  box-shadow: 2px 0 12px rgba(0,0,0,0.06);
+}
+
+.sidebar-logo {
+  padding: 1.5rem 1.4rem 1.2rem;
+  border-bottom: 1px solid var(--border);
+}
+.sidebar-logo .logo-badge {
+  display: flex; align-items: center; gap: 0.7rem;
+  margin-bottom: 0.8rem;
+}
+.logo-icon {
+  width: 38px; height: 38px; border-radius: 10px;
+  background: linear-gradient(135deg, var(--green), #22c55e);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.1rem; flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(22,163,74,0.3);
+}
+.logo-text { line-height: 1.2; }
+.logo-text strong { font-size: 0.9rem; font-weight: 700; color: var(--text); display: block; }
+.logo-text span { font-size: 0.68rem; color: var(--text-muted); }
+
+/* SGP Apply Button */
+.apply-btn {
+  display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+  background: linear-gradient(135deg, var(--green), #22c55e);
+  color: white; border: none; border-radius: var(--radius-sm);
+  padding: 0.6rem 1rem; font-family: 'Inter', sans-serif;
+  font-size: 0.78rem; font-weight: 600; cursor: pointer;
+  text-decoration: none; width: 100%;
+  box-shadow: 0 2px 8px rgba(22,163,74,0.35);
+  transition: all 0.2s; letter-spacing: 0.01em;
+}
+.apply-btn:hover {
+  background: linear-gradient(135deg, var(--green-hover), #16a34a);
+  box-shadow: 0 4px 14px rgba(22,163,74,0.45);
+  transform: translateY(-1px);
+}
+.apply-btn svg { flex-shrink: 0; }
+
+/* Nav links */
+.sidebar-nav {
+  flex: 1; overflow-y: auto; padding: 1rem 0.8rem;
+}
+.nav-section-title {
+  font-size: 0.62rem; font-weight: 700; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--text-light);
+  padding: 0 0.6rem; margin: 1rem 0 0.4rem;
+}
+.nav-section-title:first-child { margin-top: 0; }
+.nav-link {
+  display: flex; align-items: center; gap: 0.65rem;
+  padding: 0.55rem 0.7rem; border-radius: 8px;
+  color: var(--text-muted); font-size: 0.82rem; font-weight: 500;
+  text-decoration: none; transition: all 0.15s;
+  margin-bottom: 0.1rem; cursor: pointer;
+}
+.nav-link:hover { background: var(--green-light); color: var(--green); }
+.nav-link.active { background: var(--green-light); color: var(--green); font-weight: 600; }
+.nav-link .nav-icon {
+  width: 28px; height: 28px; border-radius: 7px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.85rem; background: var(--bg); flex-shrink: 0;
+  transition: background 0.15s;
+}
+.nav-link:hover .nav-icon,
+.nav-link.active .nav-icon { background: white; }
+.nav-badge {
+  margin-left: auto; background: var(--green-light); color: var(--green);
+  font-size: 0.62rem; font-weight: 700; padding: 0.1rem 0.45rem;
+  border-radius: 99px; letter-spacing: 0.03em;
+}
+
+/* Progress in sidebar */
+.sidebar-progress {
+  padding: 1rem 1.4rem;
+  border-top: 1px solid var(--border);
+}
+.sidebar-progress .sp-label {
+  display: flex; justify-content: space-between; align-items: center;
+  font-size: 0.72rem; font-weight: 600; color: var(--text-muted);
+  margin-bottom: 0.5rem;
+}
+.sp-pct { color: var(--green); font-weight: 700; font-size: 0.8rem; }
+.sp-track {
+  height: 5px; background: var(--border);
+  border-radius: 99px; overflow: hidden;
+}
+.sp-fill {
+  height: 100%; background: linear-gradient(90deg, var(--green), #22c55e);
+  border-radius: 99px; width: 0%;
+  transition: width 0.4s ease;
+}
+
+/* ═══════════════════════════════
+   MAIN CONTENT
+═══════════════════════════════ */
+.main {
+  margin-left: var(--sidebar-w);
+  flex: 1;
+  min-height: 100vh;
+}
+
+/* Top header bar */
+.topbar {
+  background: white;
+  border-bottom: 1px solid var(--border);
+  padding: 0.9rem 2rem;
+  display: flex; align-items: center; justify-content: space-between;
+  position: sticky; top: 0; z-index: 50;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+}
+.topbar-title { font-size: 0.85rem; font-weight: 600; color: var(--text); }
+.topbar-subtitle { font-size: 0.72rem; color: var(--text-muted); }
+.topbar-right {
+  display: flex; align-items: center; gap: 0.6rem;
+}
+.reading-bar {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  height: 2px; background: var(--border);
+}
+.reading-fill {
+  height: 100%; background: linear-gradient(90deg, var(--green), #22c55e);
+  width: 0%; transition: width 0.1s;
+}
+
+/* Content area */
+.content {
+  padding: 2rem;
+  max-width: 860px;
+}
+
+/* ═══════════════════════════════
+   PAGE SECTIONS (shown/hidden)
+═══════════════════════════════ */
+.page { display: none; }
+.page.active { display: block; }
+
+/* Section header */
+.page-header {
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--border);
+}
+.page-header .ph-eyebrow {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  background: var(--green-light); color: var(--green);
+  font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em;
+  text-transform: uppercase; padding: 0.3rem 0.8rem;
+  border-radius: 99px; margin-bottom: 0.7rem;
+}
+.page-header h1 {
+  font-size: 1.8rem; font-weight: 800; color: var(--text);
+  line-height: 1.2; margin-bottom: 0.5rem;
+}
+.page-header h1 span { color: var(--green); }
+.page-header p {
+  font-size: 0.88rem; color: var(--text-muted); line-height: 1.65;
+  max-width: 600px;
+}
+
+/* ═══════════════════════════════
+   CARDS
+═══════════════════════════════ */
+.card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.4rem;
+  box-shadow: var(--shadow);
+}
+.card-grid-4 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1rem; margin-bottom: 1.5rem;
+}
+.info-card {
+  background: white; border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 1.3rem;
+  box-shadow: var(--shadow);
+  transition: box-shadow 0.2s, transform 0.2s;
+}
+.info-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
+.ic-icon {
+  width: 40px; height: 40px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.2rem; margin-bottom: 0.8rem;
+}
+.ic-icon.green  { background: var(--green-light); }
+.ic-icon.gold   { background: var(--gold-light); }
+.ic-icon.blue   { background: var(--blue-light); }
+.ic-icon.purple { background: var(--purple-light); }
+.info-card h3   { font-size: 0.82rem; font-weight: 700; color: var(--text); margin-bottom: 0.35rem; }
+.info-card p    { font-size: 0.76rem; color: var(--text-muted); line-height: 1.55; }
+
+/* ═══════════════════════════════
+   TRAIT TAGS
+═══════════════════════════════ */
+.trait-row { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.8rem; }
+.trait {
+  padding: 0.38rem 0.9rem; border-radius: 99px;
+  font-size: 0.76rem; font-weight: 600; letter-spacing: 0.02em;
+}
+.trait.good { background: var(--green-light); color: var(--green); border: 1.5px solid var(--green-mid); }
+.trait.bad  { background: var(--red-light);   color: var(--red);   border: 1.5px solid #fca5a5; text-decoration: line-through; opacity: 0.7; }
+.trait-label { font-size: 0.72rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.5rem; }
+
+/* Truth box */
+.truth-card {
+  background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+  border: 2px solid var(--green-mid);
+  border-radius: var(--radius); padding: 2rem;
+  text-align: center; margin-top: 1.5rem;
+}
+.truth-card .tc-title {
+  font-size: 1.2rem; font-weight: 800; color: var(--green-dark);
+  margin-bottom: 0.5rem; line-height: 1.3;
+}
+.truth-card p { font-size: 0.85rem; color: var(--text-muted); line-height: 1.7; }
+.truth-card strong { color: var(--green); }
+
+/* ═══════════════════════════════
+   TIPS GRID
+═══════════════════════════════ */
+.calm-alert {
+  background: linear-gradient(135deg, #eff6ff, #dbeafe);
+  border: 1.5px solid #93c5fd; border-radius: var(--radius);
+  padding: 1.4rem 1.6rem; margin-bottom: 1.5rem;
+  display: flex; align-items: flex-start; gap: 1rem;
+}
+.calm-alert .ca-icon { font-size: 2rem; flex-shrink: 0; margin-top: 0.1rem; }
+.calm-alert h3 { font-size: 0.95rem; font-weight: 700; color: #1d4ed8; margin-bottom: 0.4rem; }
+.calm-alert p  { font-size: 0.82rem; color: #1e40af; line-height: 1.7; }
+.calm-alert p strong { color: #1d4ed8; }
+
+.tips-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1rem;
+}
+.tip-card {
+  background: white; border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 1.2rem;
+  box-shadow: var(--shadow);
+  transition: box-shadow 0.2s, transform 0.2s;
+  position: relative; overflow: hidden;
+}
+.tip-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
+.tip-card-num {
+  position: absolute; top: -0.5rem; right: 0.8rem;
+  font-size: 3.5rem; font-weight: 900;
+  color: rgba(0,0,0,0.04); line-height: 1;
+  pointer-events: none; user-select: none;
+}
+.tip-tag {
+  display: inline-block; font-size: 0.62rem; font-weight: 700;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  padding: 0.2rem 0.6rem; border-radius: 99px; margin-bottom: 0.7rem;
+}
+.tip-tag.mindset { background: var(--blue-light);   color: var(--blue); }
+.tip-tag.action  { background: var(--green-light);  color: var(--green); }
+.tip-tag.warning { background: var(--red-light);    color: var(--red); }
+.tip-tag.secret  { background: var(--gold-light);   color: var(--gold); }
+.tip-card h4 { font-size: 0.86rem; font-weight: 700; color: var(--text); margin-bottom: 0.45rem; }
+.tip-card p  { font-size: 0.78rem; color: var(--text-muted); line-height: 1.65; }
+.tip-card p strong { color: var(--text); }
+.tip-card p .kw  { color: var(--green); font-weight: 600; }
+.tip-card p .kwy { color: var(--gold);  font-weight: 600; }
+.tip-card p .kwr { color: var(--red);   font-weight: 600; }
+
+/* ═══════════════════════════════
+   SCRIPT / SENTENCES
+═══════════════════════════════ */
+.script-info {
+  background: var(--gold-light); border: 1.5px solid #fde68a;
+  border-radius: var(--radius); padding: 1.1rem 1.3rem;
+  margin-bottom: 1.4rem;
+  font-size: 0.82rem; color: #78350f; line-height: 1.7;
+}
+.script-info strong { color: #92400e; }
+
+/* Filter bar */
+.filter-bar {
+  display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 1.4rem;
+}
+.fbtn {
+  padding: 0.38rem 0.9rem; border-radius: 99px;
+  border: 1.5px solid var(--border); background: white;
+  color: var(--text-muted); font-family: 'Inter', sans-serif;
+  font-size: 0.74rem; font-weight: 600; cursor: pointer;
+  transition: all 0.15s;
+}
+.fbtn:hover { border-color: var(--green); color: var(--green); background: var(--green-light); }
+.fbtn.active { border-color: var(--green); color: var(--green); background: var(--green-light); }
+
+/* Sentence rows */
+.sentence-list { display: flex; flex-direction: column; gap: 0.7rem; }
+.s-row {
+  background: white; border: 1px solid var(--border);
+  border-radius: var(--radius); overflow: hidden;
+  box-shadow: var(--shadow);
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.s-row:hover { border-color: var(--green-mid); box-shadow: var(--shadow-md); }
+.s-row.starred-row { border-color: #fde68a; background: #fffbeb; }
+
+.s-row-inner {
+  display: grid;
+  grid-template-columns: 2.8rem auto 1fr auto;
+  align-items: center; gap: 0; 
+}
+.s-index {
+  background: var(--green-light); color: var(--green);
+  font-size: 0.75rem; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  align-self: stretch; min-width: 2.8rem;
+  border-right: 1px solid var(--green-mid);
+  font-variant-numeric: tabular-nums;
+  flex-shrink: 0;
+}
+.s-tag-col {
+  padding: 0.9rem 0.7rem 0.9rem 0.8rem;
+  align-self: flex-start; padding-top: 1rem;
+  flex-shrink: 0;
+}
+.s-tag {
+  display: inline-block; font-size: 0.6rem; font-weight: 700;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  padding: 0.18rem 0.55rem; border-radius: 99px;
+  white-space: nowrap;
+}
+.s-tag.intro    { background: var(--blue-light);   color: var(--blue); }
+.s-tag.reason   { background: var(--green-light);  color: var(--green); }
+.s-tag.sgp      { background: var(--gold-light);   color: var(--gold); }
+.s-tag.work     { background: var(--orange-light); color: var(--orange); }
+.s-tag.attitude { background: var(--red-light);    color: var(--red); }
+.s-tag.teamwork { background: var(--purple-light); color: var(--purple); }
+
+.s-body { padding: 0.75rem 0.8rem 0.75rem 0; }
+.s-kr {
+  font-family: 'Noto Sans KR', sans-serif;
+  font-size: 0.97rem; font-weight: 500;
+  color: var(--text); line-height: 1.5; margin-bottom: 0.25rem;
+}
+.s-kr .kw  { color: var(--green); font-weight: 700; background: var(--green-light); padding: 0 3px; border-radius: 3px; }
+.s-kr .kwy { color: var(--gold);  font-weight: 700; background: var(--gold-light);  padding: 0 3px; border-radius: 3px; }
+.s-en { font-size: 0.74rem; color: var(--text-muted); line-height: 1.45; font-style: italic; }
+.s-note {
+  font-size: 0.7rem; color: var(--green);
+  margin-top: 0.3rem; line-height: 1.4;
+}
+.s-note::before { content: '→ '; }
+
+.s-actions {
+  display: flex; flex-direction: column; align-items: center;
+  gap: 0.4rem; padding: 0.7rem 0.8rem 0.7rem 0.4rem;
+  flex-shrink: 0;
+}
+/* VOICE BUTTON */
+.voice-btn {
+  width: 36px; height: 36px; border-radius: 50%;
+  border: 1.5px solid var(--green-mid);
+  background: var(--green-light);
+  color: var(--green); cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.15s; flex-shrink: 0;
+}
+.voice-btn:hover { background: var(--green); color: white; border-color: var(--green); transform: scale(1.1); box-shadow: 0 2px 8px rgba(22,163,74,0.35); }
+.voice-btn.speaking { background: var(--green); color: white; border-color: var(--green); animation: pulse-green 0.8s ease-in-out infinite; }
+.voice-btn svg { pointer-events: none; }
+
+@keyframes pulse-green {
+  0%,100% { box-shadow: 0 0 0 0 rgba(22,163,74,0.4); }
+  50%      { box-shadow: 0 0 0 6px rgba(22,163,74,0); }
+}
+
+/* Star button */
+.star-btn {
+  width: 36px; height: 36px; border-radius: 50%;
+  border: 1.5px solid var(--border);
+  background: white; color: var(--text-muted);
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  font-size: 0.9rem; transition: all 0.15s; flex-shrink: 0;
+}
+.star-btn:hover { border-color: #fbbf24; background: var(--gold-light); }
+.star-btn.starred { border-color: #fbbf24; background: var(--gold-light); }
+
+/* ═══════════════════════════════
+   Q&A BANK
+═══════════════════════════════ */
+.qbank-intro {
+  background: var(--green-light); border: 1.5px solid var(--green-mid);
+  border-radius: var(--radius); padding: 1rem 1.3rem;
+  font-size: 0.82rem; color: var(--green-dark); line-height: 1.7;
+  margin-bottom: 1.2rem;
+}
+.qbank-intro strong { color: var(--green); }
+
+.q-category {
+  font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--text-light);
+  display: flex; align-items: center; gap: 0.6rem;
+  margin: 1.6rem 0 0.7rem;
+}
+.q-category::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+.q-list { display: flex; flex-direction: column; gap: 0.6rem; }
+.q-item {
+  background: white; border: 1px solid var(--border);
+  border-radius: var(--radius); overflow: hidden;
+  box-shadow: var(--shadow);
+  transition: border-color 0.15s;
+}
+.q-item:hover { border-color: var(--green-mid); }
+.q-item.open { border-color: var(--green); }
+.q-head {
+  display: flex; align-items: center; gap: 0.8rem;
+  padding: 1rem 1.1rem; cursor: pointer; user-select: none;
+}
+.q-num {
+  min-width: 1.8rem; height: 1.8rem; border-radius: 6px;
+  background: var(--green-light); color: var(--green);
+  font-size: 0.72rem; font-weight: 800; display: flex;
+  align-items: center; justify-content: center; flex-shrink: 0;
+}
+.q-item.open .q-num { background: var(--green); color: white; }
+.q-text { flex: 1; }
+.q-kr { font-family: 'Noto Sans KR', sans-serif; font-size: 0.9rem; font-weight: 500; color: var(--text); }
+.q-en { font-size: 0.72rem; color: var(--text-muted); margin-top: 0.1rem; }
+.q-chevron {
+  width: 22px; height: 22px; border-radius: 50%;
+  background: var(--bg); border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; transition: transform 0.25s, background 0.15s;
+  font-size: 0.65rem; color: var(--text-muted);
+}
+.q-item.open .q-chevron { transform: rotate(180deg); background: var(--green-light); color: var(--green); border-color: var(--green-mid); }
+
+.q-body {
+  display: none; padding: 0 1.1rem 1.1rem;
+  border-top: 1px solid var(--border); padding-top: 1rem;
+}
+.q-body.open { display: block; }
+
+.ans-box {
+  background: var(--green-light); border-left: 3px solid var(--green);
+  border-radius: 0 8px 8px 0; padding: 0.9rem 1rem; margin-bottom: 0.7rem;
+}
+.ans-kr {
+  font-family: 'Noto Sans KR', sans-serif;
+  font-size: 0.93rem; color: var(--text); line-height: 1.65;
+  margin-bottom: 0.4rem;
+}
+.ans-kr .kw  { color: var(--green); font-weight: 700; background: white; padding: 0 3px; border-radius: 3px; }
+.ans-kr .kwy { color: var(--gold);  font-weight: 700; }
+.ans-en { font-size: 0.76rem; color: var(--text-muted); line-height: 1.5; font-style: italic; }
+
+.ans-tip {
+  background: var(--gold-light); border: 1px solid #fde68a;
+  border-radius: var(--radius-sm); padding: 0.65rem 0.9rem;
+  font-size: 0.76rem; color: #78350f; line-height: 1.6;
+}
+.ans-tip::before { content: '💡 '; }
+
+/* ═══════════════════════════════
+   STRATEGY STEPS
+═══════════════════════════════ */
+.steps-list { display: flex; flex-direction: column; gap: 0.7rem; margin-bottom: 1.5rem; }
+.step-item {
+  background: white; border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 1rem 1.2rem;
+  display: flex; gap: 1rem; align-items: flex-start;
+  box-shadow: var(--shadow); transition: box-shadow 0.2s, border-color 0.2s;
+}
+.step-item:hover { box-shadow: var(--shadow-md); border-color: var(--green-mid); }
+.step-num {
+  min-width: 2.2rem; height: 2.2rem; border-radius: 50%;
+  background: linear-gradient(135deg, var(--green), #22c55e);
+  color: white; font-weight: 800; font-size: 0.85rem;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; box-shadow: 0 2px 6px rgba(22,163,74,0.3);
+}
+.step-content h4 { font-size: 0.88rem; font-weight: 700; color: var(--text); margin-bottom: 0.3rem; }
+.step-content p  { font-size: 0.78rem; color: var(--text-muted); line-height: 1.6; }
+.step-content p strong { color: var(--text); }
+
+/* ═══════════════════════════════
+   CHECKLIST
+═══════════════════════════════ */
+.checklist { display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1.5rem; }
+.cl-item {
+  background: white; border: 1px solid var(--border);
+  border-radius: var(--radius-sm); padding: 0.85rem 1rem;
+  display: flex; align-items: center; gap: 0.9rem;
+  cursor: pointer; transition: all 0.15s; box-shadow: var(--shadow);
+  user-select: none;
+}
+.cl-item:hover { border-color: var(--green-mid); background: var(--bg); }
+.cl-item.done { border-color: var(--green); background: var(--green-light); }
+.cl-box {
+  width: 20px; height: 20px; border-radius: 5px;
+  border: 2px solid var(--border); background: white;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; font-size: 0.75rem; transition: all 0.15s;
+}
+.cl-item.done .cl-box { background: var(--green); border-color: var(--green); color: white; }
+.cl-text strong { display: block; font-size: 0.84rem; font-weight: 600; color: var(--text); }
+.cl-text span   { font-size: 0.72rem; color: var(--text-muted); }
+.cl-item.done .cl-text strong { color: var(--green-dark); }
+
+.progress-card {
+  background: white; border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 1.3rem;
+  box-shadow: var(--shadow);
+}
+.prog-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.8rem; }
+.prog-head span { font-size: 0.78rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; }
+.prog-pct { font-size: 1.4rem; font-weight: 800; color: var(--green); }
+.prog-track { height: 8px; background: var(--border); border-radius: 99px; overflow: hidden; margin-bottom: 0.7rem; }
+.prog-bar   { height: 100%; background: linear-gradient(90deg, var(--green), #22c55e); border-radius: 99px; width: 0%; transition: width 0.4s; }
+.prog-msg   { font-size: 0.78rem; color: var(--text-muted); }
+
+/* ═══════════════════════════════
+   DIVIDER inside content
+═══════════════════════════════ */
+.section-divider {
+  height: 1px; background: var(--border);
+  margin: 1.5rem 0;
+}
+.section-sub {
+  font-size: 1rem; font-weight: 700; color: var(--text);
+  margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;
+}
+
+/* ═══════════════════════════════
+   MOBILE TOGGLE
+═══════════════════════════════ */
+.mob-toggle {
+  display: none;
+  position: fixed; bottom: 1.2rem; right: 1.2rem; z-index: 200;
+  width: 46px; height: 46px; border-radius: 50%;
+  background: var(--green); color: white; border: none;
+  box-shadow: 0 4px 16px rgba(22,163,74,0.4);
+  font-size: 1.2rem; cursor: pointer; align-items: center; justify-content: center;
+}
+
+@media (max-width: 768px) {
+  .sidebar { transform: translateX(-100%); transition: transform 0.3s; }
+  .sidebar.open { transform: translateX(0); }
+  .main { margin-left: 0; }
+  .mob-toggle { display: flex; }
+  .content { padding: 1.2rem; }
+  .s-row-inner { grid-template-columns: 2.2rem auto 1fr auto; }
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════
+     SIDEBAR
+═══════════════════════════════ -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-badge">
+      <div class="logo-icon">🌿</div>
+      <div class="logo-text">
+        <strong>SGP Interview Prep</strong>
+        <span>Woosong University</span>
+      </div>
+    </div>
+    <!-- SGP APPLICATION BUTTON -->
+    <a href="SGP_Application.html" target="_blank" class="apply-btn">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
+      Open SGP Application
+    </a>
+  </div>
+
+  <nav class="sidebar-nav">
+    <div class="nav-section-title">Getting Started</div>
+    <a class="nav-link active" onclick="showPage('about', this)">
+      <span class="nav-icon">🏫</span> About SGP
+    </a>
+    <a class="nav-link" onclick="showPage('traits', this)">
+      <span class="nav-icon">✅</span> What They Look For
+    </a>
+
+    <div class="nav-section-title">Preparation</div>
+    <a class="nav-link" onclick="showPage('tips', this)">
+      <span class="nav-icon">💡</span> Tips &amp; Tricks
+      <span class="nav-badge">12</span>
+    </a>
+    <a class="nav-link" onclick="showPage('script', this)">
+      <span class="nav-icon">📝</span> Script to Memorize
+      <span class="nav-badge">25</span>
+    </a>
+    <a class="nav-link" onclick="showPage('qna', this)">
+      <span class="nav-icon">🎤</span> Full Q&amp;A Bank
+      <span class="nav-badge">16</span>
+    </a>
+
+    <div class="nav-section-title">Final Prep</div>
+    <a class="nav-link" onclick="showPage('strategy', this)">
+      <span class="nav-icon">🎯</span> Interview Strategy
+    </a>
+    <a class="nav-link" onclick="showPage('checklist', this)">
+      <span class="nav-icon">☑️</span> Readiness Checklist
+    </a>
+  </nav>
+
+  <div class="sidebar-progress">
+    <div class="sp-label">
+      <span>Checklist Progress</span>
+      <span class="sp-pct" id="sidePct">0%</span>
+    </div>
+    <div class="sp-track">
+      <div class="sp-fill" id="sideFill"></div>
+    </div>
+  </div>
+</aside>
+
+<!-- ═══════════════════════════════
+     MAIN
+═══════════════════════════════ -->
+<div class="main">
+  <div class="topbar">
+    <div>
+      <div class="topbar-title" id="topbarTitle">About SGP</div>
+      <div class="topbar-subtitle">Sol Green Police · Woosong University Campus Program</div>
+    </div>
+    <div class="topbar-right">
+      <a href="SGP_Application.html" target="_blank" class="apply-btn" style="width:auto;padding:0.45rem 1rem;font-size:0.74rem;">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
+        SGP Application
+      </a>
+    </div>
+    <div class="reading-bar"><div class="reading-fill" id="readFill"></div></div>
+  </div>
+
+  <div class="content">
+
+    <!-- ══ PAGE: ABOUT ══ -->
+    <div class="page active" id="page-about">
+      <div class="page-header">
+        <div class="ph-eyebrow">🌿 Section 01</div>
+        <h1>What Is <span>SGP?</span></h1>
+        <p>Sol Green Police is a campus scholarship work program at Woosong University. It's not real police — it's a student responsibility program that keeps the campus clean, safe, and orderly.</p>
+      </div>
+      <div class="card-grid-4">
+        <div class="info-card"><div class="ic-icon green">🌿</div><h3>Sol Green Police</h3><p><strong>Sol</strong> = Woosong identity<br><strong>Green</strong> = clean campus<br><strong>Police</strong> = safety &amp; order<br><em>Student program, not real police.</em></p></div>
+        <div class="info-card"><div class="ic-icon gold">💼</div><h3>Work &amp; Pay</h3><p>Part-time: <strong>4h / 6h / 8h</strong><br>Rate: <strong>₩11,000–12,000/hr</strong><br>Monthly: <strong>₩800K–2,000K</strong></p></div>
+        <div class="info-card"><div class="ic-icon blue">🧹</div><h3>Your Tasks</h3><p>Clean campus areas, maintain environment, follow team leader, help with safety &amp; order, including <strong>early morning</strong> shifts.</p></div>
+        <div class="info-card"><div class="ic-icon purple">🎯</div><h3>Main Purpose</h3><p>Build <strong>responsibility</strong> and <strong>teamwork</strong>. Develop leadership and service mindset. Create a Green Campus Culture.</p></div>
+      </div>
+      <div class="card">
+        <div class="section-sub">📌 Key Facts to Remember</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.7rem;">
+          <div style="background:var(--green-light);border-radius:8px;padding:0.9rem 1rem;font-size:0.8rem;color:var(--green-dark);line-height:1.6;"><strong>SGP = Sol Green Police</strong><br>Always say the full name in the interview</div>
+          <div style="background:var(--blue-light);border-radius:8px;padding:0.9rem 1rem;font-size:0.8rem;color:#1e40af;line-height:1.6;"><strong>Program since 1995</strong><br>Woosong University's long-standing campus program</div>
+          <div style="background:var(--gold-light);border-radius:8px;padding:0.9rem 1rem;font-size:0.8rem;color:#78350f;line-height:1.6;"><strong>Scholarship + Salary</strong><br>Both financial support and personal growth</div>
+          <div style="background:var(--purple-light);border-radius:8px;padding:0.9rem 1rem;font-size:0.8rem;color:#4c1d95;line-height:1.6;"><strong>Open to All Students</strong><br>Including international students</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ PAGE: TRAITS ══ -->
+    <div class="page" id="page-traits">
+      <div class="page-header">
+        <div class="ph-eyebrow">✅ Section 02</div>
+        <h1>What They <span>Look For</span></h1>
+        <p>SGP does NOT select based on intelligence or talent. They select based on character — reliability, punctuality, and the right attitude.</p>
+      </div>
+      <div class="card" style="margin-bottom:1rem;">
+        <div class="section-sub">✅ Traits They WANT</div>
+        <div class="trait-row">
+          <span class="trait good">Responsible</span><span class="trait good">Punctual</span><span class="trait good">Hardworking</span><span class="trait good">Team Player</span><span class="trait good">Obedient</span><span class="trait good">Early Riser</span><span class="trait good">No Complaints</span><span class="trait good">Positive Attitude</span>
+        </div>
+      </div>
+      <div class="card" style="margin-bottom:1.5rem;">
+        <div class="section-sub">❌ Traits They DON'T Care About</div>
+        <div class="trait-row">
+          <span class="trait bad">Intelligence</span><span class="trait bad">Talent</span><span class="trait bad">Perfect Korean</span><span class="trait bad">High GPA</span><span class="trait bad">Impressive Resume</span>
+        </div>
+      </div>
+      <div class="truth-card">
+        <div class="tc-title">🎯 The #1 Question In The Interviewer's Head</div>
+        <p style="font-size:1rem;font-weight:700;color:var(--green-dark);margin:0.8rem 0;">"Can this student wake up early and work <strong>without complaining</strong>?"</p>
+        <p>If your answer is a confident YES → <strong>you get selected.</strong><br>That's truly all they want to know.</p>
+      </div>
+    </div>
+
+    <!-- ══ PAGE: TIPS ══ -->
+    <div class="page" id="page-tips">
+      <div class="page-header">
+        <div class="ph-eyebrow">💡 Section 03</div>
+        <h1>Tips &amp; <span>Tricks</span></h1>
+        <p>Read these before anything else. These tips will change how you approach the whole interview.</p>
+      </div>
+      <div class="calm-alert">
+        <div class="ca-icon">😌</div>
+        <div>
+          <h3>You Don't Need To Be Perfect — You Just Need This Script</h3>
+          <p>The SGP interview is <strong>not a test of intelligence.</strong> Even if your Korean is basic, even if your hands shake a little — <strong>if you memorize the 25 sentences in the Script section and show up calm and respectful, you WILL be selected.</strong> Hundreds of international students pass this every year with just a simple script. The interviewers are not trying to trick you. They just want to know: <strong>"Can I rely on this person?"</strong></p>
+        </div>
+      </div>
+      <div class="tips-grid">
+        <div class="tip-card"><div class="tip-card-num">1</div><span class="tip-tag mindset">Mindset</span><h4>Script = More Than Enough</h4><p>You do <strong>not</strong> need to improvise. Memorize the <span class="kw">25 sentences</span> and say them calmly. Simple and clear always beats long and impressive.</p></div>
+        <div class="tip-card"><div class="tip-card-num">2</div><span class="tip-tag action">Action</span><h4>Speak Slowly On Purpose</h4><p>Nervous people always speak fast. Slow Korean signals <span class="kw">confidence and respect</span>. A 2-second pause before answering looks like thinking — not panicking.</p></div>
+        <div class="tip-card"><div class="tip-card-num">3</div><span class="tip-tag secret">Secret</span><h4>First 10 Seconds = 50% of Result</h4><p>Walk in straight, say <span class="kw">안녕하세요</span> immediately, bow ~15°, gentle smile. The interviewer decides half their feeling before you even sit down.</p></div>
+        <div class="tip-card"><div class="tip-card-num">4</div><span class="tip-tag warning">Avoid</span><h4>Don't Over-Apologize for Korean</h4><p>Saying <span class="kwr">"죄송합니다 한국어 못해요"</span> more than once is a weakness signal. Say it once, then move forward. Show growth: <span class="kw">"I will improve."</span></p></div>
+        <div class="tip-card"><div class="tip-card-num">5</div><span class="tip-tag action">Action</span><h4>Practice Out Loud — Not Just Reading</h4><p>Reading silently doesn't prepare your mouth. Say each sentence <span class="kw">out loud 5 times.</span> Record yourself. Listen back. Fix what sounds unnatural.</p></div>
+        <div class="tip-card"><div class="tip-card-num">6</div><span class="tip-tag mindset">Mindset</span><h4>They WANT You To Succeed</h4><p>SGP needs students. The interviewer is <span class="kw">hoping you'll say the right things.</span> Think of it as a conversation, not an exam. They're rooting for you.</p></div>
+        <div class="tip-card"><div class="tip-card-num">7</div><span class="tip-tag secret">Secret</span><h4>"Early Morning" Is A Filter Question</h4><p>Hesitation = fail. "Maybe" = fail. <span class="kw">네, 가능합니다!</span> with a confident smile = you move ahead of most candidates instantly.</p></div>
+        <div class="tip-card"><div class="tip-card-num">8</div><span class="tip-tag action">Action</span><h4>Arrive 10–15 Minutes Early</h4><p>Being early says <span class="kw">"I take this seriously"</span> before you even speak. SGP is about discipline — show it starts before the room.</p></div>
+        <div class="tip-card"><div class="tip-card-num">9</div><span class="tip-tag warning">Avoid</span><h4>Don't Sound Robotic</h4><p>Memorized scripts sound fake in a flat tone. Add <span class="kw">small natural pauses.</span> Nod. Breathe. Make it feel like a real conversation.</p></div>
+        <div class="tip-card"><div class="tip-card-num">10</div><span class="tip-tag secret">Secret</span><h4>The Interview Starts At The Door</h4><p>Staff may watch how you arrive and greet the receptionist. <span class="kwy">Be respectful everywhere</span> — not just inside the interview room.</p></div>
+        <div class="tip-card"><div class="tip-card-num">11</div><span class="tip-tag mindset">Mindset</span><h4>They Can't See Your Heartbeat</h4><p>Your heart may race — that's normal. They only see posture, eye contact, tone. <span class="kw">Sit straight + speak slowly = you look calm.</span></p></div>
+        <div class="tip-card"><div class="tip-card-num">12</div><span class="tip-tag action">Action</span><h4>Exit With 감사합니다 + Bow</h4><p>Stand, say 감사합니다, bow ~20°, walk out calmly. A polite exit can turn a <span class="kwy">"maybe" into a "yes."</span> Never rush out.</p></div>
+      </div>
+    </div>
+
+    <!-- ══ PAGE: SCRIPT ══ -->
+    <div class="page" id="page-script">
+      <div class="page-header">
+        <div class="ph-eyebrow">📝 Section 04</div>
+        <h1>Script to <span>Memorize</span></h1>
+        <p>25 sentences that cover every interview situation. Click the 🔊 voice button on any sentence to hear it in Korean. Star the ones you've learned.</p>
+      </div>
+      <div class="script-info">
+        <strong>How to use:</strong> Click 🔊 to hear the Korean pronunciation. Words highlighted in <span style="background:var(--green-light);color:var(--green);font-weight:700;padding:0 4px;border-radius:3px;">green</span> are the key terms interviewers listen for. Use the filter buttons to study by category. Click ☆ to star sentences you've memorized, then filter by "⭐ Starred" to review only those.
+      </div>
+      <div class="filter-bar">
+        <button class="fbtn active" onclick="filterS('all',this)">All (25)</button>
+        <button class="fbtn" onclick="filterS('intro',this)">Self Intro</button>
+        <button class="fbtn" onclick="filterS('sgp',this)">About SGP</button>
+        <button class="fbtn" onclick="filterS('reason',this)">Why Apply</button>
+        <button class="fbtn" onclick="filterS('work',this)">Work Ability</button>
+        <button class="fbtn" onclick="filterS('attitude',this)">Attitude</button>
+        <button class="fbtn" onclick="filterS('teamwork',this)">Teamwork</button>
+        <button class="fbtn" onclick="filterS('starred',this)">⭐ Starred</button>
+      </div>
+      <div class="sentence-list" id="sentenceList">
+
+        <div class="s-row" data-cat="intro">
+          <div class="s-row-inner">
+            <div class="s-index">01</div>
+            <div class="s-tag-col"><span class="s-tag intro">Intro</span></div>
+            <div class="s-body">
+              <div class="s-kr">안녕하세요. 제 이름은 <span class="kw">파라스 카르키</span>입니다.</div>
+              <div class="s-en">Hello. My name is Paras Karki.</div>
+              <div class="s-note">Say immediately on entering — with a bow and gentle smile.</div>
+            </div>
+            <div class="s-actions">
+              <button class="voice-btn" onclick="speak(this,'안녕하세요. 제 이름은 파라스 카르키입니다.')" title="Listen in Korean">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
+              </button>
+              <button class="star-btn" onclick="toggleStar(this)" title="Mark as memorized">☆</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="s-row" data-cat="intro">
+          <div class="s-row-inner">
+            <div class="s-index">02</div>
+            <div class="s-tag-col"><span class="s-tag intro">Intro</span></div>
+            <div class="s-body">
+              <div class="s-kr">저는 <span class="kw">네팔</span>에서 왔습니다.</div>
+              <div class="s-en">I am from Nepal.</div>
+              <div class="s-note">Simple and clear. Don't rush.</div>
+            </div>
+            <div class="s-actions">
+              <button class="voice-btn" onclick="speak(this,'저는 네팔에서 왔습니다.')" title="Listen in Korean"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg></button>
+              <button class="star-btn" onclick="toggleStar(this)" title="Mark as memorized">☆</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="s-row" data-cat="intro">
+          <div class="s-row-inner">
+            <div class="s-index">03</div>
+            <div class="s-tag-col"><span class="s-tag intro">Intro</span></div>
+            <div class="s-body">
+              <div class="s-kr">저는 <span class="kw">AI 및 빅데이터</span>를 전공하고 있습니다.</div>
+              <div class="s-en">I am majoring in AI and Big Data.</div>
+              <div class="s-note">Shows you are a serious, future-focused student.</div>
+            </div>
+            <div class="s-actions">
+              <button class="voice-btn" onclick="speak(this,'저는 AI 및 빅데이터를 전공하고 있습니다.')" title="Listen in Korean"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg></button>
+              <button class="star-btn" onclick="toggleStar(this)" title="Mark as memorized">☆</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="s-row" data-cat="intro">
+          <div class="s-row-inner">
+            <div class="s-index">04</div>
+            <div class="s-tag-col"><span class="s-tag intro">Intro</span></div>
+            <div class="s-body">
+              <div class="s-kr">현재 <span class="kw">1학년</span>이고 한국에 온 지 <span class="kw">6개월</span> 되었습니다.</div>
+              <div class="s-en">I am currently a 1st year student and have been in Korea for 6 months.</div>
+              <div class="s-note">Shows you are new and humble, yet eager to grow.</div>
+            </div>
+            <div class="s-actions">
+              <button class="voice-btn" onclick="speak(this,'현재 1학년이고 한국에 온 지 6개월 되었습니다.')" title="Listen in Korean"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg></button>
+              <button class="star-btn" onclick="toggleStar(this)" title="Mark as memorized">☆</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="s-row" data-cat="sgp">
+          <div class="s-row-inner">
+            <div class="s-index">05</div>
+            <div class="s-tag-col"><span class="s-tag sgp">SGP</span></div>
+            <div class="s-body">
+              <div class="s-kr">SGP는 <span class="kw">Sol Green Police</span>의 약자입니다.</div>
+              <div class="s-en">SGP stands for Sol Green Police.</div>
+              <div class="s-note">⭐ Most students don't know the full name. Saying this impresses immediately.</div>
+            </div>
+            <div class="s-actions">
+              <button class="voice-btn" onclick="speak(this,'SGP는 솔 그린 폴리스의 약자입니다.')" title="Listen in Korean"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg></button>
+              <button class="star-btn" onclick="toggleStar(this)" title="Mark as memorized">☆</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="s-row" data-cat="sgp">
+          <div class="s-row-inner">
+            <div class="s-index">06</div>
+            <div class="s-tag-col"><span class="s-tag sgp">SGP</span></div>
+            <div class="s-body">
+              <div class="s-kr">SGP는 학교 <span class="kw">환경을 깨끗하게</span> 유지하고 <span class="kw">질서를 지키는</span> 학생 프로그램입니다.</div>
+              <div class="s-en">SGP is a student program that keeps the campus environment clean and maintains order.</div>
+              <div class="s-note">Core definition answer — use for "What do you know about SGP?"</div>
+            </div>
+            <div class="s-actions">
+              <button class="voice-btn" onclick="speak(this,'SGP는 학교 환경을 깨끗하게 유지하고 질서를 지키는 학생 프로그램입니다.')" title="Listen in Korean"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg></button>
+              <button class="star-btn" onclick="toggleStar(this)" title="Mark as memorized">☆</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="s-row" data-cat="sgp">
+          <div class="s-row-inner">
+            <div class="s-index">07</div>
+            <div class="s-tag-col"><span class="s-tag sgp">SGP</span></div>
+            <div class="s-body">
+              <div class="s-kr">SGP는 학생들이 <span class="kw">책임감</span>과 <span class="kw">캠퍼스 문화</span>를 만들어가는 프로그램입니다.</div>
+              <div class="s-en">SGP is a program where students build responsibility and campus culture.</div>
+              <div class="s-note">Shows deeper understanding beyond just "cleaning." Interviewers love this.</div>
+            </div>
+            <div class="s-actions">
+              <button class="voice-btn" onclick="speak(this,'SGP는 학생들이 책임감과 캠퍼스 문화를 만들어가는 프로그램입니다.')" title="Listen in Korean"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg></button>
+              <button class="star-btn" onclick="toggleStar(this)" title="Mark as memorized">☆</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="s-row" data-cat="reason">
+          <div class="s-row-inner">
+            <div class="s-index">08</div>
+            <div class="s-tag-col"><span class="s-tag reason">Why Apply</span></div>
+            <div class="s-body">
+              <div class="s-kr">SGP를 통해 <span class="kw">책임감</span>과 <span class="kw">팀워크</span>를 배우고 싶습니다.</div>
+              <div class="s-en">I want to learn responsibility and teamwork through SGP.</div>
+              <div class="s-note">Connects personal growth to SGP's purpose — a very strong answer.</div>
+            </div>
+            <div class="s-actions">
+              <button class="voice-btn" onclick="speak(this,'SGP를 통해 책임감과 팀워크를 배우고 싶습니다.')" title="Listen in Korean"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg></button>
+              <button class="star-btn" onclick="toggleStar(this)" title="Mark as memorized">☆</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="s-row" data-cat="reason">
+          <div class="s-row-inner">
+            <div class="s-index">09</div>
+            <div class="s-tag-col"><span class="s-tag reason">Why Apply</span></div>
+            <div class="s-body">
+              <div class="s-kr">또한 <span class="kw">생활비</span>와 학업을 위해서도 필요합니다.</div>
+              <div class="s-en">Also, I need it for living expenses and my studies.</div>
+              <div class="s-note">Being honest about financial need is respected. Don't hide it.</div>
+            </div>
+            <div class="s-actions">
+              <button class="voice-btn" onclick="speak(this,'또한 생활비와 학업을 위해서도 필요합니다.')" title="Listen in Korean"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg></button>
+              <button class="star-btn" onclick="toggleStar(this)" title="Mark as memorized">☆</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="s-row" data-cat="reason">
+          <div class="s-row-inner">
+            <div class="s-index">10</div>
+            <div class="s-tag-col"><span class="s-tag reason">Why Apply</span></div>
+            <div class="s-body">
+              <div class="s-kr">SGP는 <span class="kw">한국 직장 문화</span>를 경험할 수 있는 좋은 기회라고 생각합니다.</div>
+              <div class="s-en">I think SGP is a great opportunity to experience Korean work culture.</div>
+              <div class="s-note">Shows cultural respect — very positive for international students.</div>
+            </div>
+            <div class="s-actions">
+              <button class="voice-btn" onclick="speak(this,'SGP는 한국 직장 문화를 경험할 수 있는 좋은 기회라고 생각합니다.')" title="Listen in Korean"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg></button>
+              <button class="star-btn" onclick="toggleStar(this)" title="Mark as memorized">☆</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="s-row" data-cat="work">
+          <div class="s-row-inner">
+            <div class="s-index">11</div>
+            <div class="s-tag-col"><span class="s-tag work">Work</span></div>
+            <div class="s-body">
+              <div class="s-kr"><span class="kwy">네, 아침 근무도 가능합니다!</span></div>
+              <div class="s-en">Yes, I can work early morning too!</div>
+              <div class="s-note">⭐ CRITICAL. Zero hesitation. This one sentence can get you selected.</div>
+            </div>
+            <div class="s-actions">
+              <button class="voice-btn" onclick="speak(this,'네, 아침 근무도 가능합니다!')" title="Listen in Korean"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg></button>
+              <button class="star-btn" onclick="toggleStar(this)" title="Mark as memorized">☆</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="s-row" data-cat="work">
+          <div class="s-row-inner">
+            <div class="s-index">12</div>
+            <div class="s-tag-col"><span class="s-tag work">Work</span></div>
+            <div class="s-body">
+              <div class="s-kr">저는 <span class="kw">시간 약속</span>을 잘 지킵니다.</div>
+              <div class="s-en">I keep my commitments and am always on time.</div>
+              <div class="s-note">Punctuality is the #1 SGP value — say this clearly and directly.</div>
+            </div>
+            <div class="s-actions">
+              <button class="voice-btn" onclick="speak(this,'저는 시간 약속을 잘 지킵니다.')" title="Listen in Korean"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg></button>
+              <button class="star-btn" onclick="toggleStar(this)" title="Mark as memorized">☆</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="s-row" data-cat="work">
+          <div class="s-row-inner">
+            <div class="s-index">13</div>
+            <div class="s-tag-col"><span class="s-tag work">Work</span></div>
+            <div class="s-body">
+              <div class="s-kr">맡은 일은 <span class="kw">끝까지</span> 책임지겠습니다.</div>
+              <div class="s-en">I will take responsibility for any task to the very end.</div>
+              <div class="s-note">Shows follow-through — exactly what team leaders want to hear.</div>
+            </div>
+            <div class="s-actions">
+              <button class="voice-btn" onclick="speak(this,'맡은 일은 끝까지 책임지겠습니다.')" title="Listen in Korean"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg></button>
+              <button class="star-btn" onclick="toggleStar(this)" title="Mark as memorized">☆</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="s-row" data-cat="work">
+          <div class="s-row-inner">
+            <div class="s-index">14</div>
+            <div class="s-tag-col"><span class="s-tag work">Work</span></div>
+            <div class="s-body">
+              <div class="s-kr"><span class="kw">팀장님의 지시</span>를 잘 따르겠습니다.</div>
+              <div class="s-en">I will follow the team leader's instructions well.</div>
+              <div class="s-note">Shows obedience and respect for authority — a top SGP value.</div>
+            </div>
+            <div class="s-actions">
+              <button class="voice-btn" onclick="speak(this,'팀장님의 지시를 잘 따르겠습니다.')" title="Listen in Korean"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg></button>
+              <button class="star-btn" onclick="toggleStar(this)" title="Mark as memorized">☆</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="s-row" data-cat="attitude">
+          <div class="s-row-inner">
+            <div class="s-index">15</div>
+            <div class="s-tag-col"><span class="s-tag attitude">Attitude</span></div>
+            <div class="s-body">
+              <div class="s-kr">저는 <span class="kw">성실하고 책임감이 강한</span> 학생입니다.</div>
+              <div class="s-en">I am a diligent and highly responsible student.</div>
+              <div class="s-note">⭐ Core identity sentence — use for "Why should we choose you?"</div>
+            </div>
+            <div class="s-actions">
+              <button class="voice-btn" onclick="speak(this,'저는 성실하고 책임감이 강한 학생입니다.')" title="Listen in Korean"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg></button>
+              <button class="star-btn" onclick="toggleStar(this)" title="Mark as memorized">☆</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="s-row" data-cat="attitude">
+          <div class="s-row-inner">
+            <div class="s-index">16</div>
+            <div class="s-tag-col"><span class="s-tag attitude">Attitude</span></div>
+            <div class="s-body">
+              <div class="s-kr">저는 <span class="kw">불평하지 않고</span> 묵묵히 일하겠습니다.</div>
+              <div class="s-en">I will work quietly and diligently without complaining.</div>
+              <div class="s-note">⭐ Directly answers the interviewer's hidden worry. Very powerful.</div>
+            </div>
+            <div class="s-actions">
+              <button class="voice-btn" onclick="speak(this,'저는 불평하지 않고 묵묵히 일하겠습니다.')" title="Listen in Korean"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg></button>
+              <button class="star-btn" onclick="toggleStar(this)" title="Mark as memorized">☆</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="s-row" data-cat="attitude">
+          <div class="s-row-inner">
+            <div class="s-index">17</div>
+            <div class="s-tag-col"><span class="s-tag attitude">Attitude</span></div>
+            <div class="s-body">
+              <div class="s-kr">어떤 일이든 <span class="kw">긍정적인 태도</span>로 임하겠습니다.</div>
+              <div class="s-en">I will approach any task with a positive attitude.</div>
+              <div class="s-note">Positivity + attitude = the combination interviewers love to hear.</div>
+            </div>
+            <div class="s-actions">
+              <button class="voice-btn" onclick="speak(this,'어떤 일이든 긍정적인 태도로 임하겠습니다.')" title="Listen in Korean"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg></button>
+              <button class="star-btn" onclick="toggleStar(this)" title="Mark as memorized">☆</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="s-row" data-cat="attitude">
+          <div class="s-row-inner">
+            <div class="s-index">18</div>
+            <div class="s-tag-col"><span class="s-tag attitude">Attitude</span></div>
+            <div class="s-body">
+              <div class="s-kr">한국어가 아직 부족하지만 <span class="kw">열심히 공부</span>하겠습니다.</div>
+              <div class="s-en">My Korean is still lacking, but I will study hard.</div>
+              <div class="s-note">Growth mindset over apology — exactly the right tone.</div>
+            </div>
+            <div class="s-actions">
+              <button class="voice-btn" onclick="speak(this,'한국어가 아직 부족하지만 열심히 공부하겠습니다.')" title="Listen in Korean"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg></button>
+              <button class="star-btn" onclick="toggleStar(this)" title="Mark as memorized">☆</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="s-row" data-cat="attitude">
+          <div class="s-row-inner">
+            <div class="s-index">19</div>
+            <div class="s-tag-col"><span class="s-tag attitude">Attitude</span></div>
+            <div class="s-body">
+              <div class="s-kr">저는 <span class="kw">규칙과 규정</span>을 잘 지키겠습니다.</div>
+              <div class="s-en">I will follow the rules and regulations well.</div>
+              <div class="s-note">SGP is about order — shows you respect structure.</div>
+            </div>
+            <div class="s-actions">
+              <button class="voice-btn" onclick="speak(this,'저는 규칙과 규정을 잘 지키겠습니다.')" title="Listen in Korean"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg></button>
+              <button class="star-btn" onclick="toggleStar(this)" title="Mark as memorized">☆</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="s-row" data-cat="attitude">
+          <div class="s-row-inner">
+            <div class="s-index">20</div>
+            <div class="s-tag-col"><span class="s-tag attitude">Attitude</span></div>
+            <div class="s-body">
+              <div class="s-kr">선발해 주신다면 <span class="kw">최선을 다하겠습니다</span>.</div>
+              <div class="s-en">If you select me, I will do my absolute best.</div>
+              <div class="s-note">⭐ Perfect power sentence. Bow slightly when saying this.</div>
+            </div>
+            <div class="s-actions">
+              <button class="voice-btn" onclick="speak(this,'선발해 주신다면 최선을 다하겠습니다.')" title="Listen in Korean"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg></button>
+              <button class="star-btn" onclick="toggleStar(this)" title="Mark as memorized">☆</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="s-row" data-cat="teamwork">
+          <div class="s-row-inner">
+            <div class="s-index">21</div>
+            <div class="s-tag-col"><span class="s-tag teamwork">Teamwork</span></div>
+            <div class="s-body">
+              <div class="s-kr">저는 <span class="kw">팀원들과 협력</span>하는 것을 좋아합니다.</div>
+              <div class="s-en">I enjoy cooperating with team members.</div>
+              <div class="s-note">SGP is a team environment — this aligns your personality with the job.</div>
+            </div>
+            <div class="s-actions">
+              <button class="voice-btn" onclick="speak(this,'저는 팀원들과 협력하는 것을 좋아합니다.')" title="Listen in Korean"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg></button>
+              <button class="star-btn" onclick="toggleStar(this)" title="Mark as memorized">☆</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="s-row" data-cat="teamwork">
+          <div class="s-row-inner">
+            <div class="s-index">22</div>
+            <div class="s-tag-col"><span class="s-tag teamwork">Teamwork</span></div>
+            <div class="s-body">
+              <div class="s-kr">학교 <span class="kw">그룹 프로젝트</span>에서 팀원들과 협력한 경험이 있습니다.</div>
+              <div class="s-en">I have experience cooperating with team members in school group projects.</div>
+              <div class="s-note">Simple real experience. Honesty builds trust.</div>
+            </div>
+            <div class="s-actions">
+              <button class="voice-btn" onclick="speak(this,'학교 그룹 프로젝트에서 팀원들과 협력한 경험이 있습니다.')" title="Listen in Korean"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg></button>
+              <button class="star-btn" onclick="toggleStar(this)" title="Mark as memorized">☆</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="s-row" data-cat="teamwork">
+          <div class="s-row-inner">
+            <div class="s-index">23</div>
+            <div class="s-tag-col"><span class="s-tag teamwork">Teamwork</span></div>
+            <div class="s-body">
+              <div class="s-kr">팀에서 필요한 일이 있으면 <span class="kw">먼저 나서서</span> 돕겠습니다.</div>
+              <div class="s-en">If the team needs anything, I will step forward and help first.</div>
+              <div class="s-note">Shows proactiveness — going beyond just following orders.</div>
+            </div>
+            <div class="s-actions">
+              <button class="voice-btn" onclick="speak(this,'팀에서 필요한 일이 있으면 먼저 나서서 돕겠습니다.')" title="Listen in Korean"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg></button>
+              <button class="star-btn" onclick="toggleStar(this)" title="Mark as memorized">☆</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="s-row" data-cat="teamwork">
+          <div class="s-row-inner">
+            <div class="s-index">24</div>
+            <div class="s-tag-col"><span class="s-tag teamwork">Teamwork</span></div>
+            <div class="s-body">
+              <div class="s-kr">저는 <span class="kw">의사소통</span>을 중요하게 생각합니다.</div>
+              <div class="s-en">I consider communication to be very important.</div>
+              <div class="s-note">Especially valuable for international students in Korean teams.</div>
+            </div>
+            <div class="s-actions">
+              <button class="voice-btn" onclick="speak(this,'저는 의사소통을 중요하게 생각합니다.')" title="Listen in Korean"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg></button>
+              <button class="star-btn" onclick="toggleStar(this)" title="Mark as memorized">☆</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="s-row" data-cat="teamwork">
+          <div class="s-row-inner">
+            <div class="s-index">25</div>
+            <div class="s-tag-col"><span class="s-tag teamwork">Teamwork</span></div>
+            <div class="s-body">
+              <div class="s-kr">감사합니다. <span class="kw">잘 부탁드립니다</span>.</div>
+              <div class="s-en">Thank you. I look forward to working with you.</div>
+              <div class="s-note">⭐ Perfect final line. Bow as you say this. Leave them smiling.</div>
+            </div>
+            <div class="s-actions">
+              <button class="voice-btn" onclick="speak(this,'감사합니다. 잘 부탁드립니다.')" title="Listen in Korean"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg></button>
+              <button class="star-btn" onclick="toggleStar(this)" title="Mark as memorized">☆</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ══ PAGE: Q&A ══ -->
+    <div class="page" id="page-qna">
+      <div class="page-header">
+        <div class="ph-eyebrow">🎤 Section 05</div>
+        <h1>Full <span>Q&amp;A Bank</span></h1>
+        <p>16 real interview questions with perfect answers. Click any question to expand it. Pay attention to highlighted keywords.</p>
+      </div>
+      <div class="qbank-intro"><strong>How to use:</strong> Click any question to see the perfect answer in Korean + English + a strategy tip. Words in <span style="color:var(--green);font-weight:700;background:var(--green-light);padding:0 3px;border-radius:3px;">green</span> are keywords interviewers listen for.</div>
+
+      <div class="q-category">📋 Basic Questions — Almost Always Asked</div>
+      <div class="q-list">
+        <div class="q-item"><div class="q-head" onclick="toggleQ(this)"><div class="q-num">01</div><div class="q-text"><div class="q-kr">자기소개를 해주세요</div><div class="q-en">Please introduce yourself</div></div><div class="q-chevron">▼</div></div><div class="q-body"><div class="ans-box"><div class="ans-kr">안녕하세요. 제 이름은 <span class="kw">파라스 카르키</span>입니다. <span class="kw">네팔</span>에서 왔고 <span class="kw">AI 및 빅데이터</span>를 전공하고 있습니다. 현재 <span class="kw">1학년</span>이고 한국에 온 지 6개월 되었습니다.</div><div class="ans-en">"Hello. My name is Paras Karki. I am from Nepal and majoring in AI and Big Data. I am a 1st year student who has been in Korea for 6 months."</div></div><div class="ans-tip">Bow on entry, speak slowly, gentle smile. This is your only first impression — don't rush it.</div></div></div>
+        <div class="q-item"><div class="q-head" onclick="toggleQ(this)"><div class="q-num">02</div><div class="q-text"><div class="q-kr">왜 SGP에 지원했어요?</div><div class="q-en">Why did you apply for SGP?</div></div><div class="q-chevron">▼</div></div><div class="q-body"><div class="ans-box"><div class="ans-kr">SGP를 통해 <span class="kw">책임감</span>과 <span class="kw">팀워크</span>를 배우고 싶습니다. 또한 <span class="kw">생활비</span>와 학업을 위해서도 필요합니다. SGP는 <span class="kw">한국 직장 문화</span>를 경험할 수 있는 좋은 기회라고 생각합니다.</div><div class="ans-en">"I want to learn responsibility and teamwork through SGP. I also need it for living expenses and studies. I think SGP is a great opportunity to experience Korean work culture."</div></div><div class="ans-tip">Balance: growth mindset + honest financial need. Don't say only money — but don't hide it either.</div></div></div>
+        <div class="q-item"><div class="q-head" onclick="toggleQ(this)"><div class="q-num">03</div><div class="q-text"><div class="q-kr">SGP가 무엇인지 알고 있나요?</div><div class="q-en">Do you know what SGP is?</div></div><div class="q-chevron">▼</div></div><div class="q-body"><div class="ans-box"><div class="ans-kr">네, 알고 있습니다. SGP는 <span class="kw">Sol Green Police</span>의 약자로, 학교 <span class="kw">환경을 깨끗하게</span> 유지하고 <span class="kw">질서와 안전</span>을 지키는 학생 프로그램입니다. 학생들이 <span class="kw">책임감</span>과 <span class="kw">캠퍼스 문화</span>를 만들어가는 중요한 활동이라고 생각합니다.</div><div class="ans-en">"Yes. SGP stands for Sol Green Police. It's a student program that keeps the campus clean and maintains order and safety. I think it's an important activity where students build responsibility and campus culture."</div></div><div class="ans-tip">Saying "Sol Green Police" shocks them — most students don't know this. Shows you genuinely prepared.</div></div></div>
+        <div class="q-item"><div class="q-head" onclick="toggleQ(this)"><div class="q-num">04</div><div class="q-text"><div class="q-kr">어떻게 기여할 수 있나요? ⭐ Most Important</div><div class="q-en">How can you contribute?</div></div><div class="q-chevron">▼</div></div><div class="q-body"><div class="ans-box"><div class="ans-kr">저는 <span class="kw">시간 약속</span>을 잘 지키고 <span class="kw">책임감 있게</span> 일할 수 있습니다. <span class="kw">팀장님의 지시</span>를 잘 따르고 팀원들과 <span class="kw">협력</span>하겠습니다. 맡은 일은 <span class="kw">끝까지</span> 책임지겠습니다.</div><div class="ans-en">"I am punctual and can work responsibly. I will follow the team leader's instructions and cooperate with team members. I will see every task through to the very end."</div></div><div class="ans-tip">⭐ MOST IMPORTANT. Don't talk about talent — talk about RELIABILITY + OBEDIENCE + FOLLOW-THROUGH.</div></div></div>
+        <div class="q-item"><div class="q-head" onclick="toggleQ(this)"><div class="q-num">05</div><div class="q-text"><div class="q-kr">왜 당신을 뽑아야 하나요?</div><div class="q-en">Why should we choose you?</div></div><div class="q-chevron">▼</div></div><div class="q-body"><div class="ans-box"><div class="ans-kr">저는 <span class="kw">성실하고 책임감이 강한</span> 학생입니다. <span class="kw">불평하지 않고</span> 묵묵히 일하겠습니다. 선발해 주신다면 <span class="kw">최선을 다하겠습니다</span>.</div><div class="ans-en">"I am a diligent and highly responsible student. I will work quietly without complaining. If selected, I will do my absolute best."</div></div><div class="ans-tip">Short, direct, confident. Eye contact on "최선을 다하겠습니다." Slight bow at the end.</div></div></div>
+      </div>
+
+      <div class="q-category">⏰ Work Schedule Questions</div>
+      <div class="q-list">
+        <div class="q-item"><div class="q-head" onclick="toggleQ(this)"><div class="q-num">06</div><div class="q-text"><div class="q-kr">아침 근무 가능해요? ⭐</div><div class="q-en">Can you work early morning? (Filter question)</div></div><div class="q-chevron">▼</div></div><div class="q-body"><div class="ans-box"><div class="ans-kr"><span class="kw">네, 가능합니다!</span> 일찍 일어나는 것은 전혀 문제없습니다.</div><div class="ans-en">"Yes, I can! Getting up early is absolutely no problem for me."</div></div><div class="ans-tip">⭐ Always say YES immediately. Zero pause. Zero hesitation. The energy in your voice matters here.</div></div></div>
+        <div class="q-item"><div class="q-head" onclick="toggleQ(this)"><div class="q-num">07</div><div class="q-text"><div class="q-kr">수업 시간과 겹치면 어떻게 할 거예요?</div><div class="q-en">What if class conflicts with work?</div></div><div class="q-chevron">▼</div></div><div class="q-body"><div class="ans-box"><div class="ans-kr">수업 시간표를 <span class="kw">미리 확인</span>하고 근무 시간과 겹치지 않게 조율하겠습니다. SGP 근무를 <span class="kw">우선으로</span> 생각하고 스케줄을 유연하게 조정하겠습니다.</div><div class="ans-en">"I will check my timetable in advance and arrange it to avoid conflicts. I will prioritize SGP work and flexibly adjust my schedule."</div></div><div class="ans-tip">Planning ahead + flexibility = responsible employee mindset.</div></div></div>
+        <div class="q-item"><div class="q-head" onclick="toggleQ(this)"><div class="q-num">08</div><div class="q-text"><div class="q-kr">몇 시간 근무를 원하세요?</div><div class="q-en">How many hours do you want to work?</div></div><div class="q-chevron">▼</div></div><div class="q-body"><div class="ans-box"><div class="ans-kr">저는 <span class="kw">6시간 또는 8시간</span> 근무를 원합니다. 하지만 팀의 필요에 따라 <span class="kw">유연하게</span> 조정할 수 있습니다.</div><div class="ans-en">"I would like 6 or 8 hours. But I can flexibly adjust according to the team's needs."</div></div><div class="ans-tip">"Flexible" (유연하게) signals you're a team player, not someone with many conditions.</div></div></div>
+      </div>
+
+      <div class="q-category">🤝 Teamwork &amp; Character</div>
+      <div class="q-list">
+        <div class="q-item"><div class="q-head" onclick="toggleQ(this)"><div class="q-num">09</div><div class="q-text"><div class="q-kr">팀워크 경험이 있나요?</div><div class="q-en">Do you have teamwork experience?</div></div><div class="q-chevron">▼</div></div><div class="q-body"><div class="ans-box"><div class="ans-kr">네, 있습니다. 학교 <span class="kw">그룹 프로젝트</span>에서 팀원들과 협력한 경험이 있습니다. 팀에서 필요한 일이 있으면 <span class="kw">먼저 나서서</span> 돕습니다.</div><div class="ans-en">"Yes. I have experience in school group projects. When the team needs something, I step forward and help first."</div></div><div class="ans-tip">Any real teamwork counts. Keep it simple and honest.</div></div></div>
+        <div class="q-item"><div class="q-head" onclick="toggleQ(this)"><div class="q-num">10</div><div class="q-text"><div class="q-kr">팀원과 갈등이 생기면 어떻게 하겠어요?</div><div class="q-en">What if there's conflict with a teammate?</div></div><div class="q-chevron">▼</div></div><div class="q-body"><div class="ans-box"><div class="ans-kr"><span class="kw">차분하게 대화</span>로 해결하겠습니다. 제 의견보다 팀의 <span class="kw">전체적인 목표</span>를 더 중요하게 생각합니다. 필요하면 <span class="kw">팀장님께 도움을 요청</span>하겠습니다.</div><div class="ans-en">"I will resolve it calmly through conversation. I prioritize the team's overall goal over my personal opinion. If needed, I will ask the team leader for help."</div></div><div class="ans-tip">Emotional maturity + respect for hierarchy = exactly what they want to see.</div></div></div>
+        <div class="q-item"><div class="q-head" onclick="toggleQ(this)"><div class="q-num">11</div><div class="q-text"><div class="q-kr">힘든 일도 할 수 있나요?</div><div class="q-en">Can you handle difficult tasks?</div></div><div class="q-chevron">▼</div></div><div class="q-body"><div class="ans-box"><div class="ans-kr">네, 할 수 있습니다. 어떤 일이든 <span class="kw">긍정적인 태도</span>로 임하겠습니다. 힘든 일도 <span class="kw">불평 없이</span> 열심히 하겠습니다.</div><div class="ans-en">"Yes, I can. I will approach any work with a positive attitude. I will work hard even on difficult tasks without complaining."</div></div><div class="ans-tip">"불평 없이" (without complaining) is a magic phrase for SGP. Use it whenever possible.</div></div></div>
+      </div>
+
+      <div class="q-category">🌏 International Student Questions</div>
+      <div class="q-list">
+        <div class="q-item"><div class="q-head" onclick="toggleQ(this)"><div class="q-num">12</div><div class="q-text"><div class="q-kr">한국어 잘 못해도 괜찮을 것 같아요?</div><div class="q-en">Will it be okay with weak Korean?</div></div><div class="q-chevron">▼</div></div><div class="q-body"><div class="ans-box"><div class="ans-kr">네, 괜찮습니다. 지금은 부족하지만 <span class="kw">매일 열심히 공부</span>하고 있습니다. 업무에 필요한 말은 <span class="kw">빨리 배우겠습니다</span>.</div><div class="ans-en">"Yes, it's okay. I'm lacking now but I study every day. I will quickly learn words needed for work."</div></div><div class="ans-tip">Growth mindset wins over apology. "매일" (every day) shows consistent effort.</div></div></div>
+        <div class="q-item"><div class="q-head" onclick="toggleQ(this)"><div class="q-num">13</div><div class="q-text"><div class="q-kr">한국 생활은 어때요?</div><div class="q-en">How is life in Korea?</div></div><div class="q-chevron">▼</div></div><div class="q-body"><div class="ans-box"><div class="ans-kr">한국 생활이 <span class="kw">매우 좋습니다</span>. 처음에는 어려웠지만 지금은 <span class="kw">잘 적응</span>하고 있습니다. 한국 문화와 음식도 좋아합니다.</div><div class="ans-en">"Life in Korea is very good. It was hard at first but now I'm adapting well. I also like Korean culture and food."</div></div><div class="ans-tip">Icebreaker — be genuine and warm. Building human connection with the interviewer.</div></div></div>
+      </div>
+
+      <div class="q-category">🎯 Future &amp; Commitment</div>
+      <div class="q-list">
+        <div class="q-item"><div class="q-head" onclick="toggleQ(this)"><div class="q-num">14</div><div class="q-text"><div class="q-kr">SGP에서 무엇을 배우고 싶어요?</div><div class="q-en">What do you want to learn from SGP?</div></div><div class="q-chevron">▼</div></div><div class="q-body"><div class="ans-box"><div class="ans-kr"><span class="kw">책임감</span>과 <span class="kw">팀워크</span>를 더 깊이 배우고 싶습니다. 또한 <span class="kw">한국 직장 문화</span>도 직접 경험하고 싶습니다.</div><div class="ans-en">"I want to learn responsibility and teamwork more deeply. I also want to directly experience Korean work culture."</div></div><div class="ans-tip">Mentioning "Korean work culture" shows respect and serious commitment.</div></div></div>
+        <div class="q-item"><div class="q-head" onclick="toggleQ(this)"><div class="q-num">15</div><div class="q-text"><div class="q-kr">앞으로의 계획이 어떻게 돼요?</div><div class="q-en">What are your future plans?</div></div><div class="q-chevron">▼</div></div><div class="q-body"><div class="ans-box"><div class="ans-kr">학교를 <span class="kw">열심히 다니면서</span> SGP에서 <span class="kw">성실하게 일하겠습니다</span>. 졸업 후에는 AI 분야에서 일하고 싶습니다.</div><div class="ans-en">"I will attend school diligently while working faithfully at SGP. After graduation, I want to work in the AI field."</div></div><div class="ans-tip">Shows you have a plan — both short-term and long-term. Not just here for easy money.</div></div></div>
+        <div class="q-item"><div class="q-head" onclick="toggleQ(this)"><div class="q-num">16</div><div class="q-text"><div class="q-kr">마지막으로 하고 싶은 말이 있어요?</div><div class="q-en">Any final words?</div></div><div class="q-chevron">▼</div></div><div class="q-body"><div class="ans-box"><div class="ans-kr">오늘 <span class="kw">면접 기회</span>를 주셔서 감사합니다. 선발해 주신다면 <span class="kw">최선을 다해</span> SGP에 기여하겠습니다. <span class="kw">잘 부탁드립니다</span>.</div><div class="ans-en">"Thank you for giving me this interview opportunity. If selected, I will do my absolute best to contribute to SGP. I look forward to working with you."</div></div><div class="ans-tip">⭐ Bow at the end. Stand straight. Warm smile. A great exit turns "maybe" into "yes".</div></div></div>
+      </div>
+    </div>
+
+    <!-- ══ PAGE: STRATEGY ══ -->
+    <div class="page" id="page-strategy">
+      <div class="page-header">
+        <div class="ph-eyebrow">🎯 Section 06</div>
+        <h1>Interview <span>Strategy</span></h1>
+        <p>How to physically act in the room. Follow these 6 steps and you'll look calm and professional — even if you feel nervous inside.</p>
+      </div>
+      <div class="steps-list">
+        <div class="step-item"><div class="step-num">1</div><div class="step-content"><h4>Enter → Greet Immediately</h4><p>Walk in confidently. The moment you cross the door, say <strong>"안녕하세요"</strong> and bow ~15°. Don't wait. Don't hesitate. This single action sets the entire tone.</p></div></div>
+        <div class="step-item"><div class="step-num">2</div><div class="step-content"><h4>Sit Straight, Don't Fidget</h4><p>Feet flat on floor. Hands on thighs or table. Don't cross arms. No touching your face. No phone. <strong>Stillness = confidence.</strong></p></div></div>
+        <div class="step-item"><div class="step-num">3</div><div class="step-content"><h4>Speak Slowly &amp; Clearly</h4><p>Slow Korean = confident Korean. <strong>Pause before answering</strong> — 2 seconds is fine and looks like thoughtfulness. Never rush to fill silence.</p></div></div>
+        <div class="step-item"><div class="step-num">4</div><div class="step-content"><h4>Gentle, Steady Eye Contact</h4><p>Look at the interviewer while speaking — not a stare, a calm respectful gaze. <strong>Look away briefly when thinking,</strong> return when speaking.</p></div></div>
+        <div class="step-item"><div class="step-num">5</div><div class="step-content"><h4>Relaxed Smile — Not a Nervous Grin</h4><p>A calm slight smile says: <strong>"I am comfortable. I want to be here."</strong> Too wide = nervous. No expression = cold. Find the natural middle.</p></div></div>
+        <div class="step-item"><div class="step-num">6</div><div class="step-content"><h4>Exit With Dignity</h4><p>When done — stand up, say <strong>"감사합니다"</strong> clearly, bow ~20°, walk out calmly. The last image they see is as important as the first.</p></div></div>
+      </div>
+      <div class="truth-card">
+        <div class="tc-title">You Are NOT Trying To Impress.<br>You Are Trying To Look Reliable.</div>
+        <p style="margin-top:0.7rem;">Attitude + eye contact + confidence + simple clear answers.<br>That is what gets you selected — <strong>not Korean fluency, not intelligence.</strong></p>
+      </div>
+    </div>
+
+    <!-- ══ PAGE: CHECKLIST ══ -->
+    <div class="page" id="page-checklist">
+      <div class="page-header">
+        <div class="ph-eyebrow">☑️ Section 07</div>
+        <h1>Readiness <span>Checklist</span></h1>
+        <p>Click each item to mark it done. Complete all 12 items before your interview day.</p>
+      </div>
+      <div class="checklist" id="checklistEl">
+        <div class="cl-item" onclick="toggleCL(this)"><div class="cl-box">✓</div><div class="cl-text"><strong>Memorized self-introduction (자기소개)</strong><span>Can say it smoothly without pausing</span></div></div>
+        <div class="cl-item" onclick="toggleCL(this)"><div class="cl-box">✓</div><div class="cl-text"><strong>Know SGP full name: Sol Green Police</strong><span>Sol = Woosong, Green = environment, Police = order</span></div></div>
+        <div class="cl-item" onclick="toggleCL(this)"><div class="cl-box">✓</div><div class="cl-text"><strong>Practiced all 25 script sentences out loud</strong><span>Especially sentences #11, #15, #16, #20, #25</span></div></div>
+        <div class="cl-item" onclick="toggleCL(this)"><div class="cl-box">✓</div><div class="cl-text"><strong>Used the voice buttons to practice pronunciation</strong><span>Listened and repeated each sentence multiple times</span></div></div>
+        <div class="cl-item" onclick="toggleCL(this)"><div class="cl-box">✓</div><div class="cl-text"><strong>Reviewed all 16 Q&amp;A answers</strong><span>Know what to say for every question</span></div></div>
+        <div class="cl-item" onclick="toggleCL(this)"><div class="cl-box">✓</div><div class="cl-text"><strong>Ready to say YES to early morning — instantly</strong><span>네, 가능합니다! — zero hesitation</span></div></div>
+        <div class="cl-item" onclick="toggleCL(this)"><div class="cl-box">✓</div><div class="cl-text"><strong>Practiced entering, bowing, greeting</strong><span>안녕하세요 + bow immediately on entry</span></div></div>
+        <div class="cl-item" onclick="toggleCL(this)"><div class="cl-box">✓</div><div class="cl-text"><strong>Clean, neat, respectful appearance ready</strong><span>Simple clothing — nothing flashy</span></div></div>
+        <div class="cl-item" onclick="toggleCL(this)"><div class="cl-box">✓</div><div class="cl-text"><strong>Know interview location &amp; time</strong><span>Plan to arrive 10–15 minutes early</span></div></div>
+        <div class="cl-item" onclick="toggleCL(this)"><div class="cl-box">✓</div><div class="cl-text"><strong>Read all 12 Tips &amp; Tricks</strong><span>Especially the "First 10 seconds" tip</span></div></div>
+        <div class="cl-item" onclick="toggleCL(this)"><div class="cl-box">✓</div><div class="cl-text"><strong>Practiced exit: 감사합니다 + bow</strong><span>Stand, say it, bow, walk out calmly</span></div></div>
+        <div class="cl-item" onclick="toggleCL(this)"><div class="cl-box">✓</div><div class="cl-text"><strong>Mindset locked: Reliable &gt; Smart</strong><span>They want a dependable worker, not a genius</span></div></div>
+      </div>
+      <div class="progress-card">
+        <div class="prog-head">
+          <span>Readiness Level</span>
+          <span class="prog-pct" id="progPct">0%</span>
+        </div>
+        <div class="prog-track"><div class="prog-bar" id="progBar"></div></div>
+        <div class="prog-msg" id="progMsg">Start checking items above ↑</div>
+      </div>
+    </div>
+
+  </div><!-- /content -->
+</div><!-- /main -->
+
+<!-- Mobile toggle -->
+<button class="mob-toggle" onclick="document.getElementById('sidebar').classList.toggle('open')">☰</button>
+
+<script>
+// ── Page navigation ──
+function showPage(id, link) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  link.classList.add('active');
+  const titles = {about:'About SGP',traits:'What They Look For',tips:'Tips & Tricks',script:'Script to Memorize',qna:'Full Q&A Bank',strategy:'Interview Strategy',checklist:'Readiness Checklist'};
+  document.getElementById('topbarTitle').textContent = titles[id] || id;
+  window.scrollTo(0, 0);
+  document.getElementById('sidebar').classList.remove('open');
+}
+
+// ── Accordion Q&A ──
+function toggleQ(head) {
+  const item = head.closest('.q-item');
+  const body = item.querySelector('.q-body');
+  const isOpen = item.classList.contains('open');
+  document.querySelectorAll('.q-item.open').forEach(i => { i.classList.remove('open'); i.querySelector('.q-body').classList.remove('open'); });
+  if (!isOpen) { item.classList.add('open'); body.classList.add('open'); }
+}
+
+// ── Checklist ──
+function toggleCL(item) {
+  item.classList.toggle('done');
+  updateProgress();
+}
+function updateProgress() {
+  const items = document.querySelectorAll('.cl-item');
+  const done  = document.querySelectorAll('.cl-item.done').length;
+  const pct   = Math.round((done / items.length) * 100);
+  document.getElementById('progBar').style.width  = pct + '%';
+  document.getElementById('progPct').textContent  = pct + '%';
+  document.getElementById('sideFill').style.width = pct + '%';
+  document.getElementById('sidePct').textContent  = pct + '%';
+  const msgs = ['Start checking items above ↑','Good start! Keep going 💪','Halfway there — great work!','Almost ready! You got this 🌿','🎉 100% Ready! Go get that SGP position!'];
+  document.getElementById('progMsg').textContent = msgs[pct===100?4:pct>=75?3:pct>=50?2:pct>=25?1:0];
+}
+updateProgress();
+
+// ── Filter sentences ──
+function filterS(cat, btn) {
+  document.querySelectorAll('.fbtn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.s-row').forEach(row => {
+    if (cat === 'all') { row.style.display = ''; return; }
+    if (cat === 'starred') { row.style.display = row.classList.contains('starred-row') ? '' : 'none'; return; }
+    row.style.display = row.dataset.cat === cat ? '' : 'none';
+  });
+}
+
+// ── Star sentences ──
+function toggleStar(btn) {
+  btn.classList.toggle('starred');
+  btn.textContent = btn.classList.contains('starred') ? '⭐' : '☆';
+  btn.closest('.s-row').classList.toggle('starred-row', btn.classList.contains('starred'));
+}
+
+// ── Voice TTS ──
+let currentUtterance = null;
+let currentBtn = null;
+function speak(btn, text) {
+  if (!window.speechSynthesis) { alert('Your browser does not support text-to-speech.'); return; }
+  // Stop if already speaking this one
+  if (currentBtn === btn && window.speechSynthesis.speaking) {
+    window.speechSynthesis.cancel();
+    btn.classList.remove('speaking');
+    currentBtn = null; currentUtterance = null;
+    return;
+  }
+  // Stop previous
+  if (window.speechSynthesis.speaking) {
+    window.speechSynthesis.cancel();
+    if (currentBtn) currentBtn.classList.remove('speaking');
+  }
+  const utter = new SpeechSynthesisUtterance(text);
+  utter.lang = 'ko-KR';
+  utter.rate = 0.82;
+  utter.pitch = 1.0;
+  // Try to pick a Korean voice
+  const voices = window.speechSynthesis.getVoices();
+  const krVoice = voices.find(v => v.lang === 'ko-KR' || v.lang.startsWith('ko'));
+  if (krVoice) utter.voice = krVoice;
+  utter.onstart  = () => { btn.classList.add('speaking'); currentBtn = btn; currentUtterance = utter; };
+  utter.onend    = () => { btn.classList.remove('speaking'); currentBtn = null; currentUtterance = null; };
+  utter.onerror  = () => { btn.classList.remove('speaking'); currentBtn = null; currentUtterance = null; };
+  window.speechSynthesis.speak(utter);
+}
+// Load voices on page load
+if (window.speechSynthesis) {
+  window.speechSynthesis.getVoices();
+  window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
+}
+
+// ── Reading progress ──
+window.addEventListener('scroll', () => {
+  const total = document.body.scrollHeight - window.innerHeight;
+  if (total > 0) document.getElementById('readFill').style.width = (window.scrollY / total * 100) + '%';
+});
+</script>
+</body>
+</html>
