@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Woosong University | International Student Guide</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            scroll-behavior: smooth;
+        }
+
+        .glass-nav {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(229, 231, 235, 0.5);
+        }
+
+        .hero-gradient {
+            background: linear-gradient(135deg, #cc0000 0%, #800000 100%);
+        }
+
+        .card-hover:hover {
+            transform: translateY(-5px);
+            transition: all 0.3s ease;
+        }
+
+        .sgp-gradient {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-900">
+
+    <!-- Navigation -->
+    <nav class="glass-nav fixed w-full z-50 top-0">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <div class="flex items-center space-x-2">
+                    <img src="WSG.png" alt="WSG Logo" class="w-9 h-9 rounded-xl object-cover shadow">
+                    <span class="font-bold text-xl tracking-tight text-gray-800">Woosong Guide</span>
+                </div>
+                <div class="hidden md:flex space-x-8 font-medium text-sm text-gray-600">
+                    <a href="#academics" class="hover:text-[#cc0000] transition">Academics</a>
+                    <a href="#campus" class="hover:text-[#cc0000] transition">Campus Life</a>
+                    <a href="#sgp" class="hover:text-[#cc0000] transition">SGP Program</a>
+                    <a href="#arrival" class="hover:text-[#cc0000] transition">Arrival</a>
+                </div>
+                <button class="bg-[#cc0000] text-white px-5 py-2 rounded-full text-sm font-semibold hover:bg-red-700 transition shadow-lg">
+                    Contact Office
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="hero-gradient pt-32 pb-20 px-4">
+        <div class="max-w-7xl mx-auto text-center">
+            <img src="WSG.png" alt="WSG Logo" class="w-24 h-24 rounded-3xl object-cover mx-auto mb-6 shadow-2xl border-4 border-white/30">
+            <h1 class="text-4xl md:text-6xl font-extrabold text-white mb-6">Welcome to Your Global Future</h1>
+            <p class="text-red-100 text-lg md:text-xl max-w-2xl mx-auto mb-10">
+                A comprehensive guide for international students joining Woosong University, Daejeon, South Korea.
+            </p>
+            <div class="flex flex-wrap justify-center gap-4">
+                <a href="#sgp" class="bg-white text-[#cc0000] px-8 py-3 rounded-xl font-bold shadow-xl hover:bg-gray-100 transition">SGP Opportunities</a>
+                <a href="#arrival" class="border-2 border-white text-white px-8 py-3 rounded-xl font-bold hover:bg-white/10 transition">Arrival Checklist</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Stats Section -->
+    <section class="py-12 bg-white shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+            <div><p class="text-3xl font-bold text-[#cc0000]">60+</p><p class="text-gray-500 text-sm">English Tracks</p></div>
+            <div><p class="text-3xl font-bold text-[#cc0000]">2,000+</p><p class="text-gray-500 text-sm">Intl. Students</p></div>
+            <div><p class="text-3xl font-bold text-[#cc0000]">Top 5%</p><p class="text-gray-500 text-sm">Global Business</p></div>
+            <div><p class="text-3xl font-bold text-[#cc0000]">100%</p><p class="text-gray-500 text-sm">Supportive Faculty</p></div>
+        </div>
+    </section>
+
+    <main class="max-w-7xl mx-auto px-4 py-16 space-y-24">
+
+        <!-- SGP SECTION (Critical User Request) -->
+        <section id="sgp" class="scroll-mt-24">
+            <div class="sgp-gradient rounded-3xl p-8 md:p-12 text-white shadow-2xl relative overflow-hidden">
+                <div class="relative z-10 grid md:grid-cols-2 gap-12 items-center">
+                    <div>
+                        <div class="inline-block bg-white/20 backdrop-blur-sm px-4 py-1 rounded-full text-xs font-bold uppercase mb-4 tracking-wider">
+                            Student Opportunities
+                        </div>
+                        <h2 class="text-3xl md:text-4xl font-bold mb-6">Sol Green Police (SGP)</h2>
+                        <p class="text-emerald-50 mb-8 leading-relaxed">
+                            The Sol Green Police is an esteemed student organization dedicated to campus safety, sustainability, and supporting the international community. Become a leader while earning scholarships and practical experience.
+                        </p>
+                        <div class="space-y-4">
+                            <div class="flex items-start space-x-3">
+                                <i class="fas fa-check-circle mt-1 text-emerald-300"></i>
+                                <p>Scholarship rewards based on hourly contribution (approx. 11,000 KRW/hr).</p>
+                            </div>
+                            <div class="flex items-start space-x-3">
+                                <i class="fas fa-check-circle mt-1 text-emerald-300"></i>
+                                <p>Leadership training and official university certification.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-white/10 backdrop-blur-md rounded-2xl p-8 border border-white/20">
+                        <h3 class="text-xl font-bold mb-6 text-center">Get Started with SGP</h3>
+                        <div class="grid gap-4">
+                            <!-- SGP Preparation Link -->
+                            <a href="SGP_Preparation.html" class="group bg-white text-emerald-700 p-4 rounded-xl font-bold flex justify-between items-center hover:bg-emerald-50 transition">
+                                <span>1. SGP Preparation</span>
+                                <i class="fas fa-arrow-right group-hover:translate-x-2 transition"></i>
+                            </a>
+                            <!-- SGP Application Link -->
+                            <a href="SGP_Application.html" class="group bg-emerald-800 text-white p-4 rounded-xl font-bold flex justify-between items-center hover:bg-emerald-900 transition border border-emerald-600">
+                                <span>2. SGP Application</span>
+                                <i class="fas fa-arrow-right group-hover:translate-x-2 transition"></i>
+                            </a>
+                        </div>
+                        <p class="mt-6 text-center text-xs text-emerald-100 opacity-70 italic">
+                            *Click the options above to view requirements or apply.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Academics Section -->
+        <section id="academics" class="scroll-mt-24">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-gray-900">Academic Excellence</h2>
+                <div class="w-20 h-1 bg-[#cc0000] mx-auto mt-4"></div>
+            </div>
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 card-hover">
+                    <div class="w-12 h-12 bg-red-50 text-[#cc0000] rounded-lg flex items-center justify-center mb-6 text-xl">
+                        <i class="fas fa-briefcase"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">SolBridge</h3>
+                    <p class="text-gray-600 text-sm leading-relaxed mb-4">International School of Business. AACSB accredited, providing global business education in an multi-cultural environment.</p>
+                    <span class="text-[#cc0000] font-bold text-xs uppercase tracking-widest">Global Top 5%</span>
+                </div>
+                <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 card-hover">
+                    <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-lg flex items-center justify-center mb-6 text-xl">
+                        <i class="fas fa-utensils"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Sol International</h3>
+                    <p class="text-gray-600 text-sm leading-relaxed mb-4">World-class Culinary Arts, Hotel Management, and Media programs taught by industry experts.</p>
+                    <span class="text-blue-600 font-bold text-xs uppercase tracking-widest">Practical Training</span>
+                </div>
+                <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 card-hover">
+                    <div class="w-12 h-12 bg-purple-50 text-purple-600 rounded-lg flex items-center justify-center mb-6 text-xl">
+                        <i class="fas fa-microchip"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Endicott College</h3>
+                    <p class="text-gray-600 text-sm leading-relaxed mb-4">Focused on AI, Data Science, and International Studies. Preparing students for the 4th industrial revolution.</p>
+                    <span class="text-purple-600 font-bold text-xs uppercase tracking-widest">Future Ready</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Campus Life Section -->
+        <section id="campus" class="scroll-mt-24 bg-gray-100 -mx-4 px-4 py-16 rounded-[3rem]">
+            <div class="max-w-7xl mx-auto">
+                <div class="grid md:grid-cols-2 gap-12 items-center">
+                    <div class="space-y-6">
+                        <h2 class="text-3xl font-bold">Life on Campus</h2>
+                        <p class="text-gray-600">Daejeon is the "Silicon Valley" of Korea. Woosong offers a vibrant mix of traditional Korean culture and modern student living.</p>
+                        <div class="space-y-4">
+                            <div class="flex items-center p-4 bg-white rounded-xl shadow-sm">
+                                <i class="fas fa-bed text-red-500 mr-4"></i>
+                                <div>
+                                    <h4 class="font-bold">Dormitories</h4>
+                                    <p class="text-xs text-gray-500">Sol-Geo & International Residence</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center p-4 bg-white rounded-xl shadow-sm">
+                                <i class="fas fa-dumbbell text-red-500 mr-4"></i>
+                                <div>
+                                    <h4 class="font-bold">Fitness & Sports</h4>
+                                    <p class="text-xs text-gray-500">Woosong Sports Center & Field</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center p-4 bg-white rounded-xl shadow-sm">
+                                <i class="fas fa-coffee text-red-500 mr-4"></i>
+                                <div>
+                                    <h4 class="font-bold">Dining Halls</h4>
+                                    <p class="text-xs text-gray-500">Global Cuisine & Muslim-friendly options</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="rounded-3xl overflow-hidden shadow-2xl">
+                        <!-- Placeholder for Campus Image -->
+                        <div class="bg-gray-300 w-full h-[400px] flex flex-col items-center justify-center text-gray-500 italic">
+                            <i class="fas fa-university text-6xl mb-4"></i>
+                            <span>Daejeon Campus View</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Arrival Section -->
+        <section id="arrival" class="scroll-mt-24">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold">Preparation & Arrival</h2>
+                <p class="text-gray-500 mt-2">Essential steps for your journey to Korea</p>
+            </div>
+            <div class="grid md:grid-cols-4 gap-6">
+                <div class="text-center space-y-4">
+                    <div class="w-16 h-16 bg-red-100 text-[#cc0000] rounded-full flex items-center justify-center mx-auto text-2xl font-bold">1</div>
+                    <h4 class="font-bold">Visa (D-2)</h4>
+                    <p class="text-xs text-gray-500">Submit your Standard Admission Letter to the Embassy.</p>
+                </div>
+                <div class="text-center space-y-4">
+                    <div class="w-16 h-16 bg-red-100 text-[#cc0000] rounded-full flex items-center justify-center mx-auto text-2xl font-bold">2</div>
+                    <h4 class="font-bold">Documents</h4>
+                    <p class="text-xs text-gray-500">Apostilled Diploma, Transcripts, and TB Test results.</p>
+                </div>
+                <div class="text-center space-y-4">
+                    <div class="w-16 h-16 bg-red-100 text-[#cc0000] rounded-full flex items-center justify-center mx-auto text-2xl font-bold">3</div>
+                    <h4 class="font-bold">Finances</h4>
+                    <p class="text-xs text-gray-500">Bank Statement (~$16,000 USD) for visa issuance.</p>
+                </div>
+                <div class="text-center space-y-4">
+                    <div class="w-16 h-16 bg-red-100 text-[#cc0000] rounded-full flex items-center justify-center mx-auto text-2xl font-bold">4</div>
+                    <h4 class="font-bold">Arrival</h4>
+                    <p class="text-xs text-gray-500">Incheon Airport pick-up service (Check dates!).</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-12">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex flex-col md:flex-row justify-between items-center border-b border-gray-800 pb-8 mb-8">
+                <div class="text-center md:text-left mb-6 md:mb-0">
+                    <h2 class="text-2xl font-bold">Woosong University</h2>
+                    <p class="text-gray-400 text-sm">International Student Service Center (ISSC)</p>
+                </div>
+                <div class="flex space-x-6 text-xl">
+                    <a href="#" class="hover:text-red-500 transition"><i class="fab fa-facebook"></i></a>
+                    <a href="#" class="hover:text-red-500 transition"><i class="fab fa-instagram"></i></a>
+                    <a href="#" class="hover:text-red-500 transition"><i class="fab fa-linkedin"></i></a>
+                </div>
+            </div>
+            <div class="text-center text-gray-500 text-xs">
+                &copy; 2026 Woosong University Student Guide. All rights reserved. | 171 Dongdaejeon-ro, Dong-gu, Daejeon.
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>

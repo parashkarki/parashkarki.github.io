@@ -1,0 +1,932 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SGP 지원서류 – Sol Green Police</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap');
+
+/* ═══ RESET ═══ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Noto Sans KR', sans-serif; background: #d8dce2; color: #111; font-size: 13px; }
+
+/* ═══ TOOLBAR ═══ */
+.toolbar {
+  background: #1a3a5c;
+  height: 54px;
+  padding: 0 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  position: sticky;
+  top: 0;
+  z-index: 999;
+  box-shadow: 0 2px 14px rgba(0,0,0,.4);
+}
+.tlogo { color: #fff; font-size: 13px; font-weight: 700; margin-right: auto; letter-spacing: .3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.tbtn {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 7px 14px; border-radius: 6px; font-size: 12px; font-weight: 700;
+  cursor: pointer; border: none; font-family: inherit; color: #fff;
+  transition: filter .15s, transform .1s; white-space: nowrap; flex-shrink: 0;
+}
+.tbtn:hover  { filter: brightness(1.2); transform: translateY(-1px); }
+.tbtn:active { transform: translateY(0); }
+.tbtn-lang  { background: #455a64; font-size: 17px; padding: 6px 10px; border-radius: 50%; }
+.tbtn-clear { background: #607d8b; }
+.tbtn-print { background: #1565c0; }
+.tbtn-pdf   { background: #6a1b9a; }
+.tbtn-apply { background: #2e7d32; }
+.lang-pill {
+  background: #fff; color: #1a3a5c; font-size: 11px; font-weight: 900;
+  padding: 3px 8px; border-radius: 12px; letter-spacing: 1px; flex-shrink: 0;
+}
+
+/* ═══ PAGE ═══ */
+.page { max-width: 860px; margin: 26px auto 100px; padding: 0 16px; display: flex; flex-direction: column; gap: 24px; }
+
+/* ═══ SHEET ═══ */
+.sheet { background: #fff; border: 1px solid #c0c5ce; box-shadow: 0 4px 20px rgba(0,0,0,.1); padding: 28px 32px; }
+.sheet-tag { font-size: 10px; color: #aaa; letter-spacing: 1px; margin-bottom: 6px; }
+
+/* ═══ FORM TITLES ═══ */
+.f-title { border: 2px solid #222; text-align: center; font-size: 20px; font-weight: 700; letter-spacing: 10px; padding: 10px 0; width: 100%; }
+.f-sub   { border: 1px solid #222; border-top: none; text-align: center; font-size: 11px; color: #555; letter-spacing: 3px; padding: 5px 0; margin-bottom: 12px; width: 100%; }
+
+/* ═══ MAIN TABLE ═══ */
+.ft { width: 100%; border-collapse: collapse; }
+.ft td { border: 1px solid #333; vertical-align: middle; padding: 0; font-size: 12px; }
+
+/* label cell */
+.lc {
+  background: #dde4ee;
+  text-align: center;
+  font-weight: 700;
+  font-size: 11.5px;
+  padding: 7px 5px;
+  white-space: nowrap;
+  min-width: 64px;
+}
+.lc-sm { font-size: 10.5px; }
+
+/* section divider */
+.sec td {
+  background: #d0dff5;
+  font-size: 11.5px;
+  font-weight: 700;
+  color: #1a3a5c;
+  padding: 5px 10px;
+  border: 1px solid #333;
+}
+
+/* ═══ PHOTO CELL ═══ */
+.photo-cell {
+  width: 100px;
+  min-width: 100px;
+  max-width: 100px;
+  height: 126px;
+  background: #ecf0f6;
+  border: 1px solid #333;
+  cursor: pointer;
+  text-align: center;
+  vertical-align: middle;
+  padding: 0;
+  position: relative;
+  overflow: hidden;
+}
+.photo-cell input[type=file] { display: none; }
+.photo-inner {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  pointer-events: none;
+}
+.photo-inner .photo-icon { font-size: 28px; line-height: 1; }
+.photo-inner .photo-label { font-size: 10px; color: #777; line-height: 1.4; text-align: center; }
+.photo-inner .photo-hint  { font-size: 9px; color: #aaa; }
+#photoImg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: none;
+}
+
+/* ═══ INPUTS ═══ */
+.field-wrap { position: relative; display: flex; flex-direction: column; width: 100%; }
+.fi {
+  width: 100%; border: none; outline: none;
+  padding: 7px 8px; font-size: 12px; font-family: inherit;
+  background: transparent; color: #111;
+}
+.fi:focus { background: #fffde7; }
+select.fi { cursor: pointer; }
+
+/* Hint – shows BELOW field when focused */
+.field-hint {
+  display: none;
+  background: #fff8e1;
+  border: 1px solid #f9a825;
+  border-top: none;
+  border-radius: 0 0 5px 5px;
+  padding: 5px 9px;
+  font-size: 11px;
+  color: #5d4037;
+  line-height: 1.55;
+  font-family: 'Noto Sans KR', sans-serif;
+}
+.fi:focus + .field-hint,
+.fi:focus ~ .field-hint { display: block; }
+/* For select inside field-wrap */
+select.fi:focus + .field-hint { display: block; }
+
+/* Radio group */
+.rg { display: flex; flex-direction: column; gap: 4px; padding: 6px 10px; }
+.rg label { display: flex; align-items: center; gap: 5px; cursor: pointer; font-size: 12px; white-space: nowrap; }
+input[type=radio] { accent-color: #1a3a5c; }
+
+/* Date mini inputs */
+.dbox { display: flex; align-items: center; justify-content: center; gap: 2px; padding: 5px 4px; }
+.dbox input {
+  border: none; border-bottom: 1px solid #aaa; outline: none;
+  text-align: center; font-size: 11.5px; font-family: inherit; background: transparent;
+}
+.dbox input:focus { background: #fffde7; }
+.dy { width: 40px; } .dm { width: 24px; }
+.dsep { font-size: 10px; color: #888; padding: 0 1px; }
+.tilde { text-align: center; font-size: 10px; color: #bbb; padding: 2px 0; }
+
+/* Row add/delete */
+.row-ctrl {
+  display: flex; justify-content: flex-end; gap: 6px;
+  padding: 5px 8px; background: #f5f7fa; border-top: 1px dashed #ccc;
+}
+.row-ctrl button {
+  background: none; border: 1px solid #bbb; border-radius: 4px;
+  font-size: 11px; padding: 3px 10px; cursor: pointer; font-family: inherit;
+  color: #444; transition: all .12s;
+}
+.row-ctrl button:hover { background: #eee; border-color: #666; }
+.del-btn {
+  background: none; border: none; cursor: pointer;
+  color: #c62828; font-size: 14px; padding: 4px 8px; line-height: 1;
+}
+.del-btn:hover { background: #fff0f0; border-radius: 3px; }
+
+/* Skills */
+.ck { text-align: center; padding: 5px; }
+.ck input[type=checkbox] { width: 15px; height: 15px; cursor: pointer; accent-color: #1a3a5c; }
+.sk-name { font-size: 12px; padding: 6px 9px; }
+.sk-note { padding: 2px 3px; }
+.sk-note .field-wrap input.fi { font-size: 11.5px; padding: 5px 7px; }
+
+/* Sig */
+.sig { margin-top: 16px; text-align: right; font-size: 12px; line-height: 2.5; color: #333; }
+
+/* ═══ SHEET 2 ═══ */
+.s2-title { text-align: center; font-size: 18px; font-weight: 700; letter-spacing: 5px; margin-bottom: 3px; }
+.s2-sub   { text-align: center; font-size: 11px; color: #666; letter-spacing: 3px; margin-bottom: 18px; }
+.essay-box { border: 1px solid #333; }
+.e-sec { border-bottom: 1px solid #333; }
+.e-sec:last-child { border-bottom: none; }
+.e-label {
+  display: block; font-size: 12.5px; font-weight: 700; color: #1a3a5c;
+  padding: 9px 14px 7px; background: #eef2f9; border-bottom: 1px solid #d8dfe8;
+}
+.e-label::before { content: "• "; }
+.e-body { position: relative; }
+.ea {
+  width: 100%; border: none; outline: none; resize: vertical;
+  font-family: inherit; font-size: 12.5px; padding: 11px 14px;
+  min-height: 124px; background: #fff; color: #111; line-height: 1.9;
+  display: block;
+}
+.ea:focus { background: #fffde7; }
+/* Textarea hint – shows below when focused */
+.ta-hint {
+  display: none;
+  background: #fff8e1; border: 1px solid #f9a825; border-top: none;
+  padding: 6px 12px; font-size: 11px; color: #5d4037; line-height: 1.6;
+  font-family: 'Noto Sans KR', sans-serif;
+}
+.ea:focus + .ta-hint { display: block; }
+
+/* ═══ FAB ═══ */
+.fab {
+  position: fixed; bottom: 26px; right: 26px;
+  width: 52px; height: 52px; border-radius: 50%;
+  background: #1a3a5c; color: #fff; font-size: 22px; font-weight: 700;
+  border: 2px solid rgba(255,255,255,.25);
+  box-shadow: 0 4px 18px rgba(0,0,0,.3);
+  display: flex; align-items: center; justify-content: center;
+  text-decoration: none; z-index: 500; cursor: pointer;
+  transition: background .2s, transform .15s;
+}
+.fab:hover { background: #274d7a; transform: scale(1.1); }
+.fab-tip {
+  position: fixed; bottom: 86px; right: 26px;
+  background: #333; color: #fff; font-size: 11px;
+  padding: 5px 10px; border-radius: 4px; white-space: nowrap;
+  z-index: 500; opacity: 0; pointer-events: none; transition: opacity .2s;
+}
+.fab:hover + .fab-tip { opacity: 1; }
+
+/* ═══ PDF MODAL ═══ */
+.modal-bg {
+  display: none; position: fixed; inset: 0;
+  background: rgba(0,0,0,.52); z-index: 800;
+  align-items: center; justify-content: center;
+}
+.modal-bg.open { display: flex; }
+.mbox {
+  background: #fff; border-radius: 12px; padding: 28px 36px;
+  min-width: 300px; text-align: center;
+  box-shadow: 0 10px 40px rgba(0,0,0,.3);
+}
+.mbox h3 { font-size: 15px; color: #1a3a5c; margin-bottom: 8px; }
+.mbox p  { font-size: 12.5px; color: #666; margin-bottom: 20px; }
+.m-acts  { display: flex; gap: 12px; justify-content: center; margin-bottom: 14px; }
+.m-cancel { font-size: 12px; color: #aaa; cursor: pointer; text-decoration: underline; }
+.btn-pko { background: #6a1b9a; }
+.btn-pen { background: #00695c; }
+
+/* ═══ PRINT ═══ */
+@media print {
+  .toolbar, .fab, .fab-tip, .row-ctrl, .del-btn, .modal-bg, .field-hint, .ta-hint { display: none !important; }
+  body { background: #fff; }
+  .page { margin: 0; padding: 0; max-width: 100%; gap: 0; }
+  .sheet { box-shadow: none; border: none; padding: 14px 20px; page-break-after: always; }
+  .sheet:last-child { page-break-after: avoid; }
+  .sheet-tag { display: none; }
+  .fi:focus, .ea:focus, .dbox input:focus { background: transparent !important; }
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════ TOOLBAR ═══════════ -->
+<div class="toolbar">
+  <div class="tlogo" id="tlogo">🎓 SGP 지원서류 · Sol Green Police · 우송대학교</div>
+  <button class="tbtn tbtn-lang" onclick="toggleLang()" title="Switch Language / 언어 전환">🌐</button>
+  <span class="lang-pill" id="langPill">KO</span>
+  <button class="tbtn tbtn-clear" id="btn-clear" onclick="clearAll()">↺ 초기화</button>
+  <button class="tbtn tbtn-print" id="btn-print" onclick="window.print()">🖨 인쇄</button>
+  <button class="tbtn tbtn-pdf"   id="btn-pdf"   onclick="openModal()">⬇ PDF</button>
+  <button class="tbtn tbtn-apply" id="btn-apply" onclick="submitForm()">✈ 지원하기</button>
+</div>
+
+<!-- ═══════════ FAB ═══════════ -->
+<a class="fab" href="SGP_Preparation.html" title="SGP Preparation" target="_blank">ⓘ</a>
+<div class="fab-tip" id="fabTip">SGP 안내 페이지 열기</div>
+
+<!-- ═══════════ PDF MODAL ═══════════ -->
+<div class="modal-bg" id="pdfModal" onclick="if(event.target===this)closeModal()">
+  <div class="mbox">
+    <h3 id="m-title">📄 PDF 언어 선택</h3>
+    <p  id="m-desc">다운로드할 PDF의 언어를 선택하세요.</p>
+    <div class="m-acts">
+      <button class="tbtn btn-pko" onclick="downloadPDF('ko')">🇰🇷 한국어</button>
+      <button class="tbtn btn-pen" onclick="downloadPDF('en')">🇺🇸 English</button>
+    </div>
+    <div class="m-cancel" id="m-cancel" onclick="closeModal()">취소 / Cancel</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     PAGE
+═══════════════════════════════════════ -->
+<div class="page" id="formContent">
+
+  <!-- ══════════════════════════════
+       SHEET 1 · 이력서
+  ══════════════════════════════ -->
+  <div class="sheet" id="sheet1">
+    <div class="sheet-tag" id="stag1">〈SGP 제출서식 1〉</div>
+    <div class="f-title" id="f-title">이 력 서 &nbsp;(우송대 제출용)</div>
+    <div class="f-sub"   id="f-sub">Sol Green Police 지원용</div>
+
+    <table class="ft">
+
+      <!-- ╔══ 사진 + 성명 + 성별 + 생년월일 ══╗ -->
+      <tr>
+        <!-- PHOTO – rowspan 4 -->
+        <td class="photo-cell" rowspan="4" onclick="document.getElementById('photoIn').click()">
+          <div class="photo-inner" id="photoInner">
+            <div class="photo-icon">🖼</div>
+            <div class="photo-label" id="photo-label">사 진<br>클릭하여 업로드</div>
+            <div class="photo-hint" id="photo-hint">JPG / PNG</div>
+          </div>
+          <img id="photoImg" alt="증명사진">
+          <input type="file" id="photoIn" accept="image/*" onchange="previewPhoto(this)">
+        </td>
+
+        <!-- 성명 -->
+        <td class="lc" id="l-name">성명 <span style="color:#c62828">*</span></td>
+        <td colspan="2" style="padding:0">
+          <div class="field-wrap">
+            <input class="fi" type="text" id="name" autocomplete="off">
+            <div class="field-hint" id="h-name">예) 홍길동 &nbsp;·&nbsp; e.g. Hong Gildong (full legal name)</div>
+          </div>
+        </td>
+
+        <!-- 성별 -->
+        <td class="lc" rowspan="2" id="l-gender">성별</td>
+        <td rowspan="2" style="width:58px">
+          <div class="rg">
+            <label><input type="radio" name="gender" value="남"> <span id="lbl-m">남</span></label>
+            <label><input type="radio" name="gender" value="여"> <span id="lbl-f">여</span></label>
+          </div>
+        </td>
+
+        <!-- 생년월일 -->
+        <td class="lc" id="l-dob">생년월일 <span style="color:#c62828">*</span></td>
+        <td colspan="2" style="padding:0">
+          <div class="field-wrap">
+            <input class="fi" type="date" id="dob">
+            <div class="field-hint" id="h-dob">예) 2003-05-15 &nbsp;·&nbsp; e.g. May 15, 2003</div>
+          </div>
+        </td>
+      </tr>
+
+      <!-- ╠══ 학년 + 나이 ══╣ -->
+      <tr>
+        <td class="lc" id="l-grade">학년(주야) <span style="color:#c62828">*</span></td>
+        <td colspan="2" style="padding:0">
+          <div class="field-wrap">
+            <select class="fi" id="grade">
+              <option value="">— 선택 —</option>
+              <option>1학년 / 주간</option><option>1학년 / 야간</option>
+              <option>2학년 / 주간</option><option>2학년 / 야간</option>
+              <option>3학년 / 주간</option><option>3학년 / 야간</option>
+              <option>4학년 / 주간</option><option>4학년 / 야간</option>
+            </select>
+            <div class="field-hint" id="h-grade">예) 2학년 / 주간 &nbsp;·&nbsp; e.g. 2nd Year / Day Class</div>
+          </div>
+        </td>
+        <td class="lc" id="l-age">나이(만)</td>
+        <td colspan="2" style="padding:0">
+          <div class="field-wrap" style="flex-direction:row;align-items:center;flex-wrap:wrap">
+            <input class="fi" type="number" id="age" min="15" max="65" style="max-width:65px">
+            <span id="age-unit" style="padding:0 8px;font-size:12px;white-space:nowrap">세</span>
+            <div class="field-hint" id="h-age" style="width:100%;border-radius:0 0 5px 5px">예) 21세 &nbsp;·&nbsp; e.g. 21 years old</div>
+          </div>
+        </td>
+      </tr>
+
+      <!-- ╠══ 학번 + 국적 ══╣ -->
+      <tr>
+        <td class="lc" id="l-sid">학번 <span style="color:#c62828">*</span></td>
+        <td colspan="2" style="padding:0">
+          <div class="field-wrap">
+            <input class="fi" type="text" id="studentId" autocomplete="off" maxlength="12">
+            <div class="field-hint" id="h-sid">예) 20230001 (8자리) &nbsp;·&nbsp; e.g. 20230001 (8 digits)</div>
+          </div>
+        </td>
+        <td class="lc" id="l-nat">국적</td>
+        <td colspan="2" style="padding:0">
+          <div class="field-wrap">
+            <input class="fi" type="text" id="nationality">
+            <div class="field-hint" id="h-nat">예) 대한민국 &nbsp;·&nbsp; e.g. Republic of Korea</div>
+          </div>
+        </td>
+      </tr>
+
+      <!-- ╠══ 전공 + 전화(학교) ══╣ -->
+      <tr>
+        <td class="lc" id="l-major">전공(학과) <span style="color:#c62828">*</span></td>
+        <td colspan="2" style="padding:0">
+          <div class="field-wrap">
+            <input class="fi" type="text" id="major">
+            <div class="field-hint" id="h-major">예) 경찰행정학과 &nbsp;·&nbsp; e.g. Police Administration</div>
+          </div>
+        </td>
+        <td class="lc lc-sm" id="l-schtel">전화<br>(학교)</td>
+        <td colspan="2" style="padding:0">
+          <div class="field-wrap">
+            <input class="fi" type="tel" id="schoolTel">
+            <div class="field-hint" id="h-schtel">예) 042-828-1234 &nbsp;·&nbsp; e.g. 042-828-1234</div>
+          </div>
+        </td>
+      </tr>
+
+      <!-- ╠══ 주소 + HP ══╣ -->
+      <tr>
+        <td class="lc lc-sm" colspan="2" style="text-align:center" id="l-addr">현재주소(거주지)<br>및 연락처</td>
+        <td colspan="4" style="padding:0">
+          <div class="field-wrap">
+            <input class="fi" type="text" id="address">
+            <div class="field-hint" id="h-addr">예) 대전광역시 동구 자양동 11-1 &nbsp;·&nbsp; e.g. 11-1 Jayang-dong, Dong-gu, Daejeon</div>
+          </div>
+        </td>
+        <td class="lc lc-sm" id="l-phone">전화번호<br>(HP)</td>
+        <td style="padding:0">
+          <div class="field-wrap">
+            <input class="fi" type="tel" id="phone">
+            <div class="field-hint" id="h-phone">예) 010-1234-5678</div>
+          </div>
+        </td>
+      </tr>
+
+      <!-- ══ 학력사항 ══ -->
+      <tr class="sec"><td colspan="9" id="l-acad">학 력 사 항 &nbsp;(전학교 및 출신학과, 졸업예정 년월 기재)</td></tr>
+      <tr>
+        <td class="lc" style="width:96px" id="lh-acad-d">년 · 월</td>
+        <td class="lc" colspan="5" id="lh-acad-n">학교명 / 학과</td>
+        <td class="lc" colspan="2" id="lh-acad-g">졸업구분</td>
+        <td class="lc" style="width:30px"></td>
+      </tr>
+      <tbody id="acadBody"></tbody>
+      <tr><td colspan="9" style="padding:0"><div class="row-ctrl"><button id="btn-addAcad" onclick="addAcad()">＋ 학력 추가</button></div></td></tr>
+
+      <!-- ══ 정착사항 ══ -->
+      <tr class="sec"><td colspan="9" id="l-work">정착사항 &nbsp;(아르바이트 · 장학 · 군복무 및 주둔기 기재)</td></tr>
+      <tr>
+        <td class="lc" style="width:140px" id="lh-work-p">기 간</td>
+        <td class="lc" colspan="7" id="lh-work-d">내 용</td>
+        <td class="lc" style="width:30px"></td>
+      </tr>
+      <tbody id="workBody"></tbody>
+      <tr><td colspan="9" style="padding:0"><div class="row-ctrl"><button id="btn-addWork" onclick="addWork()">＋ 정착사항 추가</button></div></td></tr>
+
+      <!-- ══ 자격증 ══ -->
+      <tr class="sec"><td colspan="9" id="l-cert">자 격 증 &nbsp;및 수상 내역</td></tr>
+      <tr>
+        <td class="lc" style="width:96px" id="lh-cert-d">취득년월</td>
+        <td class="lc" colspan="4" id="lh-cert-n">자격증명 / 수상명</td>
+        <td class="lc" colspan="3" id="lh-cert-o">발급기관</td>
+        <td class="lc" style="width:30px"></td>
+      </tr>
+      <tbody id="certBody"></tbody>
+      <tr><td colspan="9" style="padding:0"><div class="row-ctrl"><button id="btn-addCert" onclick="addCert()">＋ 자격증 추가</button></div></td></tr>
+
+      <!-- ══ 능력/기술 ══ -->
+      <tr class="sec"><td colspan="9" id="l-skills">능 력 / 기 술 현 황</td></tr>
+      <tr>
+        <td class="lc" id="lsk-cat">구 분</td>
+        <td class="lc" style="width:32px" id="lsk-h">상</td>
+        <td class="lc" style="width:32px" id="lsk-m">중</td>
+        <td class="lc" style="width:32px" id="lsk-l">하</td>
+        <td class="lc" id="lsk-rem">비 고</td>
+        <td class="lc" style="width:42px" id="lsk-item">항 목</td>
+        <td class="lc" colspan="3" id="lsk-cont">내 용</td>
+      </tr>
+
+      <!-- 영어회화 -->
+      <tr>
+        <td class="sk-name" id="sk-eng">영어회화</td>
+        <td class="ck"><input type="checkbox" name="eng"></td>
+        <td class="ck"><input type="checkbox" name="eng"></td>
+        <td class="ck"><input type="checkbox" name="eng"></td>
+        <td class="sk-note"><div class="field-wrap"><input class="fi" type="text"><div class="field-hint">예) TOEIC 750점 &nbsp;·&nbsp; e.g. TOEIC score 750</div></div></td>
+        <td class="lc" id="lsk-hobby">취미</td>
+        <td class="sk-note" colspan="3"><div class="field-wrap"><input class="fi" type="text" id="hobby"><div class="field-hint">예) 독서, 등산, 음악감상 &nbsp;·&nbsp; e.g. Reading, Hiking, Music</div></div></td>
+      </tr>
+      <!-- 재즈 -->
+      <tr>
+        <td class="sk-name" id="sk-jazz">재즈</td>
+        <td class="ck"><input type="checkbox" name="jazz"></td>
+        <td class="ck"><input type="checkbox" name="jazz"></td>
+        <td class="ck"><input type="checkbox" name="jazz"></td>
+        <td class="sk-note"><div class="field-wrap"><input class="fi" type="text"><div class="field-hint">예) 재즈 연주 경력 3년 &nbsp;·&nbsp; e.g. 3 years jazz performance</div></div></td>
+        <td class="lc" id="lsk-talent">특기</td>
+        <td class="sk-note" colspan="3"><div class="field-wrap"><input class="fi" type="text" id="talent"><div class="field-hint">예) 기타 연주, 태권도 2단 &nbsp;·&nbsp; e.g. Guitar, Taekwondo 2nd Dan</div></div></td>
+      </tr>
+      <!-- 색소폰 -->
+      <tr>
+        <td class="sk-name" id="sk-sax">색소폰</td>
+        <td class="ck"><input type="checkbox" name="sax"></td>
+        <td class="ck"><input type="checkbox" name="sax"></td>
+        <td class="ck"><input type="checkbox" name="sax"></td>
+        <td class="sk-note"><div class="field-wrap"><input class="fi" type="text"><div class="field-hint">예) 알토 색소폰 2년 &nbsp;·&nbsp; e.g. Alto saxophone 2 years</div></div></td>
+        <td class="lc" id="lsk-char">성격</td>
+        <td class="sk-note" colspan="3"><div class="field-wrap"><input class="fi" type="text" id="personality"><div class="field-hint">예) 책임감 있고 활동적 &nbsp;·&nbsp; e.g. Responsible and active</div></div></td>
+      </tr>
+      <!-- 피아노 -->
+      <tr>
+        <td class="sk-name" id="sk-piano">피아노</td>
+        <td class="ck"><input type="checkbox" name="piano"></td>
+        <td class="ck"><input type="checkbox" name="piano"></td>
+        <td class="ck"><input type="checkbox" name="piano"></td>
+        <td class="sk-note"><div class="field-wrap"><input class="fi" type="text"><div class="field-hint">예) 클래식 피아노 5년 &nbsp;·&nbsp; e.g. Classical piano 5 years</div></div></td>
+        <td class="lc" id="lsk-rel">종교</td>
+        <td class="sk-note" colspan="3"><div class="field-wrap"><input class="fi" type="text"><div class="field-hint">예) 기독교 / 불교 / 해당없음 &nbsp;·&nbsp; e.g. Christian / Buddhist / None</div></div></td>
+      </tr>
+      <!-- PC -->
+      <tr>
+        <td class="sk-name" style="font-size:10.5px" id="sk-pc">기타 사용<br>가능한 PC</td>
+        <td class="ck"><input type="checkbox" name="pc"></td>
+        <td class="ck"><input type="checkbox" name="pc"></td>
+        <td class="ck"><input type="checkbox" name="pc"></td>
+        <td class="sk-note"><div class="field-wrap"><input class="fi" type="text"><div class="field-hint">예) MS Office, Adobe, AutoCAD &nbsp;·&nbsp; e.g. MS Office, Photoshop</div></div></td>
+        <td class="lc" id="lsk-other">기타</td>
+        <td class="sk-note" colspan="3"><div class="field-wrap"><input class="fi" type="text"><div class="field-hint">예) 운전면허 1종 보통 &nbsp;·&nbsp; e.g. Driver's License Type 1</div></div></td>
+      </tr>
+    </table>
+
+    <div class="sig" id="sig1">
+      위의 사항은 사실과 틀림없음을 확인합니다.<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;년 &nbsp;&nbsp;&nbsp;&nbsp; 월 &nbsp;&nbsp;&nbsp;&nbsp; 일<br>
+      지원자 : &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (인)
+    </div>
+  </div><!-- /sheet1 -->
+
+
+  <!-- ══════════════════════════════
+       SHEET 2 · 자기소개서
+  ══════════════════════════════ -->
+  <div class="sheet" id="sheet2">
+    <div class="sheet-tag" id="stag2">〈SGP 제출서식 2〉</div>
+    <div class="s2-title" id="s2title">Sol Green Police &nbsp;자 기 소 개 서</div>
+    <div class="s2-sub"   id="s2sub">(우송대 제출용)</div>
+
+    <div class="essay-box">
+      <div class="e-sec">
+        <div class="e-label" id="el-growth">성장배경</div>
+        <div class="e-body">
+          <textarea class="ea" id="growth"></textarea>
+          <div class="ta-hint" id="th-growth">
+            출생지, 가정환경, 성장 과정, 학창시절 경험 등을 구체적으로 작성하세요.<br>
+            예) "저는 대전에서 3남매 중 막내로 태어나 부모님의 가르침 아래 책임감을 키워왔습니다..."<br>
+            <span style="color:#888">e.g. "Born in Daejeon as the youngest of three children, I developed a strong sense of responsibility under my parents' guidance..."</span>
+          </div>
+        </div>
+      </div>
+      <div class="e-sec">
+        <div class="e-label" id="el-strengths">성격의 강약점 (장단점)</div>
+        <div class="e-body">
+          <textarea class="ea" id="strengths"></textarea>
+          <div class="ta-hint" id="th-strengths">
+            장점과 단점을 각 2~3가지씩 솔직하게 작성하고, 단점 개선 노력도 포함하세요.<br>
+            예) "장점: 책임감이 강하고 팀워크를 중시합니다. 단점: 완벽주의적 성향이 있으나 일정 관리로 보완하고 있습니다."<br>
+            <span style="color:#888">e.g. "Strengths: Strong responsibility and teamwork. Weakness: Perfectionism, which I manage through careful scheduling."</span>
+          </div>
+        </div>
+      </div>
+      <div class="e-sec">
+        <div class="e-label" id="el-motivation">지원동기</div>
+        <div class="e-body">
+          <textarea class="ea" id="motivation"></textarea>
+          <div class="ta-hint" id="th-motivation">
+            SGP / Sol Green Police에 지원하게 된 계기와 이유를 구체적으로 작성하세요.<br>
+            예) "환경 보호와 지역 안전에 기여하고자 하는 SGP의 비전에 깊이 공감하여 지원하게 되었습니다..."<br>
+            <span style="color:#888">e.g. "I was drawn to SGP's vision of combining environmental protection with community safety..."</span>
+          </div>
+        </div>
+      </div>
+      <div class="e-sec">
+        <div class="e-label" id="el-vision">포부 및 비전</div>
+        <div class="e-body">
+          <textarea class="ea" id="vision"></textarea>
+          <div class="ta-hint" id="th-vision">
+            SGP 활동을 통해 이루고 싶은 목표와 미래 비전을 구체적으로 작성하세요.<br>
+            예) "SGP에서 쌓은 경험을 바탕으로 졸업 후 경찰공무원이 되어 지역사회에 봉사하고 싶습니다..."<br>
+            <span style="color:#888">e.g. "Building on my SGP experience, I aim to become a police officer and serve my community after graduation..."</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sig" id="sig2">
+      위의 사항은 사실과 틀림없음을 확인합니다.<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;년 &nbsp;&nbsp;&nbsp;&nbsp; 월 &nbsp;&nbsp;&nbsp;&nbsp; 일<br>
+      지원자 : &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (인)
+    </div>
+  </div><!-- /sheet2 -->
+
+</div><!-- /page -->
+
+<script>
+/* ═══════════════════════════════════════════════════════════
+   TRANSLATIONS  –  every id that needs to change per language
+═══════════════════════════════════════════════════════════ */
+const T = {
+  tlogo:       {ko:'🎓 SGP 지원서류 · Sol Green Police · 우송대학교',   en:'🎓 SGP Application · Sol Green Police · Woosong University'},
+  'btn-clear': {ko:'↺ 초기화',            en:'↺ Clear'},
+  'btn-print': {ko:'🖨 인쇄',             en:'🖨 Print'},
+  'btn-pdf':   {ko:'⬇ PDF',              en:'⬇ PDF'},
+  'btn-apply': {ko:'✈ 지원하기',          en:'✈ Apply'},
+  fabTip:      {ko:'SGP 안내 페이지 열기', en:'Open SGP Guide Page'},
+  'm-title':   {ko:'📄 PDF 언어 선택',    en:'📄 Choose PDF Language'},
+  'm-desc':    {ko:'다운로드할 PDF의 언어를 선택하세요.', en:'Select the language for your PDF download.'},
+
+  stag1:       {ko:'〈SGP 제출서식 1〉',  en:'〈SGP Submission Form 1〉'},
+  'f-title':   {ko:'이 력 서 &nbsp;(우송대 제출용)', en:'R E S U M E &nbsp;(For Woosong University)'},
+  'f-sub':     {ko:'Sol Green Police 지원용', en:'Sol Green Police Application'},
+
+  'l-name':    {ko:'성명 <span style="color:#c62828">*</span>',        en:'Name <span style="color:#c62828">*</span>'},
+  'h-name':    {ko:'예) 홍길동 &nbsp;·&nbsp; e.g. Hong Gildong',      en:'e.g. Hong Gildong (full legal name)'},
+  'l-gender':  {ko:'성별',       en:'Gender'},
+  'lbl-m':     {ko:'남',         en:'Male'},
+  'lbl-f':     {ko:'여',         en:'Female'},
+  'l-dob':     {ko:'생년월일 <span style="color:#c62828">*</span>',    en:'Date of Birth <span style="color:#c62828">*</span>'},
+  'h-dob':     {ko:'예) 2003-05-15 &nbsp;·&nbsp; e.g. May 15 2003',   en:'e.g. May 15, 2003 (YYYY-MM-DD)'},
+  'l-grade':   {ko:'학년(주야) <span style="color:#c62828">*</span>',  en:'Year/Class <span style="color:#c62828">*</span>'},
+  'h-grade':   {ko:'예) 2학년 / 주간 &nbsp;·&nbsp; e.g. 2nd Year Day', en:'e.g. 2nd Year / Day Class'},
+  'l-age':     {ko:'나이(만)',    en:'Age'},
+  'age-unit':  {ko:'세',         en:'yrs'},
+  'h-age':     {ko:'예) 21세 &nbsp;·&nbsp; e.g. 21 years old',        en:'e.g. 21 years old'},
+  'l-sid':     {ko:'학번 <span style="color:#c62828">*</span>',        en:'Student ID <span style="color:#c62828">*</span>'},
+  'h-sid':     {ko:'예) 20230001 (8자리) &nbsp;·&nbsp; e.g. 20230001', en:'e.g. 20230001 (8 digits)'},
+  'l-nat':     {ko:'국적',        en:'Nationality'},
+  'h-nat':     {ko:'예) 대한민국 &nbsp;·&nbsp; e.g. Republic of Korea', en:'e.g. Republic of Korea'},
+  'l-major':   {ko:'전공(학과) <span style="color:#c62828">*</span>',  en:'Major <span style="color:#c62828">*</span>'},
+  'h-major':   {ko:'예) 경찰행정학과 &nbsp;·&nbsp; e.g. Police Administration', en:'e.g. Police Administration Dept.'},
+  'l-schtel':  {ko:'전화<br>(학교)', en:'School<br>Tel.'},
+  'h-schtel':  {ko:'예) 042-828-1234 &nbsp;·&nbsp; e.g. 042-828-1234', en:'e.g. 042-828-1234'},
+  'l-addr':    {ko:'현재주소(거주지)<br>및 연락처', en:'Address &amp;<br>Contact Info'},
+  'h-addr':    {ko:'예) 대전광역시 동구 자양동 11-1 &nbsp;·&nbsp; e.g. 11-1 Jayang-dong, Dong-gu, Daejeon', en:'e.g. 11-1 Jayang-dong, Dong-gu, Daejeon'},
+  'l-phone':   {ko:'전화번호<br>(HP)', en:'Mobile<br>Phone'},
+  'h-phone':   {ko:'예) 010-1234-5678 &nbsp;·&nbsp; e.g. 010-1234-5678', en:'e.g. 010-1234-5678'},
+
+  'l-acad':    {ko:'학 력 사 항 &nbsp;(전학교 및 출신학과, 졸업예정 년월 기재)', en:'ACADEMIC HISTORY &nbsp;(All schools, departments &amp; graduation dates)'},
+  'lh-acad-d': {ko:'년 · 월',   en:'Date (YYYY.MM)'},
+  'lh-acad-n': {ko:'학교명 / 학과', en:'School / Department'},
+  'lh-acad-g': {ko:'졸업구분',   en:'Status'},
+  'btn-addAcad':{ko:'＋ 학력 추가', en:'＋ Add Academic Entry'},
+
+  'l-work':    {ko:'정착사항 &nbsp;(아르바이트 · 장학 · 군복무 및 주둔기 기재)', en:'WORK &amp; SETTLEMENT &nbsp;(Part-time / Scholarship / Military Service)'},
+  'lh-work-p': {ko:'기 간',     en:'Period'},
+  'lh-work-d': {ko:'내 용',     en:'Details'},
+  'btn-addWork':{ko:'＋ 정착사항 추가', en:'＋ Add Work / Settlement'},
+
+  'l-cert':    {ko:'자 격 증 &nbsp;및 수상 내역', en:'CERTIFICATIONS &amp; AWARDS'},
+  'lh-cert-d': {ko:'취득년월',   en:'Date'},
+  'lh-cert-n': {ko:'자격증명 / 수상명', en:'Certificate / Award Name'},
+  'lh-cert-o': {ko:'발급기관',   en:'Issuing Organization'},
+  'btn-addCert':{ko:'＋ 자격증 추가', en:'＋ Add Certificate / Award'},
+
+  'l-skills':  {ko:'능 력 / 기 술 현 황', en:'SKILLS &amp; ABILITIES'},
+  'lsk-cat':   {ko:'구 분',     en:'Category'},
+  'lsk-h':     {ko:'상',        en:'High'},
+  'lsk-m':     {ko:'중',        en:'Mid'},
+  'lsk-l':     {ko:'하',        en:'Low'},
+  'lsk-rem':   {ko:'비 고',     en:'Remarks'},
+  'lsk-item':  {ko:'항 목',     en:'Item'},
+  'lsk-cont':  {ko:'내 용',     en:'Content'},
+  'sk-eng':    {ko:'영어회화',   en:'English'},
+  'sk-jazz':   {ko:'재즈',      en:'Jazz'},
+  'sk-sax':    {ko:'색소폰',     en:'Saxophone'},
+  'sk-piano':  {ko:'피아노',     en:'Piano'},
+  'sk-pc':     {ko:'기타 사용<br>가능한 PC', en:'PC Skills'},
+  'lsk-hobby': {ko:'취미',      en:'Hobby'},
+  'lsk-talent':{ko:'특기',      en:'Talent'},
+  'lsk-char':  {ko:'성격',      en:'Character'},
+  'lsk-rel':   {ko:'종교',      en:'Religion'},
+  'lsk-other': {ko:'기타',      en:'Other'},
+
+  sig1: {
+    ko:'위의 사항은 사실과 틀림없음을 확인합니다.<br>&nbsp;&nbsp;&nbsp;&nbsp;년 &nbsp;&nbsp;&nbsp;&nbsp; 월 &nbsp;&nbsp;&nbsp;&nbsp; 일<br>지원자 : &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (인)',
+    en:'I certify that all information provided above is true and accurate.<br>Date: _______________________<br>Applicant Signature: _______________________'
+  },
+
+  stag2:       {ko:'〈SGP 제출서식 2〉',  en:'〈SGP Submission Form 2〉'},
+  s2title:     {ko:'Sol Green Police &nbsp;자 기 소 개 서', en:'Sol Green Police &nbsp;PERSONAL STATEMENT'},
+  s2sub:       {ko:'(우송대 제출용)',     en:'(For Woosong University)'},
+  'el-growth':   {ko:'성장배경',              en:'Growth Background / Personal History'},
+  'el-strengths':{ko:'성격의 강약점 (장단점)', en:'Strengths &amp; Weaknesses of Character'},
+  'el-motivation':{ko:'지원동기',             en:'Motivation for Applying'},
+  'el-vision':   {ko:'포부 및 비전',          en:'Aspirations &amp; Vision'},
+
+  'th-growth':   {
+    ko:'출생지, 가정환경, 성장 과정, 학창시절 경험 등을 작성하세요.<br>예) "저는 대전에서 3남매 중 막내로 태어나 부모님의 가르침 아래 책임감을 키워왔습니다..."',
+    en:'Describe your birthplace, family background, upbringing and school experiences.<br>e.g. "Born in Daejeon as the youngest of three, I developed a strong sense of responsibility under my parents\' guidance..."'
+  },
+  'th-strengths':{
+    ko:'장점과 단점을 2~3가지씩 작성하고 단점 개선 노력도 포함하세요.<br>예) "장점: 책임감, 협업 능력. 단점: 완벽주의적 성향이나 일정 관리로 보완 중입니다."',
+    en:'List 2–3 strengths and weaknesses. Include how you are working to improve your weaknesses.<br>e.g. "Strengths: Responsibility, teamwork. Weakness: Perfectionism, managed through structured scheduling."'
+  },
+  'th-motivation':{
+    ko:'SGP에 지원하게 된 동기와 이유를 구체적으로 작성하세요.<br>예) "환경 보호와 지역 안전에 기여하는 SGP의 비전에 공감하여 지원하였습니다..."',
+    en:'Explain specifically why you want to join SGP / Sol Green Police.<br>e.g. "I strongly identify with SGP\'s mission of combining environmental protection with community policing..."'
+  },
+  'th-vision':   {
+    ko:'SGP 활동을 통해 이루고자 하는 목표와 미래 비전을 작성하세요.<br>예) "SGP 경험을 바탕으로 졸업 후 경찰공무원으로서 지역사회에 봉사하고 싶습니다."',
+    en:'Describe your goals through SGP and your long-term vision.<br>e.g. "Leveraging my SGP experience, I aspire to serve my community as a police officer after graduation."'
+  },
+
+  sig2: {
+    ko:'위의 사항은 사실과 틀림없음을 확인합니다.<br>&nbsp;&nbsp;&nbsp;&nbsp;년 &nbsp;&nbsp;&nbsp;&nbsp; 월 &nbsp;&nbsp;&nbsp;&nbsp; 일<br>지원자 : &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (인)',
+    en:'I certify that all information provided above is true and accurate.<br>Date: _______________________<br>Applicant Signature: _______________________'
+  },
+
+  'photo-label': {ko:'사 진<br>클릭하여 업로드', en:'Photo<br>Click to Upload'},
+  'photo-hint':  {ko:'JPG / PNG',               en:'JPG / PNG'},
+
+  // system messages
+  _confirmClear:   {ko:'모든 입력 내용을 초기화하시겠습니까?', en:'Clear all inputs? This cannot be undone.'},
+  _alertRequired:  {ko:'⚠ 성명과 학번을 입력해 주세요.',       en:'⚠ Please enter your Name and Student ID.'},
+  _alertSubmitted: {
+    ko:(n,s)=>`✅ 지원서 제출 완료!\n성명: ${n}\n학번: ${s}\n\n(실제 배포 시 SGP 포털로 전송됩니다.)`,
+    en:(n,s)=>`✅ Application submitted!\nName: ${n}\nStudent ID: ${s}\n\n(In production, this sends to the SGP portal.)`
+  }
+};
+
+/* ═══ LANGUAGE ═══ */
+let lang = 'ko';
+
+function applyLang() {
+  document.documentElement.lang = lang;
+  document.getElementById('langPill').textContent = lang.toUpperCase();
+  for (const id in T) {
+    if (id.startsWith('_')) continue;
+    const el = document.getElementById(id);
+    if (!el) continue;
+    const val = T[id][lang];
+    if (typeof val === 'string') el.innerHTML = val;
+  }
+}
+
+function toggleLang() {
+  lang = lang === 'ko' ? 'en' : 'ko';
+  applyLang();
+}
+
+/* ═══ PHOTO ═══ */
+function previewPhoto(input) {
+  if (!input.files || !input.files[0]) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    const img = document.getElementById('photoImg');
+    img.src = e.target.result;
+    img.style.display = 'block';
+    document.getElementById('photoInner').style.display = 'none';
+  };
+  reader.readAsDataURL(input.files[0]);
+}
+
+/* ═══ DYNAMIC ROWS ═══ */
+function dateTd(wide) {
+  const w = wide ? 140 : 96;
+  if (wide) {
+    return `<td style="width:${w}px;border:1px solid #333;padding:3px 2px;text-align:center;vertical-align:middle">
+      <div class="dbox"><input class="dy" type="text" placeholder="YYYY" maxlength="4"><span class="dsep">.</span><input class="dm" type="text" placeholder="MM" maxlength="2"></div>
+      <div class="tilde">~</div>
+      <div class="dbox"><input class="dy" type="text" placeholder="YYYY" maxlength="4"><span class="dsep">.</span><input class="dm" type="text" placeholder="MM" maxlength="2"></div>
+    </td>`;
+  }
+  return `<td style="width:${w}px;border:1px solid #333;padding:3px 2px;text-align:center;vertical-align:middle">
+    <div class="dbox"><input class="dy" type="text" placeholder="YYYY" maxlength="4"><span class="dsep">.</span><input class="dm" type="text" placeholder="MM" maxlength="2"></div>
+  </td>`;
+}
+
+function addAcad() {
+  const tr = document.createElement('tr');
+  tr.innerHTML = dateTd(false) +
+    `<td colspan="5" style="border:1px solid #333;padding:0">
+      <div class="field-wrap">
+        <input class="fi" type="text" placeholder="">
+        <div class="field-hint">예) 우송대학교 경찰행정학과 (재학중) &nbsp;·&nbsp; e.g. Woosong Univ. – Police Admin. (Enrolled)</div>
+      </div>
+    </td>` +
+    `<td colspan="2" style="border:1px solid #333;padding:0">
+      <div class="field-wrap">
+        <select class="fi">
+          <option value="">—</option>
+          <option>졸업 / Graduated</option>
+          <option>졸업예정 / Expected</option>
+          <option>재학중 / Enrolled</option>
+          <option>중퇴 / Withdrew</option>
+        </select>
+      </div>
+    </td>` +
+    `<td style="width:30px;border:1px solid #333;text-align:center"><button class="del-btn" onclick="this.closest('tr').remove()">✕</button></td>`;
+  document.getElementById('acadBody').appendChild(tr);
+}
+
+function addWork() {
+  const tr = document.createElement('tr');
+  tr.innerHTML = dateTd(true) +
+    `<td colspan="7" style="border:1px solid #333;padding:0">
+      <div class="field-wrap">
+        <input class="fi" type="text" placeholder="">
+        <div class="field-hint">예) 편의점 아르바이트, 성적 장학금, 육군 복무 &nbsp;·&nbsp; e.g. Part-time job, Merit scholarship, Military service</div>
+      </div>
+    </td>` +
+    `<td style="width:30px;border:1px solid #333;text-align:center"><button class="del-btn" onclick="this.closest('tr').remove()">✕</button></td>`;
+  document.getElementById('workBody').appendChild(tr);
+}
+
+function addCert() {
+  const tr = document.createElement('tr');
+  tr.innerHTML = dateTd(false) +
+    `<td colspan="4" style="border:1px solid #333;padding:0">
+      <div class="field-wrap">
+        <input class="fi" type="text" placeholder="">
+        <div class="field-hint">예) 컴퓨터활용능력 1급, 운전면허 1종, TOEIC 860 &nbsp;·&nbsp; e.g. Computer Skills Cert. Level 1 / TOEIC 860</div>
+      </div>
+    </td>` +
+    `<td colspan="3" style="border:1px solid #333;padding:0">
+      <div class="field-wrap">
+        <input class="fi" type="text" placeholder="">
+        <div class="field-hint">예) 한국산업인력공단, 경찰청, ETS &nbsp;·&nbsp; e.g. Korea HRD Service / ETS</div>
+      </div>
+    </td>` +
+    `<td style="width:30px;border:1px solid #333;text-align:center"><button class="del-btn" onclick="this.closest('tr').remove()">✕</button></td>`;
+  document.getElementById('certBody').appendChild(tr);
+}
+
+/* init rows */
+(function() {
+  for (let i = 0; i < 3; i++) addAcad();
+  for (let i = 0; i < 3; i++) addWork();
+  for (let i = 0; i < 4; i++) addCert();
+})();
+
+/* single checkbox per skill group */
+document.addEventListener('change', function(e) {
+  if (e.target.type === 'checkbox' && e.target.name) {
+    const name = e.target.name;
+    if (e.target.checked) {
+      document.querySelectorAll(`input[type=checkbox][name="${name}"]`).forEach(cb => {
+        if (cb !== e.target) cb.checked = false;
+      });
+    }
+  }
+});
+
+/* Textarea hints – triggered on focus/blur manually since CSS sibling doesn't work after div wrapper */
+document.querySelectorAll('textarea.ea').forEach(ta => {
+  const hint = ta.nextElementSibling;
+  if (!hint || !hint.classList.contains('ta-hint')) return;
+  ta.addEventListener('focus',  () => hint.style.display = 'block');
+  ta.addEventListener('blur',   () => hint.style.display = 'none');
+});
+
+/* ═══ CLEAR ═══ */
+function clearAll() {
+  if (!confirm(T._confirmClear[lang])) return;
+  document.querySelectorAll('input[type=text], input[type=tel], input[type=number], input[type=date], input[type=email], textarea').forEach(el => el.value = '');
+  document.querySelectorAll('input[type=radio], input[type=checkbox]').forEach(el => el.checked = false);
+  document.querySelectorAll('select').forEach(el => el.selectedIndex = 0);
+  const img = document.getElementById('photoImg');
+  img.src = ''; img.style.display = 'none';
+  document.getElementById('photoInner').style.display = '';
+  ['acadBody','workBody','certBody'].forEach(id => document.getElementById(id).innerHTML = '');
+  for (let i = 0; i < 3; i++) addAcad();
+  for (let i = 0; i < 3; i++) addWork();
+  for (let i = 0; i < 4; i++) addCert();
+}
+
+/* ═══ MODAL ═══ */
+function openModal()  { document.getElementById('pdfModal').classList.add('open'); }
+function closeModal() { document.getElementById('pdfModal').classList.remove('open'); }
+
+/* ═══ PDF ═══ */
+async function downloadPDF(pdfLang) {
+  closeModal();
+  const wasLang = lang;
+
+  if (pdfLang !== lang) { lang = pdfLang; applyLang(); }
+  await new Promise(r => setTimeout(r, 350));
+
+  /* hide controls */
+  const hide = document.querySelectorAll('.row-ctrl, .del-btn, .toolbar, .fab, .fab-tip, .field-hint, .ta-hint');
+  hide.forEach(el => { el.dataset.vis = el.style.display; el.style.display = 'none'; });
+  await new Promise(r => setTimeout(r, 80));
+
+  const { jsPDF } = window.jspdf;
+  const pdf = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
+  const PW = 210, PH = 297, M = 8, MW = PW - M * 2;
+
+  for (let i = 0; i < 2; i++) {
+    const el = document.getElementById('sheet' + (i + 1));
+    const sh = el.style.boxShadow; el.style.boxShadow = 'none';
+    const canvas = await html2canvas(el, {
+      scale: 3, useCORS: true, backgroundColor: '#ffffff', logging: false,
+      width: el.scrollWidth, height: el.scrollHeight
+    });
+    el.style.boxShadow = sh;
+    const ratio = canvas.height / canvas.width;
+    let iw = MW, ih = iw * ratio;
+    if (ih > PH - M * 2) { ih = PH - M * 2; iw = ih / ratio; }
+    if (i > 0) pdf.addPage();
+    pdf.addImage(canvas.toDataURL('image/png'), 'PNG', M + (MW - iw) / 2, M, iw, ih);
+  }
+
+  hide.forEach(el => { el.style.display = el.dataset.vis || ''; delete el.dataset.vis; });
+
+  if (pdfLang !== wasLang) { lang = wasLang; applyLang(); }
+  pdf.save(pdfLang === 'en' ? 'SGP_Application_Form.pdf' : 'SGP_지원서류.pdf');
+}
+
+/* ═══ SUBMIT ═══ */
+function submitForm() {
+  const n = document.getElementById('name').value.trim();
+  const s = document.getElementById('studentId').value.trim();
+  if (!n || !s) { alert(T._alertRequired[lang]); return; }
+  alert(T._alertSubmitted[lang](n, s));
+}
+
+/* ═══ INIT ═══ */
+applyLang();
+</script>
+</body>
+</html>
