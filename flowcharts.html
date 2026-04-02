@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Buddy App | Advanced Interactive Flowchart | Data Flow + Conditional Arrows</title>
+    <!-- Google Fonts & Font Awesome -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Panzoom for smooth zoom/pan -->
+    <script src="https://cdn.jsdelivr.net/npm/@panzoom/panzoom@4.5.1/dist/panzoom.min.js"></script>
+    <!-- Interact.js for draggable nodes -->
+    <script src="https://cdn.jsdelivr.net/npm/interactjs@1.10.27/dist/interact.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(145deg, #0a0e2a 0%, #0c1030 100%);
+            min-height: 100vh;
+            overflow: hidden;
+            position: relative;
+        }
+        .toolbar {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 200;
+            display: flex;
+            gap: 12px;
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(12px);
+            padding: 10px 24px;
+            border-radius: 60px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.5);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .toolbar button {
+            background: #3b82f6;
+            border: none;
+            color: white;
+            font-size: 1.1rem;
+            width: 42px;
+            height: 42px;
+            border-radius: 42px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        }
+        .toolbar button:hover { background: #f59e0b; transform: scale(1.05); }
+        .toolbar span {
+            font-weight: 500;
+            background: #0f172a;
+            padding: 0 20px;
+            border-radius: 40px;
+            display: inline-flex;
+            align-items: center;
+            color: #e2e8f0;
+            font-size: 0.75rem;
+            gap: 8px;
+        }
+        .legend {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(15, 23, 42, 0.92);
+            backdrop-filter: blur(8px);
+            padding: 12px 20px;
+            border-radius: 28px;
+            color: #cbd5e1;
+            font-size: 0.65rem;
+            z-index: 100;
+            font-family: monospace;
+            border: 1px solid #334155;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 14px;
+            pointer-events: none;
+        }
+        .legend span { display: inline-flex; align-items: center; gap: 6px; }
+        .legend i { font-size: 0.8rem; }
+        .status-msg {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #10b981;
+            color: white;
+            padding: 10px 22px;
+            border-radius: 40px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            z-index: 200;
+            opacity: 0;
+            transition: opacity 0.25s;
+            pointer-events: none;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+            font-family: monospace;
+        }
+        .flowchart-container {
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            position: relative;
+            cursor: grab;
+        }
+        .flowchart-container:active { cursor: grabbing; }
+        #flowchart-canvas {
+            transform-origin: 0 0;
+            width: 5600px;
+            height: 4200px;
+            position: relative;
+            background-image: radial-gradient(circle at 1px 1px, rgba(59,130,246,0.1) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+        /* ========== FLOWCHART SYMBOL STYLES ========== */
+        .node {
+            position: absolute;
+            text-align: center;
+            font-weight: 600;
+            font-size: 0.72rem;
+            font-family: 'Inter', monospace;
+            transition: all 0.2s cubic-bezier(0.2,0.9,0.4,1.1);
+            cursor: grab;
+            backdrop-filter: blur(2px);
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 10px 20px -8px rgba(0,0,0,0.5);
+        }
+        .node:active { cursor: grabbing; }
+        .node:hover {
+            transform: translateY(-3px) scale(1.02);
+            filter: brightness(1.02);
+            z-index: 30;
+            box-shadow: 0 18px 28px -10px black;
+        }
+        /* Oval - Terminator */
+        .node.terminator {
+            background: linear-gradient(135deg, #1e293b, #0f172a);
+            border-radius: 60px;
+            padding: 12px 28px;
+            min-width: 140px;
+            color: #facc15;
+            border: 2px solid #facc15;
+            font-weight: 800;
+        }
+        /* Rectangle - Process */
+        .node.process {
+            background: linear-gradient(135deg, #ffffff, #f1f5f9);
+            border-radius: 14px;
+            padding: 10px 18px;
+            min-width: 160px;
+            color: #0f172a;
+            border-left: 5px solid #3b82f6;
+            font-weight: 600;
+        }
+        /* Diamond - Decision */
+        .node.decision {
+            background: linear-gradient(135deg, #fef9e8, #fef3c7);
+            clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+            width: 140px;
+            height: 120px;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #b45309;
+            font-weight: 800;
+            border: 2px solid #f59e0b;
+        }
+        /* Parallelogram - Input/Output */
+        .node.io {
+            background: linear-gradient(135deg, #e0f2fe, #bae6fd);
+            transform: skewX(-12deg);
+            border-radius: 8px;
+            padding: 10px 18px;
+            min-width: 160px;
+            color: #0369a1;
+            font-weight: 700;
+        }
+        .node.io i, .node.io span { transform: skewX(12deg); display: inline-block; }
+        /* Connector Circle */
+        .node.connector {
+            background: #334155;
+            border-radius: 50%;
+            width: 48px;
+            height: 48px;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 0.9rem;
+            border: 2px solid #94a3b8;
+        }
+        .node.database {
+            background: #0f172a;
+            border-radius: 24px;
+            padding: 14px 32px;
+            color: #facc15;
+            border: 2px dashed #facc15;
+            font-family: monospace;
+            font-weight: 800;
+        }
+        .node.module {
+            background: linear-gradient(135deg, #2d3a5e, #1e2a4a);
+            border-radius: 20px;
+            padding: 10px 18px;
+            color: #e0f2fe;
+            border: 1px solid #3b82f6;
+        }
+        .connector-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 5;
+        }
+        svg { width: 100%; height: 100%; overflow: visible; }
+        .flow-line {
+            stroke: #64748b;
+            stroke-width: 2.5;
+            fill: none;
+            transition: all 0.2s;
+        }
+        .flow-line.active {
+            stroke: #facc15;
+            stroke-width: 4;
+            filter: drop-shadow(0 0 5px #f59e0b);
+        }
+        .edge-label {
+            font-size: 10px;
+            fill: #facc15;
+            font-weight: bold;
+            font-family: monospace;
+            text-shadow: 0 0 2px black;
+            pointer-events: none;
+        }
+        .data-flow {
+            stroke-dasharray: 4 4;
+            stroke: #06b6d4;
+        }
+        .tooltip-node {
+            position: fixed;
+            background: #0f172aee;
+            backdrop-filter: blur(8px);
+            color: #facc15;
+            padding: 8px 16px;
+            border-radius: 24px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            pointer-events: none;
+            z-index: 300;
+            white-space: nowrap;
+            font-family: monospace;
+            border-left: 3px solid #facc15;
+            box-shadow: 0 4px 15px black;
+        }
+        .highlight {
+            animation: pulse 0.4s ease-out;
+        }
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(250,204,21,0.6); }
+            70% { box-shadow: 0 0 0 12px rgba(250,204,21,0); }
+            100% { box-shadow: 0 0 0 0 rgba(250,204,21,0); }
+        }
+    </style>
+</head>
+<body>
+<div class="toolbar">
+    <button id="zoom-in-btn" title="Zoom In"><i class="fas fa-search-plus"></i></button>
+    <button id="zoom-out-btn" title="Zoom Out"><i class="fas fa-search-minus"></i></button>
+    <button id="reset-view-btn" title="Reset View"><i class="fas fa-sync-alt"></i></button>
+    <span><i class="fas fa-arrows-alt"></i> Drag shapes | <i class="fas fa-hand-peace"></i> Pan canvas</span>
+</div>
+<div class="legend">
+    <span><i class="fas fa-circle" style="color:#facc15;"></i> Terminator</span>
+    <span><i class="fas fa-square" style="color:#3b82f6;"></i> Process</span>
+    <span><i class="fas fa-gem" style="color:#f59e0b;"></i> Decision</span>
+    <span><i class="fas fa-chart-line" style="color:#06b6d4;"></i> I/O</span>
+    <span><i class="fas fa-link" style="color:#94a3b8;"></i> Connector</span>
+    <span><i class="fas fa-database"></i> Database</span>
+    <span><i class="fas fa-arrow-right"></i> Data Flow</span>
+</div>
+<div id="statusMsg" class="status-msg">✨ Node moved</div>
+
+<div class="flowchart-container" id="flowchart-container">
+    <div id="flowchart-canvas">
+        <div class="connector-layer" id="connector-layer">
+            <svg width="100%" height="100%" style="overflow: visible;"></svg>
+        </div>
+    </div>
+</div>
+
+<script>
+    // ==============================================================
+    // COMPLETE BUDDY APP FLOWCHART - WITH DATA FLOW & CONDITIONAL ARROWS
+    // ==============================================================
+    const nodes = [
+        // === START ===
+        { id: "start", label: "START", icon: "fas fa-play", type: "terminator", x: 800, y: 50, desc: "Application launch point" },
+        { id: "openApp", label: "User Opens Buddy App", icon: "fas fa-mobile-alt", type: "process", x: 800, y: 150, desc: "Launch Buddy on device" },
+        { id: "loginReg", label: "Login / Register", icon: "fas fa-key", type: "io", x: 800, y: 260, desc: "Enter email/password or Google sign-in" },
+        
+        // === AUTHENTICATION FLOW ===
+        { id: "authDecision", label: "Authenticated?", icon: "fas fa-question", type: "decision", x: 800, y: 390, desc: "Check if user is verified" },
+        { id: "enterCreds", label: "Enter Email/Password or Google", icon: "fas fa-envelope", type: "io", x: 450, y: 390, desc: "User provides credentials" },
+        { id: "validateCreds", label: "Validate Credentials", icon: "fas fa-check-double", type: "process", x: 450, y: 520, desc: "Server-side validation" },
+        { id: "validDecision", label: "Valid?", icon: "fas fa-question", type: "decision", x: 450, y: 650, desc: "Check credential correctness" },
+        { id: "showError", label: "Show Error", icon: "fas fa-exclamation-triangle", type: "io", x: 180, y: 650, desc: "Display error message" },
+        { id: "createSession", label: "Create Session", icon: "fas fa-id-card", type: "process", x: 800, y: 530, desc: "Establish user session" },
+        { id: "dashboard", label: "User Dashboard / Home", icon: "fas fa-tachometer-alt", type: "process", x: 800, y: 660, desc: "Main control center" },
+        
+        // === FEATURE HUB ===
+        { id: "selectFeature", label: "Select Feature", icon: "fas fa-cogs", type: "decision", x: 800, y: 790, desc: "Choose a module to use" },
+        
+        // === A. SOCIAL FEED ===
+        { id: "socialFeed", label: "📱 Social Feed", icon: "fab fa-facebook", type: "module", x: 140, y: 930, desc: "Posts, comments, likes, follows" },
+        { id: "createPosts", label: "Create/View Posts", icon: "fas fa-edit", type: "process", x: 140, y: 1050, desc: "Make new post or browse feed" },
+        { id: "likeComment", label: "Like / Comment / Follow", icon: "fas fa-heart", type: "process", x: 140, y: 1170, desc: "Engage with content" },
+        
+        // === B. QUIZ MODULE ===
+        { id: "quizModule", label: "🧠 Quiz Module", icon: "fas fa-brain", type: "module", x: 380, y: 930, desc: "Learning & assessment" },
+        { id: "selectLevel", label: "Select Quiz Level", icon: "fas fa-layer-group", type: "io", x: 380, y: 1050, desc: "Choose difficulty" },
+        { id: "answerQuestions", label: "Answer Questions", icon: "fas fa-pen-alt", type: "process", x: 380, y: 1170, desc: "Solve quiz" },
+        { id: "submitAnswers", label: "Submit Answers", icon: "fas fa-paper-plane", type: "io", x: 380, y: 1290, desc: "Send responses" },
+        { id: "calcScore", label: "Calculate Score", icon: "fas fa-chart-simple", type: "process", x: 380, y: 1410, desc: "Compute result" },
+        
+        // === C. MESSAGING ===
+        { id: "messaging", label: "💬 Messaging", icon: "fas fa-comments", type: "module", x: 620, y: 930, desc: "Real-time chat" },
+        { id: "searchFriends", label: "Search/Add Friends", icon: "fas fa-user-plus", type: "io", x: 620, y: 1050, desc: "Find users" },
+        { id: "openChat", label: "Open Chat", icon: "fas fa-comment-dots", type: "process", x: 620, y: 1170, desc: "Start conversation" },
+        { id: "sendMessage", label: "Send Message", icon: "fas fa-paper-plane", type: "process", x: 620, y: 1290, desc: "Deliver text" },
+        
+        // === D. ASSIGNMENT ===
+        { id: "assignment", label: "📚 Assignment Marketplace", icon: "fas fa-store", type: "module", x: 860, y: 930, desc: "Buy/Sell materials" },
+        { id: "uploadAssignment", label: "Upload Assignment", icon: "fas fa-upload", type: "io", x: 860, y: 1050, desc: "Add listing" },
+        { id: "validateWallet", label: "Validate + Check Wallet", icon: "fas fa-wallet", type: "decision", x: 860, y: 1170, desc: "Check funds" },
+        { id: "storeListing", label: "Store Listing", icon: "fas fa-database", type: "process", x: 860, y: 1290, desc: "Save to DB" },
+        { id: "userPurchase", label: "User Purchases", icon: "fas fa-shopping-cart", type: "process", x: 860, y: 1410, desc: "Buy assignment" },
+        
+        // === E. JOB PORTAL ===
+        { id: "jobPortal", label: "💼 Job Portal", icon: "fas fa-briefcase", type: "module", x: 1100, y: 930, desc: "Career platform" },
+        { id: "browseJobs", label: "Browse Jobs", icon: "fas fa-search", type: "process", x: 1100, y: 1050, desc: "View listings" },
+        { id: "viewDetails", label: "View Details", icon: "fas fa-info-circle", type: "io", x: 1100, y: 1170, desc: "Job info" },
+        { id: "applyJob", label: "Apply Job", icon: "fas fa-paper-plane", type: "process", x: 1100, y: 1290, desc: "Submit application" },
+        
+        // === F. ROOM EXPENSES ===
+        { id: "roomExpense", label: "🏠 Room Expenses", icon: "fas fa-home", type: "module", x: 1340, y: 930, desc: "Split bills" },
+        { id: "createRoom", label: "Create / Join Room", icon: "fas fa-door-open", type: "process", x: 1340, y: 1050, desc: "Setup group" },
+        { id: "addExpense", label: "Add Expense", icon: "fas fa-receipt", type: "io", x: 1340, y: 1170, desc: "Enter bill" },
+        { id: "splitExpense", label: "Split Expense", icon: "fas fa-chart-pie", type: "process", x: 1340, y: 1290, desc: "Divide equally/custom" },
+        
+        // === G. PLANNER ===
+        { id: "planner", label: "📅 Planner", icon: "fas fa-calendar-alt", type: "module", x: 1580, y: 930, desc: "Schedule & tasks" },
+        { id: "addTasks", label: "Add Tasks / Courses", icon: "fas fa-tasks", type: "io", x: 1580, y: 1050, desc: "Create items" },
+        { id: "scheduleExams", label: "Schedule Exams", icon: "fas fa-clock", type: "process", x: 1580, y: 1170, desc: "Plan exams" },
+        
+        // === H. WALLET ===
+        { id: "wallet", label: "💰 Wallet System", icon: "fas fa-wallet", type: "module", x: 1820, y: 930, desc: "Digital wallet" },
+        { id: "depositWithdraw", label: "Deposit / Withdraw", icon: "fas fa-money-bill-wave", type: "io", x: 1820, y: 1050, desc: "Manage balance" },
+        { id: "transferMoney", label: "Transfer Money", icon: "fas fa-exchange-alt", type: "process", x: 1820, y: 1170, desc: "Send to others" },
+        
+        // === I. TRANSLATOR ===
+        { id: "translator", label: "🌐 Translator", icon: "fas fa-language", type: "module", x: 2060, y: 930, desc: "Multi-language" },
+        { id: "enterText", label: "Enter Text (Input)", icon: "fas fa-keyboard", type: "io", x: 2060, y: 1050, desc: "Source text" },
+        { id: "translateText", label: "Translate", icon: "fas fa-exchange-alt", type: "process", x: 2060, y: 1170, desc: "Convert language" },
+        
+        // === J. AI CHATBOT ===
+        { id: "chatbot", label: "🤖 AI Chatbot", icon: "fas fa-robot", type: "module", x: 2300, y: 930, desc: "AI assistant" },
+        { id: "userQuestion", label: "User Types Question", icon: "fas fa-comment", type: "io", x: 2300, y: 1050, desc: "Ask anything" },
+        { id: "sendToApi", label: "Send to API", icon: "fas fa-cloud-upload-alt", type: "process", x: 2300, y: 1170, desc: "Call AI service" },
+        { id: "returnAnswer", label: "Return Answer (Output)", icon: "fas fa-reply", type: "io", x: 2300, y: 1290, desc: "AI response" },
+        
+        // === K. PROFILE ===
+        { id: "profileSettings", label: "⚙️ Profile & Settings", icon: "fas fa-user-cog", type: "module", x: 2540, y: 930, desc: "Account management" },
+        { id: "editProfile", label: "Edit Profile", icon: "fas fa-edit", type: "process", x: 2540, y: 1050, desc: "Update info" },
+        { id: "settingsVerify", label: "Settings / Verification", icon: "fas fa-shield-alt", type: "process", x: 2540, y: 1170, desc: "Security & prefs" },
+        
+        // === CENTRAL DATABASE ===
+        { id: "mysqlDb", label: "MySQL Database", icon: "fas fa-database", type: "database", x: 1300, y: 1650, desc: "All persistent data storage" },
+        
+        // === DATA STORE NODES (connectors) ===
+        { id: "storeSocial", label: "Data", icon: "fas fa-database", type: "connector", x: 140, y: 1300, desc: "Save social data" },
+        { id: "storeQuiz", label: "Data", icon: "fas fa-chart-line", type: "connector", x: 380, y: 1540, desc: "Save progress" },
+        { id: "storeMsg", label: "Data", icon: "fas fa-envelope", type: "connector", x: 620, y: 1420, desc: "Chat history" },
+        { id: "storeJob", label: "Data", icon: "fas fa-database", type: "connector", x: 1100, y: 1420, desc: "Save application" },
+        { id: "updateBalances", label: "Data", icon: "fas fa-chart-line", type: "connector", x: 1340, y: 1420, desc: "Room balances" },
+        { id: "trackProgress", label: "Data", icon: "fas fa-chart-line", type: "connector", x: 1580, y: 1300, desc: "Planner data" },
+        { id: "updateBalance", label: "Data", icon: "fas fa-coins", type: "connector", x: 1820, y: 1300, desc: "Wallet update" },
+        { id: "storeHistory", label: "Data", icon: "fas fa-history", type: "connector", x: 2060, y: 1300, desc: "Translation log" },
+        
+        // === EXIT ===
+        { id: "logout", label: "Logout", icon: "fas fa-sign-out-alt", type: "process", x: 800, y: 1900, desc: "End user session" },
+        { id: "end", label: "END", icon: "fas fa-stop", type: "terminator", x: 800, y: 2030, desc: "Application closed" }
+    ];
+    
+    // Edges with conditional labels (Yes/No) and data flow indicators
+    const edges = [
+        // Start flow
+        { from: "start", to: "openApp", label: "", dataFlow: false },
+        { from: "openApp", to: "loginReg", label: "", dataFlow: false },
+        { from: "loginReg", to: "authDecision", label: "", dataFlow: false },
+        { from: "authDecision", to: "enterCreds", label: "❌ NO", dataFlow: false },
+        { from: "enterCreds", to: "validateCreds", label: "", dataFlow: true, desc: "User input data → server" },
+        { from: "validateCreds", to: "validDecision", label: "", dataFlow: false },
+        { from: "validDecision", to: "showError", label: "❌ NO", dataFlow: false },
+        { from: "showError", to: "loginReg", label: "↺ Retry", dataFlow: false },
+        { from: "validDecision", to: "createSession", label: "✅ YES", dataFlow: false },
+        { from: "authDecision", to: "createSession", label: "✅ YES", dataFlow: false },
+        { from: "createSession", to: "dashboard", label: "", dataFlow: false },
+        { from: "dashboard", to: "selectFeature", label: "", dataFlow: false },
+        
+        // Feature hub to modules
+        { from: "selectFeature", to: "socialFeed", label: "", dataFlow: false },
+        { from: "selectFeature", to: "quizModule", label: "", dataFlow: false },
+        { from: "selectFeature", to: "messaging", label: "", dataFlow: false },
+        { from: "selectFeature", to: "assignment", label: "", dataFlow: false },
+        { from: "selectFeature", to: "jobPortal", label: "", dataFlow: false },
+        { from: "selectFeature", to: "roomExpense", label: "", dataFlow: false },
+        { from: "selectFeature", to: "planner", label: "", dataFlow: false },
+        { from: "selectFeature", to: "wallet", label: "", dataFlow: false },
+        { from: "selectFeature", to: "translator", label: "", dataFlow: false },
+        { from: "selectFeature", to: "chatbot", label: "", dataFlow: false },
+        { from: "selectFeature", to: "profileSettings", label: "", dataFlow: false },
+        
+        // Social feed chain
+        { from: "socialFeed", to: "createPosts", label: "", dataFlow: false },
+        { from: "createPosts", to: "likeComment", label: "", dataFlow: false },
+        { from: "likeComment", to: "storeSocial", label: "", dataFlow: true, desc: "Post/comment data → DB" },
+        
+        // Quiz chain
+        { from: "quizModule", to: "selectLevel", label: "", dataFlow: false },
+        { from: "selectLevel", to: "answerQuestions", label: "", dataFlow: false },
+        { from: "answerQuestions", to: "submitAnswers", label: "", dataFlow: true, desc: "User answers → system" },
+        { from: "submitAnswers", to: "calcScore", label: "", dataFlow: false },
+        { from: "calcScore", to: "storeQuiz", label: "", dataFlow: true, desc: "Score & progress → DB" },
+        
+        // Messaging chain
+        { from: "messaging", to: "searchFriends", label: "", dataFlow: false },
+        { from: "searchFriends", to: "openChat", label: "", dataFlow: false },
+        { from: "openChat", to: "sendMessage", label: "", dataFlow: false },
+        { from: "sendMessage", to: "storeMsg", label: "", dataFlow: true, desc: "Message content → DB" },
+        
+        // Assignment chain
+        { from: "assignment", to: "uploadAssignment", label: "", dataFlow: false },
+        { from: "uploadAssignment", to: "validateWallet", label: "", dataFlow: false },
+        { from: "validateWallet", to: "storeListing", label: "✅ Sufficient", dataFlow: false },
+        { from: "validateWallet", to: "uploadAssignment", label: "❌ Insufficient", dataFlow: false },
+        { from: "storeListing", to: "userPurchase", label: "", dataFlow: false },
+        { from: "userPurchase", to: "mysqlDb", label: "💰 Transaction", dataFlow: true, desc: "Purchase record → DB" },
+        
+        // Job portal chain
+        { from: "jobPortal", to: "browseJobs", label: "", dataFlow: false },
+        { from: "browseJobs", to: "viewDetails", label: "", dataFlow: false },
+        { from: "viewDetails", to: "applyJob", label: "", dataFlow: false },
+        { from: "applyJob", to: "storeJob", label: "", dataFlow: true, desc: "Application data → DB" },
+        
+        // Room expenses chain
+        { from: "roomExpense", to: "createRoom", label: "", dataFlow: false },
+        { from: "createRoom", to: "addExpense", label: "", dataFlow: false },
+        { from: "addExpense", to: "splitExpense", label: "", dataFlow: true, desc: "Expense amount → system" },
+        { from: "splitExpense", to: "updateBalances", label: "", dataFlow: true, desc: "Balances → DB" },
+        
+        // Planner chain
+        { from: "planner", to: "addTasks", label: "", dataFlow: false },
+        { from: "addTasks", to: "scheduleExams", label: "", dataFlow: false },
+        { from: "scheduleExams", to: "trackProgress", label: "", dataFlow: true, desc: "Task data → DB" },
+        
+        // Wallet chain
+        { from: "wallet", to: "depositWithdraw", label: "", dataFlow: false },
+        { from: "depositWithdraw", to: "transferMoney", label: "", dataFlow: true, desc: "Amount input → system" },
+        { from: "transferMoney", to: "updateBalance", label: "", dataFlow: true, desc: "Transaction → DB" },
+        
+        // Translator chain
+        { from: "translator", to: "enterText", label: "", dataFlow: false },
+        { from: "enterText", to: "translateText", label: "", dataFlow: true, desc: "Source text → API" },
+        { from: "translateText", to: "storeHistory", label: "", dataFlow: true, desc: "Translation → history DB" },
+        
+        // Chatbot chain
+        { from: "chatbot", to: "userQuestion", label: "", dataFlow: false },
+        { from: "userQuestion", to: "sendToApi", label: "", dataFlow: true, desc: "Question → AI API" },
+        { from: "sendToApi", to: "returnAnswer", label: "", dataFlow: true, desc: "AI response ← API" },
+        
+        // Profile chain
+        { from: "profileSettings", to: "editProfile", label: "", dataFlow: false },
+        { from: "editProfile", to: "settingsVerify", label: "", dataFlow: false },
+        { from: "settingsVerify", to: "mysqlDb", label: "", dataFlow: true, desc: "User settings → DB" },
+        
+        // All data connectors to MySQL Database
+        { from: "storeSocial", to: "mysqlDb", label: "📊", dataFlow: true, desc: "Social data stored" },
+        { from: "storeQuiz", to: "mysqlDb", label: "📈", dataFlow: true, desc: "Quiz progress stored" },
+        { from: "storeMsg", to: "mysqlDb", label: "💬", dataFlow: true, desc: "Messages stored" },
+        { from: "storeJob", to: "mysqlDb", label: "📄", dataFlow: true, desc: "Application stored" },
+        { from: "updateBalances", to: "mysqlDb", label: "💰", dataFlow: true, desc: "Balances updated" },
+        { from: "trackProgress", to: "mysqlDb", label: "📅", dataFlow: true, desc: "Planner progress" },
+        { from: "updateBalance", to: "mysqlDb", label: "💳", dataFlow: true, desc: "Wallet transaction" },
+        { from: "storeHistory", to: "mysqlDb", label: "🌐", dataFlow: true, desc: "Translation history" },
+        { from: "returnAnswer", to: "mysqlDb", label: "🤖", dataFlow: true, desc: "Chatbot logs" },
+        
+        // Exit flow
+        { from: "dashboard", to: "logout", label: "", dataFlow: false },
+        { from: "logout", to: "end", label: "", dataFlow: false }
+    ];
+    
+    // DOM elements
+    const canvasDiv = document.getElementById("flowchart-canvas");
+    const svgElem = document.querySelector("#connector-layer svg");
+    let panzoomInstance, tooltipDiv;
+    
+    function renderNodes() {
+        nodes.forEach(node => {
+            const div = document.createElement("div");
+            div.className = `node ${node.type}`;
+            div.id = `node-${node.id}`;
+            div.style.left = `${node.x}px`;
+            div.style.top = `${node.y}px`;
+            div.style.position = "absolute";
+            div.style.transform = "translate(-50%, -50%)";
+            let iconHtml = node.icon ? `<i class="${node.icon}"></i>` : "";
+            if (node.type === "decision") iconHtml = `<i class="fas fa-code-branch"></i>`;
+            if (node.type === "io") iconHtml = `<i class="fas fa-exchange-alt"></i>`;
+            if (node.type === "connector") iconHtml = `<i class="fas fa-arrow-down"></i>`;
+            if (node.type === "decision") {
+                div.innerHTML = `${iconHtml}<span style="display:block; margin-top:4px;">${node.label}</span>`;
+            } else if (node.type === "connector") {
+                div.innerHTML = `${iconHtml}<span style="font-size:0.7rem;">${node.label}</span>`;
+            } else {
+                div.innerHTML = `${iconHtml} <span>${node.label}</span>`;
+            }
+            div.setAttribute("data-id", node.id);
+            div.setAttribute("data-desc", node.desc || "Flow step");
+            canvasDiv.appendChild(div);
+        });
+    }
+    
+    function getNodeCenter(id) {
+        const el = document.getElementById(`node-${id}`);
+        if (!el) return null;
+        return { x: parseFloat(el.style.left), y: parseFloat(el.style.top) };
+    }
+    
+    function renderEdges() {
+        svgElem.innerHTML = "";
+        edges.forEach(edge => {
+            const fromPos = getNodeCenter(edge.from);
+            const toPos = getNodeCenter(edge.to);
+            if (fromPos && toPos) {
+                const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+                line.setAttribute("x1", fromPos.x);
+                line.setAttribute("y1", fromPos.y);
+                line.setAttribute("x2", toPos.x);
+                line.setAttribute("y2", toPos.y);
+                line.classList.add("flow-line");
+                if (edge.dataFlow) line.classList.add("data-flow");
+                line.setAttribute("data-from", edge.from);
+                line.setAttribute("data-to", edge.to);
+                if (edge.label) {
+                    const midX = (fromPos.x + toPos.x) / 2;
+                    const midY = (fromPos.y + toPos.y) / 2;
+                    const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+                    text.setAttribute("x", midX + 8);
+                    text.setAttribute("y", midY - 6);
+                    text.setAttribute("class", "edge-label");
+                    text.textContent = edge.label;
+                    svgElem.appendChild(text);
+                }
+                svgElem.appendChild(line);
+            }
+        });
+    }
+    
+    function refreshEdges() {
+        svgElem.innerHTML = "";
+        edges.forEach(edge => {
+            const fromPos = getNodeCenter(edge.from);
+            const toPos = getNodeCenter(edge.to);
+            if (fromPos && toPos) {
+                const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+                line.setAttribute("x1", fromPos.x);
+                line.setAttribute("y1", fromPos.y);
+                line.setAttribute("x2", toPos.x);
+                line.setAttribute("y2", toPos.y);
+                line.classList.add("flow-line");
+                if (edge.dataFlow) line.classList.add("data-flow");
+                line.setAttribute("data-from", edge.from);
+                line.setAttribute("data-to", edge.to);
+                if (edge.label) {
+                    const midX = (fromPos.x + toPos.x) / 2;
+                    const midY = (fromPos.y + toPos.y) / 2;
+                    const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+                    text.setAttribute("x", midX + 8);
+                    text.setAttribute("y", midY - 6);
+                    text.setAttribute("class", "edge-label");
+                    text.textContent = edge.label;
+                    svgElem.appendChild(text);
+                }
+                svgElem.appendChild(line);
+            }
+        });
+    }
+    
+    function updateNodePosition(id, newX, newY) {
+        const nodeObj = nodes.find(n => n.id === id);
+        if (nodeObj) { nodeObj.x = newX; nodeObj.y = newY; }
+        refreshEdges();
+    }
+    
+    function initDraggable() {
+        interact('.node').draggable({
+            inertia: false,
+            modifiers: [interact.modifiers.restrictRect({ restriction: 'parent', endOnly: false })],
+            listeners: {
+                move(event) {
+                    const target = event.target;
+                    let x = (parseFloat(target.style.left) || 0) + event.dx;
+                    let y = (parseFloat(target.style.top) || 0) + event.dy;
+                    target.style.left = `${x}px`;
+                    target.style.top = `${y}px`;
+                    updateNodePosition(target.getAttribute("data-id"), x, y);
+                    const msg = document.getElementById("statusMsg");
+                    msg.style.opacity = "1";
+                    msg.innerText = `↗️ ${target.innerText.trim()} moved | Arrows updated`;
+                    setTimeout(() => msg.style.opacity = "0", 800);
+                }
+            }
+        });
+    }
+    
+    function initPanzoom() {
+        const elem = document.getElementById("flowchart-canvas");
+        panzoomInstance = Panzoom(elem, { smoothScroll: false, zoomSpeed: 0.07, minScale: 0.3, maxScale: 2.2, contain: 'outside' });
+        const container = document.getElementById("flowchart-container");
+        container.addEventListener('wheel', panzoomInstance.zoomWithWheel);
+        document.getElementById("zoom-in-btn").addEventListener("click", () => panzoomInstance.zoomIn());
+        document.getElementById("zoom-out-btn").addEventListener("click", () => panzoomInstance.zoomOut());
+        document.getElementById("reset-view-btn").addEventListener("click", () => panzoomInstance.reset());
+        elem.addEventListener('panzoomchange', () => refreshEdges());
+    }
+    
+    function createTooltip() { return document.body.appendChild(Object.assign(document.createElement("div"), { className: "tooltip-node" })); }
+    function showTooltip(e, text, label) {
+        if (!tooltipDiv) tooltipDiv = createTooltip();
+        tooltipDiv.innerText = `🔷 ${label} — ${text}`;
+        tooltipDiv.style.left = (e.clientX + 14) + "px";
+        tooltipDiv.style.top = (e.clientY + 14) + "px";
+        tooltipDiv.style.opacity = "1";
+    }
+    function hideTooltip() { if (tooltipDiv) tooltipDiv.style.opacity = "0"; }
+    
+    function attachInteractivity() {
+        document.querySelectorAll(".node").forEach(nodeEl => {
+            nodeEl.addEventListener("mouseenter", (e) => {
+                showTooltip(e, nodeEl.getAttribute("data-desc"), nodeEl.innerText.trim());
+                const nodeId = nodeEl.getAttribute("data-id");
+                document.querySelectorAll(".flow-line").forEach(line => {
+                    const from = line.getAttribute("data-from"), to = line.getAttribute("data-to");
+                    if (from === nodeId || to === nodeId) line.classList.add("active");
+                    else line.classList.remove("active");
+                });
+            });
+            nodeEl.addEventListener("mouseleave", () => { hideTooltip(); document.querySelectorAll(".flow-line").forEach(l => l.classList.remove("active")); });
+            nodeEl.addEventListener("click", (e) => {
+                e.stopPropagation();
+                nodeEl.classList.add("highlight");
+                setTimeout(() => nodeEl.classList.remove("highlight"), 400);
+                const nodeId = nodeEl.getAttribute("data-id");
+                const connectedEdges = edges.filter(edge => edge.from === nodeId || edge.to === nodeId);
+                const dataFlowEdges = connectedEdges.filter(e => e.dataFlow);
+                const msg = document.getElementById("statusMsg");
+                msg.style.opacity = "1";
+                msg.style.background = "#facc15";
+                msg.style.color = "#0f172a";
+                if (dataFlowEdges.length > 0) {
+                    msg.innerHTML = `📊 ${nodeEl.innerText.trim()} → Data flows to database (${dataFlowEdges.length} connections)`;
+                } else {
+                    msg.innerHTML = `⚡ ${nodeEl.innerText.trim()} activated | ${connectedEdges.length} connections`;
+                }
+                setTimeout(() => { msg.style.opacity = "0"; msg.style.background = "#10b981"; msg.style.color = "white"; }, 1500);
+            });
+        });
+    }
+    
+    function observeChanges() {
+        new MutationObserver(() => refreshEdges()).observe(canvasDiv, { attributes: true, childList: true, subtree: false });
+        window.addEventListener("resize", () => setTimeout(refreshEdges, 80));
+        setInterval(refreshEdges, 500);
+    }
+    
+    function init() { renderNodes(); renderEdges(); initPanzoom(); initDraggable(); attachInteractivity(); observeChanges(); setTimeout(refreshEdges, 300); }
+    init();
+</script>
+</body>
+</html>
