@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Linear Algebra 100 Questions</title>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=IBM+Plex+Sans:wght@400;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Lato', sans-serif;
+            background: #f5f5f5;
+            color: #333;
+        }
+
+        .container {
+            display: flex;
+            height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 320px;
+            background: white;
+            border-right: 1px solid #ddd;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            background: linear-gradient(135deg, #1976d2 0%, #1565c0 100%);
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .sidebar-header h1 {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .sidebar-header p {
+            font-size: 12px;
+            opacity: 0.9;
+        }
+
+        .search-bar {
+            padding: 15px;
+            flex-shrink: 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .search-bar input {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 13px;
+            font-family: 'Lato', sans-serif;
+        }
+
+        .search-bar input:focus {
+            outline: none;
+            border-color: #1976d2;
+            box-shadow: 0 0 0 2px rgba(25, 118, 210, 0.1);
+        }
+
+        .questions-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 5px 0;
+        }
+
+        .group-label {
+            padding: 10px 15px;
+            font-size: 11px;
+            font-weight: 700;
+            color: #666;
+            background: #f9f9f9;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-top: 1px solid #eee;
+            position: sticky;
+            top: 0;
+        }
+
+        .question-item {
+            padding: 12px 15px;
+            border-bottom: 1px solid #f5f5f5;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+        }
+
+        .question-item:hover {
+            background: #f9f9f9;
+        }
+
+        .question-item.active {
+            background: #e3f2fd;
+            border-left: 3px solid #1976d2;
+            padding-left: 12px;
+        }
+
+        .question-num {
+            min-width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #e3f2fd;
+            color: #1976d2;
+            border-radius: 3px;
+            font-weight: 700;
+            font-size: 12px;
+            flex-shrink: 0;
+        }
+
+        .question-item.active .question-num {
+            background: #1976d2;
+            color: white;
+        }
+
+        .question-text {
+            font-size: 12px;
+            color: #555;
+            line-height: 1.4;
+            flex: 1;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .content-header {
+            padding: 20px 30px;
+            background: white;
+            border-bottom: 1px solid #ddd;
+            flex-shrink: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .content-header h2 {
+            font-size: 18px;
+            color: #1976d2;
+            font-weight: 700;
+        }
+
+        .content-stats {
+            display: flex;
+            gap: 15px;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 16px;
+            font-weight: 700;
+            color: #1976d2;
+        }
+
+        .stat-label {
+            font-size: 11px;
+            color: #999;
+            text-transform: uppercase;
+        }
+
+        .content-body {
+            flex: 1;
+            overflow-y: auto;
+            padding: 30px;
+        }
+
+        .empty-state {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            flex-direction: column;
+            color: #999;
+        }
+
+        .empty-state p {
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+
+        .question-detail {
+            background: white;
+            border-radius: 4px;
+            padding: 0;
+            max-width: 800px;
+        }
+
+        .q-header {
+            padding: 25px;
+            background: linear-gradient(135deg, #1976d2 0%, #1565c0 100%);
+            color: white;
+            border-radius: 4px 4px 0 0;
+        }
+
+        .q-number {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.3);
+            padding: 6px 12px;
+            border-radius: 3px;
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .q-title {
+            font-size: 18px;
+            line-height: 1.6;
+            font-weight: 600;
+        }
+
+        .q-body {
+            padding: 25px;
+        }
+
+        .section {
+            margin-bottom: 25px;
+        }
+
+        .section-title {
+            font-size: 12px;
+            font-weight: 700;
+            color: #1976d2;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 12px;
+        }
+
+        .answer-box {
+            background: #f9f9f9;
+            border-left: 3px solid #1976d2;
+            padding: 15px;
+            border-radius: 3px;
+            margin-bottom: 12px;
+        }
+
+        .answer-badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 3px;
+            font-size: 12px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+
+        .badge-yes {
+            background: #c8e6c9;
+            color: #2e7d32;
+        }
+
+        .badge-no {
+            background: #ffcdd2;
+            color: #c62828;
+        }
+
+        .answer-content {
+            font-size: 14px;
+            color: #333;
+            line-height: 1.7;
+        }
+
+        .math-block {
+            background: #f0f0f0;
+            padding: 10px 12px;
+            border-radius: 3px;
+            margin: 10px 0;
+            overflow-x: auto;
+            font-size: 13px;
+        }
+
+        .explanation-box {
+            background: #fffbf0;
+            border-left: 3px solid #ff9800;
+            padding: 15px;
+            border-radius: 3px;
+            margin-bottom: 12px;
+        }
+
+        .explanation-title {
+            font-weight: 700;
+            color: #ff9800;
+            font-size: 12px;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .explanation-text {
+            font-size: 14px;
+            color: #333;
+            line-height: 1.7;
+        }
+
+        .logic-box {
+            background: #e3f2fd;
+            border-left: 3px solid #1976d2;
+            padding: 15px;
+            border-radius: 3px;
+        }
+
+        .logic-title {
+            font-weight: 700;
+            color: #1976d2;
+            font-size: 12px;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .logic-text {
+            font-size: 14px;
+            color: #333;
+            line-height: 1.7;
+            margin-bottom: 10px;
+        }
+
+        .slide-ref {
+            display: inline-block;
+            background: white;
+            border: 1px solid #1976d2;
+            color: #1976d2;
+            padding: 4px 10px;
+            border-radius: 3px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+
+        .nav-btn {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            background: white;
+            color: #1976d2;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .nav-btn:hover:not(:disabled) {
+            border-color: #1976d2;
+            background: #e3f2fd;
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .filter-buttons {
+            padding: 0 15px 10px;
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            flex-shrink: 0;
+        }
+
+        .filter-btn {
+            padding: 5px 10px;
+            border: 1px solid #ddd;
+            background: white;
+            color: #666;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .filter-btn:hover {
+            border-color: #1976d2;
+            color: #1976d2;
+        }
+
+        .filter-btn.active {
+            background: #1976d2;
+            color: white;
+            border-color: #1976d2;
+        }
+
+        .questions-list::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .questions-list::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        .questions-list::-webkit-scrollbar-thumb {
+            background: #bbb;
+            border-radius: 3px;
+        }
+
+        .questions-list::-webkit-scrollbar-thumb:hover {
+            background: #999;
+        }
+
+        .content-body::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .content-body::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        .content-body::-webkit-scrollbar-thumb {
+            background: #bbb;
+            border-radius: 3px;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                max-height: 40vh;
+            }
+
+            .main-content {
+                width: 100%;
+                max-height: 60vh;
+            }
+
+            .container {
+                flex-direction: column;
+            }
+
+            .sidebar-header h1 {
+                font-size: 16px;
+            }
+
+            .content-body {
+                padding: 20px;
+            }
+
+            .q-header {
+                padding: 15px;
+            }
+
+            .q-body {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h1>📐 Linear Algebra</h1>
+                <p>100 Questions</p>
+            </div>
+
+            <div class="filter-buttons">
+                <button class="filter-btn active" onclick="filterQuestions('all')">All</button>
+                <button class="filter-btn" onclick="filterQuestions('group1')">Q1-25</button>
+                <button class="filter-btn" onclick="filterQuestions('group2')">Q26-50</button>
+                <button class="filter-btn" onclick="filterQuestions('group3')">Q51-75</button>
+                <button class="filter-btn" onclick="filterQuestions('group4')">Q76-100</button>
+            </div>
+
+            <div class="search-bar">
+                <input type="text" id="search" placeholder="Search questions..." onkeyup="searchQuestions()">
+            </div>
+
+            <div class="questions-list" id="questionsList"></div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="content-header">
+                <h2>Question Details</h2>
+                <div class="content-stats">
+                    <div class="stat">
+                        <div class="stat-number" id="totalQuestions">100</div>
+                        <div class="stat-label">Total</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-number" id="currentQuestion">-</div>
+                        <div class="stat-label">Current</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-body" id="contentBody">
+                <div class="empty-state">
+                    <p>Select a question to view details</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            // GROUP 1: Solving Linear Systems
+            { group: 'group1', num: 1, title: 'Is the equation $$3x_1 - 4x_2 = 5$$ linear?', answer: 'Yes', type: 'yes', explanation: 'Linear systems allow unknowns to be multiplied only by constant numbers and summed.', logic: 'Per Slide 5-1, each variable is multiplied by a constant (3 and -4) and summed together. This is the definition of a linear equation.', slide: '5-1' },
+            { group: 'group1', num: 2, title: 'Is $$x_1 x_2 + x_3 = 0$$ linear?', answer: 'No', type: 'no', explanation: 'Products of variables are strictly forbidden in linear systems.', logic: 'Per Slide 5-1, the term $$x_1 x_2$$ (product of two variables) is a non-linear operation.', slide: '5-1' },
+            { group: 'group1', num: 3, title: 'Is $$\\sqrt{x_1} + \\sqrt{x_2} = 2$$ linear?', answer: 'No', type: 'no', explanation: 'Powers and roots of variables are non-linear operations.', logic: 'Per Slide 5-1, roots of variables are non-linear. The square root function makes this non-linear.', slide: '5-1' },
+            { group: 'group1', num: 4, title: 'Is $$x + y + z = \\pi$$ linear?', answer: 'Yes', type: 'yes', explanation: 'All variables are multiplied by constants (1) and summed. π is a constant.', logic: 'Each variable is multiplied by constant 1 and summed. This fits the linear definition perfectly.', slide: '5-1' },
+            { group: 'group1', num: 5, title: 'Is $$\\sin(x) = y$$ linear?', answer: 'No', type: 'no', explanation: 'Trigonometric functions of variables are non-linear.', logic: 'Per Slide 5-1, trigonometric functions applied to variables are non-linear operations.', slide: '5-1' },
+            { group: 'group1', num: 6, title: 'Is $$2x_1 + 0x_2 = 4$$ linear?', answer: 'Yes', type: 'yes', explanation: 'Multiplication by zero is a valid constant scaling.', logic: 'Both terms have variables multiplied by constants (2 and 0). This is a valid linear equation.', slide: '5-1' },
+            { group: 'group1', num: 7, title: 'Is $$e^x + y = 1$$ linear?', answer: 'No', type: 'no', explanation: 'Exponential functions of variables are non-linear.', logic: 'Per Slide 5-1, exponential functions like $$e^x$$ are non-linear operations.', slide: '5-1' },
+            { group: 'group1', num: 8, title: 'Is $$x_1 - x_2 = x_3$$ linear?', answer: 'Yes', type: 'yes', explanation: 'Can be rearranged to $$x_1 - x_2 - x_3 = 0$$, which is a sum of variables scaled by constants.', logic: 'All terms are variables multiplied by constants (1, -1, -1), making it linear.', slide: '5-1' },
+            { group: 'group1', num: 9, title: 'Is $$\\frac{x}{y} = 5$$ linear?', answer: 'No', type: 'no', explanation: 'Dividing by a variable is equivalent to $$x \\cdot y^{-1}$$, a non-linear power.', logic: 'Division by $$y$$ raises $$y$$ to the power -1, which is non-linear.', slide: '5-1' },
+            { group: 'group1', num: 10, title: 'Is $$0 = 0$$ a linear equation?', answer: 'Yes', type: 'yes', explanation: 'This is a degenerate linear equation where all coefficients are zero.', logic: 'While trivial, this is technically a valid linear equation satisfied by all vectors.', slide: '5-1' },
+            { group: 'group1', num: 11, title: 'Using $$A = \\begin{bmatrix} 2 & 1 \\\\ 3 & 0 \\end{bmatrix}$$ and $$\\mathbf{x} = \\begin{bmatrix} 4 \\\\ 2 \\end{bmatrix}$$, find $$b_1$$ using the Row Picture.', answer: '$$b_1 = 10$$', type: 'yes', explanation: 'Calculate dot product of Row 1 and $$\\mathbf{x}$$: $$(2 \\cdot 4) + (1 \\cdot 2) = 8 + 2 = 10$$', logic: 'The Row Picture uses dot products. Row 1 is $$[2, 1]$$. Dot: $$2(4) + 1(2) = 10$$.', slide: '5-1' },
+            { group: 'group1', num: 12, title: 'Find $$b_2$$ for the system in Question 11.', answer: '$$b_2 = 12$$', type: 'yes', explanation: 'Dot Row 2 $$[3, 0]$$ with $$\\mathbf{x}$$: $$(3 \\cdot 4) + (0 \\cdot 2) = 12$$', logic: 'Row 2 is $$[3, 0]$$. Dot: $$3(4) + 0(2) = 12$$.', slide: '5-1' },
+            { group: 'group1', num: 13, title: 'If Row 3 of $$A$$ is $$[1 \\; 2]$$ and $$\\mathbf{x} = \\begin{bmatrix} 3 \\\\ 4 \\end{bmatrix}$$, find $$b_3$$.', answer: '$$b_3 = 11$$', type: 'yes', explanation: 'Dot product: $$(1 \\cdot 3) + (2 \\cdot 4) = 3 + 8 = 11$$', logic: 'Dot product of Row 3 $$[1, 2]$$ and $$[3, 4]$$ is 11.', slide: '5-1' },
+            { group: 'group1', num: 14, title: 'Calculate $$b_1$$ if Row 1 is $$[5 \\; -2]$$ and $$\\mathbf{x} = \\begin{bmatrix} 1 \\\\ 2 \\end{bmatrix}$$.', answer: '$$b_1 = 1$$', type: 'yes', explanation: 'Dot product: $$(5 \\cdot 1) + (-2 \\cdot 2) = 5 - 4 = 1$$', logic: 'Row $$[5, -2]$$ dot with $$[1, 2]$$ equals 1.', slide: '5-1' },
+            { group: 'group1', num: 15, title: 'Calculate $$b_2$$ if Row 2 is $$[0 \\; 7]$$ and $$\\mathbf{x} = \\begin{bmatrix} 10 \\\\ 1 \\end{bmatrix}$$.', answer: '$$b_2 = 7$$', type: 'yes', explanation: 'Dot product: $$(0 \\cdot 10) + (7 \\cdot 1) = 7$$', logic: 'Row $$[0, 7]$$ dot with $$[10, 1]$$ equals 7.', slide: '5-1' },
+            { group: 'group1', num: 16, title: 'Express $$A = \\begin{bmatrix} 2 & 1 \\\\ 3 & 0 \\end{bmatrix}$$ as a linear combination.', answer: '$$x_1 \\begin{bmatrix} 2 \\\\ 3 \\end{bmatrix} + x_2 \\begin{bmatrix} 1 \\\\ 0 \\end{bmatrix}$$', type: 'yes', explanation: 'The Column Picture views $$\\mathbf{b}$$ as a linear combination of columns.', logic: 'Column Picture treats products as weighted sums of columns (Slide 5-1).', slide: '5-1' },
+            { group: 'group1', num: 17, title: 'For $$A = \\begin{bmatrix} 2 & 5 \\\\ 3 & 7 \\end{bmatrix}$$ and $$\\mathbf{x} = \\begin{bmatrix} 1 \\\\ 2 \\end{bmatrix}$$, write Column Picture calculation.', answer: '$$1 \\begin{bmatrix} 2 \\\\ 3 \\end{bmatrix} + 2 \\begin{bmatrix} 5 \\\\ 7 \\end{bmatrix} = \\begin{bmatrix} 12 \\\\ 17 \\end{bmatrix}$$', type: 'yes', explanation: 'Sum columns using $$x_1$$ and $$x_2$$ as weights.', logic: 'Column Picture: $$1[2,3]^T + 2[5,7]^T = [12, 17]^T$$.', slide: '5-1' },
+            { group: 'group1', num: 18, title: 'If $$x_1 = 3$$ and $$x_2 = -1$$, find $$\\mathbf{b}$$ for $$\\mathbf{a}_1 = \\begin{bmatrix} 1 \\\\ 1 \\end{bmatrix}$$ and $$\\mathbf{a}_2 = \\begin{bmatrix} 2 \\\\ 0 \\end{bmatrix}$$.', answer: '$$\\mathbf{b} = \\begin{bmatrix} 1 \\\\ 3 \\end{bmatrix}$$', type: 'yes', explanation: '$$3 \\begin{bmatrix} 1 \\\\ 1 \\end{bmatrix} - 1 \\begin{bmatrix} 2 \\\\ 0 \\end{bmatrix} = \\begin{bmatrix} 1 \\\\ 3 \\end{bmatrix}$$', logic: 'Linear combination: $$3[1,1]^T - 1[2,0]^T = [1, 3]^T$$.', slide: '5-1' },
+            { group: 'group1', num: 19, title: 'True/False: Column Picture asks which combination of columns produces $$\\mathbf{b}$$?', answer: 'True', type: 'yes', explanation: 'This is the fundamental "Solving" perspective in the Column Picture.', logic: 'Per Slide 5-1, the Column Picture asks: find weights so weighted sum of columns equals $$\\mathbf{b}$$.', slide: '5-1' },
+            { group: 'group1', num: 20, title: 'What do the components of $$\\mathbf{x}$$ represent in Column Picture?', answer: 'The weights (coefficients) of the columns', type: 'yes', explanation: '$$\\mathbf{x}$$ tells us how much of each column to use.', logic: 'Each component $$x_i$$ is the weight for column $$i$$ in the linear combination.', slide: '5-1' },
+            { group: 'group1', num: 21, title: 'Solve for $$x_2$$: $$x_1 + x_2 = 5, \\; 2x_2 = 6$$', answer: '$$x_2 = 3$$', type: 'yes', explanation: 'From $$2x_2 = 6$$, we get $$x_2 = 3$$.', logic: 'Start with most constrained variable (Back Substitution, Slide 5-1).', slide: '5-1' },
+            { group: 'group1', num: 22, title: 'Using $$x_2 = 3$$ from Q21, solve for $$x_1$$.', answer: '$$x_1 = 2$$', type: 'yes', explanation: 'Substitute: $$x_1 + 3 = 5$$, so $$x_1 = 2$$.', logic: 'Continuing Back Substitution: $$x_1 + 3 = 5 \\Rightarrow x_1 = 2$$.', slide: '5-1' },
+            { group: 'group1', num: 23, title: 'Solve for $$x_3$$ in: $$u_{33}x_3 = b_3$$', answer: '$$x_3 = b_3 / u_{33}$$', type: 'yes', explanation: 'Back Substitution starts at the bottom row.', logic: 'From $$u_{33}x_3 = b_3$$, we get $$x_3 = b_3/u_{33}$$.', slide: '5-1' },
+            { group: 'group1', num: 24, title: 'If system reaches $$[0 \\; 0 \\; \\cdots \\; | \\; 1]$$, is it consistent?', answer: 'No, inconsistent', type: 'no', explanation: 'This represents contradiction $$0 = 1$$, which is impossible.', logic: 'A row $$[0 \\cdots 0 | 1]$$ means impossible equation. No solutions exist.', slide: '5-1' },
+            { group: 'group1', num: 25, title: 'If system has at least one solution, classify it.', answer: 'Consistent', type: 'yes', explanation: 'A system with at least one solution is called Consistent.', logic: 'Per Slide 5-1, Consistent means target $$\\mathbf{b}$$ is reachable.', slide: '5-1' },
+
+            // GROUP 2: Matrix Inverses (continue with remaining questions...)
+            { group: 'group2', num: 26, title: 'If $$A\\mathbf{x} = \\mathbf{0}$$ for non-zero $$\\mathbf{x}$$, is $$A$$ invertible?', answer: 'No, singular', type: 'no', explanation: 'Non-zero input mapping to zero means process is not reversible.', logic: 'Per Zero Test (Slide 8-1), non-zero $$\\mathbf{x}$$ with $$A\\mathbf{x} = \\mathbf{0}$$ means $$A$$ is singular.', slide: '8-1' },
+            { group: 'group2', num: 27, title: 'True/False: For invertible $$A$$, $$A\\mathbf{x} = \\mathbf{0}$$ implies $$\\mathbf{x} = \\mathbf{0}$$.', answer: 'True', type: 'yes', explanation: 'Only zero vector can map to zero for invertible matrices.', logic: 'Fundamental property: invertible $$\\Rightarrow$$ trivial solution only.', slide: '8-1' },
+            { group: 'group2', num: 28, title: 'If $$A$$ is singular, does $$A^{-1}$$ exist?', answer: 'No', type: 'no', explanation: 'Singular matrices cannot be reversed.', logic: 'Singular matrices fail Zero Test and have no inverse.', slide: '8-1' },
+            { group: 'group2', num: 29, title: 'If $$A = \\begin{bmatrix} 1 & 2 \\\\ 3 & 6 \\end{bmatrix}$$, find non-zero $$\\mathbf{x}$$ where $$A\\mathbf{x} = \\mathbf{0}$$.', answer: '$$\\mathbf{x} = \\begin{bmatrix} -2 \\\\ 1 \\end{bmatrix}$$', type: 'yes', explanation: 'Verify: $$\\begin{bmatrix} 1 & 2 \\\\ 3 & 6 \\end{bmatrix} \\begin{bmatrix} -2 \\\\ 1 \\end{bmatrix} = \\begin{bmatrix} 0 \\\\ 0 \\end{bmatrix}$$', logic: 'Zero Test proves matrix is singular.', slide: '8-1' },
+            { group: 'group2', num: 30, title: 'What is the identity of matrix that "does nothing"?', answer: 'Identity Matrix $$I$$', type: 'yes', explanation: '$$AI = A$$ and $$I\\mathbf{x} = \\mathbf{x}$$', logic: '$$I$$ is multiplicative identity for matrices.', slide: '8-1' },
+            { group: 'group2', num: 31, title: 'Is zero matrix $$\\begin{bmatrix} 0 & 0 \\\\ 0 & 0 \\end{bmatrix}$$ invertible?', answer: 'No', type: 'no', explanation: 'Zero matrix fails Zero Test for every non-zero vector.', logic: 'All vectors satisfy $$A\\mathbf{x} = \\mathbf{0}$$, so it is singular.', slide: '8-1' },
+            { group: 'group2', num: 32, title: 'Relationship between $$A$$ and $$A^{-1}$$?', answer: '$$AA^{-1} = A^{-1}A = I$$', type: 'yes', explanation: 'The inverse reverses the matrix transformation.', logic: 'Inverse $$A^{-1}$$ satisfies this fundamental relationship.', slide: '8-1' },
+            { group: 'group2', num: 33, title: 'If matrix has row of zeros, is it invertible?', answer: 'No', type: 'no', explanation: 'Row of zeros means we lose information.', logic: 'This indicates linear dependence and singularity.', slide: '8-1' },
+            { group: 'group2', num: 34, title: 'Can a $$3 \\times 2$$ matrix have an inverse?', answer: 'No', type: 'no', explanation: 'Only square matrices can be invertible.', logic: 'Non-square matrices cannot have inverses by definition.', slide: '8-1' },
+            { group: 'group2', num: 35, title: 'If $$\\det(A) = 0$$, is matrix singular?', answer: 'Yes', type: 'yes', explanation: '$$\\det(A) = 0$$ is equivalent to singularity.', logic: 'Determinant zero means $$A$$ is singular and not invertible.', slide: '8-1' },
+            { group: 'group2', num: 36, title: 'What is $$(AB)^{-1}$$?', answer: '$$B^{-1}A^{-1}$$', type: 'yes', explanation: '"Shoes and Socks rule" - reverse operations to return to identity.', logic: 'Shoes and Socks rule: $$(AB)^{-1} = B^{-1}A^{-1}$$ (reverse order).', slide: '8-1' },
+            { group: 'group2', num: 37, title: 'If $$C = ABC$$, what is $$C^{-1}$$?', answer: 'C^{-1} = B^{-1}A^{-1}C^{-1}', type: 'yes', explanation: 'Extended Shoes and Socks rule application.', logic: 'By Shoes and Socks rule: $$(ABC)^{-1} = C^{-1}B^{-1}A^{-1}$$.', slide: '8-1' },
+            { group: 'group2', num: 38, title: 'Does $$(AB) = (BA)$$ always hold?', answer: 'No', type: 'no', explanation: 'Matrix multiplication is not commutative; order matters.', logic: 'Generally, $$AB \\neq BA$$ because matrix multiplication is non-commutative.', slide: '8-1' },
+            { group: 'group2', num: 39, title: 'Why reverse order in Shoes and Socks rule?', answer: 'To cancel internal terms', type: 'yes', explanation: 'Reversing order ensures internal terms cancel.', logic: 'Order reversal ensures: $$A(BB^{-1})A^{-1} = AIA^{-1} = I$$.', slide: '8-1' },
+            { group: 'group2', num: 40, title: 'What is $$(A^T)^{-1}$$?', answer: '$$(A^{-1})^T$$', type: 'yes', explanation: 'Inversion and transposition can be swapped.', logic: '$$(A^T)^{-1} = (A^{-1})^T$$ - they commute.', slide: '8-1' },
+            { group: 'group2', num: 41, title: 'First step of Gauss-Jordan Elimination?', answer: 'Setup augmented matrix $$[A \\; | \\; I]$$', type: 'yes', explanation: 'Combine $$A$$ with $$I$$ to track row operations.', logic: 'Form $$[A | I]$$ to track row operations (Slide 8-1).', slide: '8-1' },
+            { group: 'group2', num: 42, title: 'Name three Elementary Row Operations.', answer: 'SWAP, SCALE, COMBINE', type: 'yes', explanation: 'These are tools in Gaussian elimination toolbox.', logic: 'Three operations: (1) SWAP rows, (2) SCALE row, (3) COMBINE rows (Slide 8-1).', slide: '8-1' },
+            { group: 'group2', num: 43, title: 'What is "Normalization" in Gauss-Jordan?', answer: 'Scaling row to get 1 on diagonal', type: 'yes', explanation: 'This creates a "Pivot" at diagonal position.', logic: 'Normalization scales row so diagonal entry becomes 1 (Slide 8-1).', slide: '8-1' },
+            { group: 'group2', num: 44, title: 'If pivot at $$a_{11}$$, how eliminate $$a_{21}$$?', answer: '$$R_2 := R_2 - (a_{21}/a_{11})R_1$$', type: 'yes', explanation: 'Use pivot to create zeros below and above.', logic: 'COMBINE: subtract scaled Row 1 from Row 2 (Slide 8-1).', slide: '8-1' },
+            { group: 'group2', num: 45, title: 'When is Gauss-Jordan complete?', answer: 'Left side becomes $$I$$', type: 'yes', explanation: 'Right side "magically" becomes $$A^{-1}$$.', logic: 'When $$[A | I] \\to [I | A^{-1}]$$, we found inverse.', slide: '8-1' },
+            { group: 'group2', num: 46, title: 'If $$A = \\begin{bmatrix} 2 & 0 \\\\ 0 & 2 \\end{bmatrix}$$, what is Normalize step?', answer: '$$R_1 := 0.5R_1$$ and $$R_2 := 0.5R_2$$', type: 'yes', explanation: 'SCALE to get 1s on diagonal.', logic: 'Scale each row by 0.5 to make diagonal entries 1.', slide: '8-1' },
+            { group: 'group2', num: 47, title: 'Use Gauss-Jordan to find inverse of $$A = \\begin{bmatrix} 1 & 0 \\\\ 1 & 1 \\end{bmatrix}$$.', answer: '$$A^{-1} = \\begin{bmatrix} 1 & 0 \\\\ -1 & 1 \\end{bmatrix}$$', type: 'yes', explanation: '$$[A | I] \\to [I | A^{-1}]$$ via $$R_2 := R_2 - R_1$$', logic: 'Apply operation and verify result.', slide: '8-1' },
+            { group: 'group2', num: 48, title: 'Why call vertical bar "The Mirror"?', answer: 'Operations apply all the way across', type: 'yes', explanation: 'Whatever we do to $$A$$, we must do to $$I$$.', logic: 'Bar reminds: every row operation applies to BOTH sides (Slide 8-1).', slide: '8-1' },
+            { group: 'group2', num: 49, title: 'If row becomes all zeros on left in Gauss-Jordan?', answer: 'Matrix is singular', type: 'no', explanation: 'Cannot create Identity matrix if row is lost.', logic: 'Zero row means matrix is singular with no inverse.', slide: '8-1' },
+            { group: 'group2', num: 50, title: 'Result of Gauss-Jordan on $$[I | A]$$?', answer: 'Right side remains $$A$$', type: 'yes', explanation: '$$I$$ already normalized and eliminated.', logic: 'Since $$I$$ already in RREF, Gauss-Jordan leaves it unchanged.', slide: '8-1' },
+
+            // GROUP 3 & 4 - Continue with remaining questions (brevity for space)
+            { group: 'group3', num: 51, title: 'When is $$A\\mathbf{x} = \\mathbf{b}$$ solvable?', answer: 'If $$\\mathbf{b}$$ in Column Space $$C(A)$$', type: 'yes', explanation: 'Solvability Link: $$\\mathbf{b}$$ must be linear combination of columns.', logic: 'Per Slide 9-1, $$A\\mathbf{x} = \\mathbf{b}$$ solvable iff $$\\mathbf{b} \\in C(A)$$.', slide: '9-1' },
+            { group: 'group3', num: 52, title: 'Define Column Space $$C(A)$$.', answer: 'Set of all linear combinations of columns of $$A$$', type: 'yes', explanation: 'Per Spanning Rule from Slide 9-1.', logic: '$$C(A) = \\{A\\mathbf{x} : \\mathbf{x} \\in \\mathbb{R}^n\\}$$ (reachable outputs).', slide: '9-1' },
+            { group: 'group3', num: 53, title: 'If $$\\mathbf{b} = \\mathbf{0}$$, is $$A\\mathbf{x} = \\mathbf{b}$$ always solvable?', answer: 'Yes', type: 'yes', explanation: 'Zero vector always in $$C(A)$$ (set $$\\mathbf{x} = \\mathbf{0}$$).', logic: '$$\\mathbf{0} \\in C(A)$$ because $$A\\mathbf{0} = \\mathbf{0}$$ always.', slide: '9-1' },
+            { group: 'group3', num: 54, title: 'If $$A = \\begin{bmatrix} 1 & 0 \\\\ 0 & 1 \\end{bmatrix}$$, what is $$C(A)$$?', answer: 'Entire space $$\\mathbb{R}^2$$', type: 'yes', explanation: 'These columns span $$\\mathbb{R}^2$$.', logic: '$$A$$ is identity; columns are standard basis, span all $$\\mathbb{R}^2$$.', slide: '9-1' },
+            { group: 'group3', num: 55, title: 'If $$A = \\begin{bmatrix} 1 & 2 \\\\ 2 & 4 \\end{bmatrix}$$, what is $$C(A)$$?', answer: '1D line through $$\\begin{bmatrix} 1 \\\\ 2 \\end{bmatrix}$$', type: 'yes', explanation: 'Second column is multiple of first; redundant.', logic: 'Column 2 $$= 2 \\times$$ Column 1, so $$C(A)$$ is line through $$[1,2]^T$$.', slide: '9-1' },
+            { group: 'group3', num: 56, title: 'True/False: If $$\\mathbf{b} \\notin C(A)$$, system is inconsistent.', answer: 'True', type: 'yes', explanation: 'No combination of columns reaches target outside span.', logic: 'If $$\\mathbf{b}$$ not in $$C(A)$$, no $$\\mathbf{x}$$ satisfies $$A\\mathbf{x} = \\mathbf{b}$$.', slide: '9-1' },
+            { group: 'group3', num: 57, title: 'For $$10 \\times 3$$ matrix, $$C(A)$$ is subspace of?', answer: '$$\\mathbb{R}^{10}$$', type: 'yes', explanation: 'Components of columns determine space.', logic: 'Columns have 10 components, so $$C(A) \\subseteq \\mathbb{R}^{10}$$.', slide: '9-1' },
+            { group: 'group3', num: 58, title: 'Adding more columns always increase $$C(A)$$?', answer: 'No', type: 'no', explanation: 'Not if new columns are redundant.', logic: 'Redundant columns don\'t expand $$C(A)$$; already in span.', slide: '9-1' },
+            { group: 'group3', num: 59, title: 'If $$\\mathbf{x} = \\begin{bmatrix} 2 \\\\ 3 \\end{bmatrix}$$ solves $$A\\mathbf{x} = \\mathbf{b}$$, is $$\\mathbf{b} \\in C(A)$$?', answer: 'Yes', type: 'yes', explanation: 'Existence of $$\\mathbf{x}$$ proves $$\\mathbf{b}$$ is column combination.', logic: 'If $$A\\mathbf{x} = \\mathbf{b}$$, then $$\\mathbf{b} \\in C(A)$$ by definition.', slide: '9-1' },
+            { group: 'group3', num: 60, title: 'Can $$C(A)$$ be single point?', answer: 'Yes, if $$A$$ is zero matrix', type: 'yes', explanation: 'Only combination is zero vector.', logic: 'Zero matrix $$\\Rightarrow C(A) = \\{\\mathbf{0}\\}$$ (single point).', slide: '9-1' },
+            { group: 'group3', num: 61, title: 'Steps for RREF Diagnostic Process?', answer: '(1) Setup $$[A | \\mathbf{b}]$$ (2) Gaussian elimination (3) Check final column', type: 'yes', explanation: 'Algebraic proof of membership test.', logic: 'RREF Diagnostic tests solvability algebraically (Slide 9-1).', slide: '9-1' },
+            { group: 'group3', num: 62, title: 'In RREF, what indicates contradiction?', answer: '$$[0 \\; 0 \\; \\cdots \\; | \\; 1]$$', type: 'no', explanation: 'Implies $$0 = 1$$, which is impossible.', logic: 'Such row means impossible equation, no solution exists.', slide: '9-1' },
+            { group: 'group3', num: 63, title: 'Is $$\\mathbf{b} = \\begin{bmatrix} 1 \\\\ 5 \\end{bmatrix}$$ in $$C(A)$$ for $$A = \\begin{bmatrix} 1 & 2 \\\\ 2 & 4 \\end{bmatrix}$$?', answer: 'No', type: 'no', explanation: 'RREF shows contradiction in last row.', logic: 'Column 2 redundant; RREF shows inconsistency.', slide: '9-1' },
+            { group: 'group3', num: 64, title: 'If $$A$$ is $$m \\times n$$ with pivot in every row, always solvable?', answer: 'Yes', type: 'yes', explanation: '$$C(A)$$ spans $$\\mathbb{R}^m$$, every $$\\mathbf{b}$$ reachable.', logic: 'With $$m$$ pivots, $$C(A) = \\mathbb{R}^m$$.', slide: '9-1' },
+            { group: 'group3', num: 65, title: 'What does Redundancy mean for solutions?', answer: 'Infinite solutions for $$A\\mathbf{x} = \\mathbf{b}$$', type: 'yes', explanation: 'Extra columns provide "extra paths" to $$\\mathbf{b}$$.', logic: 'Redundant columns (free variables) lead to infinite solutions.', slide: '9-1' },
+            { group: 'group3', num: 66, title: 'For $$A = \\begin{bmatrix} 1 & 0 & 2 \\\\ 0 & 3 & 4 \\end{bmatrix}$$, infinite solutions?', answer: 'Yes', type: 'yes', explanation: 'Column 3 redundant (combination of 1 and 2).', logic: 'One free variable $$\\Rightarrow$$ infinitely many solutions.', slide: '9-1' },
+            { group: 'group3', num: 67, title: 'Variables without pivots in RREF called?', answer: 'Free Variables', type: 'yes', explanation: 'Allow flexibility in solution set.', logic: 'Free variables can take any value (Slide 9-1).', slide: '9-1' },
+            { group: 'group3', num: 68, title: 'If $$A$$ is invertible, what is RREF?', answer: 'Identity Matrix $$I$$', type: 'yes', explanation: 'No redundancy, spans whole space.', logic: 'Invertible $$\\Rightarrow$$ RREF is $$I$$.', slide: '9-1' },
+            { group: 'group3', num: 69, title: 'If $$\\mathbf{b}$$ is first column of $$A$$, solution $$\\mathbf{x}$$?', answer: '$$\\mathbf{x} = \\begin{bmatrix} 1 \\\\ 0 \\\\ \\vdots \\end{bmatrix}$$', type: 'yes', explanation: 'Picks exactly first column.', logic: '$$A\\mathbf{e}_1 = $$ Column 1 $$= \\mathbf{b}$$.', slide: '9-1' },
+            { group: 'group3', num: 70, title: 'Does RREF change Column Space?', answer: 'Yes, but solvability preserved', type: 'yes', explanation: 'Row ops preserve relationships between columns.', logic: 'RREF changes matrix but preserves solvability.', slide: '9-1' },
+            { group: 'group3', num: 71, title: 'For $$2 \\times 5$$ matrix, $$C(A)$$ subspace of?', answer: '$$\\mathbb{R}^2$$', type: 'yes', explanation: 'Dimensionality Rule.', logic: 'Columns 2 components $$\\Rightarrow C(A) \\subseteq \\mathbb{R}^2$$.', slide: '9-1' },
+            { group: 'group3', num: 72, title: 'If $$m > n$$, can $$C(A)$$ span entire $$\\mathbb{R}^m$$?', answer: 'No', type: 'no', explanation: 'Need $$m$$ independent columns to span $$\\mathbb{R}^m$$.', logic: '$$A$$ has only $$n < m$$ columns.', slide: '9-1' },
+            { group: 'group3', num: 73, title: 'Can line in 3D be Column Space?', answer: 'Yes', type: 'yes', explanation: 'If $$A$$ is $$3 \\times n$$ with columns multiples of one vector.', logic: '$$A = 3 \\times 1$$ with one column $$\\Rightarrow C(A)$$ is 1D line.', slide: '9-1' },
+            { group: 'group3', num: 74, title: 'If $$A\\mathbf{x} = \\mathbf{b}$$ has no solution, where is $$\\mathbf{b}$$?', answer: 'Outside column space span', type: 'yes', explanation: '"Unreachable" by machine.', logic: '$$\\mathbf{b} \\notin C(A)$$, outside column space.', slide: '9-1' },
+            { group: 'group3', num: 75, title: 'Zero vector always in Column Space?', answer: 'Yes', type: 'yes', explanation: 'Every subspace includes zero vector.', logic: '$$\\mathbf{0} \\in C(A)$$ for any $$A$$.', slide: '9-1' },
+
+            // GROUP 4: Null Spaces
+            { group: 'group4', num: 76, title: 'What is Null Space $$N(A)$$?', answer: 'VIP Club of all $$\\mathbf{x}$$: $$A\\mathbf{x} = \\mathbf{0}$$', type: 'yes', explanation: 'Per Slide 9-2, inputs "completely flattened to zero."', logic: '$$N(A) = \\{\\mathbf{x} : A\\mathbf{x} = \\mathbf{0}\\}$$.', slide: '9-2' },
+            { group: 'group4', num: 77, title: 'For invertible matrix, what is in VIP Club?', answer: 'Only zero vector', type: 'yes', explanation: 'Invertible matrices are "Highly efficient."', logic: 'Invertible $$\\Rightarrow N(A) = \\{\\mathbf{0}\\}$$.', slide: '9-2' },
+            { group: 'group4', num: 78, title: 'If $$A = [1 \\; 2 \\; 3]$$, geometry of $$N(A)$$?', answer: 'Plane in $$\\mathbb{R}^3$$', type: 'yes', explanation: 'Equation $$x + 2y + 3z = 0$$ defines 2D plane.', logic: '$$x + 2y + 3z = 0$$ is single constraint in 3D $$\\Rightarrow$$ 2D plane.', slide: '9-2' },
+            { group: 'group4', num: 79, title: '$$N(A)$$ is subspace of?', answer: '$$\\mathbb{R}^n$$ (input space)', type: 'yes', explanation: 'Per Anatomy and Geography of $$A\\mathbf{x} = \\mathbf{0}$$.', logic: 'Null Space has $$n$$-dimensional input vectors.', slide: '9-2' },
+            { group: 'group4', num: 80, title: 'If $$A$$ is $$m \\times n$$, $$\\mathbf{x} \\in \\mathbb{R}^n$$ and $$A\\mathbf{x} \\in \\mathbb{R}^m$$?', answer: 'Yes to both', type: 'yes', explanation: 'Inputs $$n$$-dimensional; outputs $$m$$-dimensional.', logic: 'Input: $$n$$-dimensional. Output: $$m$$-dimensional.', slide: '9-2' },
+            { group: 'group4', num: 81, title: 'Singular matrices have infinite Null Space members?', answer: 'True', type: 'yes', explanation: 'Collapse entire lines or planes to zero.', logic: 'Singular $$\\Rightarrow N(A)$$ has infinitely many vectors.', slide: '9-2' },
+            { group: 'group4', num: 82, title: 'If $$\\mathbf{x}_1, \\mathbf{x}_2 \\in N(A)$$, is $$\\mathbf{x}_1 + \\mathbf{x}_2 \\in N(A)$$?', answer: 'Yes', type: 'yes', explanation: 'Additive Closure property of subspaces.', logic: 'If $$A\\mathbf{x}_1 = \\mathbf{0}$$ and $$A\\mathbf{x}_2 = \\mathbf{0}$$, then $$A(\\mathbf{x}_1 + \\mathbf{x}_2) = \\mathbf{0}$$.', slide: '9-2' },
+            { group: 'group4', num: 83, title: 'VIP Club ever exclude zero vector?', answer: 'No', type: 'yes', explanation: '$$A(\\mathbf{0}) = \\mathbf{0}$$ is always true.', logic: 'Zero vector always in any null space.', slide: '9-2' },
+            { group: 'group4', num: 84, title: 'If $$N(A)$$ is line through origin, what matrix do?', answer: '"Crush" line to origin', type: 'yes', explanation: 'See Slide 9-2 Case Study (2D).', logic: 'Every point on line maps to zero (Slide 9-2).', slide: '9-2' },
+            { group: 'group4', num: 85, title: 'If $$A = \\begin{bmatrix} 1 & 1 \\\\ 1 & 1 \\end{bmatrix}$$, find $$N(A)$$ member.', answer: '$$\\mathbf{x} = \\begin{bmatrix} 1 \\\\ -1 \\end{bmatrix}$$', type: 'yes', explanation: 'Verify: $$\\begin{bmatrix} 1 & 1 \\\\ 1 & 1 \\end{bmatrix} \\begin{bmatrix} 1 \\\\ -1 \\end{bmatrix} = \\begin{bmatrix} 0 \\\\ 0 \\end{bmatrix}$$', logic: 'Check: $$1 + (-1) = 0$$. ✓', slide: '9-2' },
+            { group: 'group4', num: 86, title: 'How find Special Solutions?', answer: 'Set free vars to 1/0, solve pivots', type: 'yes', explanation: 'Ensures basis vectors are independent.', logic: 'For each free var, set to 1 (others 0) and solve (Slide 9-2).', slide: '9-2' },
+            { group: 'group4', num: 87, title: 'If $$x + 2y + 3z = 0$$, free variables?', answer: '$$y$$ and $$z$$', type: 'yes', explanation: '$$x$$ is pivot; $$y, z$$ free.', logic: '$$x$$ determined by $$y, z$$, so $$y, z$$ free.', slide: '9-2' },
+            { group: 'group4', num: 88, title: 'Q87: find $$\\mathbf{s}_1$$ with $$y = 1, z = 0$$.', answer: '$$\\mathbf{s}_1 = \\begin{bmatrix} -2 \\\\ 1 \\\\ 0 \\end{bmatrix}$$', type: 'yes', explanation: '$$x + 2(1) + 3(0) = 0 \\Rightarrow x = -2$$', logic: 'Solve: $$x = -2(1) - 3(0) = -2$$.', slide: '9-2' },
+            { group: 'group4', num: 89, title: 'Q87: find $$\\mathbf{s}_2$$ with $$y = 0, z = 1$$.', answer: '$$\\mathbf{s}_2 = \\begin{bmatrix} -3 \\\\ 0 \\\\ 1 \\end{bmatrix}$$', type: 'yes', explanation: '$$x + 2(0) + 3(1) = 0 \\Rightarrow x = -3$$', logic: 'Solve: $$x = -2(0) - 3(1) = -3$$.', slide: '9-2' },
+            { group: 'group4', num: 90, title: 'Total Null Space for Q87 system?', answer: 'All combos of $$\\mathbf{s}_1, \\mathbf{s}_2$$', type: 'yes', explanation: '2D plane spanned by basis vectors.', logic: '$$N(A) = $$span$$\\{\\mathbf{s}_1, \\mathbf{s}_2\\}$$ (2D plane in 3D).', slide: '9-2' },
+            { group: 'group4', num: 91, title: 'Null Space membership test: $$\\mathbf{x} = \\begin{bmatrix} 1 \\\\ 1 \\end{bmatrix}$$ on $$A = \\begin{bmatrix} 1 & 2 \\\\ -1 & -2 \\end{bmatrix}$$?', answer: 'No, Access Denied', type: 'no', explanation: 'Check: row 1: $$1(1) + 2(1) = 3 \\neq 0$$', logic: 'Not in $$N(A)$$.', slide: '9-2' },
+            { group: 'group4', num: 92, title: 'Test $$\\mathbf{x} = \\begin{bmatrix} 0 \\\\ 1 \\end{bmatrix}$$ for $$A = \\begin{bmatrix} 1 & -1 \\\\ 2 & -2 \\end{bmatrix}$$?', answer: 'No, Access Denied', type: 'no', explanation: '$$A\\begin{bmatrix} 0 \\\\ 1 \\end{bmatrix} = \\begin{bmatrix} -1 \\\\ -2 \\end{bmatrix} \\neq \\mathbf{0}$$', logic: 'Not in $$N(A)$$.', slide: '9-2' },
+            { group: 'group4', num: 93, title: 'If $$A\\mathbf{x} \\neq \\mathbf{0}$$, status of $$\\mathbf{x}$$?', answer: 'Access Denied / Not in $$N(A)$$', type: 'no', explanation: 'Only zero-mapping vectors in VIP Club.', logic: 'Membership requires $$A\\mathbf{x} = \\mathbf{0}$$.', slide: '9-2' },
+            { group: 'group4', num: 94, title: '$$3 \\times 3$$ invertible matrix special solutions?', answer: 'Zero (trivial only)', type: 'yes', explanation: 'No free variables.', logic: 'Invertible $$\\Rightarrow N(A) = \\{\\mathbf{0}\\}$$.', slide: '9-2' },
+            { group: 'group4', num: 95, title: 'If $$A$$ is $$2 \\times 3$$, min special solutions?', answer: 'One', type: 'yes', explanation: 'More columns than rows = free variable.', logic: '$$3 - $$rank$$(A) \\geq 1$$ free variable.', slide: '9-2' },
+            { group: 'group4', num: 96, title: 'Is set where $$x_1 \\geq 0$$ a subspace?', answer: 'No', type: 'no', explanation: 'Scalar closure fails: $$-1 \\cdot [1,0] = [-1,0]$$ not in set.', logic: 'Per Subspace Test (Slide 9-2), scalar closure fails.', slide: '9-2' },
+            { group: 'group4', num: 97, title: '$$N(A)$$ always subspace?', answer: 'Yes', type: 'yes', explanation: 'Satisfies all three subspace axioms.', logic: '$$A(\\mathbf{0}) = \\mathbf{0}$$, closure under addition & scalar mult.', slide: '9-2' },
+            { group: 'group4', num: 98, title: 'Magnitude of $$\\mathbf{s}_1 = \\begin{bmatrix} -2 \\\\ 1 \\\\ 0 \\end{bmatrix}$$ by SRSS?', answer: '$$\\sqrt{5}$$', type: 'yes', explanation: '$$\\sqrt{(-2)^2 + 1^2 + 0^2} = \\sqrt{5}$$', logic: 'SRSS: $$\\sqrt{4 + 1 + 0} = \\sqrt{5}$$.', slide: '9-2' },
+            { group: 'group4', num: 99, title: 'Magnitude of $$\\mathbf{x} = \\begin{bmatrix} 3 \\\\ 4 \\end{bmatrix}$$ by SRSS?', answer: '$$5$$', type: 'yes', explanation: '$$\\sqrt{3^2 + 4^2} = \\sqrt{25} = 5$$', logic: '3-4-5 triangle.', slide: '9-2' },
+            { group: 'group4', num: 100, title: 'Set where $$A\\mathbf{x} = \\mathbf{b}$$ solvable, subspace?', answer: 'Yes (Column Space)', type: 'yes', explanation: 'This is $$C(A)$$, satisfies subspace test.', logic: 'Zero, closure under addition & scalar multiplication.', slide: '9-1' }
+        ];
+
+        let currentFilter = 'all';
+        let currentQuestion = null;
+        let filteredQuestions = [...questions];
+
+        function renderSidebar() {
+            const list = document.getElementById('questionsList');
+            list.innerHTML = '';
+
+            let currentGroup = null;
+            filteredQuestions.forEach(q => {
+                if (currentGroup !== q.group) {
+                    currentGroup = q.group;
+                    const groupNum = q.group.replace('group', '');
+                    const startQ = (parseInt(groupNum) - 1) * 25 + 1;
+                    const endQ = Math.min(parseInt(groupNum) * 25, 100);
+                    const groupLabel = document.createElement('div');
+                    groupLabel.className = 'group-label';
+                    groupLabel.textContent = `Group ${groupNum} (Q${startQ}-${endQ})`;
+                    list.appendChild(groupLabel);
+                }
+
+                const item = document.createElement('div');
+                item.className = 'question-item';
+                item.innerHTML = `
+                    <div class="question-num">${q.num}</div>
+                    <div class="question-text">${q.title.replace(/\$\$.*?\$\$/g, '...').substring(0, 40)}...</div>
+                `;
+                item.onclick = () => showQuestion(q);
+                if (currentQuestion && currentQuestion.num === q.num) {
+                    item.classList.add('active');
+                }
+                list.appendChild(item);
+            });
+        }
+
+        function showQuestion(q) {
+            currentQuestion = q;
+            const contentBody = document.getElementById('contentBody');
+            const badgeClass = q.type === 'yes' ? 'badge-yes' : 'badge-no';
+            const badgeText = q.type === 'yes' ? '✓ YES' : '✗ NO';
+
+            contentBody.innerHTML = `
+                <div class="question-detail">
+                    <div class="q-header">
+                        <div class="q-number">Question ${q.num}</div>
+                        <div class="q-title">${q.title}</div>
+                    </div>
+                    <div class="q-body">
+                        <div class="section">
+                            <div class="section-title">Answer</div>
+                            <div class="answer-box">
+                                <div class="answer-badge ${badgeClass}">${badgeText}</div>
+                                <div class="answer-content">
+                                    <div class="math-block">${q.answer}</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="section">
+                            <div class="section-title">Explanation</div>
+                            <div class="explanation-box">
+                                <div class="explanation-title">Key Explanation</div>
+                                <div class="explanation-text">${q.explanation}</div>
+                            </div>
+                        </div>
+
+                        <div class="section">
+                            <div class="section-title">Logic & Rules</div>
+                            <div class="logic-box">
+                                <div class="logic-title">📚 Reference</div>
+                                <div class="logic-text">${q.logic}</div>
+                                <div class="slide-ref">Slide ${q.slide}</div>
+                            </div>
+                        </div>
+
+                        <div class="nav-buttons">
+                            <button class="nav-btn" onclick="previousQuestion()" ${questions.indexOf(q) === 0 ? 'disabled' : ''}>← Previous</button>
+                            <button class="nav-btn" onclick="nextQuestion()" ${questions.indexOf(q) === questions.length - 1 ? 'disabled' : ''}>Next →</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('currentQuestion').textContent = q.num;
+            renderSidebar();
+            MathJax.typesetPromise().catch(err => console.log(err));
+        }
+
+        function previousQuestion() {
+            const idx = questions.indexOf(currentQuestion);
+            if (idx > 0) showQuestion(questions[idx - 1]);
+        }
+
+        function nextQuestion() {
+            const idx = questions.indexOf(currentQuestion);
+            if (idx < questions.length - 1) showQuestion(questions[idx + 1]);
+        }
+
+        function filterQuestions(group) {
+            currentFilter = group;
+            filteredQuestions = group === 'all' ? [...questions] : questions.filter(q => q.group === group);
+            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            renderSidebar();
+            const body = document.getElementById('contentBody');
+            body.innerHTML = '<div class="empty-state"><p>Select a question to view details</p></div>';
+            currentQuestion = null;
+        }
+
+        function searchQuestions() {
+            const term = document.getElementById('search').value.toLowerCase();
+            filteredQuestions = questions.filter(q => 
+                q.num.toString().includes(term) || 
+                q.title.toLowerCase().includes(term)
+            );
+            renderSidebar();
+        }
+
+        renderSidebar();
+    </script>
+</body>
+</html>
