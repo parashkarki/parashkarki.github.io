@@ -1,0 +1,1206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Database Quiz Master</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f8f9fa;
+            color: #1f2937;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .app-container {
+            display: flex;
+            height: 100vh;
+            gap: 0;
+        }
+
+        .sidebar {
+            width: 320px;
+            background: white;
+            border-right: 1px solid #e5e7eb;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        .sidebar-header {
+            padding: 24px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .sidebar-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #111827;
+            margin-bottom: 8px;
+        }
+
+        .sidebar-subtitle {
+            font-size: 13px;
+            color: #6b7280;
+        }
+
+        .filters-section {
+            padding: 20px;
+            border-bottom: 1px solid #e5e7eb;
+            flex-shrink: 0;
+        }
+
+        .filter-group {
+            margin-bottom: 16px;
+        }
+
+        .filter-group:last-child {
+            margin-bottom: 0;
+        }
+
+        .filter-label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            color: #374151;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+
+        .filter-select {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 13px;
+            background: white;
+            color: #1f2937;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .filter-select:hover {
+            border-color: #9ca3af;
+        }
+
+        .filter-select:focus {
+            outline: none;
+            border-color: #3b82f6;
+            ring: 2px solid rgba(59, 130, 246, 0.1);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            padding: 0 20px;
+            margin-bottom: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .stat-card {
+            background: #f3f4f6;
+            padding: 12px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 20px;
+            font-weight: 700;
+            color: #3b82f6;
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 11px;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 4px;
+        }
+
+        .question-sections {
+            flex: 1;
+            overflow-y: auto;
+            padding: 0 20px 20px 20px;
+        }
+
+        .section {
+            margin-bottom: 24px;
+        }
+
+        .section-title {
+            font-size: 12px;
+            font-weight: 700;
+            color: #374151;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            padding: 8px 12px;
+            background: #f9fafb;
+            border-radius: 6px;
+            margin-bottom: 12px;
+            border-left: 3px solid #3b82f6;
+        }
+
+        .question-item {
+            padding: 10px 12px;
+            margin-bottom: 6px;
+            border-radius: 6px;
+            cursor: pointer;
+            background: white;
+            border: 1px solid #e5e7eb;
+            transition: all 0.2s ease;
+            font-size: 13px;
+            color: #374151;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .question-item:hover {
+            background: #f3f4f6;
+            border-color: #d1d5db;
+        }
+
+        .question-item.active {
+            background: #dbeafe;
+            border-color: #3b82f6;
+            color: #1e40af;
+            font-weight: 600;
+        }
+
+        .question-item.answered {
+            border-left: 3px solid #10b981;
+        }
+
+        .question-item.answered.active {
+            background: #dbeafe;
+            border-left-color: #3b82f6;
+        }
+
+        .q-type-badge {
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .q-type-badge.mcq {
+            background: #3b82f6;
+        }
+
+        .q-type-badge.fill {
+            background: #8b5cf6;
+        }
+
+        .q-type-badge.qa {
+            background: #f59e0b;
+        }
+
+        .q-type-badge.old {
+            background: #10b981;
+        }
+
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: white;
+            overflow: hidden;
+        }
+
+        .header {
+            padding: 32px;
+            border-bottom: 1px solid #e5e7eb;
+            background: linear-gradient(135deg, #f8f9fa 0%, #f3f4f6 100%);
+        }
+
+        .header h1 {
+            font-size: 28px;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            font-size: 14px;
+            color: #6b7280;
+        }
+
+        .progress-bar {
+            height: 4px;
+            background: #e5e7eb;
+            width: 100%;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+            transition: width 0.3s ease;
+        }
+
+        .quiz-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .question-card {
+            background: white;
+            border-radius: 12px;
+            padding: 40px;
+            animation: slideIn 0.3s ease;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .q-header {
+            margin-bottom: 32px;
+            padding-bottom: 24px;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        .q-meta {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .q-number {
+            font-size: 12px;
+            font-weight: 700;
+            color: #9ca3af;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+        }
+
+        .q-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: white;
+        }
+
+        .q-badge.mcq {
+            background: #3b82f6;
+        }
+
+        .q-badge.fill {
+            background: #8b5cf6;
+        }
+
+        .q-badge.qa {
+            background: #f59e0b;
+        }
+
+        .q-badge.old {
+            background: #10b981;
+        }
+
+        .q-text {
+            font-size: 20px;
+            font-weight: 600;
+            color: #111827;
+            line-height: 1.6;
+        }
+
+        .options {
+            margin: 32px 0;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option {
+            padding: 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            cursor: pointer;
+            background: white;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .option:hover {
+            border-color: #3b82f6;
+            background: #f0f9ff;
+        }
+
+        .option.selected {
+            border-color: #3b82f6;
+            background: #f0f9ff;
+        }
+
+        .option.correct {
+            border-color: #10b981;
+            background: #ecfdf5;
+        }
+
+        .option.incorrect {
+            border-color: #ef4444;
+            background: #fef2f2;
+        }
+
+        .option input[type="radio"] {
+            margin-top: 4px;
+            cursor: pointer;
+            accent-color: #3b82f6;
+            width: 20px;
+            height: 20px;
+            flex-shrink: 0;
+        }
+
+        .option-text {
+            flex: 1;
+            font-size: 15px;
+            color: #374151;
+        }
+
+        .option.correct .option-text {
+            color: #10b981;
+            font-weight: 600;
+        }
+
+        .option.incorrect .option-text {
+            color: #ef4444;
+            font-weight: 600;
+        }
+
+        .fill-input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 15px;
+            font-family: inherit;
+            transition: all 0.2s ease;
+            margin: 16px 0;
+        }
+
+        .fill-input:focus {
+            outline: none;
+            border-color: #3b82f6;
+        }
+
+        .qa-textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 15px;
+            font-family: inherit;
+            min-height: 120px;
+            transition: all 0.2s ease;
+            margin: 16px 0;
+            resize: vertical;
+        }
+
+        .qa-textarea:focus {
+            outline: none;
+            border-color: #3b82f6;
+        }
+
+        .answer-reveal {
+            background: #eff6ff;
+            border-left: 4px solid #3b82f6;
+            padding: 16px;
+            border-radius: 8px;
+            margin-top: 24px;
+            display: none;
+        }
+
+        .answer-reveal.show {
+            display: block;
+            animation: slideIn 0.3s ease;
+        }
+
+        .answer-label {
+            font-size: 12px;
+            font-weight: 700;
+            color: #1e40af;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+
+        .answer-text {
+            color: #1e40af;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .controls {
+            display: flex;
+            gap: 16px;
+            justify-content: space-between;
+            padding: 20px;
+            background: white;
+            border-radius: 12px;
+            flex-shrink: 0;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-secondary {
+            background: #f3f4f6;
+            color: #374151;
+        }
+
+        .btn-secondary:hover {
+            background: #e5e7eb;
+        }
+
+        .btn-secondary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-primary {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #2563eb;
+        }
+
+        .results {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 60px 40px;
+        }
+
+        .score-circle {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 32px;
+            font-size: 48px;
+            font-weight: 700;
+        }
+
+        .result-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 8px;
+        }
+
+        .result-subtitle {
+            font-size: 14px;
+            color: #6b7280;
+            margin-bottom: 32px;
+        }
+
+        .result-details {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+            width: 100%;
+            max-width: 500px;
+            margin-bottom: 40px;
+        }
+
+        .detail-card {
+            padding: 20px;
+            background: #f3f4f6;
+            border-radius: 8px;
+        }
+
+        .detail-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #3b82f6;
+        }
+
+        .detail-label {
+            font-size: 12px;
+            color: #6b7280;
+            margin-top: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        @media (max-width: 1024px) {
+            .sidebar {
+                width: 280px;
+            }
+
+            .quiz-content {
+                padding: 30px;
+            }
+
+            .question-card {
+                padding: 30px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .app-container {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                height: auto;
+                max-height: 200px;
+                border-right: none;
+                border-bottom: 1px solid #e5e7eb;
+            }
+
+            .question-sections {
+                max-height: 150px;
+                padding-bottom: 10px;
+            }
+
+            .main-content {
+                height: auto;
+                overflow-y: auto;
+            }
+
+            .header {
+                padding: 20px;
+            }
+
+            .header h1 {
+                font-size: 22px;
+            }
+
+            .quiz-content {
+                padding: 20px;
+            }
+
+            .question-card {
+                padding: 20px;
+            }
+
+            .result-details {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #d1d5db;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #9ca3af;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- SIDEBAR -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-title">Quiz Navigator</div>
+                <div class="sidebar-subtitle">Database Mastery (140 Q)</div>
+            </div>
+
+            <div class="filters-section">
+                <div class="filter-group">
+                    <label class="filter-label">Chapter</label>
+                    <select id="chapter-filter" class="filter-select">
+                        <option value="all">All Chapters</option>
+                        <option value="1">Chapter 1</option>
+                        <option value="2">Chapter 2</option>
+                        <option value="3">Chapter 3</option>
+                        <option value="4">Chapter 4</option>
+                        <option value="5">Chapter 5</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label class="filter-label">Question Set</label>
+                    <select id="set-filter" class="filter-select">
+                        <option value="all">All Questions</option>
+                        <option value="original">Original (40 Q)</option>
+                        <option value="new">New Added (100 Q)</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label class="filter-label">Question Type</label>
+                    <select id="type-filter" class="filter-select">
+                        <option value="all">All Types</option>
+                        <option value="mcq">Multiple Choice</option>
+                        <option value="fill">Fill Blanks</option>
+                        <option value="qa">Short Answer</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <span class="stat-value" id="stat-answered">0</span>
+                    <span class="stat-label">Answered</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-value" id="stat-total">140</span>
+                    <span class="stat-label">Total</span>
+                </div>
+            </div>
+
+            <div class="question-sections" id="question-list"></div>
+        </div>
+
+        <!-- MAIN CONTENT -->
+        <div class="main-content">
+            <div class="header">
+                <h1>Database Quiz Master</h1>
+                <p>Chapters 1-5 Comprehensive Review • 140 Questions</p>
+            </div>
+
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+
+            <div class="quiz-content" id="quiz-container">
+                <div class="question-card" id="quiz-display"></div>
+                <div class="controls">
+                    <button class="btn btn-secondary" id="btn-prev" onclick="previousQuestion()">← Previous</button>
+                    <button class="btn btn-primary" id="btn-next" onclick="nextQuestion()">Next Question</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Original 40 questions
+        const originalQuestions = [
+            // Chapter 1 Original (10)
+            { id: 1, chapter: 1, set: 'original', type: 'mcq', question: "In early database applications, which problem refers to data stored in multiple file formats?", options: ["Data redundancy and inconsistency", "Data isolation", "Lack of physical data independence", "Integrity problems buried in program code"], correct: 0 },
+            { id: 2, chapter: 1, set: 'original', type: 'mcq', question: "Which term refers to the actual content of the database at a specific point in time?", options: ["Logical Schema", "Physical Schema", "Instance", "Metadata"], correct: 2 },
+            { id: 3, chapter: 1, set: 'original', type: 'mcq', question: "What is the definition of Physical Data Independence?", options: ["The ability to modify the logical schema without changing the application programs.", "The ability to modify the physical schema without changing the logical schema.", "The requirement that the physical layout must be well-defined for all database users.", "The independence of the database from the hardware's physical memory constraints."], correct: 1 },
+            { id: 4, chapter: 1, set: 'original', type: 'mcq', question: "Which component is responsible for interpreting DDL statements and recording in data dictionary?", options: ["DDL interpreter", "DML compiler", "Buffer manager", "Query evaluation engine"], correct: 0 },
+            { id: 5, chapter: 1, set: 'original', type: 'mcq', question: "Which type of DML requires specifying only \"what\" data is needed?", options: ["Procedural DML", "Physical DML", "Declarative (Non-procedural) DML", "Turing machine equivalent DML"], correct: 2 },
+            { id: 6, chapter: 1, set: 'original', type: 'mcq', question: "Which is a component of the Storage Manager module?", options: ["DML compiler and organizer", "DDL interpreter", "Buffer manager", "Query evaluation engine"], correct: 2 },
+            { id: 7, chapter: 1, set: 'original', type: 'mcq', question: "During query optimization, the DML compiler is responsible for?", options: ["Executing the low-level instructions", "Picking the lowest cost evaluation plan", "Interpreting DDL statements", "Providing direct access to magnetic tapes"], correct: 1 },
+            { id: 8, chapter: 1, set: 'original', type: 'mcq', question: "Which concept ensures a bank fund transfer either completes or doesn't happen at all?", options: ["Durability", "Atomicity", "Isolation", "Parallelism"], correct: 1 },
+            { id: 9, chapter: 1, set: 'original', type: 'mcq', question: "In a three-tier database architecture, what is the role of the client machine?", options: ["It invokes database system functionality directly", "It maintains the database schema locally", "It acts as a front end and communicates with an application server", "It executes work on behalf of multiple server machines"], correct: 2 },
+            { id: 10, chapter: 1, set: 'original', type: 'mcq', question: "Which evolution allowed direct access to data required for Ted Codd's relational model?", options: ["The invention of punched cards", "The transition to hard disks", "The emergence of the World Wide Web", "The development of object-oriented database systems"], correct: 1 },
+
+            // Chapter 2 Original (10)
+            { id: 11, chapter: 2, set: 'original', type: 'mcq', question: "What is the formal term for a row within a table in the relational model?", options: ["Attribute", "Tuple", "Relation", "Domain"], correct: 1 },
+            { id: 12, chapter: 2, set: 'original', type: 'mcq', question: "Which best describes structural requirements of a relation?", options: ["Tuples must be in chronological order", "Attribute values must be atomic, tuple order is irrelevant", "Every attribute must allow multi-valued entries", "Physical schema must be identical to logical schema"], correct: 1 },
+            { id: 13, chapter: 2, set: 'original', type: 'mcq', question: "Which term refers to the logical structure of the database?", options: ["Database Instance", "Data Dictionary", "Logical Schema", "Metadata Snapshot"], correct: 2 },
+            { id: 14, chapter: 2, set: 'original', type: 'mcq', question: "Which attribute is designated as the primary key in an instructor table?", options: ["name", "dept_name", "ID", "salary"], correct: 2 },
+            { id: 15, chapter: 2, set: 'original', type: 'mcq', question: "How is a candidate key distinguished from a superkey?", options: ["A candidate key is a minimal superkey with no proper subset", "A candidate key contains all possible attributes", "A superkey is always a subset of a candidate key", "Candidate keys are only used in physical storage layer"], correct: 0 },
+            { id: 16, chapter: 2, set: 'original', type: 'mcq', question: "What is the formal definition of a superkey?", options: ["A set of attributes that uniquely identify a tuple", "A column with at least one null value", "The specific memory address where a relation is stored", "A set of attributes unique in some, but not all, instances"], correct: 0 },
+            { id: 17, chapter: 2, set: 'original', type: 'mcq', question: "Which type of DML requires specifying only \"what\" data is needed?", options: ["Procedural DML", "Declarative (Non-procedural) DML", "Physical DDL", "Turing-complete DML"], correct: 1 },
+            { id: 18, chapter: 2, set: 'original', type: 'mcq', question: "What is a technical characteristic of the SQL query language?", options: ["It is procedural", "It is Turing machine equivalent", "It is non-procedural and returns a single table", "It operates independently of host languages"], correct: 2 },
+            { id: 19, chapter: 2, set: 'original', type: 'mcq', question: "In relational algebra, which operation pairs every tuple of two relations?", options: ["Select", "Project", "Cartesian product", "Union"], correct: 2 },
+            { id: 20, chapter: 2, set: 'original', type: 'mcq', question: "What is the primary function of the DDL compiler?", options: ["Execute low-level instructions", "Generate table templates stored in data dictionary", "Optimize declarative queries", "Manage concurrent user access"], correct: 1 },
+
+            // Chapter 3 Original (10)
+            { id: 21, chapter: 3, set: 'original', type: 'mcq', question: "What was the original name of SQL developed by IBM?", options: ["Structured Query Language", "SEQUEL", "System R", "SQL-86"], correct: 1 },
+            { id: 22, chapter: 3, set: 'original', type: 'mcq', question: "Which data type allows precision p and d digits to the right of decimal?", options: ["int", "float(n)", "numeric(p, d)", "varchar(n)"], correct: 2 },
+            { id: 23, chapter: 3, set: 'original', type: 'mcq', question: "Which SQL command removes all tuples but keeps structure?", options: ["drop table", "delete from", "alter table", "remove table"], correct: 1 },
+            { id: 24, chapter: 3, set: 'original', type: 'mcq', question: "Which clause corresponds to projection in relational algebra?", options: ["select", "from", "where", "order by"], correct: 0 },
+            { id: 25, chapter: 3, set: 'original', type: 'mcq', question: "What keyword forces elimination of duplicates in results?", options: ["all", "unique", "distinct", "filter"], correct: 2 },
+            { id: 26, chapter: 3, set: 'original', type: 'mcq', question: "Which symbol denotes \"all attributes\" in select clause?", options: ["%", "_", "*", "#"], correct: 2 },
+            { id: 27, chapter: 3, set: 'original', type: 'mcq', question: "Which logical connective requires multiple conditions simultaneously?", options: ["or", "and", "not", "union"], correct: 1 },
+            { id: 28, chapter: 3, set: 'original', type: 'mcq', question: "How do you rename a relation or attribute in SQL?", options: ["using the rename clause", "using the as clause", "using the set clause", "using the to keyword"], correct: 1 },
+            { id: 29, chapter: 3, set: 'original', type: 'mcq', question: "Which character in LIKE matches any single character?", options: ["% (percent)", "* (asterisk)", "_ (underscore)", "\\ (backslash)"], correct: 2 },
+            { id: 30, chapter: 3, set: 'original', type: 'mcq', question: "Which set operation finds courses in Fall 2017 OR Spring 2018?", options: ["intersect", "except", "union", "join"], correct: 2 },
+
+            // Chapter 4 Original (10)
+            { id: 31, chapter: 4, set: 'original', type: 'mcq', question: "What is the primary purpose of an Outer Join operation?", options: ["Combine tables with different schemas", "Avoid loss of information with non-matching tuples", "Replace the Cartesian product operation", "Sort results automatically"], correct: 1 },
+            { id: 32, chapter: 4, set: 'original', type: 'mcq', question: "Which SQL command defines a virtual relation?", options: ["create table", "create index", "create view", "create type"], correct: 2 },
+            { id: 33, chapter: 4, set: 'original', type: 'mcq', question: "What happens when updating a \"complex\" view?", options: ["SQL automatically updates all underlying tables", "Update may not be uniquely translatable", "System creates a new physical table", "Update is always permitted with authorization"], correct: 1 },
+            { id: 34, chapter: 4, set: 'original', type: 'mcq', question: "Which integrity constraint allows null values?", options: ["not null", "check", "unique", "foreign key"], correct: 2 },
+            { id: 35, chapter: 4, set: 'original', type: 'mcq', question: "What does the check (P) clause specify?", options: ["A predicate P satisfied by every tuple", "A password required to access", "A method to check for duplicate keys", "The data type of an attribute"], correct: 0 },
+            { id: 36, chapter: 4, set: 'original', type: 'mcq', question: "Which data type stores large binary data?", options: ["clob", "blob", "varchar", "binary(n)"], correct: 1 },
+            { id: 37, chapter: 4, set: 'original', type: 'mcq', question: "Why is an index created on a relation attribute?", options: ["To encrypt data", "To find specific tuples efficiently", "To define a new data type", "To ensure no duplicate values"], correct: 1 },
+            { id: 38, chapter: 4, set: 'original', type: 'mcq', question: "What does with grant option allow a user to do?", options: ["Access database without password", "Delete the table", "Transfer that privilege to other users", "Change the schema"], correct: 2 },
+            { id: 39, chapter: 4, set: 'original', type: 'mcq', question: "Which keyword revokes privileges from all users who received them?", options: ["restrict", "delete", "cascade", "all"], correct: 2 },
+            { id: 40, chapter: 4, set: 'original', type: 'mcq', question: "Why might natural join omit student-course pairs incorrectly?", options: ["Natural joins only work on two tables", "Omits pairs where student's dept != course's dept", "SQL doesn't support joining three tables", "Schemas must be identical"], correct: 1 }
+        ];
+
+        // New 100 questions
+        const newQuestions = [
+            // Chapter 1 NEW (20)
+            { id: 41, chapter: 1, set: 'new', type: 'mcq', question: "Which is NOT a database application mentioned?", options: ["Banking and Finance", "Airlines", "Telecommunications", "Video Gaming"], correct: 3 },
+            { id: 42, chapter: 1, set: 'new', type: 'mcq', question: "A DBMS is a collection of _____ data and programs to access it.", options: ["Random", "Interrelated", "Encrypted", "Compressed"], correct: 1 },
+            { id: 43, chapter: 1, set: 'new', type: 'mcq', question: "Which problem occurs with data in multiple file formats?", options: ["Network latency", "Data redundancy and inconsistency", "CPU overflow", "Memory cache issues"], correct: 1 },
+            { id: 44, chapter: 1, set: 'new', type: 'mcq', question: "The three levels of abstraction from highest to lowest are?", options: ["View, Logical, Physical", "Physical, Logical, View", "Logical, Physical, View", "View, Physical, Logical"], correct: 0 },
+            { id: 45, chapter: 1, set: 'new', type: 'mcq', question: "A _____ is a set of programs providing efficient interface to database.", options: ["Database", "Database System", "Data Dictionary", "Query Engine"], correct: 1 },
+            { id: 46, chapter: 1, set: 'new', type: 'mcq', question: "Which is true about a database system?", options: ["Handles small collections", "Not used in web services", "Manages collections accessed by multiple users", "Only supports sequential access"], correct: 2 },
+            { id: 47, chapter: 1, set: 'new', type: 'mcq', question: "Modifying logical schema without changing applications is called?", options: ["Logical Independence", "Physical Independence", "Schema Independence", "Data Independence"], correct: 0 },
+            { id: 48, chapter: 1, set: 'new', type: 'mcq', question: "Which component handles efficient storage and retrieval?", options: ["Query Processor", "Storage Manager", "Transaction Manager", "Authorization Manager"], correct: 1 },
+            { id: 49, chapter: 1, set: 'new', type: 'mcq', question: "Concurrent access by multiple users can lead to?", options: ["Improved performance", "Inconsistencies", "Better security", "Faster queries"], correct: 1 },
+            { id: 50, chapter: 1, set: 'new', type: 'mcq', question: "Advantage of centralized DB over file systems?", options: ["Lower cost", "Reduced data redundancy", "Slower access", "More programming required"], correct: 1 },
+            { id: 51, chapter: 1, set: 'new', type: 'fill', question: "A _____ is an abstract view hiding data structure complexity.", answer: "data abstraction" },
+            { id: 52, chapter: 1, set: 'new', type: 'fill', question: "The _____ is the logical structure of the entire database.", answer: "schema" },
+            { id: 53, chapter: 1, set: 'new', type: 'fill', question: "_____ describes the structure of the database.", answer: "Metadata" },
+            { id: 54, chapter: 1, set: 'new', type: 'fill', question: "Two types of DML are procedural and _____ DML.", answer: "declarative" },
+            { id: 55, chapter: 1, set: 'new', type: 'fill', question: "A _____ performs a single logical function in database.", answer: "transaction" },
+            { id: 56, chapter: 1, set: 'new', type: 'qa', question: "Explain the difference between logical and physical schema.", answer: "Logical schema describes data and relationships; Physical schema describes how data is physically stored on disk. Physical data independence allows modifying physical schema without changing logical schema." },
+            { id: 57, chapter: 1, set: 'new', type: 'qa', question: "What are main problems in early file system-based databases?", answer: "Data redundancy and inconsistency, difficulty in accessing data, data isolation, integrity problems in code, atomicity issues, concurrent access problems, and security issues." },
+            { id: 58, chapter: 1, set: 'new', type: 'qa', question: "Describe the three levels of data abstraction.", answer: "Physical level: describes record storage; Logical level: describes data and relationships; View level: application programs hide details and show only relevant data." },
+            { id: 59, chapter: 1, set: 'new', type: 'qa', question: "What is the purpose of transaction management?", answer: "Ensures database remains consistent despite failures, maintaining atomicity and ensuring all-or-nothing execution of transactions." },
+            { id: 60, chapter: 1, set: 'new', type: 'qa', question: "Explain the role of the Query Processor.", answer: "Interprets DDL statements, compiles DML into executable plans, and executes these plans through DDL interpreter, DML compiler, and query evaluation engine." },
+
+            // Chapter 2 NEW (20)
+            { id: 61, chapter: 2, set: 'new', type: 'mcq', question: "Horizontal format of a relation is called?", options: ["Column", "Tuple", "Attribute", "Domain"], correct: 1 },
+            { id: 62, chapter: 2, set: 'new', type: 'mcq', question: "The set of allowed values for an attribute is its?", options: ["Schema", "Domain", "Range", "Field"], correct: 1 },
+            { id: 63, chapter: 2, set: 'new', type: 'mcq', question: "Attribute values must be _____ (indivisible)?", options: ["Encrypted", "Atomic", "Compressed", "Normalized"], correct: 1 },
+            { id: 64, chapter: 2, set: 'new', type: 'mcq', question: "Null value indicates?", options: ["Zero value", "Unknown value or absence", "Negative value", "Missing column"], correct: 1 },
+            { id: 65, chapter: 2, set: 'new', type: 'mcq', question: "Which is a basic relational algebra operation?", options: ["Sort", "Select", "Merge", "Copy"], correct: 1 },
+            { id: 66, chapter: 2, set: 'new', type: 'mcq', question: "Relations are _____ (tuples may be in any order)?", options: ["Ordered", "Unordered", "Sorted", "Indexed"], correct: 1 },
+            { id: 67, chapter: 2, set: 'new', type: 'mcq', question: "Primary key constraint ensures?", options: ["Encryption", "Each tuple is uniquely identified", "Always positive values", "All values not null"], correct: 1 },
+            { id: 68, chapter: 2, set: 'new', type: 'mcq', question: "Foreign key maintains?", options: ["Security", "Referential integrity", "Compression", "Query speed"], correct: 1 },
+            { id: 69, chapter: 2, set: 'new', type: 'mcq', question: "Operation that removes columns from relation is?", options: ["Select", "Project", "Join", "Union"], correct: 1 },
+            { id: 70, chapter: 2, set: 'new', type: 'mcq', question: "Operation combining relations by matching attributes is?", options: ["Union", "Intersection", "Join", "Projection"], correct: 2 },
+            { id: 71, chapter: 2, set: 'new', type: 'fill', question: "A _____ uniquely identifies a tuple in a relation.", answer: "superkey" },
+            { id: 72, chapter: 2, set: 'new', type: 'fill', question: "A _____ key is a minimal superkey.", answer: "candidate" },
+            { id: 73, chapter: 2, set: 'new', type: 'fill', question: "The _____ operation selects tuples satisfying a predicate.", answer: "select" },
+            { id: 74, chapter: 2, set: 'new', type: 'fill', question: "The _____ operation removes duplicate tuples.", answer: "projection" },
+            { id: 75, chapter: 2, set: 'new', type: 'fill', question: "A relation is a subset of the _____ product of domains.", answer: "Cartesian" },
+            { id: 76, chapter: 2, set: 'new', type: 'qa', question: "Explain superkey vs candidate key.", answer: "Superkey uniquely identifies a tuple. Candidate key is a minimal superkey where no proper subset is also a superkey." },
+            { id: 77, chapter: 2, set: 'new', type: 'qa', question: "What is the relationship between primary and foreign key?", answer: "Primary key uniquely identifies tuples in its relation. Foreign key in one relation references the primary key of another, maintaining referential integrity." },
+            { id: 78, chapter: 2, set: 'new', type: 'qa', question: "Describe the Cartesian product operation.", answer: "Pairs every tuple from first relation with every tuple of second relation, creating result with all possible combinations." },
+            { id: 79, chapter: 2, set: 'new', type: 'qa', question: "What does unordered relations mean?", answer: "Physical order of tuples on disk is irrelevant. Any ordering of tuples represents the same relation." },
+            { id: 80, chapter: 2, set: 'new', type: 'qa', question: "Explain the role of domain in relational model.", answer: "Domain defines allowed values for an attribute, ensuring data integrity by restricting values that can be inserted." },
+
+            // Chapter 3 NEW (20)
+            { id: 81, chapter: 3, set: 'new', type: 'mcq', question: "CREATE TABLE is part of which language component?", options: ["DML", "DDL", "DCL", "TCL"], correct: 1 },
+            { id: 82, chapter: 3, set: 'new', type: 'mcq', question: "Which clause performs selection in relational algebra?", options: ["SELECT", "FROM", "WHERE", "GROUP BY"], correct: 2 },
+            { id: 83, chapter: 3, set: 'new', type: 'mcq', question: "To eliminate duplicates in results, use _____ keyword?", options: ["UNIQUE", "DISTINCT", "ALL", "REMOVE"], correct: 1 },
+            { id: 84, chapter: 3, set: 'new', type: 'mcq', question: "BETWEEN operator is used for?", options: ["Exact matching", "Pattern matching", "Range checking", "Null checking"], correct: 2 },
+            { id: 85, chapter: 3, set: 'new', type: 'mcq', question: "Which aggregate function returns non-null value count?", options: ["SUM", "COUNT", "AVG", "MAX"], correct: 1 },
+            { id: 86, chapter: 3, set: 'new', type: 'mcq', question: "HAVING clause is used with?", options: ["WHERE", "GROUP BY", "ORDER BY", "DISTINCT"], correct: 1 },
+            { id: 87, chapter: 3, set: 'new', type: 'mcq', question: "Subquery referencing outer query column is?", options: ["Nested", "Correlated", "Dependent", "Related"], correct: 1 },
+            { id: 88, chapter: 3, set: 'new', type: 'mcq', question: "Clause allowing sorting results is?", options: ["SORT BY", "ORDER BY", "ARRANGE BY", "RANK BY"], correct: 1 },
+            { id: 89, chapter: 3, set: 'new', type: 'mcq', question: "Keyword returning true if subquery produces no tuples?", options: ["NOT", "EMPTY", "NULL", "NONE"], correct: 0 },
+            { id: 90, chapter: 3, set: 'new', type: 'mcq', question: "SQL function converting string to uppercase?", options: ["CONVERT()", "CHANGE()", "UPPER()", "TOUPPER()"], correct: 2 },
+            { id: 91, chapter: 3, set: 'new', type: 'fill', question: "INSERT statement is used to add _____ to a relation.", answer: "tuples" },
+            { id: 92, chapter: 3, set: 'new', type: 'fill', question: "The _____ statement modifies attribute values in tuples.", answer: "UPDATE" },
+            { id: 93, chapter: 3, set: 'new', type: 'fill', question: "The _____ statement removes tuples from a relation.", answer: "DELETE" },
+            { id: 94, chapter: 3, set: 'new', type: 'fill', question: "In SQL, _____ represents unknown or missing values.", answer: "null" },
+            { id: 95, chapter: 3, set: 'new', type: 'fill', question: "The _____ operator is used for pattern matching.", answer: "LIKE" },
+            { id: 96, chapter: 3, set: 'new', type: 'qa', question: "Explain DELETE vs DROP TABLE.", answer: "DELETE removes all tuples but preserves table structure. DROP TABLE removes entire table including structure." },
+            { id: 97, chapter: 3, set: 'new', type: 'qa', question: "What are aggregate functions? Give examples.", answer: "Functions operating on value collections returning single value. Examples: COUNT() counts rows, SUM() sums, AVG() calculates average, MAX/MIN find extremes." },
+            { id: 98, chapter: 3, set: 'new', type: 'qa', question: "How does GROUP BY work with aggregates?", answer: "GROUP BY divides tuples into groups by attributes. Aggregate functions apply separately to each group, returning one result per group." },
+            { id: 99, chapter: 3, set: 'new', type: 'qa', question: "Difference between WHERE and HAVING?", answer: "WHERE filters individual tuples before grouping. HAVING filters groups after GROUP BY and aggregates." },
+            { id: 100, chapter: 3, set: 'new', type: 'qa', question: "How are NULL values handled in SQL?", answer: "NULL represents unknown/missing values. Comparisons with NULL result in UNKNOWN. Use IS NULL or IS NOT NULL to check." },
+
+            // Chapter 4 NEW (20)
+            { id: 101, chapter: 4, set: 'new', type: 'mcq', question: "LEFT OUTER JOIN includes?", options: ["Only matching tuples", "All tuples from left relation", "All tuples from right relation", "All tuples from both relations"], correct: 1 },
+            { id: 102, chapter: 4, set: 'new', type: 'mcq', question: "A view in SQL is a?", options: ["Physical table", "Virtual relation", "Database", "Query result"], correct: 1 },
+            { id: 103, chapter: 4, set: 'new', type: 'mcq', question: "PRIMARY KEY constraint ensures?", options: ["Not null values", "Unique and not null values", "Positive values", "Encrypted values"], correct: 1 },
+            { id: 104, chapter: 4, set: 'new', type: 'mcq', question: "INDEX is created to?", options: ["Encrypt data", "Find tuples efficiently", "Compress data", "Backup data"], correct: 1 },
+            { id: 105, chapter: 4, set: 'new', type: 'mcq', question: "UNIQUE constraint allows _____ values?", options: ["NULL", "Duplicate", "Negative", "Zero"], correct: 0 },
+            { id: 106, chapter: 4, set: 'new', type: 'mcq', question: "A TRANSACTION consists of?", options: ["Single query", "Multiple queries forming logical unit", "Only UPDATE statements", "Only SELECT statements"], correct: 1 },
+            { id: 107, chapter: 4, set: 'new', type: 'mcq', question: "ON DELETE CASCADE with foreign key will?", options: ["Reject deletion", "Delete related child tuples", "Set child values to null", "Do nothing"], correct: 1 },
+            { id: 108, chapter: 4, set: 'new', type: 'mcq', question: "CHECK constraint specifies?", options: ["Data types", "Condition to be satisfied", "Encryption rules", "Access rights"], correct: 1 },
+            { id: 109, chapter: 4, set: 'new', type: 'mcq', question: "BLOB data type is used for?", options: ["Character data", "Numeric data", "Binary large objects", "Date data"], correct: 2 },
+            { id: 110, chapter: 4, set: 'new', type: 'mcq', question: "GRANT statement is used to?", options: ["Deny access", "Give privileges to users", "Revoke access", "Create users"], correct: 1 },
+            { id: 111, chapter: 4, set: 'new', type: 'fill', question: "A _____ is a virtual table providing customized view.", answer: "view" },
+            { id: 112, chapter: 4, set: 'new', type: 'fill', question: "The _____ operation includes all tuples with NULL for non-matching.", answer: "FULL OUTER JOIN" },
+            { id: 113, chapter: 4, set: 'new', type: 'fill', question: "A _____ constraint ensures values appear in another relation.", answer: "FOREIGN KEY" },
+            { id: 114, chapter: 4, set: 'new', type: 'fill', question: "The _____ keyword undoes transaction changes.", answer: "ROLLBACK" },
+            { id: 115, chapter: 4, set: 'new', type: 'fill', question: "The _____ keyword makes transaction changes permanent.", answer: "COMMIT" },
+            { id: 116, chapter: 4, set: 'new', type: 'qa', question: "Explain the three types of outer joins.", answer: "LEFT OUTER JOIN includes all tuples from left relation; RIGHT OUTER JOIN from right relation; FULL OUTER JOIN from both relations with NULL for non-matching values." },
+            { id: 117, chapter: 4, set: 'new', type: 'qa', question: "What are advantages of using views?", answer: "Provide security by hiding sensitive data, simplification through customized views, logical data independence, and convenience by storing complex queries." },
+            { id: 118, chapter: 4, set: 'new', type: 'qa', question: "Explain referential integrity and enforcement.", answer: "Ensures values in foreign key correspond to referenced primary key. Enforced through FOREIGN KEY constraints with actions like CASCADE, SET NULL, SET DEFAULT." },
+            { id: 119, chapter: 4, set: 'new', type: 'qa', question: "Explain the ACID properties.", answer: "Atomicity: all-or-nothing execution; Consistency: database moves from one consistent state to another; Isolation: concurrent transactions don't interfere; Durability: committed changes survive failures." },
+            { id: 120, chapter: 4, set: 'new', type: 'qa', question: "What is authorization and how is it implemented?", answer: "Controls what data users can access. SQL implements through GRANT (give privileges) and REVOKE (remove privileges) for SELECT, INSERT, UPDATE, DELETE." },
+
+            // Chapter 5 NEW (20)
+            { id: 121, chapter: 5, set: 'new', type: 'mcq', question: "JDBC stands for?", options: ["Java Database Connection", "Java Database Connectivity", "Java Data Block Communication", "Java Distributed Business Code"], correct: 1 },
+            { id: 122, chapter: 5, set: 'new', type: 'mcq', question: "Stored procedure invoked using _____ statement?", options: ["EXECUTE", "RUN", "CALL", "INVOKE"], correct: 2 },
+            { id: 123, chapter: 5, set: 'new', type: 'mcq', question: "TRIGGER executes when?", options: ["Queries execute", "Database starts", "Modifications occur to database", "Tables are created"], correct: 2 },
+            { id: 124, chapter: 5, set: 'new', type: 'mcq', question: "Which is NOT a SQL function construct?", options: ["WHILE loop", "IF-THEN-ELSE", "FOR loop", "WAIT statement"], correct: 3 },
+            { id: 125, chapter: 5, set: 'new', type: 'mcq', question: "Recursive view is one that?", options: ["Depends on itself", "Calls stored procedures", "Updates itself", "Uses external functions"], correct: 0 },
+            { id: 126, chapter: 5, set: 'new', type: 'mcq', question: "RANK() function is used for?", options: ["Sorting data", "Assigning ranks to rows", "Grouping data", "Filtering data"], correct: 1 },
+            { id: 127, chapter: 5, set: 'new', type: 'mcq', question: "WITH clause in SQL defines?", options: ["Views", "Temporary relations", "Stored procedures", "Functions"], correct: 1 },
+            { id: 128, chapter: 5, set: 'new', type: 'mcq', question: "OLAP stands for?", options: ["Online Application Processing", "Online Analytical Processing", "Object Level Abstract Processing", "Online Array Processing"], correct: 1 },
+            { id: 129, chapter: 5, set: 'new', type: 'mcq', question: "CUBE operation computes?", options: ["Union of group by on subsets", "Cartesian product", "Transitive closure", "Materialized view"], correct: 0 },
+            { id: 130, chapter: 5, set: 'new', type: 'mcq', question: "External functions can be written in?", options: ["SQL only", "Java, C, C++ or other languages", "Only Assembly", "Only Python"], correct: 1 },
+            { id: 131, chapter: 5, set: 'new', type: 'fill', question: "A _____ function returns single value from inputs.", answer: "scalar" },
+            { id: 132, chapter: 5, set: 'new', type: 'fill', question: "A _____ function can return entire table.", answer: "table" },
+            { id: 133, chapter: 5, set: 'new', type: 'fill', question: "The _____ keyword begins compound statement.", answer: "BEGIN" },
+            { id: 134, chapter: 5, set: 'new', type: 'fill', question: "A _____ is executed automatically by modifications.", answer: "trigger" },
+            { id: 135, chapter: 5, set: 'new', type: 'fill', question: "The _____ operation generates union on attribute prefix.", answer: "ROLLUP" },
+            { id: 136, chapter: 5, set: 'new', type: 'qa', question: "Explain functions vs procedures in SQL.", answer: "Functions return single value usable in expressions. Procedures perform sequence of operations, may return multiple OUT parameters, invoked with CALL." },
+            { id: 137, chapter: 5, set: 'new', type: 'qa', question: "What are triggers and common uses?", answer: "Statements executed automatically on database modifications. Common uses: maintain summary data, enforce constraints, audit changes, replicate databases." },
+            { id: 138, chapter: 5, set: 'new', type: 'qa', question: "What is recursion in SQL?", answer: "Views referencing themselves enabling queries like transitive closure that cannot be expressed without iteration or recursion." },
+            { id: 139, chapter: 5, set: 'new', type: 'qa', question: "Explain ranking functions in SQL.", answer: "Assign ranks to rows based on ordering. RANK() leaves gaps, DENSE_RANK() has no gaps, ROW_NUMBER() assigns unique numbers, NTILE(n) divides into n buckets." },
+            { id: 140, chapter: 5, set: 'new', type: 'qa', question: "What is OLAP and its use?", answer: "Enables interactive analysis of multidimensional data using dimension and measure attributes. Allows drill-down and roll-up for exploration at different granularity levels." }
+        ];
+
+        const quizData = [...originalQuestions, ...newQuestions];
+
+        let currentQuestion = 0;
+        let answers = {};
+        let filteredIndices = [];
+        let startTime = Date.now();
+
+        function initQuiz() {
+            updateQuestionList();
+            displayQuestion();
+        }
+
+        function updateQuestionList() {
+            const chapterFilter = document.getElementById('chapter-filter').value;
+            const setFilter = document.getElementById('set-filter').value;
+            const typeFilter = document.getElementById('type-filter').value;
+            const list = document.getElementById('question-list');
+            list.innerHTML = '';
+            
+            filteredIndices = quizData
+                .filter(q => {
+                    const chapterMatch = chapterFilter === 'all' || q.chapter == chapterFilter;
+                    const setMatch = setFilter === 'all' || q.set === setFilter;
+                    const typeMatch = typeFilter === 'all' || q.type === typeFilter;
+                    return chapterMatch && setMatch && typeMatch;
+                })
+                .map(q => q.id - 1);
+
+            const groupedBySet = {
+                original: [],
+                new: []
+            };
+
+            filteredIndices.forEach(idx => {
+                const q = quizData[idx];
+                if (q.set === 'original') groupedBySet.original.push({ idx, q });
+                else groupedBySet.new.push({ idx, q });
+            });
+
+            // Render original questions
+            if (groupedBySet.original.length > 0) {
+                const section = document.createElement('div');
+                section.className = 'section';
+                
+                const title = document.createElement('div');
+                title.className = 'section-title';
+                title.textContent = '✓ Original Questions';
+                section.appendChild(title);
+
+                groupedBySet.original.forEach(({ idx, q }, visIdx) => {
+                    const item = createQuestionItem(idx, q, visIdx, groupedBySet.original.length);
+                    section.appendChild(item);
+                });
+
+                list.appendChild(section);
+            }
+
+            // Render new questions
+            if (groupedBySet.new.length > 0) {
+                const section = document.createElement('div');
+                section.className = 'section';
+                
+                const title = document.createElement('div');
+                title.className = 'section-title';
+                title.textContent = '⭐ New Questions';
+                section.appendChild(title);
+
+                groupedBySet.new.forEach(({ idx, q }, visIdx) => {
+                    const item = createQuestionItem(idx, q, visIdx + groupedBySet.original.length, filteredIndices.length);
+                    section.appendChild(item);
+                });
+
+                list.appendChild(section);
+            }
+
+            updateStats();
+        }
+
+        function createQuestionItem(idx, q, visIdx, total) {
+            const item = document.createElement('div');
+            item.className = 'question-item';
+            if (visIdx === 0) item.classList.add('active');
+            if (answers[idx] !== undefined) item.classList.add('answered');
+            
+            const badge = document.createElement('span');
+            badge.className = `q-type-badge ${q.type} ${q.set === 'original' ? 'old' : ''}`;
+            badge.textContent = q.type === 'mcq' ? 'MC' : q.type === 'fill' ? 'FB' : 'QA';
+            
+            const text = document.createElement('span');
+            text.textContent = `Q${q.id}`;
+            
+            item.appendChild(badge);
+            item.appendChild(text);
+            
+            item.onclick = () => {
+                currentQuestion = filteredIndices.indexOf(idx);
+                displayQuestion();
+                updateQuestionList();
+            };
+            
+            return item;
+        }
+
+        function updateStats() {
+            const answered = filteredIndices.filter(idx => answers[idx] !== undefined).length;
+            document.getElementById('stat-answered').textContent = answered;
+            document.getElementById('stat-total').textContent = filteredIndices.length;
+        }
+
+        function displayQuestion() {
+            if (filteredIndices.length === 0) return;
+
+            const idx = filteredIndices[currentQuestion];
+            const q = quizData[idx];
+            const progress = ((currentQuestion + 1) / filteredIndices.length) * 100;
+            
+            document.getElementById('progress-fill').style.width = progress + '%';
+
+            let html = `
+                <div class="q-header">
+                    <div class="q-meta">
+                        <span class="q-number">Question ${currentQuestion + 1} / ${filteredIndices.length}</span>
+                        <span class="q-badge ${q.type} ${q.set === 'original' ? 'old' : ''}">
+                            ${q.type === 'mcq' ? 'Multiple Choice' : q.type === 'fill' ? 'Fill in Blank' : 'Short Answer'}
+                        </span>
+                    </div>
+                    <div class="q-text">${q.question}</div>
+                </div>
+            `;
+
+            if (q.type === 'mcq') {
+                html += '<div class="options">';
+                q.options.forEach((option, optIdx) => {
+                    const isSelected = answers[idx] === optIdx;
+                    const isCorrect = optIdx === q.correct;
+                    let className = 'option';
+                    
+                    if (answers[idx] !== undefined) {
+                        if (isCorrect) className += ' correct';
+                        else if (isSelected) className += ' incorrect';
+                    } else if (isSelected) {
+                        className += ' selected';
+                    }
+
+                    html += `
+                        <label class="${className}">
+                            <input type="radio" name="option" value="${optIdx}" ${isSelected ? 'checked' : ''} 
+                                   onchange="selectAnswer(${optIdx}, ${idx})">
+                            <span class="option-text">${String.fromCharCode(65 + optIdx)}) ${option}</span>
+                        </label>
+                    `;
+                });
+                html += '</div>';
+            } else if (q.type === 'fill') {
+                const userAnswer = answers[idx] || '';
+                const isCorrect = userAnswer.toLowerCase().trim() === q.answer.toLowerCase().trim();
+                const showAnswer = answers[idx] !== undefined;
+                
+                html += `<input type="text" class="fill-input" id="fill-answer" value="${userAnswer}" 
+                         placeholder="Type your answer..." 
+                         onchange="selectAnswer('${idx}', ${idx})"
+                         onblur="selectAnswer('${idx}', ${idx})">`;
+                
+                if (showAnswer) {
+                    html += `
+                        <div class="answer-reveal show">
+                            <div class="answer-label">${isCorrect ? '✓ Correct!' : '✗ Incorrect'}</div>
+                            <div class="answer-text"><strong>Your answer:</strong> ${userAnswer}</div>
+                            <div class="answer-text"><strong>Correct answer:</strong> ${q.answer}</div>
+                        </div>
+                    `;
+                }
+            } else if (q.type === 'qa') {
+                const userAnswer = answers[idx] || '';
+                const showAnswer = answers[idx] !== undefined;
+                
+                html += `<textarea class="qa-textarea" id="qa-answer" 
+                         placeholder="Write your detailed answer here..."
+                         onchange="selectAnswer('${idx}', ${idx})"
+                         onblur="selectAnswer('${idx}', ${idx})">${userAnswer}</textarea>`;
+                
+                if (showAnswer) {
+                    html += `
+                        <div class="answer-reveal show">
+                            <div class="answer-label">Model Answer:</div>
+                            <div class="answer-text">${q.answer}</div>
+                        </div>
+                    `;
+                }
+            }
+
+            document.getElementById('quiz-display').innerHTML = html;
+
+            document.getElementById('btn-prev').disabled = currentQuestion === 0;
+            
+            const btnText = currentQuestion === filteredIndices.length - 1 ? 'Finish Quiz' : 'Next Question';
+            document.getElementById('btn-next').textContent = btnText;
+        }
+
+        function selectAnswer(val, idx) {
+            if (typeof val === 'string') {
+                const textarea = document.getElementById('qa-answer');
+                const input = document.getElementById('fill-answer');
+                answers[idx] = textarea?.value || input?.value || '';
+            } else {
+                answers[idx] = val;
+            }
+            updateQuestionList();
+            displayQuestion();
+        }
+
+        function previousQuestion() {
+            if (currentQuestion > 0) {
+                currentQuestion--;
+                displayQuestion();
+                updateQuestionList();
+            }
+        }
+
+        function nextQuestion() {
+            if (currentQuestion < filteredIndices.length - 1) {
+                currentQuestion++;
+                displayQuestion();
+                updateQuestionList();
+            } else {
+                showResults();
+            }
+        }
+
+        function showResults() {
+            let correct = 0;
+            filteredIndices.forEach(idx => {
+                const q = quizData[idx];
+                if (q.type === 'mcq' && answers[idx] === q.correct) {
+                    correct++;
+                } else if (q.type === 'fill' && (answers[idx] || '').toLowerCase().trim() === q.answer.toLowerCase().trim()) {
+                    correct++;
+                } else if (q.type === 'qa' && answers[idx] && answers[idx].trim().length > 0) {
+                    correct++;
+                }
+            });
+
+            const total = filteredIndices.length;
+            const percentage = Math.round((correct / total) * 100);
+            const timeSpent = Math.round((Date.now() - startTime) / 1000);
+            const minutes = Math.floor(timeSpent / 60);
+            const seconds = timeSpent % 60;
+
+            let title = '';
+            if (percentage === 100) title = 'Perfect Score!';
+            else if (percentage >= 80) title = 'Excellent Work!';
+            else if (percentage >= 60) title = 'Good Job!';
+            else title = 'Keep Learning!';
+
+            const container = document.getElementById('quiz-container');
+            container.innerHTML = `
+                <div class="results">
+                    <div class="score-circle">${percentage}%</div>
+                    <div class="result-title">${title}</div>
+                    <div class="result-subtitle">Quiz completed successfully</div>
+                    
+                    <div class="result-details">
+                        <div class="detail-card">
+                            <div class="detail-value">${correct}/${total}</div>
+                            <div class="detail-label">Correct</div>
+                        </div>
+                        <div class="detail-card">
+                            <div class="detail-value">${minutes}m ${seconds}s</div>
+                            <div class="detail-label">Time</div>
+                        </div>
+                        <div class="detail-card">
+                            <div class="detail-value">${percentage}%</div>
+                            <div class="detail-label">Accuracy</div>
+                        </div>
+                    </div>
+
+                    <button class="btn btn-primary" onclick="location.reload()">Restart Quiz</button>
+                </div>
+            `;
+        }
+
+        document.getElementById('chapter-filter').addEventListener('change', () => {
+            currentQuestion = 0;
+            answers = {};
+            updateQuestionList();
+            displayQuestion();
+        });
+
+        document.getElementById('set-filter').addEventListener('change', () => {
+            currentQuestion = 0;
+            answers = {};
+            updateQuestionList();
+            displayQuestion();
+        });
+
+        document.getElementById('type-filter').addEventListener('change', () => {
+            currentQuestion = 0;
+            answers = {};
+            updateQuestionList();
+            displayQuestion();
+        });
+
+        initQuiz();
+    </script>
+</body>
+</html>

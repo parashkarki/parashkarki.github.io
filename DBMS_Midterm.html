@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Database 001 2026-01 Mid-Term Solution Guide</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #1e293b;
+            background: #f8fafc;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .top-actions {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 20px;
+        }
+
+        .quiz-btn {
+            display: inline-block;
+            background: #1e40af;
+            color: white;
+            text-decoration: none;
+            padding: 10px 18px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+
+        .quiz-btn:hover {
+            background: #1e3a8a;
+        }
+
+        .header {
+            text-align: center;
+            border-bottom: 3px solid #1e40af;
+            padding-bottom: 30px;
+            margin-bottom: 30px;
+        }
+
+        .title {
+            font-size: 28px;
+            font-weight: bold;
+            color: #0f172a;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            font-size: 14px;
+            color: #475569;
+        }
+
+        .question {
+            margin: 30px 0;
+            padding: 20px;
+            background: #f1f5f9;
+            border-left: 4px solid #1e40af;
+            border-radius: 4px;
+        }
+
+        .question-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: white;
+            background: #1e40af;
+            padding: 12px;
+            margin: -20px -20px 15px -20px;
+            border-radius: 3px 3px 0 0;
+        }
+
+        .question-text {
+            margin: 15px 0;
+            font-size: 14px;
+            color: #1e293b;
+        }
+
+        .option {
+            margin: 8px 0;
+            padding-left: 30px;
+            font-size: 13px;
+            color: #334155;
+        }
+
+        .answer-box {
+            background: #ecfdf5;
+            border-left: 3px solid #10b981;
+            padding: 12px 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+            font-weight: bold;
+            color: #065f46;
+            font-size: 13px;
+        }
+
+        .explanation {
+            background: #f8fafc;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+            font-size: 13px;
+            color: #475569;
+            border-left: 3px solid #cbd5e1;
+        }
+
+        .sql-container {
+            background: #1e293b;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 6px;
+            border: 1px solid #cbd5e1;
+            overflow-x: auto;
+            position: relative;
+        }
+
+        .sql-code {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 13px;
+            line-height: 1.8;
+            color: #e2e8f0;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            margin: 0;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #1e40af;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: background 0.3s;
+        }
+
+        .copy-btn:hover {
+            background: #1e3a8a;
+        }
+
+        .copy-success {
+            background: #10b981;
+        }
+
+        .sql-keyword {
+            color: #a78bfa;
+            font-weight: bold;
+        }
+
+        .sql-string {
+            color: #4ade80;
+        }
+
+        .diagram {
+            text-align: center;
+            margin: 30px 0;
+        }
+
+        .diagram img {
+            display: block;
+            max-width: 100%;
+            height: auto;
+            margin: 0 auto;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+        }
+
+        .step-title {
+            font-size: 14px;
+            font-weight: bold;
+            color: #1e293b;
+            margin: 15px 0 8px 0;
+            background: #f1f5f9;
+            padding: 8px 12px;
+            border-radius: 4px;
+            border-left: 3px solid #0f172a;
+        }
+
+        .bullet-list {
+            margin-left: 20px;
+            font-size: 13px;
+            color: #475569;
+        }
+
+        .bullet-list li {
+            margin: 8px 0;
+        }
+
+        .table-container {
+            margin: 30px 0;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        table th {
+            background: #1e40af;
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-weight: bold;
+            border: 1px solid #cbd5e1;
+        }
+
+        table td {
+            padding: 12px;
+            border: 1px solid #cbd5e1;
+            vertical-align: top;
+        }
+
+        table tr:nth-child(even) {
+            background: #f1f5f9;
+        }
+
+        table tr:nth-child(odd) {
+            background: #f8fafc;
+        }
+
+        .section-divider {
+            height: 2px;
+            background: #cbd5e1;
+            margin: 40px 0;
+        }
+
+        .page-break {
+            page-break-after: always;
+            margin: 40px 0;
+        }
+
+        .key-points {
+            background: #ecfdf5;
+            padding: 20px;
+            border-radius: 6px;
+            margin: 20px 0;
+            border-left: 4px solid #10b981;
+        }
+
+        .key-points h4 {
+            color: #065f46;
+            margin-bottom: 12px;
+            font-size: 14px;
+        }
+
+        .key-points p {
+            margin: 8px 0;
+            font-size: 13px;
+            color: #047857;
+        }
+
+        @media print {
+            body {
+                background: white;
+            }
+            .container {
+                box-shadow: none;
+                padding: 0;
+            }
+            .copy-btn {
+                display: none;
+            }
+            .diagram,
+            .diagram img {
+                page-break-inside: avoid;
+                break-inside: avoid;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            .title {
+                font-size: 22px;
+            }
+            .sql-code {
+                font-size: 11px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="top-actions">
+            <a class="quiz-btn" href="quize.html">Quiz</a>
+        </div>
+
+        <!-- Header -->
+        <div class="header">
+            <div class="title">Database 001 2026-01 Mid-Term [Type A]</div>
+            <div class="subtitle">COMPLETE SOLUTION GUIDE</div>
+        </div>
+
+        <div class="section-divider"></div>
+
+        <!-- Question 1 -->
+        <div class="question">
+            <div class="question-title">1. Regarding Database systems, which one of the following is not Correct? ( )</div>
+            <div class="question-text">Database systems are used to manage collections of data that are:</div>
+            <div class="option">A. Highly valuable, relatively large</div>
+            <div class="option">B. Accessed by multiple users and applications, often at the same time.</div>
+            <div class="option">C. A modern database system is a complex software system whose task is to manage a large, complex collection of data.</div>
+            <div class="option">D. Databases don't touch all aspects of our lives.</div>
+            <div class="answer-box">✓ ANSWER: D</div>
+            <div class="explanation">
+                <strong>Explanation:</strong> Databases DO touch all aspects of our lives (banking, healthcare, education, shopping, social media, etc.). Options A, B, and C are correct definitions of database systems.
+            </div>
+        </div>
+
+        <!-- Question 2 -->
+        <div class="question">
+            <div class="question-title">2. Regarding Purpose of Database systems, which one of followings is not correct? ( )</div>
+            <div class="option">A. Data redundancy and inconsistency: data is stored in multiple file formats resulting in duplication of information in different files</div>
+            <div class="option">B. Difficulty in accessing data: Need to write a new program to carry out each new task</div>
+            <div class="option">C. Data isolation: Multiple files and formats</div>
+            <div class="option">D. Integrity problems: Integrity constraints stated explicitly, easy to add new constraints or change existing ones.</div>
+            <div class="answer-box">✓ ANSWER: D</div>
+            <div class="explanation">
+                <strong>Explanation:</strong> Option D is inverted. The actual problem is that integrity constraints are <strong>buried in program code</strong> rather than being stated explicitly, making it <strong>hard to add new constraints or change existing ones</strong>.
+            </div>
+        </div>
+
+        <!-- Question 3 -->
+        <div class="question">
+            <div class="question-title">3. Which one of followings describe "Atomicity of updates" correctly? ( )</div>
+            <div class="option">A. Failures may leave database in an inconsistent state with partial updates carried out</div>
+            <div class="option">B. Concurrent access needed for performance</div>
+            <div class="option">C. Hard to provide user access to some, but not all, data</div>
+            <div class="option">D. Integrity constraints become "buried" in program code rather than being stated explicitly</div>
+            <div class="answer-box">✓ ANSWER: A</div>
+            <div class="explanation">
+                <strong>Explanation:</strong> Atomicity ensures that either all operations in a transaction complete or none do. Without atomicity, failures could leave the database in an inconsistent state with partial updates. This is the core definition of the atomicity problem.
+            </div>
+        </div>
+
+        <!-- Question 4 -->
+        <div class="question">
+            <div class="question-title">4. What does the following sentence describe? ( )</div>
+            <div class="question-text"><em>"The actual content of the database at a particular point in time"</em></div>
+            <div class="option">A. Logical Schema</div>
+            <div class="option">B. Physical schema</div>
+            <div class="option">C. Instance</div>
+            <div class="option">D. types and variables</div>
+            <div class="answer-box">✓ ANSWER: C</div>
+            <div class="explanation">
+                <strong>Explanation:</strong> An <strong>Instance</strong> is the actual data (content) stored in the database at any given time. Schema defines the structure, while instance represents the actual data values.
+            </div>
+        </div>
+
+        <!-- Questions 5-7 -->
+        <div class="question">
+            <div class="question-title">Questions 5-7: In following diagram, which words will fit in blank A, B, C?</div>
+            <div class="diagram">
+                <img src="data:image/png;base64,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" alt="Query Processing Diagram">
+            </div>
+            <div class="question-text"><strong>Examples:</strong> A) Evaluation Engine   B) Optimizer   C) Compiler   D) Parser and translator</div>
+            
+            <div class="question-text" style="margin-top: 20px;">
+                <strong>5. A ( _____________________________ )</strong>
+            </div>
+            <div class="answer-box">✓ ANSWER: D - Parser and translator</div>
+            <div class="explanation">
+                <strong>Explanation:</strong> The parser and translator converts the SQL query text into a relational algebra expression.
+            </div>
+
+            <div class="question-text" style="margin-top: 20px;">
+                <strong>6. B ( _____________________________ )</strong>
+            </div>
+            <div class="answer-box">✓ ANSWER: B - Optimizer</div>
+            <div class="explanation">
+                <strong>Explanation:</strong> The optimizer takes the relational algebra expression and creates an optimized execution plan to improve query performance.
+            </div>
+
+            <div class="question-text" style="margin-top: 20px;">
+                <strong>7. C ( _____________________________ )</strong>
+            </div>
+            <div class="answer-box">✓ ANSWER: C - Compiler</div>
+            <div class="explanation">
+                <strong>Explanation:</strong> The compiler takes the execution plan and compiles it to execute and generate the final query output.
+            </div>
+        </div>
+
+        <!-- Question 8 -->
+        <div class="question">
+            <div class="question-title">8. Which one of followings is not correct for Attributes? ( )</div>
+            <div class="option">A. The set of allowed values for each attribute is called the domain of the attribute</div>
+            <div class="option">B. Attribute values are required to be atomic; that is, indivisible</div>
+            <div class="option">C. The special value null Indicates that the value is "unknown"</div>
+            <div class="option">D. The atomic value causes complications in the definition of many operations</div>
+            <div class="answer-box">✓ ANSWER: D</div>
+            <div class="explanation">
+                <strong>Explanation:</strong> Option D is contradictory. Atomic values (indivisible values) are a <strong>requirement</strong> in relational databases and help maintain data integrity, not cause complications. Options A, B, and C are correct statements.
+            </div>
+        </div>
+
+        <!-- Question 9 -->
+        <div class="question">
+            <div class="question-title">9. Which Key is the Value in one relation must appear in another? ( )</div>
+            <div class="option">A. superkey</div>
+            <div class="option">B. candidate key</div>
+            <div class="option">C. Foreign key</div>
+            <div class="option">D. primary key</div>
+            <div class="answer-box">✓ ANSWER: C - Foreign key</div>
+            <div class="explanation">
+                <strong>Explanation:</strong> A <strong>Foreign Key</strong> is an attribute (or set of attributes) that references the primary key of another relation. It ensures referential integrity by requiring values to exist in the referenced table.
+            </div>
+        </div>
+
+        <!-- Question 10 -->
+        <div class="question">
+            <div class="question-title">10. Which of the following is not correct? ( )</div>
+            <div class="question-text">The SQL data-definition language (DDL) allows the specification of information about relations, including:</div>
+            <div class="option">A. The schema for each relation.</div>
+            <div class="option">B. The type of values associated with each attribute.</div>
+            <div class="option">C. The Integrity constraints</div>
+            <div class="option">D. The set of indices to be maintained for each relation.</div>
+            <div class="option">E. Security and authorization information for each relation.</div>
+            <div class="option">F. The logical storage structure of each relation on disk.</div>
+            <div class="answer-box">✓ ANSWER: F</div>
+            <div class="explanation">
+                <strong>Explanation:</strong> DDL handles schema definition, data types, constraints, and authorization. However, the <strong>logical storage structure on disk</strong> is handled by storage management systems, not DDL. Options A-E are all DDL responsibilities.
+            </div>
+        </div>
+
+        <!-- Question 11 -->
+        <div class="question">
+            <div class="question-title">11. Which one of the followings is not 3 types of Join operation? ( )</div>
+            <div class="option">A. Natural join</div>
+            <div class="option">B. Upper Join</div>
+            <div class="option">C. Inner join</div>
+            <div class="option">D. Outer join</div>
+            <div class="answer-box">✓ ANSWER: B - Upper Join</div>
+            <div class="explanation">
+                <strong>Explanation:</strong> The main types of SQL joins are: Inner Join, Outer Join (Left, Right, Full), and Natural Join. "Upper Join" is not a standard SQL join type.
+            </div>
+        </div>
+
+        <!-- Question 12 -->
+        <div class="question">
+            <div class="question-title">12. Regarding Materialized View, which one of the followings is not correct? ( )</div>
+            <div class="option">A. Certain database systems allow view relations to be physically stored.</div>
+            <div class="option">B. Physical copy created when the view is defined.</div>
+            <div class="option">C. If relations used in the query are updated, the materialized view result becomes out of date</div>
+            <div class="option">D. In order to maintain the view, by Keeping the current view whenever the underlying relations are updated.</div>
+            <div class="answer-box">✓ ANSWER: D</div>
+            <div class="explanation">
+                <strong>Explanation:</strong> Option D is awkwardly worded and implies the view is automatically maintained, which is not true. A materialized view becomes out of date when underlying relations change (option C is correct). It requires manual refresh or periodic updates, not automatic maintenance.
+            </div>
+        </div>
+
+        <!-- Questions 13-16 -->
+        <div class="question">
+            <div class="question-title">Questions 13-16: Fill-in the blanks from the examples.</div>
+            <div class="question-text"><strong>Examples:</strong> A) Referential Integrity   B) Assertion   C) Transaction   D) Integrity constraints</div>
+            
+            <div class="question-text" style="margin-top: 15px;">
+                <strong>13. A ( _________ ) consists of a sequence of query and/or update statements and is a "unit" of work.</strong>
+            </div>
+            <div class="answer-box">✓ ANSWER: C - Transaction</div>
+
+            <div class="question-text" style="margin-top: 15px;">
+                <strong>14. ( _________ ) guard against accidental damage to the database, by ensuring that authorized changes to the database do not result in a loss of data consistency.</strong>
+            </div>
+            <div class="answer-box">✓ ANSWER: D - Integrity constraints</div>
+
+            <div class="question-text" style="margin-top: 15px;">
+                <strong>15. ( _________ ) Ensures that a value that appears in one relation for a given set of attributes also appears for a certain set of attributes in another relation.</strong>
+            </div>
+            <div class="answer-box">✓ ANSWER: A - Referential Integrity</div>
+
+            <div class="question-text" style="margin-top: 15px;">
+                <strong>16. An ( _________ ) is a predicate expressing a condition that we wish the database always to satisfy.</strong>
+            </div>
+            <div class="answer-box">✓ ANSWER: B - Assertion</div>
+        </div>
+
+        <!-- Question 17 -->
+        <div class="question">
+            <div class="question-title">17. Fill-in the blanks. List five responsibilities of a database-management system.</div>
+            <div class="question-text"><strong>Examples:</strong> A) Recovery   B) Concurrency   C) Integrity   D) Security   E) Interaction</div>
+            <div class="question-text" style="margin-top: 15px;">
+                A. ( <strong>Interaction</strong> ) with the file manager<br>
+                B. ( <strong>Integrity</strong> ) enforcement<br>
+                C. ( <strong>Security</strong> ) enforcement<br>
+                D. Back-up and ( <strong>Recovery</strong> )<br>
+                E. ( <strong>Concurrency</strong> ) control
+            </div>
+        </div>
+
+        <div class="section-divider"></div>
+
+        <!-- Question 18 -->
+        <div class="question">
+            <div class="question-title">18. Using the university schema, write the following queries in SQL.</div>
+            <div class="question-text">Find the ID and name of each student who has not taken any course offered before 2017. (Use Select, From, Where)</div>
+            
+            <div class="step-title">STEP 1: Understanding the Problem</div>
+            <ul class="bullet-list">
+                <li>We need: Student ID and Name</li>
+                <li>Condition: Students who have NOT taken courses from before 2017</li>
+                <li>Approach: Use NOT IN with a subquery</li>
+            </ul>
+
+            <div class="step-title">STEP 2: SQL Solution</div>
+            <div class="sql-container">
+                <button class="copy-btn" onclick="copySQL(this)">Copy</button>
+                <code class="sql-code">SELECT DISTINCT s.ID, s.name
+FROM student s
+WHERE s.ID NOT IN (
+    SELECT t.ID
+    FROM takes t
+    JOIN course c ON t.course_id = c.course_id
+    WHERE c.year < 2017
+);</code>
+            </div>
+        </div>
+
+        <!-- Question 19 -->
+        <div class="question">
+            <div class="question-title">19. Using the university schema, write an SQL query to find the names of those departments whose budget is higher than that of Philosophy. List them in alphabetic order.</div>
+            
+            <div class="step-title">STEP 1: Understanding the Problem</div>
+            <ul class="bullet-list">
+                <li>We need: Department names</li>
+                <li>Condition: Budget > Philosophy's budget</li>
+                <li>Sort: Alphabetically (A to Z)</li>
+                <li>Approach: Subquery to get Philosophy's budget first</li>
+            </ul>
+
+            <div class="step-title">STEP 2: SQL Solution</div>
+            <div class="sql-container">
+                <button class="copy-btn" onclick="copySQL(this)">Copy</button>
+                <code class="sql-code">SELECT d.dept_name
+FROM department d
+WHERE d.budget > (
+    SELECT d2.budget
+    FROM department d2
+    WHERE d2.dept_name = 'Philosophy'
+)
+ORDER BY d.dept_name ASC;</code>
+            </div>
+        </div>
+
+        <!-- Question 20 -->
+        <div class="question">
+            <div class="question-title">20. Using the university schema, write an SQL query to find the IDs of those students who have retaken at least three distinct courses at least once (i.e, the student has taken the course at least two times).</div>
+            
+            <div class="step-title">STEP 1: Understanding the Problem</div>
+            <ul class="bullet-list">
+                <li>Retaken = taken the course 2 or more times</li>
+                <li>We need: Student IDs</li>
+                <li>Condition: Taken at least 3 courses that were retaken</li>
+                <li>Approach: GROUP BY student, use HAVING with COUNT conditions</li>
+            </ul>
+
+            <div class="step-title">STEP 2: SQL Solution</div>
+            <div class="sql-container">
+                <button class="copy-btn" onclick="copySQL(this)">Copy</button>
+                <code class="sql-code">SELECT t.ID
+FROM takes t
+GROUP BY t.ID
+HAVING COUNT(DISTINCT t.course_id) >= 3
+    AND (
+        SELECT COUNT(DISTINCT course_id)
+        FROM takes t2
+        WHERE t2.ID = t.ID
+        GROUP BY course_id
+        HAVING COUNT(*) >= 2
+    ) >= 3;</code>
+            </div>
+        </div>
+
+        <!-- Question 21 -->
+        <div class="question">
+            <div class="question-title">21. Using the university schema, write an SQL query to find the ID and title of each course in Comp. Sci. that has had at least one section with afternoon hours (i.e., ends at or after 12:00). (You should eliminate duplicates if any.)</div>
+            
+            <div class="step-title">STEP 1: Understanding the Problem</div>
+            <ul class="bullet-list">
+                <li>We need: Course ID and Title</li>
+                <li>Condition: Department = 'Comp. Sci.' AND time_end >= 12:00</li>
+                <li>Afternoon: 12:00 (noon) or later</li>
+                <li>Eliminate duplicates: Use DISTINCT</li>
+            </ul>
+
+            <div class="step-title">STEP 2: SQL Solution</div>
+            <div class="sql-container">
+                <button class="copy-btn" onclick="copySQL(this)">Copy</button>
+                <code class="sql-code">SELECT DISTINCT c.course_id, c.title
+FROM course c, section s
+WHERE c.course_id = s.course_id
+    AND c.dept_name = 'Comp. Sci.'
+    AND s.time_end >= '12:00';</code>
+            </div>
+        </div>
+
+        <!-- Question 22 -->
+        <div class="question">
+            <div class="question-title">22. Using the university schema, write an SQL query to find the ID of each student who has never taken a course at the university. Do this using no subqueries and no set operations (use an outer join).</div>
+            
+            <div class="step-title">STEP 1: Understanding the Problem</div>
+            <ul class="bullet-list">
+                <li>We need: Student IDs</li>
+                <li>Condition: Students with NO courses taken</li>
+                <li>No subqueries allowed!</li>
+                <li>Use: LEFT OUTER JOIN + IS NULL check</li>
+            </ul>
+
+            <div class="step-title">STEP 2: SQL Solution</div>
+            <div class="sql-container">
+                <button class="copy-btn" onclick="copySQL(this)">Copy</button>
+                <code class="sql-code">SELECT s.ID
+FROM student s
+LEFT OUTER JOIN takes t ON s.ID = t.ID
+WHERE t.ID IS NULL;</code>
+            </div>
+        </div>
+
+        <div class="section-divider"></div>
+
+        <!-- Question 23 -->
+        <div class="question">
+            <div class="question-title">23. Explain why, when a manager, say Satoshi, grants an authorization, the grant should be done by the manager role, rather than by the user Satoshi.</div>
+            
+            <div class="key-points">
+                <h4>1. Separation of Duties:</h4>
+                <p>Authorization is tied to the responsibility (manager role), not the individual person.</p>
+
+                <h4>2. Accountability & Continuity:</h4>
+                <p>If Satoshi leaves, the manager role remains with all its permissions. The new manager inherits them automatically.</p>
+
+                <h4>3. Consistency:</h4>
+                <p>All users with the manager role have the same permissions, preventing inconsistencies across the organization.</p>
+
+                <h4>4. Security Management:</h4>
+                <p>Permissions are managed at the role level, making auditing and changes easier. When Satoshi leaves, revoke the role rather than individual permissions.</p>
+
+                <h4>5. Scalability:</h4>
+                <p>Permission changes apply to all role members automatically without individual modifications.</p>
+            </div>
+        </div>
+
+        <!-- Question 24 -->
+        <div class="question">
+            <div class="question-title">24. Explain the difference between "integrity constraints" and "authorization constraints".</div>
+            
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Aspect</th>
+                            <th>Integrity Constraints</th>
+                            <th>Authorization Constraints</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Purpose</strong></td>
+                            <td>Protect data correctness and consistency</td>
+                            <td>Control who can access and modify data</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Focus</strong></td>
+                            <td>WHAT data is allowed in the database</td>
+                            <td>WHO can do WHAT with the data</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Enforces</strong></td>
+                            <td>Relationships between data values</td>
+                            <td>User permissions and access control</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Examples</strong></td>
+                            <td>
+                                • PRIMARY KEY<br>
+                                • FOREIGN KEY<br>
+                                • UNIQUE<br>
+                                • CHECK<br>
+                                • NOT NULL
+                            </td>
+                            <td>
+                                • User X can view table A<br>
+                                • User Y can only read their records<br>
+                                • Role-based permissions<br>
+                                • Grant/Revoke statements
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><strong>Violation Result</strong></td>
+                            <td>Database rejects invalid data</td>
+                            <td>Database rejects unauthorized access</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Type</strong></td>
+                            <td>Data Quality Control</td>
+                            <td>Data Security Control</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="key-points">
+                <h4>Key Difference Summary:</h4>
+                <p><strong>Integrity Constraints</strong> = Ensures data <strong>QUALITY</strong> (What data is correct)</p>
+                <p><strong>Authorization Constraints</strong> = Ensures data <strong>SECURITY</strong> (Who can access what)</p>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        function copySQL(button) {
+            const codeElement = button.nextElementSibling;
+            const sqlText = codeElement.textContent;
+            
+            navigator.clipboard.writeText(sqlText).then(() => {
+                button.textContent = 'Copied!';
+                button.classList.add('copy-success');
+                
+                setTimeout(() => {
+                    button.textContent = 'Copy';
+                    button.classList.remove('copy-success');
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy:', err);
+                button.textContent = 'Error!';
+                setTimeout(() => {
+                    button.textContent = 'Copy';
+                }, 2000);
+            });
+        }
+    </script>
+</body>
+</html>
