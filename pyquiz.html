@@ -1,0 +1,1514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>AI Literacy · Python MCQ Notebook</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700;9..144,800;9..144,900&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#fbf7ee;
+    --paper:#fffaf0;
+    --ink:#1a1a1a;
+    --ink-soft:#3d3a36;
+    --muted:#8a8275;
+    --rule:#e7dfcd;
+    --accent:#c4452d;
+    --accent-2:#1f4d3a;
+    --gold:#d6a64a;
+    --highlight:#fff3a8;
+    --highlight-2:#ffd1c4;
+    --highlight-3:#c8e6c9;
+    --code-bg:#1f1d1a;
+    --code-text:#f4ecd8;
+    --green:#1f4d3a;
+    --red:#c4452d;
+    --shadow: 0 1px 0 rgba(0,0,0,.04), 0 12px 30px -18px rgba(0,0,0,.18);
+    --sidebar-w: 280px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:var(--bg);color:var(--ink);font-family:'Inter',system-ui,sans-serif;line-height:1.6;-webkit-font-smoothing:antialiased;height:100%}
+  body{
+    background-image:
+      radial-gradient(circle at 20% 10%, rgba(212,166,74,.08), transparent 40%),
+      radial-gradient(circle at 80% 90%, rgba(196,69,45,.05), transparent 40%);
+    display:flex; min-height:100vh;
+  }
+
+  /* ============ SIDEBAR ============ */
+  .sidebar{
+    width:var(--sidebar-w); flex-shrink:0;
+    background:var(--paper); border-right:1.5px solid var(--ink);
+    height:100vh; position:sticky; top:0; overflow-y:auto;
+    display:flex; flex-direction:column;
+  }
+  .sb-head{
+    padding:24px 20px 18px; border-bottom:2px solid var(--ink);
+  }
+  .sb-eyebrow{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.3em;text-transform:uppercase;color:var(--accent);font-weight:600}
+  .sb-title{font-family:'Fraunces',serif;font-size:26px;font-weight:800;font-style:italic;line-height:1;margin-top:6px;color:var(--ink)}
+  .sb-title .alt{color:var(--accent-2)}
+  .sb-sub{font-size:11px;color:var(--muted);margin-top:8px;letter-spacing:.05em}
+
+  .sb-stats{
+    display:grid; grid-template-columns:1fr 1fr;
+    border-bottom:1px solid var(--rule);
+  }
+  .sb-stat{
+    padding:14px 18px; text-align:center;
+  }
+  .sb-stat:first-child{border-right:1px dashed var(--rule)}
+  .sb-stat .num{font-family:'Fraunces',serif;font-size:24px;font-weight:700;color:var(--accent);line-height:1}
+  .sb-stat .lbl{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-top:4px}
+
+  .sb-list{flex:1; padding:14px 0; overflow-y:auto}
+  .sb-section-label{
+    padding:8px 20px;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.25em;text-transform:uppercase;color:var(--muted);
+  }
+  .sb-item{
+    display:block; width:100%; padding:11px 20px; border:none; background:none; text-align:left;
+    font-family:'Inter',sans-serif; font-size:13px; color:var(--ink-soft); cursor:pointer;
+    border-left:3px solid transparent; transition:all .18s; line-height:1.35;
+  }
+  .sb-item:hover{background:#f5edd6}
+  .sb-item.active{
+    background:#f5edd6; border-left-color:var(--accent); color:var(--ink); font-weight:600;
+  }
+  .sb-item .ch-no{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--accent);font-weight:600;letter-spacing:.15em;display:block;margin-bottom:2px}
+  .sb-item .ch-info{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);margin-top:4px}
+  .sb-item.active .ch-info{color:var(--ink-soft)}
+  .sb-progress{height:3px;background:var(--rule);margin-top:6px;border-radius:2px;overflow:hidden}
+  .sb-progress > div{height:100%;background:var(--accent-2);width:0;transition:width .3s}
+
+  .sb-foot{
+    padding:14px 20px; border-top:1px solid var(--rule);
+    font-family:'JetBrains Mono',monospace; font-size:10px;
+    color:var(--muted); letter-spacing:.1em;text-align:center;
+  }
+  .sb-foot .heart{color:var(--accent)}
+
+  .sb-mobile-toggle{display:none}
+
+  /* ============ MAIN VIEW ============ */
+  .main{
+    flex:1; min-width:0;
+    display:flex; flex-direction:column;
+    min-height:100vh;
+  }
+
+  .main-head{
+    padding:32px 48px 22px; border-bottom:1px solid var(--rule); background:var(--bg);
+    position:sticky; top:0; z-index:10;
+    backdrop-filter:blur(8px); background:rgba(251,247,238,.92);
+  }
+  .crumb{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.25em;text-transform:uppercase;color:var(--accent);font-weight:600}
+  .main-title{font-family:'Fraunces',serif;font-style:italic;font-weight:700;font-size:clamp(28px,4vw,42px);line-height:1.05;margin-top:6px;color:var(--ink)}
+
+  .quiz-bar{
+    display:flex; align-items:center; gap:14px; margin-top:18px; flex-wrap:wrap;
+  }
+  .qbar-progress{
+    flex:1; min-width:200px; display:flex; align-items:center; gap:12px;
+  }
+  .qbar-progress .label{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--ink-soft);white-space:nowrap;font-weight:600}
+  .qbar-progress .bar{flex:1; height:6px; background:var(--rule); position:relative; overflow:hidden; border-radius:3px}
+  .qbar-progress .bar > div{position:absolute;left:0;top:0;height:100%;background:linear-gradient(90deg,var(--accent),var(--gold));transition:width .35s}
+  .qbar-score{
+    font-family:'JetBrains Mono',monospace; font-size:11px;
+    padding:6px 12px; background:var(--ink); color:var(--paper); border-radius:3px;
+    letter-spacing:.1em;
+  }
+  .qbar-score .ok{color:var(--gold)}
+
+  /* ============ MAIN BODY ============ */
+  .main-body{
+    flex:1; padding:36px 48px 60px; max-width:880px; width:100%; margin:0 auto;
+  }
+
+  /* Welcome screen */
+  .welcome{
+    padding:60px 0 0; text-align:left;
+  }
+  .welcome h1{
+    font-family:'Fraunces',serif; font-weight:900; font-style:italic;
+    font-size:clamp(48px,7vw,92px); line-height:.94; letter-spacing:-.02em;
+    color:var(--ink);
+  }
+  .welcome h1 .alt{color:var(--accent-2); font-style:normal}
+  .welcome .lead{
+    margin-top:24px; max-width:560px; font-family:'Fraunces',serif; font-size:19px;
+    color:var(--ink-soft); line-height:1.55;
+  }
+  .welcome .lead .highlight{background:linear-gradient(180deg,transparent 60%, var(--highlight) 60%);padding:0 3px}
+  .welcome .lead .highlight-coral{background:linear-gradient(180deg,transparent 60%, var(--highlight-2) 60%);padding:0 3px}
+
+  .welcome-grid{
+    display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+    gap:14px; margin-top:36px;
+  }
+  .wcard{
+    background:var(--paper); border:1.5px solid var(--ink); padding:18px 18px 20px;
+    box-shadow: 4px 4px 0 var(--ink); cursor:pointer;
+    text-align:left; transition:transform .2s, box-shadow .2s;
+    font-family:inherit;
+  }
+  .wcard:hover{transform:translate(-2px,-2px); box-shadow: 6px 6px 0 var(--accent)}
+  .wcard .n{font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.2em; color:var(--accent); font-weight:700}
+  .wcard .t{font-family:'Fraunces',serif; font-size:17px; font-weight:600; margin-top:6px; line-height:1.2; color:var(--ink)}
+  .wcard .m{font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--muted); margin-top:10px; padding-top:8px; border-top:1px dashed var(--rule)}
+
+  .welcome-tip{
+    margin-top:36px; padding:18px 22px; background:var(--paper); border-left:4px solid var(--gold);
+    font-family:'Fraunces',serif; font-size:14px; color:var(--ink-soft);
+  }
+  .welcome-tip b{color:var(--ink)}
+
+  /* ============ QUIZ CARD ============ */
+  .quiz-card{
+    background:var(--paper); border:1.5px solid var(--ink); padding:36px 40px 32px;
+    position:relative; box-shadow: 6px 6px 0 var(--ink);
+    animation: slideIn .3s ease;
+  }
+  @keyframes slideIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+  .quiz-card::before{
+    content:""; position:absolute; top:0; left:0; width:6px; height:100%; background:var(--gold);
+  }
+
+  .qc-head{
+    display:flex; justify-content:space-between; align-items:center;
+    margin-bottom:18px; padding-bottom:14px; border-bottom:1px dashed var(--rule);
+  }
+  .qc-num{font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.2em; color:var(--accent); font-weight:700}
+  .qc-tag{font-family:'JetBrains Mono',monospace; font-size:10px; padding:4px 10px; background:var(--ink); color:var(--paper); letter-spacing:.1em; text-transform:uppercase}
+
+  .qc-text{
+    font-family:'Fraunces',serif; font-size:22px; line-height:1.45; color:var(--ink); font-weight:500;
+  }
+  .qc-text code, .qc-options code, .qc-exp code{
+    font-family:'JetBrains Mono',monospace; font-size:.85em;
+    background:#efe7d4; padding:2px 7px; border-radius:3px; color:var(--ink);
+  }
+  .qc-code{
+    font-family:'JetBrains Mono',monospace; font-size:13px; line-height:1.6;
+    background:var(--code-bg); color:var(--code-text);
+    padding:16px 20px; margin:16px 0 4px; border-left:4px solid var(--accent);
+    overflow-x:auto; white-space:pre; border-radius:4px;
+  }
+
+  .qc-options{display:flex; flex-direction:column; gap:10px; margin-top:24px}
+  .qc-opt{
+    display:flex; align-items:flex-start; gap:14px; padding:14px 18px;
+    border:2px solid var(--rule); background:#fffdf6; cursor:pointer;
+    transition:all .18s; font-size:15px; line-height:1.5;
+    font-family:'Inter',sans-serif; color:var(--ink-soft);
+    border-radius:4px;
+  }
+  .qc-opt:hover:not(.disabled){border-color:var(--ink-soft); background:#fff; transform:translateX(2px)}
+  .qc-opt .letter{
+    font-family:'JetBrains Mono',monospace; font-weight:700; font-size:13px;
+    width:28px; height:28px; display:flex; align-items:center; justify-content:center;
+    background:var(--ink); color:var(--paper); flex-shrink:0; border-radius:3px;
+  }
+  .qc-opt .text{flex:1}
+  .qc-opt.selected{border-color:var(--accent); background:#fff3ee}
+  .qc-opt.correct{border-color:var(--green); background:#eaf3ee; color:var(--ink)}
+  .qc-opt.correct .letter{background:var(--green)}
+  .qc-opt.correct::after{content:"✓"; color:var(--green); font-size:20px; font-weight:700; margin-left:auto}
+  .qc-opt.wrong{border-color:var(--red); background:#fde9e3; color:var(--ink)}
+  .qc-opt.wrong .letter{background:var(--red)}
+  .qc-opt.wrong::after{content:"✗"; color:var(--red); font-size:20px; font-weight:700; margin-left:auto}
+  .qc-opt.disabled{cursor:default}
+
+  .qc-exp{
+    margin-top:22px; padding:18px 22px; background:#fff8d6; border-left:4px solid var(--gold);
+    font-size:14px; line-height:1.65; color:var(--ink-soft); display:none;
+    font-family:'Fraunces',serif; border-radius:0 4px 4px 0;
+  }
+  .qc-exp.show{display:block; animation: fadeIn .3s}
+  @keyframes fadeIn{from{opacity:0; transform:translateY(-4px)}to{opacity:1; transform:none}}
+  .qc-exp .label-exp{
+    display:inline-block; font-family:'JetBrains Mono',monospace; font-size:10px;
+    letter-spacing:.2em; text-transform:uppercase; color:var(--accent); font-weight:700;
+    margin-bottom:8px;
+  }
+  .qc-exp b{color:var(--ink); font-weight:600}
+  .qc-exp .highlight{background:linear-gradient(180deg,transparent 60%, var(--highlight) 60%);padding:0 3px}
+  .qc-opt .highlight{background:linear-gradient(180deg,transparent 60%, var(--highlight) 60%);padding:0 3px}
+
+  /* ============ NAV ============ */
+  .nav-row{
+    display:flex; gap:12px; margin-top:24px; align-items:center;
+  }
+  .nav-btn{
+    font-family:'Inter',sans-serif; font-size:13px; font-weight:600;
+    padding:11px 22px; border:1.5px solid var(--ink); background:var(--paper); color:var(--ink);
+    cursor:pointer; transition:all .2s; letter-spacing:.05em; border-radius:3px;
+    display:inline-flex; align-items:center; gap:8px;
+  }
+  .nav-btn:hover:not(:disabled){background:var(--ink); color:var(--paper)}
+  .nav-btn:disabled{opacity:.35; cursor:not-allowed}
+  .nav-btn.primary{background:var(--accent); color:#fff; border-color:var(--accent)}
+  .nav-btn.primary:hover:not(:disabled){background:var(--ink); border-color:var(--ink)}
+  .nav-spacer{flex:1}
+  .qc-counter{font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--muted); letter-spacing:.1em}
+
+  /* ============ QUESTION DOTS ============ */
+  .q-dots{
+    display:flex; flex-wrap:wrap; gap:6px; margin-top:30px; padding-top:20px;
+    border-top:1px dashed var(--rule);
+  }
+  .q-dot{
+    width:30px; height:30px; border:1.5px solid var(--rule); background:var(--paper);
+    cursor:pointer; font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:600;
+    color:var(--ink-soft); display:flex; align-items:center; justify-content:center;
+    transition:all .15s; border-radius:3px;
+  }
+  .q-dot:hover{border-color:var(--ink); transform:scale(1.08)}
+  .q-dot.current{border-color:var(--accent); background:var(--accent); color:#fff}
+  .q-dot.answered-correct{border-color:var(--green); background:var(--green); color:#fff}
+  .q-dot.answered-wrong{border-color:var(--red); background:var(--red); color:#fff}
+  .q-dot.answered-pending{border-color:var(--ink-soft); background:#f5edd6}
+
+  /* ============ FINAL RESULT ============ */
+  .final-result{
+    background:var(--ink); color:var(--paper); padding:48px 44px;
+    border-left:8px solid var(--accent); animation:slideIn .4s ease;
+  }
+  .final-result .label{font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.3em; text-transform:uppercase; color:var(--gold)}
+  .final-result h2{font-family:'Fraunces',serif; font-style:italic; font-weight:700; font-size:48px; margin-top:8px; line-height:1}
+  .final-result .big-score{
+    font-family:'Fraunces',serif; font-size:120px; font-weight:900; line-height:1;
+    color:var(--gold); margin:24px 0 8px;
+  }
+  .final-result .big-score .total{color:#807865; font-size:60px; font-weight:400}
+  .final-result .verdict{font-family:'Fraunces',serif; font-size:18px; color:#d6cdb8; max-width:520px; line-height:1.5; margin-top:10px}
+  .final-result .actions{display:flex; gap:12px; margin-top:30px; flex-wrap:wrap}
+  .final-result .nav-btn{background:var(--paper); color:var(--ink); border-color:var(--paper)}
+  .final-result .nav-btn:hover{background:var(--gold); border-color:var(--gold); color:var(--ink)}
+
+  /* ============ MOBILE ============ */
+  @media (max-width: 900px){
+    body{flex-direction:column}
+    .sidebar{
+      position:fixed; top:0; left:-100%; height:100vh; width:280px; z-index:100;
+      transition:left .3s ease; box-shadow: 4px 0 30px rgba(0,0,0,.2);
+    }
+    .sidebar.open{left:0}
+    .main{width:100%}
+    .main-head{padding:18px 22px 14px}
+    .main-body{padding:24px 22px 60px}
+    .quiz-card{padding:24px 22px 22px}
+    .sb-mobile-toggle{
+      display:inline-flex; align-items:center; gap:8px;
+      font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:600;
+      padding:8px 14px; background:var(--ink); color:var(--paper); border:none;
+      cursor:pointer; letter-spacing:.1em; margin-bottom:10px; border-radius:3px;
+    }
+    .sb-overlay{
+      display:none; position:fixed; inset:0; background:rgba(0,0,0,.4); z-index:99;
+    }
+    .sb-overlay.show{display:block}
+    .welcome h1{font-size:42px}
+    .qc-text{font-size:18px}
+    .final-result{padding:32px 24px}
+    .final-result .big-score{font-size:80px}
+    .final-result .big-score .total{font-size:42px}
+  }
+</style>
+</head>
+<body>
+
+<!-- ============== SIDEBAR ============== -->
+<aside class="sidebar" id="sidebar">
+  <div class="sb-head">
+    <div class="sb-eyebrow">Woosong University</div>
+    <div class="sb-title">AI Literacy<br><span class="alt">Python · MCQ</span></div>
+    <div class="sb-sub">Lectures 01–07 · Saurabh Singh</div>
+  </div>
+  <div class="sb-stats">
+    <div class="sb-stat"><div class="num" id="sbTotal">—</div><div class="lbl">Questions</div></div>
+    <div class="sb-stat"><div class="num">7</div><div class="lbl">Chapters</div></div>
+  </div>
+  <div class="sb-list" id="sbList">
+    <div class="sb-section-label">Chapters</div>
+  </div>
+  <div class="sb-foot">BUILT WITH <span class="heart">♥</span> · STUDY HARD</div>
+</aside>
+
+<div class="sb-overlay" id="sbOverlay" onclick="toggleSidebar()"></div>
+
+<!-- ============== MAIN ============== -->
+<main class="main">
+  <!-- Welcome screen -->
+  <div id="welcomeScreen">
+    <div class="main-head">
+      <button class="sb-mobile-toggle" onclick="toggleSidebar()">☰ Chapters</button>
+      <div class="crumb">Welcome</div>
+      <div class="main-title">Pick a chapter to start</div>
+    </div>
+    <div class="main-body">
+      <div class="welcome">
+        <h1>Quiz yourself.<br><span class="alt">Master every concept.</span></h1>
+        <p class="lead">
+          A complete <span class="highlight">MCQ notebook</span> built from your lecture slides.
+          One question at a time, instant feedback, and a clear explanation for
+          <span class="highlight-coral">every single answer</span>.
+        </p>
+        <div class="welcome-grid" id="welcomeGrid"></div>
+        <div class="welcome-tip">
+          <b>How it works:</b> Pick a chapter from the sidebar. Tap an option — you'll instantly see
+          if it's right or wrong, with the explanation revealed. Use <b>Next</b> to continue, or jump
+          around with the dots at the bottom.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quiz screen -->
+  <div id="quizScreen" style="display:none">
+    <div class="main-head">
+      <button class="sb-mobile-toggle" onclick="toggleSidebar()">☰ Chapters</button>
+      <div class="crumb" id="quizCrumb"></div>
+      <div class="main-title" id="quizTitle"></div>
+      <div class="quiz-bar">
+        <div class="qbar-progress">
+          <span class="label" id="qbarLabel">Q 1 / —</span>
+          <div class="bar"><div id="qbarFill"></div></div>
+        </div>
+        <div class="qbar-score">SCORE <span class="ok" id="qbarScoreNum">0</span> / <span id="qbarScoreTotal">0</span></div>
+      </div>
+    </div>
+    <div class="main-body" id="quizBody"></div>
+  </div>
+</main>
+
+<script>
+/* ============================================================
+   MCQ DATA — every concept from all 7 lecture decks.
+   ============================================================ */
+const CHAPTERS = [
+  /* ========== CHAPTER 1 ========== */
+  {
+    title: "Introduction to AI & Programming",
+    sub: "What AI is, its history, AI vs ML vs DL, ethics, why we program, what programmers do, and skills they need.",
+    questions: [
+      {q:"What is Artificial Intelligence (AI)?",
+       opts:["A type of computer hardware used to store data","A branch of computer science that creates machines capable of performing tasks normally requiring human intelligence","A programming language used only for robotics","A subset of Deep Learning"],
+       a:1,
+       e:"<b>AI</b> is a branch of computer science focused on creating machines or systems that can perform tasks that normally require human intelligence — like learning, reasoning, problem-solving, language understanding, and pattern recognition."},
+
+      {q:"Which of the following is NOT a typical task performed by AI systems?",
+       opts:["Learning from experience","Reasoning and decision-making","Manually soldering circuit boards","Recognizing images and patterns"],
+       a:2,
+       e:"AI tasks include learning from experience, reasoning, problem-solving, understanding language, and recognizing images/patterns. Soldering circuits is a physical/manual task, not an AI task."},
+
+      {q:"What is the basic process AI systems typically follow?",
+       opts:["Write code → debug → deploy","Collect data → analyze patterns → learn from patterns → make predictions","Buy hardware → install software → restart","Connect internet → download data → display results"],
+       a:1,
+       e:"AI systems typically: <b>collect data</b>, <b>analyze patterns</b>, <b>learn from patterns</b>, and then <b>make predictions or decisions</b>."},
+
+      {q:"Who proposed the Turing Test in 1950?",
+       opts:["John McCarthy","Alan Turing","Guido van Rossum","Geoffrey Hinton"],
+       a:1,
+       e:"<b>Alan Turing</b> proposed the Turing Test in 1950 to evaluate machine intelligence — a foundational moment in AI history."},
+
+      {q:"During which period was AI primarily based on Rule-Based and Symbolic AI (IF–THEN logic)?",
+       opts:["1940s–1950s","1960s–1970s","1990s–2000s","2010–Present"],
+       a:1,
+       e:"<b>Rule-Based & Symbolic AI</b> dominated the 1960s–1970s, when systems were built on predefined IF–THEN rules."},
+
+      {q:"What were the main reasons for the AI Winters in the 1970s and late 1980s?",
+       opts:["Too many universities offering AI","Overpromises, limited computational power, and poor real-world performance","Lack of programmers","AI was banned by governments"],
+       a:1,
+       e:"The <b>AI Winters</b> happened due to overpromising, limited computing power, and poor real-world performance — funding dropped and AI research slowed significantly."},
+
+      {q:"What 2012 breakthrough is famous for accelerating modern deep learning?",
+       opts:["Invention of Python","AlexNet's breakthrough in image recognition","Launch of ChatGPT","Release of NumPy"],
+       a:1,
+       e:"In <b>2012</b>, <b>AlexNet</b>'s breakthrough in image recognition kick-started the modern deep learning revolution, fueled by big data and GPUs."},
+
+      {q:"How are AI, Machine Learning (ML), and Deep Learning (DL) related?",
+       opts:["They are completely unrelated","DL ⊃ ML ⊃ AI (DL is the largest)","AI ⊃ ML ⊃ DL (AI is the largest)","ML ⊃ AI ⊃ DL"],
+       a:2,
+       e:"Think of concentric circles: <b>AI</b> is the largest umbrella, <b>ML</b> is a subset of AI, and <b>DL</b> is a subset of ML using neural networks inspired by the human brain."},
+
+      {q:"Which statement about Machine Learning is correct?",
+       opts:["ML is a subset of Deep Learning","ML allows systems to learn from data without being explicitly programmed","ML only works on supercomputers","ML and AI are exactly the same thing"],
+       a:1,
+       e:"<b>Machine Learning</b> is a subset of AI that allows systems to <span class='highlight'>automatically learn from data</span> and improve without being explicitly programmed."},
+
+      {q:"Deep Learning uses what kind of structure?",
+       opts:["Decision trees only","Artificial neural networks inspired by the human brain","Random forests only","SQL databases"],
+       a:1,
+       e:"<b>Deep Learning</b> uses <span class='highlight'>artificial neural networks</span> inspired by the structure of the human brain."},
+
+      {q:"Which of the following is an ethical issue commonly raised about AI?",
+       opts:["Bias and discrimination","Faster CPUs","Cheaper electricity","Better keyboards"],
+       a:0,
+       e:"Common ethical issues in AI include <b>bias and discrimination</b>, privacy and data protection, transparency/explainability, and accountability."},
+
+      {q:"If a self-driving car causes an accident, the question of WHO is responsible falls under which AI ethics issue?",
+       opts:["Bias and Discrimination","Privacy and Data Protection","Accountability and Responsibility","Cost optimization"],
+       a:2,
+       e:"This falls under <b>Accountability and Responsibility</b> — should the developer, the company, the user, or the machine itself be responsible?"},
+
+      {q:"Which of the following is a real-world application area of AI mentioned in the lecture?",
+       opts:["Healthcare (disease prediction, medical imaging)","Industry (automation, robotics, smart factories)","Finance (fraud detection, risk analysis)","All of the above"],
+       a:3,
+       e:"AI is widely applied in <b>healthcare, industry, finance, education, and transportation</b> — all of these are key application areas."},
+
+      {q:"Why is Python the most popular language for AI?",
+       opts:["It is the fastest language ever","Simple syntax, large AI ecosystem (NumPy, Pandas, TensorFlow), and strong community support","It is owned by Google","It only works for AI"],
+       a:1,
+       e:"Python is favored for its <span class='highlight'>simple, readable syntax</span>, its huge AI ecosystem (NumPy, Pandas, Matplotlib, Scikit-learn, TensorFlow, PyTorch), being an industry standard, and a large community."},
+
+      {q:"Which library is used primarily for numerical computing in Python?",
+       opts:["Pandas","NumPy","Matplotlib","Flask"],
+       a:1,
+       e:"<b>NumPy</b> is the go-to Python library for numerical computing. Pandas → data handling, Matplotlib → visualization, Flask → web."},
+
+      {q:"Which of these is NOT one of the main reasons we program?",
+       opts:["To automate tasks","To solve complex problems","To control hardware","To make computers slower"],
+       a:3,
+       e:"We program to <b>automate</b> tasks, <b>solve complex problems</b>, build applications, give instructions, control hardware, and communicate with machines — never to slow computers down."},
+
+      {q:"What is computer programming, in simple terms?",
+       opts:["A way to physically build computer chips","A set of instructions that tell a computer how to perform specific actions","A method to repair broken computers","An online shopping system"],
+       a:1,
+       e:"At its core, <b>computer programming</b> is a set of instructions to facilitate specific actions — from adding two numbers to controlling complex systems."},
+
+      {q:"Which of these are core skills a computer programmer should have?",
+       opts:["Critical thinking, speaking, time management","Drawing, painting, sculpting","Cooking, baking, frying","Singing, dancing, acting"],
+       a:0,
+       e:"The three skills mentioned are <b>critical thinking</b> (logic and reasoning), <b>speaking</b> (conveying information), and <b>time management</b>."},
+
+      {q:"What do computer programmers primarily do?",
+       opts:["Only design websites","Create instructions for computers by writing and testing code","Repair physical computer hardware only","Manage office paperwork"],
+       a:1,
+       e:"Programmers <b>create, modify, and test code</b> — including testing for errors, fixing bugs, and updating/expanding existing programs."},
+
+      {q:"Computers can be considered our 'personal assistants' because they:",
+       opts:["Cook meals for us","Continuously ask 'What would you like me to do next?' and perform tasks","Walk our dogs","Drive themselves without programming"],
+       a:1,
+       e:"The hardware in our current-day computers is essentially built to <span class='highlight'>continuously ask 'What would you like me to do next?'</span> — but we need to speak their language to use them."},
+    ]
+  },
+
+  /* ========== CHAPTER 2 ========== */
+  {
+    title: "Computational Thinking & Programming",
+    sub: "Computer architecture, code as instructions, interactive vs script mode, interpreters vs compilers, intro to Python, Google Colab.",
+    questions: [
+      {q:"In computer architecture, programmers mostly 'talk' to which component?",
+       opts:["The monitor","The CPU (Central Processing Unit)","The keyboard","The power supply"],
+       a:1,
+       e:"As a programmer, you mostly <b>tell the CPU</b> what to do next — sometimes asking it to use main memory, secondary memory, the network, or I/O devices."},
+
+      {q:"What is 'code' in programming?",
+       opts:["A sequence of stored instructions","A type of computer virus","A physical electronic chip","A debugging error"],
+       a:0,
+       e:"Code is a <b>sequence of stored instructions</b> — a piece of our intelligence encoded for the computer."},
+
+      {q:"To know a programming language like Python, you need to know its:",
+       opts:["Vocabulary and grammar","Manufacturer and price","Owner and license","Hardware specifications"],
+       a:0,
+       e:"Just like a natural language, you need to know a programming language's <b>vocabulary and grammar</b>, spell its words correctly, and learn to construct well-formed 'sentences'."},
+
+      {q:"In <code>x = x + 2</code>, what kind of statement is this?",
+       opts:["Function call","Assignment with expression","Print statement","Conditional statement"],
+       a:1,
+       e:"<code>x = 2</code> is a simple <b>assignment statement</b>. <code>x = x + 2</code> is an <b>assignment with expression</b>. <code>print(x)</code> is a function call/print statement."},
+
+      {q:"What's the difference between Python's interactive mode and script mode?",
+       opts:["Interactive runs faster than script","In interactive mode, you type one line at a time and Python responds immediately; script mode runs a file of statements","There is no difference","Script mode requires internet"],
+       a:1,
+       e:"<b>Interactive</b>: type one line at a time, Python responds. <b>Script</b>: write statements in a file and tell Python to execute them."},
+
+      {q:"Which language does the CPU actually understand directly?",
+       opts:["Python","JavaScript","Machine language (binary)","HTML"],
+       a:2,
+       e:"The CPU only understands <b>machine language</b> — sequences of 0s and 1s. High-level languages need translators (interpreters/compilers) to convert them."},
+
+      {q:"What does an INTERPRETER do?",
+       opts:["Translates the entire program at once into an executable file","Reads source code and executes it line-by-line on the fly","Encrypts the source code","Removes errors automatically"],
+       a:1,
+       e:"An <b>interpreter</b> reads source code, parses it, and executes instructions <span class='highlight'>line-by-line on the fly</span>. Python uses an interpreter."},
+
+      {q:"What does a COMPILER do?",
+       opts:["Executes source code line-by-line","Translates the entire program into machine code, producing an executable file","Only fixes syntax errors","Compresses files for storage"],
+       a:1,
+       e:"A <b>compiler</b> reads the full source, translates it all into machine code, and produces an <b>executable file</b> (.exe, .out) that runs later."},
+
+      {q:"Which of these is an interpreted language?",
+       opts:["C","C++","Python","Go"],
+       a:2,
+       e:"<b>Python</b>, JavaScript, and Ruby are interpreted. <b>C, C++, and Go</b> are compiled."},
+
+      {q:"How do interpreters detect errors compared to compilers?",
+       opts:["Interpreters show all errors at once; compilers show one by one","Interpreters stop immediately at the first error; compilers show all errors after compilation","Both show errors identically","Neither show errors"],
+       a:1,
+       e:"<b>Interpreters</b> stop at the first error during execution. <b>Compilers</b> typically show all errors together after the compilation step."},
+
+      {q:"Who created Python and in which year was it first released?",
+       opts:["Bjarne Stroustrup, 1985","Guido van Rossum, 1991","James Gosling, 1995","Dennis Ritchie, 1972"],
+       a:1,
+       e:"Python was created by <b>Guido van Rossum</b> between 1985–1990 and first released in <b>1991</b>."},
+
+      {q:"Python is classified as which kind of language?",
+       opts:["Low-level, compiled","Assembly-level","High-level, interpreted, interactive, and object-oriented","Hardware description language"],
+       a:2,
+       e:"Python is a general-purpose <b>high-level, interpreted, interactive, and object-oriented</b> programming language."},
+
+      {q:"Which famous application is NOT mentioned in the slides as built using Python?",
+       opts:["YouTube","Instagram","Microsoft Word","Spotify"],
+       a:2,
+       e:"YouTube, Instagram, Spotify, Dropbox, Netflix, Google, Uber, and Pinterest were all mentioned. <b>Microsoft Word</b> was not."},
+
+      {q:"What is Google Colab?",
+       opts:["A cloud-storage service like Google Drive","A hosted Jupyter Notebook service that requires no setup and provides free GPU/TPU access","A paid Python compiler","A search engine for code"],
+       a:1,
+       e:"<b>Google Colab</b> is a free hosted Jupyter Notebook service with no setup required, offering GPUs and TPUs — well-suited for ML, data science, and education."},
+
+      {q:"Which of the following is NOT allowed in Google Colab?",
+       opts:["Mining cryptocurrency","Running denial-of-service attacks","Creating deepfakes","All of the above are restricted"],
+       a:3,
+       e:"All listed activities are <b>restricted</b> in Colab — along with file hosting, torrenting, peer-to-peer sharing, password cracking, and using multiple accounts to bypass limits."},
+
+      {q:"Where are Google Colab notebooks stored?",
+       opts:["On the user's hard drive","In Google Drive","On Anthropic's servers","In Microsoft OneDrive"],
+       a:1,
+       e:"Colab notebooks are stored in <b>Google Drive</b> and can be shared just like Google Docs or Sheets."},
+
+      {q:"What does this code print?<div class='qc-code'>x = 2\nprint(x)\nx = x + 2\nprint(x)</div>",
+       opts:["2 then 4","2 then 2","4 then 4","Error"],
+       a:0,
+       e:"First <code>print(x)</code> shows <b>2</b>. Then x becomes 2 + 2 = 4, and the next print shows <b>4</b>."},
+
+      {q:"What does the following loop print?<div class='qc-code'>n = 5\nwhile n > 0:\n    print(n)\n    n = n - 1\nprint('Blastoff!')</div>",
+       opts:["1 2 3 4 5 Blastoff!","5 4 3 2 1 Blastoff!","Blastoff! 5 4 3 2 1","Infinite loop"],
+       a:1,
+       e:"The loop counts down: <b>5, 4, 3, 2, 1</b>, then prints <b>Blastoff!</b>"},
+
+      {q:"What is the output of this Python code?<div class='qc-code'>print('Hello, World!')</div>",
+       opts:["Hello World","Hello, World!","'Hello, World!'","Error"],
+       a:1,
+       e:"<code>print()</code> displays the string exactly as written: <b>Hello, World!</b>"},
+
+      {q:"How can you take multiple inputs in one line in Python?",
+       opts:["Using input().multiple()","x, y = input(\"Enter two values: \").split()","input(x, y)","read(x,y)"],
+       a:1,
+       e:"You use <code>x, y = input(\"Enter two values: \").split()</code> — split() separates the entered values, which are then unpacked into the variables."},
+
+      {q:"What is a key reason to learn programming?",
+       opts:["It is a creative and rewarding activity, and useful programs help others","It guarantees instant wealth","It eliminates the need for sleep","It replaces all human jobs"],
+       a:0,
+       e:"Programming can be <b>financially and personally rewarding</b>, and building <span class='highlight'>useful, elegant, and clever programs</span> is creative and helpful to others."},
+    ]
+  },
+
+  /* ========== CHAPTER 3 ========== */
+  {
+    title: "Python Syntax, Variables & Scope",
+    sub: "Indentation, comments, variables, naming rules, keywords, dynamic typing, casting, type(), global vs local scope.",
+    questions: [
+      {q:"What is the role of indentation in Python?",
+       opts:["It is just for readability and is optional","It defines blocks of code and is mandatory","It is only used inside strings","It only matters in comments"],
+       a:1,
+       e:"Unlike many languages, Python uses <span class='highlight'>indentation to define blocks of code</span> — it is mandatory, and skipping it produces a syntax error."},
+
+      {q:"What is the most common number of spaces used for indentation in Python?",
+       opts:["1","2","4","8"],
+       a:2,
+       e:"The most common indentation is <b>4 spaces</b>, although technically the language only requires at least one — it just must be consistent within a block."},
+
+      {q:"What will this code produce?<div class='qc-code'>if 5 > 2:\nprint(\"Five is greater than two!\")</div>",
+       opts:["Five is greater than two!","Nothing","A SyntaxError (IndentationError)","True"],
+       a:2,
+       e:"Python will raise an <b>IndentationError</b> because the <code>print</code> statement inside the <code>if</code> block is not indented."},
+
+      {q:"What character starts a single-line comment in Python?",
+       opts:["//","--","#","/*"],
+       a:2,
+       e:"Python comments begin with <code>#</code>. Everything after <code>#</code> on that line is ignored by the interpreter."},
+
+      {q:"What is the output of <code>type(17)</code>?",
+       opts:["&lt;class 'str'&gt;","&lt;class 'int'&gt;","&lt;class 'float'&gt;","&lt;class 'complex'&gt;"],
+       a:1,
+       e:"<code>17</code> is an integer, so <code>type(17)</code> returns <code>&lt;class 'int'&gt;</code>."},
+
+      {q:"What is the result of <code>type(\"17\")</code>?",
+       opts:["&lt;class 'int'&gt;","&lt;class 'str'&gt;","&lt;class 'float'&gt;","Error"],
+       a:1,
+       e:"The quotation marks make it a string. So <code>type(\"17\")</code> returns <b>&lt;class 'str'&gt;</b>."},
+
+      {q:"What is a variable in Python?",
+       opts:["A reserved word","A name that refers to a value (a container for storing data)","A type of loop","A built-in function"],
+       a:1,
+       e:"A <b>variable</b> is a name that refers to a value — Python variables are <span class='highlight'>containers for storing data</span>."},
+
+      {q:"Which of the following is an INVALID variable name in Python?",
+       opts:["my_name","_value","airspeed_of_unladen_swallow","76trombones"],
+       a:3,
+       e:"Variable names <span class='highlight'>cannot start with a number</span>. <code>76trombones</code> is invalid for that reason."},
+
+      {q:"Why is <code>class = 'Advanced'</code> an invalid variable assignment?",
+       opts:["Because of the equals sign","Because <code>class</code> is a reserved Python keyword","Because the string is too long","Because variables must be uppercase"],
+       a:1,
+       e:"<b><code>class</code></b> is one of Python's reserved keywords and cannot be used as a variable name."},
+
+      {q:"How many keywords does Python reserve?",
+       opts:["20","35","50","100"],
+       a:1,
+       e:"Python reserves <b>35 keywords</b> — words like <code>if</code>, <code>while</code>, <code>for</code>, <code>class</code>, <code>def</code>, etc. that cannot be used as identifiers."},
+
+      {q:"How can you get a list of all Python keywords?",
+       opts:["import keyword; print(keyword.kwlist)","print(all_keywords())","keywords()","help('keywords')"],
+       a:0,
+       e:"You import the <code>keyword</code> module and use <code>keyword.kwlist</code> to get the full list."},
+
+      {q:"Are Python variable names case-sensitive?",
+       opts:["No, age and AGE are the same","Yes, age, Age, and AGE are three different variables","Only inside functions","Only for integers"],
+       a:1,
+       e:"Yes — Python variable names are <b>case-sensitive</b>. <code>age</code>, <code>Age</code>, and <code>AGE</code> are three different variables."},
+
+      {q:"Which of these is a CORRECT way to declare a Python variable?",
+       opts:["var x = 5","#x = 5","$x = 5","x = 5"],
+       a:3,
+       e:"Python uses simple assignment: <code>x = 5</code>. There's no <code>var</code> keyword and no need for <code>$</code> or <code>#</code> prefixes."},
+
+      {q:"What does this code do?<div class='qc-code'>x, y, z = \"Orange\", \"Banana\", \"Cherry\"</div>",
+       opts:["Creates one variable holding all three values","Assigns multiple values to multiple variables in one line","Causes a SyntaxError","Creates a tuple named x"],
+       a:1,
+       e:"Python supports <b>multiple assignment</b>: this assigns Orange to x, Banana to y, and Cherry to z in a single line."},
+
+      {q:"What does <code>x = y = z = \"Orange\"</code> do?",
+       opts:["Creates three different strings","Assigns the same value 'Orange' to all three variables","Raises an error","Only assigns to z"],
+       a:1,
+       e:"This assigns the <b>same value</b> 'Orange' to all three variables x, y, and z."},
+
+      {q:"What is 'unpacking' in Python?",
+       opts:["Removing elements from a list","Extracting values from a collection (list/tuple) into individual variables","Deleting variables","Renaming variables"],
+       a:1,
+       e:"<b>Unpacking</b> means extracting values from a collection into separate variables, e.g. <code>x, y, z = fruits</code> where fruits is a list of three items."},
+
+      {q:"Which function converts a value to an integer?",
+       opts:["str()","int()","float()","char()"],
+       a:1,
+       e:"<b>int()</b> converts a value to an integer. Other casting functions: <code>float()</code> for floats, <code>str()</code> for strings."},
+
+      {q:"What does <code>del var</code> do?",
+       opts:["Defines a variable","Deletes the variable from memory","Prints the variable","Doubles the variable"],
+       a:1,
+       e:"The <b><code>del</code></b> statement removes the variable from memory. After deletion, accessing it raises a NameError."},
+
+      {q:"Which naming convention uses an underscore to separate words, like <code>km_per_hour</code>?",
+       opts:["Camel case","Pascal case","Snake case","Kebab case"],
+       a:2,
+       e:"<b>Snake case</b> uses underscores between words. Camel case = <code>kmPerHour</code>. Pascal case = <code>KmPerHour</code>."},
+
+      {q:"What's a global variable?",
+       opts:["A variable defined inside a function","A variable declared outside all functions, accessible from anywhere in the program","A variable that only stores numbers","A variable that exists only on global servers"],
+       a:1,
+       e:"A <b>global variable</b> is declared outside any function and can be accessed from anywhere in the program."},
+
+      {q:"What is a local variable?",
+       opts:["A variable declared inside a function, only usable within that function","A variable available everywhere","A variable shared between functions","A variable stored on the local hard drive"],
+       a:0,
+       e:"A <b>local variable</b> is declared inside a function and can <span class='highlight'>only be used within that function</span>."},
+
+      {q:"What is the output?<div class='qc-code'>x = 50\ndef test():\n    x = 10\n    print(\"Local x:\", x)\ntest()\nprint(\"Global x:\", x)</div>",
+       opts:["Local x: 50  Global x: 50","Local x: 10  Global x: 10","Local x: 10  Global x: 50","Error"],
+       a:2,
+       e:"Inside the function, a new local x = 10 is created. The global x = 50 is untouched. Output: <b>Local x: 10</b>, then <b>Global x: 50</b>."},
+
+      {q:"Which keyword lets you modify a global variable inside a function?",
+       opts:["public","static","global","extern"],
+       a:2,
+       e:"You use the <b><code>global</code></b> keyword inside a function to indicate that you want to modify a variable from the global scope."},
+
+      {q:"What is the output?<div class='qc-code'>x = 5\ny = x\nx = x + 1\nprint(y)\nprint(x)</div>",
+       opts:["6 then 6","5 then 6","6 then 5","5 then 5"],
+       a:1,
+       e:"<code>y = x</code> assigned 5 to y. Changing x to 6 doesn't affect y. So output is <b>5</b> then <b>6</b>."},
+
+      {q:"What does <code>type()</code> do in Python?",
+       opts:["Casts a variable to a type","Returns the data type of an object","Deletes a variable","Creates a new variable"],
+       a:1,
+       e:"<b><code>type()</code></b> is a built-in function that returns the type of the object passed to it."},
+
+      {q:"What does <code>id(obj)</code> return?",
+       opts:["The variable's name","The memory address where the object is stored","The number of times the object is used","The size of the object in bytes"],
+       a:1,
+       e:"Python's <b><code>id()</code></b> function returns the memory address (identity) of an object."},
+
+      {q:"How does Python differ from C/C++ in the way it handles variables?",
+       opts:["Python variables are tied to specific memory addresses like in C","A Python variable refers to the object, not the memory location — multiple variables can be labels for the same object","Python doesn't allow variables","Python only allows one variable type"],
+       a:1,
+       e:"In C/C++, variables ARE memory locations. In Python, a variable is a <b>reference (label)</b> to an object — multiple variables can refer to the same object."},
+
+      {q:"What is the correct syntax to assign 'Hello World' to three variables in one statement?",
+       opts:["x, y, z = 'Hello World'","x = y = z = 'Hello World'","x|y|z = 'Hello World'","x; y; z = 'Hello World'"],
+       a:1,
+       e:"<code>x = y = z = 'Hello World'</code> assigns the same value to all three. Option 1 would error because 'Hello World' is one string, not three values to unpack."},
+    ]
+  },
+
+  /* ========== CHAPTER 4 ========== */
+  {
+    title: "Python Data Types",
+    sub: "Numeric, string, list, tuple, range, dict, set, bytes/bytearray/memoryview — properties, methods, and mutability.",
+    questions: [
+      {q:"In Python, data types are actually:",
+       opts:["Functions","Classes, and variables are their instances/objects","Modules","Operators"],
+       a:1,
+       e:"Python data types are actually <b>classes</b>, and the variables you create are their instances/objects. Python is dynamically typed."},
+
+      {q:"Which of these is a NUMERIC data type in Python?",
+       opts:["int","float","complex","All of the above"],
+       a:3,
+       e:"Python numeric types include <b>int, float, and complex</b>. (Booleans are technically a subclass of int.)"},
+
+      {q:"What is the output of <code>type(5+6j)</code>?",
+       opts:["&lt;class 'int'&gt;","&lt;class 'float'&gt;","&lt;class 'complex'&gt;","&lt;class 'str'&gt;"],
+       a:2,
+       e:"<code>5+6j</code> is a complex number, so type returns <b>&lt;class 'complex'&gt;</b>."},
+
+      {q:"Which of the following is TRUE about Python strings?",
+       opts:["They are mutable","They are immutable","They cannot use indexing","They are not sequences"],
+       a:1,
+       e:"Python strings are <b>immutable</b> — operations on strings produce new string objects rather than mutating the original. They DO support indexing and ARE sequences."},
+
+      {q:"What does the <code>+</code> operator do with two strings?",
+       opts:["Adds them mathematically","Concatenates them (joins end-to-end)","Multiplies them","Causes an error"],
+       a:1,
+       e:"With strings, <b><code>+</code></b> performs <span class='highlight'>concatenation</span>, joining strings end-to-end. So '100' + '150' = '100150', not 250."},
+
+      {q:"What does this print?<div class='qc-code'>first = 'Test '\nsecond = 3\nprint(first * second)</div>",
+       opts:["Test 3","Test Test Test","9","Error"],
+       a:1,
+       e:"The <b><code>*</code></b> operator with a string and an integer <b>repeats</b> the string. Output: <b>Test Test Test</b>"},
+
+      {q:"What does the slice <code>str[2:5]</code> return for <code>str = 'Hello World!'</code>?",
+       opts:["'Hel'","'llo'","'lo W'","'ello'"],
+       a:1,
+       e:"Slicing <code>[2:5]</code> returns characters at indices 2, 3, 4 — that's <b>'llo'</b>. (H=0, e=1, l=2, l=3, o=4)"},
+
+      {q:"What does <code>s.upper()</code> do?",
+       opts:["Returns a new string with all characters in uppercase","Modifies s in place","Removes whitespace","Reverses the string"],
+       a:0,
+       e:"<b><code>upper()</code></b> returns a new string with all characters converted to uppercase. Strings are immutable, so it doesn't modify s."},
+
+      {q:"What does <code>len(\"woosongUniversity\")</code> return?",
+       opts:["16","17","18","Error"],
+       a:1,
+       e:"<b><code>len()</code></b> returns the total number of characters. 'woosongUniversity' has <b>17</b> characters."},
+
+      {q:"What does <code>\"   wsu   \".strip()</code> return?",
+       opts:["'wsu'","'   wsu   '","'wsu   '","Error"],
+       a:0,
+       e:"<b><code>strip()</code></b> removes leading and trailing whitespace, returning <b>'wsu'</b>."},
+
+      {q:"What does <code>\"Python is fun\".replace(\"fun\", \"awesome\")</code> return?",
+       opts:["'Python is fun'","'Python is awesome'","'awesome is fun'","Error"],
+       a:1,
+       e:"<b><code>replace()</code></b> swaps all occurrences of the substring. Result: <b>'Python is awesome'</b>"},
+
+      {q:"Which of the following is the CORRECT way to declare a list in Python?",
+       opts:["list = (1, 2, 3)","list = {1, 2, 3}","list = [1, 2, 3]","list = <1, 2, 3>"],
+       a:2,
+       e:"<b>Lists</b> use <span class='highlight'>square brackets [ ]</span>. Parentheses → tuple. Curly braces → set/dict."},
+
+      {q:"Which Python data type is MUTABLE?",
+       opts:["Tuple","String","List","Frozenset"],
+       a:2,
+       e:"<b>Lists are mutable</b> — their elements can be changed. Tuples, strings, and frozensets are immutable."},
+
+      {q:"How is a tuple defined?",
+       opts:["With square brackets [ ]","With parentheses ( ) or just commas","With curly braces { }","With angle brackets < >"],
+       a:1,
+       e:"<b>Tuples</b> use parentheses <code>( )</code>, but parentheses are optional — comma-separated values are treated as a tuple by default."},
+
+      {q:"What is the main difference between lists and tuples?",
+       opts:["Lists are immutable, tuples are mutable","Lists are mutable, tuples are immutable","They are exactly the same","Tuples can hold more elements"],
+       a:1,
+       e:"<b>Lists are mutable</b> (you can change elements/size). <b>Tuples are immutable</b> — they're like read-only lists."},
+
+      {q:"What is the result?<div class='qc-code'>x = (1, [2, 3])\nx[1][0] = 99\nprint(x)</div>",
+       opts:["(1, [99, 3])","Error","(99, [2, 3])","(1, [2, 3])"],
+       a:0,
+       e:"The tuple itself is immutable, but the <b>list inside</b> the tuple IS mutable. So we can modify the list's elements, giving <b>(1, [99, 3])</b>."},
+
+      {q:"Which is an immutable data type?",
+       opts:["List","Dictionary","Tuple","Set"],
+       a:2,
+       e:"<b>Tuple</b> is immutable. List, dict, and set are mutable."},
+
+      {q:"What does <code>range(2, 5)</code> produce?",
+       opts:["[2, 3, 4, 5]","[2, 3, 4]","[3, 4, 5]","[1, 2, 3, 4]"],
+       a:1,
+       e:"<code>range(start, stop)</code> generates numbers from start up to but NOT including stop — so 2, 3, 4 (three numbers)."},
+
+      {q:"What does <code>range(1, 5, 2)</code> produce?",
+       opts:["1, 3","1, 3, 5","1, 2, 3, 4","2, 4"],
+       a:0,
+       e:"<code>range(start, stop, step)</code>: start at 1, step by 2, stop before 5 → <b>1, 3</b>."},
+
+      {q:"What is the output?<div class='qc-code'>x = type(3.0)\nprint(x)</div>",
+       opts:["&lt;class 'int'&gt;","&lt;class 'float'&gt;","&lt;class 'complex'&gt;","&lt;class 'str'&gt;"],
+       a:1,
+       e:"<code>3.0</code> is a float — output: <b>&lt;class 'float'&gt;</b>"},
+
+      {q:"Which of these creates a SET in Python?",
+       opts:["{1, 2, 3}","[1, 2, 3]","(1, 2, 3)","{\"one\": 1, \"two\": 2}"],
+       a:0,
+       e:"A set is created with curly braces around comma-separated values: <b>{1, 2, 3}</b>. (Curly braces with key:value pairs are dictionaries.)"},
+
+      {q:"What is the output?<div class='qc-code'>x = {1, 2, 3, 3, 2}\nprint(x)</div>",
+       opts:["{1, 2, 3, 3, 2}","[1, 2, 3, 3, 2]","{1, 2, 3}","Error"],
+       a:2,
+       e:"Sets <span class='highlight'>automatically remove duplicates</span>. Output: <b>{1, 2, 3}</b>"},
+
+      {q:"Which of these is the correct way to create a dictionary?",
+       opts:["{\"name\": \"Alice\", \"age\": 20}","{(\"name\", \"Alice\"), (\"age\", 20)}","[\"name\": \"Alice\", \"age\": 20]","(\"name\": \"Alice\", \"age\": 20)"],
+       a:0,
+       e:"Dictionaries use curly braces with <b>key: value pairs</b>: <code>{\"name\": \"Alice\", \"age\": 20}</code>."},
+
+      {q:"Which of these is NOT a valid Python data type?",
+       opts:["set","array","dict","tuple"],
+       a:1,
+       e:"Python has <b>no built-in <code>array</code> type</b> — it uses lists, or the separate <code>array</code> module. The others (set, dict, tuple) are all built-in."},
+
+      {q:"How do you check the type of variable x?",
+       opts:["print(dtype(x))","print(type(x))","print(x.dtype())","print(typeof(x))"],
+       a:1,
+       e:"The correct syntax is <code>print(type(x))</code>. <code>type()</code> is a built-in function, not a method or attribute."},
+
+      {q:"Which of the following creates a bytes object?",
+       opts:["bytes(5)","b'hello'","bytes([65, 66])","All of the above"],
+       a:3,
+       e:"All three are valid ways to create a bytes object: from an integer (creates 5 zero bytes), from a literal with <code>b</code> prefix, or from an iterable of integers."},
+
+      {q:"What's the difference between bytes and bytearray?",
+       opts:["bytes is mutable, bytearray is immutable","bytes is immutable, bytearray is mutable","They are exactly the same","bytearray can only hold ASCII"],
+       a:1,
+       e:"<b>bytes</b> is immutable, <b>bytearray</b> is mutable. Both store sequences of bytes (integers 0–255)."},
+
+      {q:"What is a Python dictionary?",
+       opts:["An ordered list of values","A collection of key:value pairs separated by commas inside curly braces","A set of unique values","A function that returns definitions"],
+       a:1,
+       e:"A <b>dictionary</b> stores <b>key:value pairs</b> inside curly braces <code>{ }</code>. Keys and values are linked using <code>:</code>."},
+
+      {q:"Which method returns all keys of a dictionary?",
+       opts:["dict.keys()","dict.values()","dict.items()","dict.all()"],
+       a:0,
+       e:"<b><code>dict.keys()</code></b> returns all keys. <code>values()</code> returns all values. <code>items()</code> returns all key-value pairs."},
+
+      {q:"How can you access a value in a dictionary?",
+       opts:["Using square brackets with a key, OR using .get() method","Only using .get()","Only using square brackets","Using .find()"],
+       a:0,
+       e:"You can access values with <b><code>d[\"key\"]</code></b> or <b><code>d.get(\"key\")</code></b> — both return the value linked to the given key."},
+
+      {q:"Why can't you slice a dictionary like a list?",
+       opts:["Because dictionaries are too large","Because dictionary items are not identified by positional index, but by key","Because slicing was removed from Python","Because keys are unhashable"],
+       a:1,
+       e:"Dictionaries are <b>not sequences</b> — items aren't accessed by positional index but by their <b>key</b>. So slicing doesn't apply."},
+    ]
+  },
+
+  /* ========== CHAPTER 5 ========== */
+  {
+    title: "Type Casting & Operators",
+    sub: "Implicit vs explicit casting, arithmetic / assignment / comparison / logical operators, modulus, PEMDAS, operator precedence.",
+    questions: [
+      {q:"What is implicit type casting?",
+       opts:["When the programmer explicitly converts types","When the language compiler/interpreter automatically converts an object of one type to another","When variables are deleted","When data is encrypted"],
+       a:1,
+       e:"<b>Implicit casting</b> happens when Python automatically converts one type to another (e.g., int → float during arithmetic)."},
+
+      {q:"Why won't Python automatically convert a float to an int?",
+       opts:["Because floats are too large","Because it would result in loss of data (the fractional part)","Because it's slower","Because of memory limits"],
+       a:1,
+       e:"Python avoids automatic float → int conversion because it would <span class='highlight'>lose the fractional part</span>. But int → float is fine (just adds .0)."},
+
+      {q:"What is the output?<div class='qc-code'>a = 10\nb = 10.5\nc = a + b\nprint(c)</div>",
+       opts:["20 (int)","20.5 (float)","Error","10.5"],
+       a:1,
+       e:"During arithmetic, Python upgrades the int 10 → 10.0, then adds → <b>20.5</b> (a float)."},
+
+      {q:"What's Python's general implicit casting order?",
+       opts:["complex → float → int","int → float → complex","str → int → float","float → int → bool"],
+       a:1,
+       e:"Python upgrades smaller-precision types to larger ones in the order: <b>int → float → complex</b>."},
+
+      {q:"What is the output?<div class='qc-code'>a = True\nb = 10.5\nc = a + b\nprint(c)</div>",
+       opts:["Error","True10.5","11.5","10.5"],
+       a:2,
+       e:"Boolean True equals 1. So 1 is upgraded to 1.0 (float), then added to 10.5 → <b>11.5</b>."},
+
+      {q:"What happens with this code?<div class='qc-code'>a = 5\nb = \"10\"\nprint(a + b)</div>",
+       opts:["15","510","TypeError (incompatible types)","Nothing"],
+       a:2,
+       e:"Python <span class='highlight'>does NOT</span> implicitly convert between strings and numbers. This raises a <b>TypeError</b>. You'd need explicit casting: <code>a + int(b)</code>."},
+
+      {q:"What is the result of <code>int(\"3.3\")</code>?",
+       opts:["3","3.3","Error (ValueError)","0"],
+       a:2,
+       e:"<code>int(\"3.3\")</code> raises a <b>ValueError</b> — int() can convert from a string only if it represents a whole number. To go from a decimal string, use <code>float(\"3.3\")</code> first."},
+
+      {q:"What does PEMDAS stand for?",
+       opts:["Print, Edit, Modify, Define, Add, Subtract","Parentheses, Exponentiation, Multiplication, Division, Addition, Subtraction","Python Exception Mode Default Assignment","None of these"],
+       a:1,
+       e:"<b>PEMDAS</b>: <span class='highlight'>P</span>arentheses → <span class='highlight'>E</span>xponentiation → <span class='highlight'>M</span>ultiplication/<span class='highlight'>D</span>ivision → <span class='highlight'>A</span>ddition/<span class='highlight'>S</span>ubtraction."},
+
+      {q:"What is the result of <code>2 * (3 - 1)</code>?",
+       opts:["4","5","6","2"],
+       a:0,
+       e:"Parentheses first: 3 - 1 = 2. Then 2 * 2 = <b>4</b>."},
+
+      {q:"What is the result of <code>2 ** 1 + 1</code>?",
+       opts:["3","4","2","8"],
+       a:0,
+       e:"Exponentiation first: 2 ** 1 = 2. Then 2 + 1 = <b>3</b>."},
+
+      {q:"What is the result of <code>6 + 4 / 2</code>?",
+       opts:["5","8","3","10"],
+       a:1,
+       e:"Division first (higher precedence): 4 / 2 = 2. Then 6 + 2 = <b>8</b>."},
+
+      {q:"What is the result of <code>5 - 3 - 1</code>?",
+       opts:["3","1","-1","7"],
+       a:1,
+       e:"Same-precedence operators evaluate <span class='highlight'>left to right</span>: (5 - 3) - 1 = 2 - 1 = <b>1</b>."},
+
+      {q:"What does the modulus operator <code>%</code> do?",
+       opts:["Calculates a percentage","Returns the remainder of division","Multiplies by 100","Performs floor division"],
+       a:1,
+       e:"<b><code>%</code></b> returns the <b>remainder</b> when the first operand is divided by the second. Example: 7 % 3 = 1."},
+
+      {q:"What does <code>7 % 3</code> return?",
+       opts:["2","1","0","2.33"],
+       a:1,
+       e:"7 divided by 3 is 2 with a remainder of <b>1</b>. So 7 % 3 = 1."},
+
+      {q:"How do you check if a number x is divisible by y?",
+       opts:["if x / y == 0","if x % y == 0","if x // y == 0","if x ** y == 0"],
+       a:1,
+       e:"If <b><code>x % y == 0</code></b>, then x is divisible by y (no remainder)."},
+
+      {q:"What does <code>x % 10</code> give you for an integer x?",
+       opts:["The first digit of x","The right-most digit of x (in base 10)","x divided by 10","Always 0"],
+       a:1,
+       e:"<code>x % 10</code> extracts the <b>right-most (last) digit</b> of x. Example: 247 % 10 = 7."},
+
+      {q:"What does the <code>**</code> operator do in Python?",
+       opts:["Multiplication","Floor division","Exponentiation (power)","Modulus"],
+       a:2,
+       e:"<b><code>**</code></b> is the exponentiation operator. <code>a ** b</code> means a raised to the power b."},
+
+      {q:"What does the <code>//</code> operator do?",
+       opts:["Comments code","Floor division (integer division, discards remainder)","Multiplication","String concatenation"],
+       a:1,
+       e:"<b><code>//</code></b> is floor division — it divides and returns the integer quotient (discards the remainder). Example: 9 // 2 = 4."},
+
+      {q:"What does <code>x += 3</code> mean?",
+       opts:["x = 3","x = x * 3","x = x + 3","x = x ** 3"],
+       a:2,
+       e:"<b><code>+=</code></b> is a compound assignment operator. <code>x += 3</code> is shorthand for <code>x = x + 3</code>."},
+
+      {q:"What is the comparison operator for 'not equal'?",
+       opts:["!=","<>","~=","not="],
+       a:0,
+       e:"In Python, <b><code>!=</code></b> means 'not equal'. (<code>&lt;&gt;</code> was an old syntax that no longer exists in Python 3.)"},
+
+      {q:"What does <code>x == y</code> test?",
+       opts:["Whether x is greater than y","Whether x is equal to y","Whether x is the same object as y","Assigns y to x"],
+       a:1,
+       e:"<b><code>==</code></b> compares values for equality. (<code>is</code> checks object identity. <code>=</code> is assignment.)"},
+
+      {q:"What does the logical AND operator do?",
+       opts:["Returns True if at least one operand is true","Returns True only if BOTH operands are true","Inverts a boolean value","Adds two values"],
+       a:1,
+       e:"<b><code>and</code></b> returns True only when <span class='highlight'>both statements are true</span>."},
+
+      {q:"What does the logical OR operator do?",
+       opts:["Returns True only if both are true","Returns True if at least one operand is true","Returns False always","Returns the average"],
+       a:1,
+       e:"<b><code>or</code></b> returns True if at least one of the statements is true."},
+
+      {q:"What does the logical NOT operator do?",
+       opts:["Adds 1 to a value","Reverses the boolean result (True ↔ False)","Multiplies a value","Has no effect"],
+       a:1,
+       e:"<b><code>not</code></b> reverses the boolean — <code>not True</code> → False, <code>not False</code> → True."},
+
+      {q:"What is the output?<div class='qc-code'>result = 3 + 2 * 2 ** 2 / 2 - 1\nprint(result)</div>",
+       opts:["6.0","2.0","8.0","6"],
+       a:0,
+       e:"Order: 2**2 = 4 → 2*4 = 8 → 8/2 = 4.0 → 3 + 4.0 - 1 = <b>6.0</b>"},
+    ]
+  },
+
+  /* ========== CHAPTER 6 ========== */
+  {
+    title: "Conditionals, Boolean Expressions & I/O",
+    sub: "if/elif/else, indentation in conditions, boolean expressions, comparison, the pass statement, input(), print(), mnemonic naming.",
+    questions: [
+      {q:"What is the simplest form of conditional execution in Python?",
+       opts:["The for loop","The if statement","The switch statement","The try block"],
+       a:1,
+       e:"The simplest form is the <b><code>if</code> statement</b>: <code>if condition: do something</code>."},
+
+      {q:"What's the purpose of the <code>pass</code> statement?",
+       opts:["Pass arguments to a function","Skip to the next iteration of a loop","Act as a placeholder; does nothing","Exit a program"],
+       a:2,
+       e:"<b><code>pass</code></b> is a placeholder statement that does nothing. It's used when a block syntactically requires a statement but you don't want any code to execute yet."},
+
+      {q:"What does this code output?<div class='qc-code'>if x%2 == 0:\n    print('x is even')\nelse:\n    print('x is odd')</div>",
+       opts:["Always 'x is even'","Always 'x is odd'","Whichever matches the parity of x","Error"],
+       a:2,
+       e:"This is <b>alternative execution</b>: prints 'x is even' if x is even, else 'x is odd'."},
+
+      {q:"What error occurs from this code?<div class='qc-code'>a = 33\nb = 200\nif b > a:\nprint(\"b is greater than a\")</div>",
+       opts:["ValueError","IndentationError","NameError","TypeError"],
+       a:1,
+       e:"Python relies on <b>indentation</b> to define scope. The print line under <code>if</code> must be indented — otherwise it raises an <b>IndentationError</b>."},
+
+      {q:"What is <code>elif</code> in Python?",
+       opts:["A loop construct","An abbreviation of 'else if', used for chained conditions","A function name","A variable type"],
+       a:1,
+       e:"<b><code>elif</code></b> = 'else if'. It allows you to test multiple conditions in a chain. There's no limit on the number of <code>elif</code> branches."},
+
+      {q:"In an if/elif/else chain, where must the <code>else</code> clause appear?",
+       opts:["At the beginning","Anywhere in the chain","At the end (and it's optional)","After every if"],
+       a:2,
+       e:"If used, the <b><code>else</code> clause must be at the end</b>. It's also optional."},
+
+      {q:"What is the output?<div class='qc-code'>a = 33\nb = 33\nif b > a:\n    print(\"b is greater than a\")\nelif a == b:\n    print(\"a and b are equal\")</div>",
+       opts:["b is greater than a","a and b are equal","Nothing","Error"],
+       a:1,
+       e:"a and b are both 33. <code>b > a</code> is False, but <code>a == b</code> is True → prints <b>'a and b are equal'</b>."},
+
+      {q:"What is a 'nested' conditional?",
+       opts:["Conditions placed inside loops","One conditional placed inside another","Multiple if statements at the same level","An if without an else"],
+       a:1,
+       e:"A <b>nested conditional</b> is one if-statement placed <span class='highlight'>inside another</span>. Use them sparingly — they get hard to read quickly."},
+
+      {q:"What is the output?<div class='qc-code'>x = 41\nif x > 10:\n    print(\"Above ten,\")\n    if x > 20:\n        print(\"and also above 20!\")\n    else:\n        print(\"but not above 20.\")</div>",
+       opts:["Above ten,","Above ten, then and also above 20!","but not above 20.","Above ten, then but not above 20."],
+       a:1,
+       e:"x=41 is > 10 (prints 'Above ten,'), then > 20 (prints 'and also above 20!'). Output: <b>Above ten,</b> then <b>and also above 20!</b>"},
+
+      {q:"What's a boolean expression?",
+       opts:["A complex math equation","An expression that evaluates to either True or False","A type of string","A loop condition"],
+       a:1,
+       e:"A <b>boolean expression</b> is one that evaluates to either <b>True</b> or <b>False</b>."},
+
+      {q:"What does <code>5 == 5</code> return?",
+       opts:["True","False","5","Error"],
+       a:0,
+       e:"<code>==</code> compares for equality. 5 equals 5, so it returns <b>True</b>."},
+
+      {q:"To which class do <code>True</code> and <code>False</code> belong?",
+       opts:["str","int","bool","NoneType"],
+       a:2,
+       e:"True and False are special values that belong to the <b><code>bool</code></b> class — they are NOT strings."},
+
+      {q:"What's the difference between <code>=</code> and <code>==</code>?",
+       opts:["They are identical","<code>=</code> is comparison, <code>==</code> is assignment","<code>=</code> is assignment, <code>==</code> is comparison","Both are comparison operators"],
+       a:2,
+       e:"<b><code>=</code></b> is the assignment operator. <b><code>==</code></b> is the equality comparison operator. Confusing them is a very common error."},
+
+      {q:"Which is NOT a valid Python comparison operator?",
+       opts:["!=","<=",">=","=>"],
+       a:3,
+       e:"Python has <code>!=</code>, <code>&lt;=</code>, and <code>&gt;=</code>. There is <b>no <code>=&gt;</code></b> or <code>=&lt;</code> operator."},
+
+      {q:"What does <code>x is y</code> test?",
+       opts:["Whether x equals y","Whether x is the same object as y (identity)","Whether x is greater than y","Whether x has been assigned"],
+       a:1,
+       e:"<b><code>is</code></b> tests <span class='highlight'>object identity</span> — whether x and y refer to the same object in memory. (<code>==</code> tests value equality.)"},
+
+      {q:"What is the output?<div class='qc-code'>x = 10\ny = 20\nprint(\"x > 0 and x < 10:\", x > 0 and x < 10)</div>",
+       opts:["True","False","Error","None"],
+       a:1,
+       e:"x > 0 is True, but x < 10 is False (x is 10). True and False = <b>False</b>."},
+
+      {q:"What is the output?<div class='qc-code'>a = 6\nb = 10\nprint(a == 6 and not b == 10)</div>",
+       opts:["True","False","Error","None"],
+       a:1,
+       e:"<code>a == 6</code> → True. <code>b == 10</code> → True, so <code>not True</code> → False. True and False = <b>False</b>."},
+
+      {q:"What does Python's <code>input()</code> function do?",
+       opts:["Outputs text to the screen","Reads a line of text from the keyboard and returns it as a string","Imports a module","Defines a variable"],
+       a:1,
+       e:"<b><code>input()</code></b> stops the program and waits for the user to type something. When they press Enter, it returns what they typed <span class='highlight'>as a string</span>."},
+
+      {q:"In <code>input('What is your name?\\n')</code>, what does the <code>\\n</code> do?",
+       opts:["Indicates a number","Represents a newline (line break)","Cancels input","Indicates a name field"],
+       a:1,
+       e:"<b><code>\\n</code></b> is the newline character — it causes a line break, so the user's input appears on the next line, below the prompt."},
+
+      {q:"Why does this code raise a TypeError?<div class='qc-code'>width = input(\"Enter width : \")\nheight = input(\"Enter height : \")\narea = width * height\nprint(area)</div>",
+       opts:["The variables aren't defined","input() always returns a string, and you can't multiply two strings","print() requires more arguments","Width and height are reserved words"],
+       a:1,
+       e:"<b><code>input()</code> always returns a string</b>. Multiplying two strings raises <b>TypeError: can't multiply sequence by non-int of type 'str'</b>. Use <code>int(input(...))</code> to convert."},
+
+      {q:"How do you take an integer input from the user?",
+       opts:["int(input(\"...\"))","input(int(...))","input.int(\"...\")","integer.input(\"...\")"],
+       a:0,
+       e:"Wrap input() with <code>int()</code>: <code>x = int(input(\"...\"))</code> to convert the string input to an integer."},
+
+      {q:"What does the <code>sep</code> parameter of <code>print()</code> do?",
+       opts:["Specifies how many spaces to indent","Specifies the separator between multiple comma-separated objects","Specifies the file to write to","Adds extra spaces"],
+       a:1,
+       e:"<b><code>sep</code></b> defines the separator. Default is a space. Example: <code>print('a', 'b', sep=',')</code> → <code>a,b</code>"},
+
+      {q:"What are 'mnemonic variable names'?",
+       opts:["Names that have no meaning","Wisely chosen names that reflect the data's purpose and help us remember why the variable was created","Names that are randomly generated","Names made up of single letters"],
+       a:1,
+       e:"<b>Mnemonic</b> means 'memory aid'. Mnemonic variable names like <code>hours</code>, <code>rate</code>, <code>pay</code> make code <span class='highlight'>much easier to read and understand</span> than <code>a</code>, <code>b</code>, <code>c</code> or <code>x1q3z9ahd</code>."},
+
+      {q:"Why are mnemonic variable names recommended?",
+       opts:["They make Python run faster","They use less memory","They make the programmer's intent clearer for humans reading the code","Python requires them"],
+       a:2,
+       e:"The Python interpreter sees all names as identical, but <b>humans understand intent</b> much faster when names reflect their purpose."},
+    ]
+  },
+
+  /* ========== CHAPTER 7 ========== */
+  {
+    title: "Exception Handling & Debugging",
+    sub: "try/except/else/finally, catching specific exceptions like ValueError and ZeroDivisionError, debugging tracebacks.",
+    questions: [
+      {q:"What does Python exception handling allow?",
+       opts:["A program to crash faster","A program to handle unexpected events gracefully without crashing","A program to skip all errors","A program to never produce output"],
+       a:1,
+       e:"<b>Exception handling</b> lets a program <span class='highlight'>gracefully handle unexpected events</span> (invalid input, missing files, etc.) without crashing. It detects, responds, and can continue execution."},
+
+      {q:"Which Python construct is used for exception handling?",
+       opts:["if / else","try / except","switch / case","for / while"],
+       a:1,
+       e:"Python uses <b><code>try / except</code></b> for exception handling — a built-in conditional execution structure for errors."},
+
+      {q:"How does try/except work conceptually?",
+       opts:["It runs the except block first, then the try block","It runs try; if an error occurs, jumps to except. If no error, except is skipped.","Both blocks always run","Neither block ever runs"],
+       a:1,
+       e:"Python first runs the <b>try</b> block. If <span class='highlight'>all goes well</span>, except is skipped. If an exception occurs, Python jumps out of try and runs the <b>except</b> block."},
+
+      {q:"What is the output if x is undefined?<div class='qc-code'>try:\n    print(x)\nexcept:\n    print(\"An exception occurred\")</div>",
+       opts:["x","An exception occurred","Both","NameError stops the program"],
+       a:1,
+       e:"<code>x</code> is undefined, raising NameError inside try. The except block catches it and prints <b>'An exception occurred'</b>."},
+
+      {q:"In try/except/else/finally, when does the <code>else</code> block run?",
+       opts:["Always, no matter what","Only when an exception occurs","Only if NO exception occurs in the try block","Only at the end of the program"],
+       a:2,
+       e:"The <b><code>else</code></b> block runs <span class='highlight'>only if no exception occurs</span> in the try block. It contains code that depends on try succeeding."},
+
+      {q:"In try/except/else/finally, when does the <code>finally</code> block run?",
+       opts:["Only on success","Only on exception","Always — regardless of success or failure","Never"],
+       a:2,
+       e:"The <b><code>finally</code></b> block <span class='highlight'>always runs</span>, regardless of whether an exception occurred — useful for cleanup code (closing files, etc.)."},
+
+      {q:"What's the output?<div class='qc-code'>try:\n    result = 10 / 2\nexcept ZeroDivisionError:\n    print(\"Division error\")\nelse:\n    print(\"Division successful:\", result)\nfinally:\n    print(\"Always runs\")</div>",
+       opts:["Only 'Division error'","'Division successful: 5.0' then 'Always runs'","Only 'Always runs'","Error"],
+       a:1,
+       e:"10 / 2 = 5.0 succeeds. else runs (prints 'Division successful: 5.0'), then finally always runs (prints 'Always runs')."},
+
+      {q:"Which exception is raised by <code>int(\"abc\")</code>?",
+       opts:["TypeError","ValueError","ZeroDivisionError","NameError"],
+       a:1,
+       e:"<b><code>ValueError</code></b> is raised when a function receives an argument of the right type but an inappropriate value (like trying to convert non-numeric text to int)."},
+
+      {q:"Which exception is raised by <code>10 / 0</code>?",
+       opts:["TypeError","ValueError","ZeroDivisionError","ArithmeticError"],
+       a:2,
+       e:"Dividing by zero raises <b><code>ZeroDivisionError</code></b>."},
+
+      {q:"What does this print if you input 'abc'?<div class='qc-code'>inp = input(\"Enter a number: \")\ntry:\n    num = int(inp)\n    result = 100 / num\nexcept ValueError:\n    print(\"Invalid input!\")\nexcept ZeroDivisionError:\n    print(\"Cannot divide by zero!\")\nelse:\n    print(\"Result:\", result)\nfinally:\n    print(\"Done.\")</div>",
+       opts:["'Result: ...' then 'Done.'","'Invalid input!' then 'Done.'","Only 'Done.'","'Cannot divide by zero!' then 'Done.'"],
+       a:1,
+       e:"<code>int(\"abc\")</code> raises ValueError → caught by first except, printing 'Invalid input!'. else is skipped. <b>finally always runs</b>."},
+
+      {q:"What does this print if you input '0'?<div class='qc-code'>inp = input(\"Enter a number: \")\ntry:\n    num = int(inp)\n    result = 100 / num\nexcept ValueError:\n    print(\"Invalid input!\")\nexcept ZeroDivisionError:\n    print(\"Cannot divide by zero!\")\nelse:\n    print(\"Result:\", result)\nfinally:\n    print(\"Done.\")</div>",
+       opts:["'Invalid input!' then 'Done.'","'Cannot divide by zero!' then 'Done.'","'Result: 0' then 'Done.'","Only 'Done.'"],
+       a:1,
+       e:"<code>int(\"0\")</code> succeeds (num=0). Then <code>100/0</code> raises ZeroDivisionError → caught, prints 'Cannot divide by zero!'. finally always runs."},
+
+      {q:"You can think of try/except as:",
+       opts:["A loop that repeats until success","An 'insurance policy' on a sequence of statements","A debugging tool that prints variables","A way to delete code"],
+       a:1,
+       e:"You can think of try/except as an <b>'insurance policy'</b> on a sequence of statements — protecting against problems you anticipate."},
+
+      {q:"What's a Python 'traceback'?",
+       opts:["A history of variable values","The error report Python displays when an exception occurs, showing what kind of error and where","A type of comment","A code optimization tool"],
+       a:1,
+       e:"A <b>traceback</b> is the error report Python prints. The most useful parts are <span class='highlight'>what kind of error it was</span> and <span class='highlight'>where it occurred</span>."},
+
+      {q:"Why are whitespace errors particularly tricky to debug?",
+       opts:["They are random","Spaces and tabs are invisible, and we tend to ignore them","They only happen on certain computers","They appear on every line"],
+       a:1,
+       e:"<b>Whitespace errors</b> are tricky because spaces and tabs are <span class='highlight'>invisible</span> and easy to overlook. Mixing tabs and spaces, or wrong indentation, are common bugs."},
+
+      {q:"What does this code do conceptually?<div class='qc-code'>inp = input('Enter Fahrenheit:')\ntry:\n    fahr = float(inp)\n    cel = (fahr - 32.0) * 5.0 / 9.0\n    print(cel)\nexcept:\n    print(\"please enter the number\")</div>",
+       opts:["Always crashes on bad input","Converts Fahrenheit to Celsius; if input isn't a number, prints a friendly message","Only works for integer inputs","Prints the input back unchanged"],
+       a:1,
+       e:"It tries to convert input to float and compute Celsius. If conversion fails (non-numeric input), the except block prints 'please enter the number' instead of crashing."},
+
+      {q:"Which kind of error is most easily caught by try/except?",
+       opts:["Runtime exceptions like ValueError, ZeroDivisionError, FileNotFoundError","All syntax errors","Logical errors","Indentation errors before runtime"],
+       a:0,
+       e:"try/except handles <b>runtime exceptions</b> — those raised during execution (ValueError, ZeroDivisionError, FileNotFoundError, KeyError, etc.). Syntax/indentation errors stop the program before it ever runs."},
+    ]
+  },
+];
+
+/* ============================================================
+   STATE & RENDER
+   ============================================================ */
+let chIdx = null;        // current chapter index
+let qIdx = 0;            // current question in chapter
+let answers = {};        // answers[chIdx][qIdx] = {selected, correct}
+
+function init(){
+  const total = CHAPTERS.reduce((s,c)=>s+c.questions.length, 0);
+  document.getElementById("sbTotal").textContent = total;
+  renderSidebar();
+  renderWelcome();
+}
+
+function renderSidebar(){
+  const list = document.getElementById("sbList");
+  list.innerHTML = '<div class="sb-section-label">Chapters</div>';
+  CHAPTERS.forEach((ch, i)=>{
+    const ans = answers[i] || {};
+    const answeredCount = Object.keys(ans).length;
+    const total = ch.questions.length;
+    const correct = Object.values(ans).filter(a=>a.correct).length;
+    const pct = total ? (answeredCount/total*100) : 0;
+    const item = document.createElement("button");
+    item.className = "sb-item" + (chIdx === i ? " active" : "");
+    item.onclick = ()=>openChapter(i);
+    item.innerHTML = `
+      <span class="ch-no">CH ${String(i+1).padStart(2,"0")}</span>
+      ${ch.title}
+      <div class="ch-info">${answeredCount}/${total} · ${correct} correct</div>
+      <div class="sb-progress"><div style="width:${pct}%"></div></div>
+    `;
+    list.appendChild(item);
+  });
+}
+
+function renderWelcome(){
+  const grid = document.getElementById("welcomeGrid");
+  grid.innerHTML = "";
+  CHAPTERS.forEach((ch, i)=>{
+    const card = document.createElement("button");
+    card.className = "wcard";
+    card.onclick = ()=>openChapter(i);
+    card.innerHTML = `
+      <div class="n">CH ${String(i+1).padStart(2,"0")}</div>
+      <div class="t">${ch.title}</div>
+      <div class="m">${ch.questions.length} questions</div>
+    `;
+    grid.appendChild(card);
+  });
+}
+
+function openChapter(i){
+  chIdx = i;
+  qIdx = 0;
+  if(!answers[i]) answers[i] = {};
+  document.getElementById("welcomeScreen").style.display = "none";
+  document.getElementById("quizScreen").style.display = "block";
+  closeSidebar();
+  renderSidebar();
+  renderQuiz();
+  window.scrollTo({top:0, behavior:"smooth"});
+}
+
+function renderQuiz(){
+  const ch = CHAPTERS[chIdx];
+  const q = ch.questions[qIdx];
+  const total = ch.questions.length;
+  const ans = answers[chIdx];
+  const correct = Object.values(ans).filter(a=>a.correct).length;
+  const totalAns = Object.keys(ans).length;
+
+  // header
+  document.getElementById("quizCrumb").textContent = `Chapter ${String(chIdx+1).padStart(2,"0")} · ${total} Questions`;
+  document.getElementById("quizTitle").textContent = ch.title;
+  document.getElementById("qbarLabel").textContent = `Q ${qIdx+1} / ${total}`;
+  document.getElementById("qbarFill").style.width = ((qIdx+1)/total*100)+"%";
+  document.getElementById("qbarScoreNum").textContent = correct;
+  document.getElementById("qbarScoreTotal").textContent = total;
+
+  // body
+  const body = document.getElementById("quizBody");
+
+  // Final results screen condition
+  if(qIdx === -1){
+    renderFinal();
+    return;
+  }
+
+  const userAns = ans[qIdx];
+  let optsHtml = "";
+  q.opts.forEach((opt, oi)=>{
+    let cls = "qc-opt";
+    if(userAns){
+      cls += " disabled";
+      if(oi === q.a) cls += " correct";
+      else if(oi === userAns.selected) cls += " wrong";
+    }
+    const letter = String.fromCharCode(65+oi);
+    optsHtml += `<div class="${cls}" data-oi="${oi}" onclick="selectOption(${oi})">
+      <span class="letter">${letter}</span>
+      <span class="text">${opt}</span>
+    </div>`;
+  });
+
+  const expClass = userAns ? "qc-exp show" : "qc-exp";
+
+  body.innerHTML = `
+    <div class="quiz-card">
+      <div class="qc-head">
+        <div class="qc-num">Question ${qIdx+1} of ${total}</div>
+        <div class="qc-tag">Q${String(qIdx+1).padStart(2,"0")}</div>
+      </div>
+      <div class="qc-text">${q.q}</div>
+      <div class="qc-options">${optsHtml}</div>
+      <div class="${expClass}">
+        <span class="label-exp">Explanation</span><br>
+        ${q.e}
+      </div>
+      <div class="nav-row">
+        <button class="nav-btn" onclick="prevQ()" ${qIdx === 0 ? "disabled" : ""}>← Prev</button>
+        <button class="nav-btn primary" onclick="nextQ()">${qIdx === total-1 ? "Finish ✓" : "Next →"}</button>
+        <div class="nav-spacer"></div>
+        <span class="qc-counter">${totalAns} answered · ${correct} correct</span>
+      </div>
+      <div class="q-dots" id="qDots"></div>
+    </div>
+  `;
+  renderDots();
+}
+
+function renderDots(){
+  const ch = CHAPTERS[chIdx];
+  const ans = answers[chIdx];
+  const dotsEl = document.getElementById("qDots");
+  if(!dotsEl) return;
+  dotsEl.innerHTML = "";
+  ch.questions.forEach((q, i)=>{
+    const dot = document.createElement("button");
+    dot.className = "q-dot";
+    if(i === qIdx) dot.classList.add("current");
+    else if(ans[i]){
+      if(ans[i].correct) dot.classList.add("answered-correct");
+      else dot.classList.add("answered-wrong");
+    }
+    dot.textContent = i+1;
+    dot.onclick = ()=>jumpTo(i);
+    dotsEl.appendChild(dot);
+  });
+}
+
+function selectOption(oi){
+  const q = CHAPTERS[chIdx].questions[qIdx];
+  if(answers[chIdx][qIdx]) return; // locked once answered
+  answers[chIdx][qIdx] = { selected: oi, correct: oi === q.a };
+  renderQuiz();
+  renderSidebar();
+}
+
+function nextQ(){
+  const total = CHAPTERS[chIdx].questions.length;
+  if(qIdx < total-1){
+    qIdx++;
+    renderQuiz();
+    window.scrollTo({top:0, behavior:"smooth"});
+  } else {
+    renderFinal();
+  }
+}
+
+function prevQ(){
+  if(qIdx > 0){
+    qIdx--;
+    renderQuiz();
+    window.scrollTo({top:0, behavior:"smooth"});
+  }
+}
+
+function jumpTo(i){
+  qIdx = i;
+  renderQuiz();
+  window.scrollTo({top:0, behavior:"smooth"});
+}
+
+function renderFinal(){
+  const ch = CHAPTERS[chIdx];
+  const total = ch.questions.length;
+  const ans = answers[chIdx];
+  const correct = Object.values(ans).filter(a=>a.correct).length;
+  const answered = Object.keys(ans).length;
+  const pct = Math.round(correct/total*100);
+  let msg = "";
+  if(pct === 100) msg = "PERFECT — every single one. You really know this chapter.";
+  else if(pct >= 85) msg = "Excellent. Just a couple of slips — review the highlighted ones.";
+  else if(pct >= 70) msg = "Solid. Read through the explanations on the wrong ones.";
+  else if(pct >= 50) msg = "Halfway there. Re-read the chapter and try again.";
+  else msg = "Worth a re-read. Don't worry — that's what the explanations are for.";
+
+  const unanswered = total - answered;
+  const unansweredMsg = unanswered > 0 ? `<br><span style="color:var(--gold)">You skipped ${unanswered} question${unanswered>1?'s':''}. Use the dots to revisit them.</span>` : "";
+
+  document.getElementById("quizBody").innerHTML = `
+    <div class="final-result">
+      <div class="label">Chapter Complete</div>
+      <h2>${ch.title}</h2>
+      <div class="big-score">${correct}<span class="total">/${total}</span></div>
+      <div class="verdict">${pct}% · ${msg}${unansweredMsg}</div>
+      <div class="actions">
+        <button class="nav-btn" onclick="qIdx=0; renderQuiz();">Review Questions</button>
+        <button class="nav-btn" onclick="resetChapter()">Reset Chapter</button>
+        ${chIdx < CHAPTERS.length-1 ? `<button class="nav-btn" onclick="openChapter(${chIdx+1})">Next Chapter →</button>` : ''}
+      </div>
+    </div>
+  `;
+}
+
+function resetChapter(){
+  answers[chIdx] = {};
+  qIdx = 0;
+  renderQuiz();
+  renderSidebar();
+}
+
+function toggleSidebar(){
+  document.getElementById("sidebar").classList.toggle("open");
+  document.getElementById("sbOverlay").classList.toggle("show");
+}
+function closeSidebar(){
+  document.getElementById("sidebar").classList.remove("open");
+  document.getElementById("sbOverlay").classList.remove("show");
+}
+
+// Keyboard shortcuts
+document.addEventListener("keydown", e=>{
+  if(chIdx === null) return;
+  if(e.key === "ArrowRight") nextQ();
+  else if(e.key === "ArrowLeft") prevQ();
+  else if(["1","2","3","4"].includes(e.key)){
+    const oi = parseInt(e.key)-1;
+    const q = CHAPTERS[chIdx]?.questions[qIdx];
+    if(q && oi < q.opts.length) selectOption(oi);
+  }
+});
+
+init();
+</script>
+</body>
+</html>
