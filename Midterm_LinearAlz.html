@@ -3,519 +3,874 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Linear Algebra — Mid-Term Examination · Full 50 Questions</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;900&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,300;1,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-chtml.min.js" crossorigin="anonymous"></script>
+<title>Linear Algebra — Mid-Term Study App</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<script>
+  MathJax = {
+    tex: { inlineMath:[['\\(','\\)'],['$','$']], displayMath:[['\\[','\\]']] },
+    options: { skipHtmlTags:['script','noscript','style','textarea'] },
+    startup: { typeset:false }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" crossorigin="anonymous"></script>
 <style>
-  :root {
-    --bg:       #0d0f14;
-    --surface:  #13161e;
-    --card:     #181c26;
-    --border:   #252a38;
-    --gold:     #d4a843;
-    --gold-dim: #9a7830;
-    --green:    #3ddc84;
-    --red:      #ff5c5c;
-    --blue:     #5b9cf6;
-    --text:     #e8e4d8;
-    --muted:    #7a7f95;
-    --radius:   14px;
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'Source Serif 4', Georgia, serif;
-    line-height: 1.65;
-  }
-  body::before {
-    content: '';
-    position: fixed; inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
-    pointer-events: none; z-index: 999; opacity: 0.4;
-  }
-  /* layout */
-  .app-layout { display: flex; min-height: 100vh; }
-  .sidebar {
-    width: 260px;
-    background: var(--surface);
-    border-right: 1px solid var(--border);
-    padding: 2rem 1.2rem;
-    position: sticky;
-    top: 0;
-    height: 100vh;
-    overflow-y: auto;
-    z-index: 200;
-  }
-  .sidebar-title {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.7rem;
-    letter-spacing: 0.15em;
-    color: var(--gold);
-    margin-bottom: 2rem;
-    text-align: center;
-    text-transform: uppercase;
-  }
-  .nav-btn {
-    width: 100%;
-    background: transparent;
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 0.7rem 0.8rem;
-    margin-bottom: 1rem;
-    font-family: monospace;
-    font-size: 0.8rem;
-    font-weight: 600;
-    color: var(--text);
-    cursor: pointer;
-    transition: all 0.2s;
-    text-align: center;
-  }
-  .nav-btn:hover { border-color: var(--gold); color: var(--gold); background: rgba(212,168,67,.05); }
-  .nav-btn.active { background: var(--gold); color: #000; border-color: var(--gold); }
-  .stats-mini {
-    margin-top: 2rem;
-    padding-top: 1rem;
-    border-top: 1px solid var(--border);
-    font-size: 0.7rem;
-    font-family: monospace;
-    text-align: center;
-  }
-  .main-content {
-    flex: 1;
-    max-width: calc(100% - 260px);
-    padding: 2rem 2rem 4rem;
-  }
-  header {
-    text-align: center;
-    margin-bottom: 1.8rem;
-    padding-bottom: 1rem;
-    border-bottom: 1px solid var(--border);
-  }
-  .header-badge {
-    display: inline-block;
-    background: rgba(212,168,67,.12);
-    border: 1px solid rgba(212,168,67,.3);
-    color: var(--gold);
-    font-family: monospace;
-    font-size: .7rem;
-    letter-spacing: .15em;
-    padding: .35rem 1rem;
-    border-radius: 99px;
-    margin-bottom: 1rem;
-  }
-  header h1 {
-    font-family: 'Playfair Display', serif;
-    font-weight: 900;
-    font-size: clamp(1.8rem, 4vw, 2.6rem);
-    background: linear-gradient(135deg, #e8e4d8 30%, var(--gold) 100%);
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-  }
-  .stats-bar {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 60px;
-    padding: 0.7rem 1.5rem;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 1rem;
-    margin-bottom: 2rem;
-  }
-  .stat { text-align: center; }
-  .stat-num { font-family: monospace; font-size: 1.3rem; font-weight: 700; color: var(--gold); }
-  .progress-wrap { flex: 1; min-width: 160px; }
-  .progress-bar-track { background: var(--border); border-radius: 99px; height: 6px; overflow: hidden; }
-  .progress-bar-fill { height: 100%; background: linear-gradient(90deg, var(--gold-dim), var(--gold)); width: 0%; transition: width .3s; }
-  .btn {
-    font-family: monospace;
-    font-size: .7rem;
-    padding: .4rem 1rem;
-    border-radius: 30px;
-    border: 1px solid var(--border);
-    cursor: pointer;
-    background: var(--card);
-    color: var(--text);
-  }
-  .section-container { display: block; }
-  .section-container.hidden { display: none; }
-  
-  /* MCQ Cards */
-  .q-card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    margin-bottom: 1.6rem;
-    overflow: hidden;
-  }
-  .q-header { padding: 1rem 1.5rem; background: rgba(0,0,0,.2); border-bottom: 1px solid var(--border); }
-  .q-num { font-family: monospace; font-size: .7rem; background: rgba(212,168,67,.15); border-radius: 6px; padding: .2rem .7rem; display: inline-block; margin-bottom: 0.5rem; color: var(--gold); }
-  .q-text { font-weight: 500; font-size: 1rem; }
-  .q-options { padding: 1rem 1.5rem 0.5rem; display: grid; gap: 0.6rem; }
-  .option { display: flex; gap: 0.8rem; padding: 0.6rem 1rem; border: 1px solid var(--border); border-radius: 10px; cursor: pointer; transition: all .15s; }
-  .option:hover { background: rgba(212,168,67,.08); border-color: var(--gold-dim); }
-  .opt-letter { font-family: monospace; font-weight: 700; color: var(--gold-dim); width: 1.6rem; }
-  .feedback { margin: 0 1.5rem 1.2rem; padding: 0.7rem 1rem; border-radius: 8px; font-size: 0.85rem; display: none; line-height: 1.6; white-space: pre-line; }
-  .feedback.correct { background: rgba(61,220,132,.1); border-left: 3px solid var(--green); display: block; }
-  .feedback.wrong { background: rgba(255,92,92,.1); border-left: 3px solid var(--red); display: block; }
-  
-  /* True/False */
-  .tf-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 1.2rem; padding: 1rem 1.5rem; }
-  .tf-question { margin-bottom: 0.8rem; font-weight: 500; }
-  .tf-buttons { display: flex; gap: 1rem; margin: 0.5rem 0 0.8rem; }
-  .tf-btn { font-family: monospace; font-weight: bold; padding: 0.3rem 1.2rem; border-radius: 30px; border: 1px solid var(--border); background: var(--surface); cursor: pointer; }
-  .tf-btn.selected-true { background: var(--green); color: #000; }
-  .tf-btn.selected-false { background: var(--red); color: #000; }
-  .tf-feedback { margin-top: 0.6rem; padding: 0.6rem 1rem; border-radius: 8px; background: rgba(255,255,255,.04); border-left: 3px solid var(--gold); line-height: 1.6; white-space: pre-line; }
+:root {
+  --bg:#080a10; --surface:#0e1018; --card:#13161f; --card2:#181c28;
+  --border:#1c2035; --border2:#252b42;
+  --gold:#e2b44a; --gold-dim:#9a7830; --gold-glow:rgba(226,180,74,.12);
+  --green:#36d46e; --green-bg:rgba(54,212,110,.08); --green-bd:rgba(54,212,110,.35);
+  --red:#f05252;   --red-bg:rgba(240,82,82,.08);    --red-bd:rgba(240,82,82,.35);
+  --blue:#6ba3ff; --purple:#a78bfa;
+  --text:#ddd9ce; --muted:#5d6480; --muted2:#8890a8;
+  --easy:#36d46e; --mid:#f4a23a; --bonus:#a78bfa;
+  --sidebar:260px; --radius:12px; --t:.2s cubic-bezier(.4,0,.2,1);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',system-ui,sans-serif;font-weight:400;line-height:1.65;display:flex;min-height:100vh;overflow-x:hidden}
 
-  /* Essay / QNA — organized, clean, readable */
-  .essay-block {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    margin-bottom: 2rem;
-    padding: 1.5rem 2rem;
-    transition: all 0.1s;
-  }
-  .essay-title {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.85rem;
-    color: var(--gold);
-    margin-bottom: 1rem;
-    letter-spacing: 0.3px;
-    border-left: 3px solid var(--gold);
-    padding-left: 0.8rem;
-  }
-  .essay-answer {
-    line-height: 1.9;
-    font-size: 0.97rem;
-    color: #e2ded5;
-  }
-  .essay-answer p {
-    margin-bottom: 0.9rem;
-  }
-  .math-sample {
-    font-family: 'JetBrains Mono', monospace;
-    background: #0f1119;
-    padding: 0.2rem 0.5rem;
-    border-radius: 8px;
-    display: inline-block;
-    color: #b9d0ff;
-  }
-  .score-area {
-    text-align: center;
-    margin-top: 2.5rem;
-    padding: 1rem;
-    background: var(--surface);
-    border-radius: 60px;
-  }
-  footer { text-align: center; margin-top: 2rem; padding-top: 1.5rem; font-size: .7rem; border-top: 1px solid var(--border); color: var(--muted); }
-  .matrix-inline {
-    font-family: 'JetBrains Mono', monospace;
-    background: rgba(91,156,246,.15);
-    padding: 0.1rem 0.3rem;
-    border-radius: 6px;
-    display: inline-block;
-  }
-  @media (max-width: 760px) {
-    .app-layout { flex-direction: column; }
-    .sidebar { width: 100%; height: auto; position: static; border-right: none; border-bottom: 1px solid var(--border); padding: 1rem; }
-    .main-content { max-width: 100%; padding: 1.5rem; }
-  }
+/* ─── DOT GRID ─── */
+body::before{content:'';position:fixed;inset:0;pointer-events:none;
+  background-image:radial-gradient(rgba(255,255,255,.022) 1px,transparent 1px);
+  background-size:26px 26px;z-index:0}
+
+/* ══════ SIDEBAR ══════ */
+#sidebar{
+  width:var(--sidebar);flex-shrink:0;
+  background:var(--surface);
+  border-right:1px solid var(--border);
+  position:fixed;top:0;left:0;height:100vh;
+  overflow-y:auto;z-index:100;
+  display:flex;flex-direction:column;
+}
+#sidebar::-webkit-scrollbar{width:3px}
+#sidebar::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+
+.sb-logo{
+  padding:1.5rem 1.2rem 1rem;
+  border-bottom:1px solid var(--border);
+}
+.sb-logo h2{
+  font-family:'Playfair Display',serif;font-weight:900;font-size:1.1rem;
+  background:linear-gradient(135deg,#f0ebe0 20%,var(--gold) 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  line-height:1.2;
+}
+.sb-logo p{font-size:.7rem;color:var(--muted);margin-top:.3rem;font-family:'JetBrains Mono',monospace}
+
+.sb-section{padding:.8rem 0}
+.sb-section-label{
+  font-family:'JetBrains Mono',monospace;font-size:.6rem;
+  letter-spacing:.15em;text-transform:uppercase;color:var(--muted);
+  padding:.3rem 1.2rem;
+}
+.sb-item{
+  display:flex;align-items:center;gap:.6rem;
+  padding:.52rem 1.2rem;cursor:pointer;
+  font-size:.82rem;color:var(--muted2);
+  transition:all var(--t);border-left:2px solid transparent;
+  user-select:none;
+}
+.sb-item:hover{background:rgba(255,255,255,.03);color:var(--text)}
+.sb-item.active{
+  background:rgba(226,180,74,.07);color:var(--gold);
+  border-left-color:var(--gold);
+}
+.sb-item.active.easy-nav{color:var(--easy);border-left-color:var(--easy);background:rgba(54,212,110,.05)}
+.sb-item.active.mid-nav{color:var(--mid);border-left-color:var(--mid);background:rgba(244,162,58,.05)}
+.sb-item.active.bonus-nav{color:var(--bonus);border-left-color:var(--bonus);background:rgba(167,139,250,.05)}
+.sb-item.active.tf-nav{color:var(--blue);border-left-color:var(--blue);background:rgba(107,163,255,.05)}
+.sb-item.active.qna-nav{color:#f0ebe0;border-left-color:#f0ebe0;background:rgba(240,235,224,.04)}
+
+.sb-dot{width:6px;height:6px;border-radius:50%;background:currentColor;flex-shrink:0;opacity:.6}
+.sb-count{
+  margin-left:auto;font-family:'JetBrains Mono',monospace;
+  font-size:.65rem;padding:.1rem .4rem;border-radius:4px;
+  background:var(--border2);color:var(--muted);
+}
+
+/* Score summary in sidebar */
+.sb-stats{
+  margin-top:auto;padding:1rem 1.2rem;
+  border-top:1px solid var(--border);
+}
+.sb-stat-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem}
+.sb-stat-label{font-size:.72rem;color:var(--muted)}
+.sb-stat-val{font-family:'JetBrains Mono',monospace;font-size:.78rem;font-weight:600}
+.sb-progress{height:4px;background:var(--border2);border-radius:99px;overflow:hidden;margin:.5rem 0}
+.sb-progress-fill{height:100%;background:linear-gradient(90deg,var(--gold-dim),var(--gold));border-radius:99px;transition:width .5s cubic-bezier(.4,0,.2,1);width:0%}
+
+.btn-reset{
+  width:100%;padding:.5rem;border-radius:8px;
+  background:var(--card2);border:1px solid var(--border2);
+  color:var(--muted2);font-family:'JetBrains Mono',monospace;
+  font-size:.68rem;letter-spacing:.06em;text-transform:uppercase;
+  cursor:pointer;transition:all var(--t);margin-top:.6rem;
+}
+.btn-reset:hover{border-color:var(--gold);color:var(--gold)}
+
+/* ══════ MAIN ══════ */
+#main{
+  margin-left:var(--sidebar);flex:1;
+  position:relative;z-index:1;
+  min-height:100vh;
+}
+
+/* ─── TOP BAR ─── */
+#topbar{
+  position:sticky;top:0;z-index:50;
+  background:rgba(8,10,16,.92);backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--border);
+  padding:.8rem 2rem;
+  display:flex;align-items:center;gap:1rem;flex-wrap:wrap;
+}
+.tb-chip{
+  display:flex;align-items:center;gap:.45rem;
+  background:var(--card);border:1px solid var(--border2);
+  border-radius:99px;padding:.3rem .8rem;
+  font-family:'JetBrains Mono',monospace;font-size:.72rem;
+}
+.tb-chip .n{font-weight:600}
+.tb-chip.c .n{color:var(--green)}
+.tb-chip.w .n{color:var(--red)}
+.tb-chip.a .n{color:var(--gold)}
+.tb-title{
+  font-family:'Playfair Display',serif;font-size:1rem;font-weight:700;
+  background:linear-gradient(135deg,#f0ebe0,var(--gold));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  margin-right:auto;
+}
+
+/* ─── PAGE HEADER ─── */
+.page-header{
+  padding:2.5rem 2.5rem 1rem;
+  border-bottom:1px solid var(--border);
+}
+.page-header .badge{
+  display:inline-flex;align-items:center;gap:.4rem;
+  background:rgba(226,180,74,.08);border:1px solid rgba(226,180,74,.2);
+  color:var(--gold);font-family:'JetBrains Mono',monospace;
+  font-size:.65rem;letter-spacing:.14em;text-transform:uppercase;
+  padding:.28rem .8rem;border-radius:99px;margin-bottom:.9rem;
+}
+.page-header h1{
+  font-family:'Playfair Display',serif;font-weight:900;
+  font-size:clamp(1.6rem,3vw,2.4rem);line-height:1.1;letter-spacing:-.02em;
+  background:linear-gradient(135deg,#f0ebe0 20%,var(--gold) 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.page-header p{font-size:.85rem;color:var(--muted2);margin-top:.5rem}
+
+/* ─── CONTENT SECTIONS ─── */
+.content-section{display:none;padding:2rem 2.5rem 6rem}
+.content-section.active{display:block;animation:fadeUp .3s ease both}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* Section sub-header */
+.sec-title{
+  display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem;margin-top:1rem;
+}
+.sec-title::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,var(--border2),transparent)}
+.sec-pill{
+  font-family:'JetBrains Mono',monospace;font-size:.64rem;
+  letter-spacing:.13em;text-transform:uppercase;
+  padding:.28rem .75rem;border-radius:99px;border:1px solid;white-space:nowrap;
+}
+.pill-easy{color:var(--easy);border-color:rgba(54,212,110,.3);background:rgba(54,212,110,.06)}
+.pill-mid{color:var(--mid);border-color:rgba(244,162,58,.3);background:rgba(244,162,58,.06)}
+.pill-bonus{color:var(--bonus);border-color:rgba(167,139,250,.3);background:rgba(167,139,250,.06)}
+.pill-tf{color:var(--blue);border-color:rgba(107,163,255,.3);background:rgba(107,163,255,.06)}
+.pill-qna{color:#f0ebe0;border-color:rgba(240,235,224,.2);background:rgba(240,235,224,.04)}
+
+/* ══════ MCQ CARD ══════ */
+.q-card{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:var(--radius);margin-bottom:.85rem;overflow:hidden;
+  transition:border-color var(--t);
+  animation:fadeUp .35s ease both;
+}
+.q-card:hover{border-color:var(--border2)}
+.q-card.answered{border-color:var(--border2)}
+
+.q-top{display:flex;align-items:flex-start;gap:.9rem;padding:1.1rem 1.3rem .8rem}
+.q-num{
+  font-family:'JetBrains Mono',monospace;font-size:.68rem;font-weight:600;
+  background:rgba(226,180,74,.1);border:1px solid rgba(226,180,74,.2);
+  color:var(--gold);border-radius:6px;padding:.18rem .5rem;
+  flex-shrink:0;margin-top:.15rem;
+}
+.q-text{flex:1;font-size:.92rem;line-height:1.6}
+
+.q-options{display:grid;gap:.4rem;padding:0 1.3rem 1.2rem}
+.option{
+  display:flex;align-items:flex-start;gap:.65rem;
+  padding:.6rem .85rem;border:1px solid var(--border2);
+  border-radius:8px;background:rgba(255,255,255,.013);
+  cursor:pointer;transition:all var(--t);user-select:none;
+}
+.option:hover:not(.locked){border-color:rgba(226,180,74,.28);background:rgba(226,180,74,.04)}
+.opt-letter{
+  font-family:'JetBrains Mono',monospace;font-size:.7rem;font-weight:600;
+  width:1.4rem;height:1.4rem;border-radius:5px;
+  background:var(--border2);color:var(--muted);
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;margin-top:.08rem;transition:all var(--t);
+}
+.opt-text{flex:1;font-size:.86rem;line-height:1.5}
+.option.locked{cursor:default}
+.option.correct{background:var(--green-bg);border-color:var(--green-bd)}
+.option.correct .opt-letter{background:var(--green);color:#000}
+.option.correct .opt-text{color:#b6f5cf}
+.option.wrong{background:var(--red-bg);border-color:var(--red-bd)}
+.option.wrong .opt-letter{background:var(--red);color:#fff}
+.option.wrong .opt-text{color:#fcc}
+
+.result-badge{
+  display:none;margin:0 1.3rem .4rem;padding:.35rem .85rem;
+  border-radius:7px;font-family:'JetBrains Mono',monospace;
+  font-size:.7rem;font-weight:600;letter-spacing:.04em;
+}
+.result-badge.cb{display:block;background:rgba(54,212,110,.09);border:1px solid rgba(54,212,110,.28);color:var(--green)}
+.result-badge.wb{display:block;background:rgba(240,82,82,.09);border:1px solid rgba(240,82,82,.28);color:var(--red)}
+
+.expl{
+  display:none;margin:0 1.3rem 1.2rem;padding:.8rem .95rem;
+  background:rgba(226,180,74,.04);border:1px solid rgba(226,180,74,.13);
+  border-radius:8px;font-size:.83rem;color:#c8c4b8;line-height:1.7;
+  animation:slideIn .2s ease;
+}
+.expl.visible{display:block}
+.expl-hd{
+  font-family:'JetBrains Mono',monospace;font-size:.62rem;color:var(--gold);
+  letter-spacing:.12em;text-transform:uppercase;margin-bottom:.45rem;
+  display:flex;align-items:center;gap:.5rem;
+}
+.expl-hd::after{content:'';flex:1;height:1px;background:rgba(226,180,74,.15)}
+
+@keyframes slideIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
+
+/* ══════ TRUE/FALSE ══════ */
+.tf-card{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:var(--radius);margin-bottom:.85rem;overflow:hidden;
+  animation:fadeUp .3s ease both;
+}
+.tf-top{display:flex;align-items:flex-start;gap:.9rem;padding:1.1rem 1.3rem .85rem}
+.tf-num{
+  font-family:'JetBrains Mono',monospace;font-size:.68rem;font-weight:600;
+  background:rgba(107,163,255,.1);border:1px solid rgba(107,163,255,.22);
+  color:var(--blue);border-radius:6px;padding:.18rem .5rem;
+  flex-shrink:0;margin-top:.1rem;
+}
+.tf-statement{flex:1;font-size:.92rem;line-height:1.6}
+.tf-keyword{color:var(--gold);font-weight:600}
+
+.tf-btns{display:flex;gap:.7rem;padding:0 1.3rem 1.2rem}
+.tf-btn{
+  flex:1;padding:.6rem;border-radius:8px;
+  border:1px solid var(--border2);background:rgba(255,255,255,.015);
+  font-family:'JetBrains Mono',monospace;font-size:.78rem;font-weight:600;
+  letter-spacing:.06em;cursor:pointer;transition:all var(--t);
+  display:flex;align-items:center;justify-content:center;gap:.5rem;
+}
+.tf-btn:hover:not(.locked){background:rgba(255,255,255,.04);border-color:var(--border2)}
+.tf-btn.true-btn:hover:not(.locked){border-color:rgba(54,212,110,.4);color:var(--green)}
+.tf-btn.false-btn:hover:not(.locked){border-color:rgba(240,82,82,.4);color:var(--red)}
+.tf-btn.locked{cursor:default}
+.tf-btn.correct-pick{background:var(--green-bg);border-color:var(--green-bd);color:var(--green)}
+.tf-btn.wrong-pick{background:var(--red-bg);border-color:var(--red-bd);color:var(--red)}
+.tf-btn.correct-reveal{background:var(--green-bg);border-color:var(--green-bd);color:var(--green)}
+
+.tf-result{
+  display:none;margin:0 1.3rem .4rem;padding:.35rem .85rem;
+  border-radius:7px;font-family:'JetBrains Mono',monospace;
+  font-size:.7rem;font-weight:600;letter-spacing:.04em;
+}
+.tf-result.cb{display:block;background:rgba(54,212,110,.09);border:1px solid rgba(54,212,110,.28);color:var(--green)}
+.tf-result.wb{display:block;background:rgba(240,82,82,.09);border:1px solid rgba(240,82,82,.28);color:var(--red)}
+
+.tf-expl{
+  display:none;margin:0 1.3rem 1.2rem;padding:.8rem .95rem;
+  background:rgba(107,163,255,.04);border:1px solid rgba(107,163,255,.13);
+  border-radius:8px;font-size:.83rem;color:#c8c4b8;line-height:1.7;
+}
+.tf-expl.visible{display:block;animation:slideIn .2s ease}
+
+/* ══════ Q&A ══════ */
+.qna-card{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:var(--radius);margin-bottom:.85rem;overflow:hidden;
+  animation:fadeUp .3s ease both;
+}
+.qna-top{display:flex;align-items:flex-start;gap:.9rem;padding:1.2rem 1.3rem 1rem}
+.qna-num{
+  font-family:'JetBrains Mono',monospace;font-size:.68rem;font-weight:600;
+  background:rgba(240,235,224,.07);border:1px solid rgba(240,235,224,.15);
+  color:#f0ebe0;border-radius:6px;padding:.18rem .5rem;
+  flex-shrink:0;margin-top:.12rem;
+}
+.qna-q{flex:1}
+.qna-q .qna-tag{
+  font-family:'JetBrains Mono',monospace;font-size:.62rem;
+  letter-spacing:.1em;text-transform:uppercase;
+  color:var(--muted2);margin-bottom:.3rem;display:block;
+}
+.qna-q p{font-size:.92rem;line-height:1.6;font-weight:400}
+
+.qna-reveal-btn{
+  margin:0 1.3rem 1.2rem;padding:.55rem 1.1rem;
+  border-radius:8px;border:1px solid rgba(240,235,224,.15);
+  background:rgba(240,235,224,.04);color:#c8c4b8;
+  font-family:'JetBrains Mono',monospace;font-size:.7rem;
+  letter-spacing:.07em;text-transform:uppercase;cursor:pointer;
+  transition:all var(--t);display:inline-flex;align-items:center;gap:.5rem;
+}
+.qna-reveal-btn:hover{border-color:var(--gold);color:var(--gold);background:var(--gold-glow)}
+.qna-reveal-btn.revealed{
+  border-color:rgba(54,212,110,.3);color:var(--green);
+  background:rgba(54,212,110,.05);cursor:default;
+}
+
+.qna-answer{
+  display:none;margin:0 1.3rem 1.3rem;
+  padding:1rem 1.1rem;
+  background:rgba(255,255,255,.018);
+  border:1px solid var(--border2);border-radius:9px;
+  font-size:.85rem;line-height:1.8;color:var(--text);
+}
+.qna-answer.visible{display:block;animation:slideIn .25s ease}
+.qna-answer-hd{
+  font-family:'JetBrains Mono',monospace;font-size:.62rem;color:var(--green);
+  letter-spacing:.12em;text-transform:uppercase;margin-bottom:.7rem;
+  display:flex;align-items:center;gap:.5rem;
+}
+.qna-answer-hd::after{content:'';flex:1;height:1px;background:rgba(54,212,110,.15)}
+.qna-point{
+  display:flex;gap:.6rem;margin-bottom:.5rem;padding-left:.2rem;
+}
+.qna-point::before{
+  content:'▸';color:var(--gold);font-size:.75rem;margin-top:.2rem;flex-shrink:0;
+}
+
+/* ══════ SCORE CARD ══════ */
+.final-score{
+  display:none;background:var(--card2);border:1px solid var(--border2);
+  border-radius:var(--radius);padding:2rem;text-align:center;margin-top:2rem;
+}
+.final-score.visible{display:block;animation:fadeUp .4s ease}
+.score-big{
+  font-family:'Playfair Display',serif;font-size:3.5rem;font-weight:900;
+  background:linear-gradient(135deg,var(--gold),#fff8e0);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  line-height:1;
+}
+
+::-webkit-scrollbar{width:5px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+
+footer{text-align:center;padding:1.5rem;font-family:'JetBrains Mono',monospace;font-size:.62rem;color:var(--muted);border-top:1px solid var(--border)}
+
+/* Mobile sidebar toggle */
+.sb-toggle{display:none;position:fixed;top:.7rem;left:.7rem;z-index:200;
+  background:var(--card);border:1px solid var(--border2);border-radius:8px;
+  padding:.4rem .6rem;cursor:pointer;font-size:1rem}
+
+@media(max-width:768px){
+  :root{--sidebar:0px}
+  #sidebar{transform:translateX(-260px);width:260px;transition:transform .3s}
+  #sidebar.open{transform:translateX(0)}
+  #main{margin-left:0}
+  .sb-toggle{display:block}
+  .page-header,.content-section{padding-left:1rem;padding-right:1rem}
+  .content-section{padding-left:1rem;padding-right:1rem}
+  #topbar{padding:.7rem 1rem}
+}
 </style>
 </head>
 <body>
-<div class="app-layout">
-  <div class="sidebar">
-    <div class="sidebar-title">📐 LINEAR ALGEBRA</div>
-    <button class="nav-btn active" data-section="mcq">📘 MCQ (1–40)</button>
-    <button class="nav-btn" data-section="tf">✓ True/False (41–45)</button>
-    <button class="nav-btn" data-section="essay">✍️ Q&A / Essays (46–50)</button>
-    <div class="stats-mini">
-      <div>✅ MCQ: <span id="sidebarMcq">0</span>/40</div>
-      <div>📌 T/F: <span id="sidebarTf">0</span>/5</div>
-      <div>🏆 Total: <span id="sidebarTotal">0</span>/45</div>
-    </div>
-    <button class="btn" id="resetSidebarBtn" style="margin-top: 1rem; width: 100%;">Reset All</button>
+
+<!-- Mobile sidebar toggle -->
+<button class="sb-toggle" onclick="document.getElementById('sidebar').classList.toggle('open')">☰</button>
+
+<!-- ══════════════════ SIDEBAR ══════════════════ -->
+<nav id="sidebar">
+  <div class="sb-logo">
+    <h2>Linear Algebra<br>Mid-Term</h2>
+    <p>Section 002 · Prof. Lee</p>
   </div>
 
-  <div class="main-content">
-    <header>
-      <div class="header-badge">Prof. Taehyung Lee · Duration: 120 Minutes · Total 50 Questions</div>
-      <h1>Linear Algebra<br>Mid-Term Examination</h1>
-    </header>
-    <div class="stats-bar">
-      <div class="stat"><div class="stat-num" id="mcqScore">0</div><div class="stat-label">MCQ Score</div></div>
-      <div class="stat"><div class="stat-num" id="tfScore">0</div><div class="stat-label">T/F Score</div></div>
-      <div class="progress-wrap"><div class="progress-bar-track"><div class="progress-bar-fill" id="progressFill"></div></div><div class="progress-label" id="progressLabel">Progress</div></div>
-      <button class="btn" id="resetAllBtn">Reset Answers</button>
+  <div class="sb-section">
+    <div class="sb-section-label">📊 Multiple Choice</div>
+    <div class="sb-item active easy-nav" onclick="showSection('mcq-easy',this)">
+      <span class="sb-dot"></span> Easy Level
+      <span class="sb-count">1–15</span>
     </div>
-
-    <!-- MCQ SECTION (40 questions, full matrix notations) -->
-    <div id="mcq-section" class="section-container">
-      <div id="mcq-container"></div>
+    <div class="sb-item mid-nav" onclick="showSection('mcq-mid',this)">
+      <span class="sb-dot"></span> Mid-Level
+      <span class="sb-count">16–40</span>
     </div>
-
-    <!-- TRUE/FALSE SECTION -->
-    <div id="tf-section" class="section-container hidden">
-      <div id="tf-container"></div>
+    <div class="sb-item bonus-nav" onclick="showSection('mcq-bonus',this)">
+      <span class="sb-dot"></span> Bonus Set
+      <span class="sb-count">41–50</span>
     </div>
-
-    <!-- Q&A SECTION — formatted beautifully, each sentence line break, math notation -->
-    <div id="essay-section" class="section-container hidden">
-      <div class="essay-block">
-        <div class="essay-title">📐 46. Geometric vs. Algebraic: Column Space collapse</div>
-        <div class="essay-answer">
-          <p><strong>Geometric interpretation:</strong><br>
-          If the second column is a scalar multiple of the first, both columns lie on the same line through the origin.<br>
-          Any linear combination \( c_1 \mathbf{a}_1 + c_2 \mathbf{a}_2 = (c_1 + k c_2)\mathbf{a}_1 \) remains on that same line.<br>
-          Hence the Column Space collapses from a potential plane (2D) to a 1‑dimensional line.</p>
-          <p><strong>Mathematically:</strong> \( \text{col}_2 = \lambda \cdot \text{col}_1 \) ⇒ rank = 1 ⇒ \( \dim C(A) = 1 \).</p>
-          <p><strong>Contrast – matrix that spans the whole space:</strong><br>
-          For a 2×2 matrix with independent columns, e.g. \( \begin{bmatrix}1 & 0 \\ 0 & 1\end{bmatrix} \), any vector in \( \mathbb{R}^2 \) can be expressed as a combination.<br>
-          The column space is the entire \( \mathbb{R}^2 \) → full rank = 2. No collapse occurs.</p>
-        </div>
-      </div>
-
-      <div class="essay-block">
-        <div class="essay-title">🔄 47. The Inverse Problem (Crucial Change in Viewpoint)</div>
-        <div class="essay-answer">
-          <p><strong>Old Question (Forward Problem):</strong><br>
-          Given input \(x\) and matrix \(A\), compute the output \(b = Ax\).<br>
-          This is straightforward matrix multiplication.</p>
-          <p><strong>New Question (Inverse Problem):</strong><br>
-          Given the output \(b\) and matrix \(A\), find the input \(x\) such that \(Ax = b\).</p>
-          <p><strong>Why harder?</strong><br>
-          • Solution may not exist if \(b \notin C(A)\).<br>
-          • If \(A\) is singular, infinite solutions exist (null space contains non‑zero vectors).<br>
-          • Requires elimination (Gauss‑Jordan), computing inverses, or analyzing rank.<br>
-          The shift from “computing” to “solving” is the core of linear algebra.</p>
-        </div>
-      </div>
-
-      <div class="essay-block">
-        <div class="essay-title">🎟️ 48. Null Space VIP Club — Singular vs Invertible</div>
-        <div class="essay-answer">
-          <p><strong>VIP Club analogy:</strong> The null space consists of all vectors \(x\) that are “mapped to zero” i.e. \(Ax = 0\).</p>
-          <p><strong>Singular (Interesting) matrices:</strong><br>
-          • Determinant = 0, columns are linearly dependent.<br>
-          • There exist non‑zero vectors \(x\) such that \(Ax = 0\).<br>
-          • Infinite number of VIP members → null space dimension ≥ 1.<br>
-          • Example: \(A = \begin{bmatrix}1 & 2 \\ 2 & 4\end{bmatrix}\), \(x = \begin{bmatrix}2 \\ -1\end{bmatrix}\) gives \(Ax = 0\).</p>
-          <p><strong>Invertible (Boring) matrices:</strong><br>
-          • Only the trivial solution \(x = 0\) satisfies \(Ax = 0\).<br>
-          • Null space = \(\{\mathbf{0}\}\) → VIP list is empty.</p>
-        </div>
-      </div>
-
-      <div class="essay-block">
-        <div class="essay-title">📋 49. RREF Procedural Roadmap (3‑Step)</div>
-        <div class="essay-answer">
-          <p><strong>Step 1: Setup</strong> — Construct the augmented matrix \([A \mid b]\).<br>
-          Appends vector \(b\) as an extra column to \(A\).</p>
-          <p><strong>Step 2: Process</strong> — Row reduce the augmented matrix to Reduced Row‑Echelon Form (RREF).<br>
-          Use elementary row operations: swap, scale, combine. Goal: pivots = 1 and zeros above/below each pivot.</p>
-          <p><strong>Step 3: Interpret</strong> — Check the final RREF for consistency.<br>
-          • If any row has the form \([0\ 0\ \cdots\ 0\ |\ c]\) with \(c \neq 0\) → inconsistent → \(b \notin C(A)\).<br>
-          • Otherwise, consistent → \(b\) belongs to the column space.</p>
-        </div>
-      </div>
-
-      <div class="essay-block">
-        <div class="essay-title">🧠 50. Higher Dimensions: Null Space of 1×3 Matrix</div>
-        <div class="essay-answer">
-          <p><strong>Equation:</strong> \(x + 2y + 3z = 0\).<br>
-          One linear equation, three unknowns.<br>
-          Number of free variables = \(n - \text{rank} = 3 - 1 = 2\).</p>
-          <p><strong>Geometric interpretation:</strong> The solution set is a <strong>plane through the origin</strong> in \(\mathbb{R}^3\).<br>
-          Orthogonal to the normal vector \((1,2,3)\).</p>
-          <p><strong>Why choose free variables (1,0) and (0,1)?</strong><br>
-          Let \(y\) and \(z\) be free variables.<br>
-          • Set \((y,z) = (1,0)\) → \(x = -2\) → vector \(\mathbf{v}_1 = (-2, 1, 0)\).<br>
-          • Set \((y,z) = (0,1)\) → \(x = -3\) → vector \(\mathbf{v}_2 = (-3, 0, 1)\).<br>
-          These vectors are linearly independent (different zero patterns). They form a <strong>basis</strong> for the null space.<br>
-          The choice \((1,0)\) and \((0,1)\) is the most efficient way to guarantee independence.</p>
-        </div>
-      </div>
-    </div>
-
-    <div class="score-area">
-      <span>🏆 Final Score: MCQ <strong id="finalMcqSpan">0</strong>/40 &nbsp;| T/F <strong id="finalTfSpan">0</strong>/5 &nbsp;| Total <strong id="totalSpan">0</strong>/45</span>
-    </div>
-    <footer>Linear Algebra Midterm — Full 50 questions (40 MCQ + 5 T/F + 5 Essays) with detailed explanations</footer>
   </div>
+
+  <div class="sb-section">
+    <div class="sb-section-label">✓/✗ True or False</div>
+    <div class="sb-item tf-nav" onclick="showSection('trueFalse',this)">
+      <span class="sb-dot"></span> T/F Questions
+      <span class="sb-count">5 Qs</span>
+    </div>
+  </div>
+
+  <div class="sb-section">
+    <div class="sb-section-label">📝 Short Essay / Q&A</div>
+    <div class="sb-item" style="" onclick="showSection('qna',this)">
+      <span class="sb-dot"></span> Essay Questions
+      <span class="sb-count">5 Qs</span>
+    </div>
+  </div>
+
+  <div class="sb-stats">
+    <div class="sb-stat-row">
+      <span class="sb-stat-label">Progress</span>
+      <span class="sb-stat-val" id="sb-pct" style="color:var(--gold)">0 / 60</span>
+    </div>
+    <div class="sb-progress"><div class="sb-progress-fill" id="sb-fill"></div></div>
+    <div class="sb-stat-row" style="margin-top:.6rem">
+      <span class="sb-stat-label">✓ Correct</span>
+      <span class="sb-stat-val" id="sb-correct" style="color:var(--green)">0</span>
+    </div>
+    <div class="sb-stat-row">
+      <span class="sb-stat-label">✗ Wrong</span>
+      <span class="sb-stat-val" id="sb-wrong" style="color:var(--red)">0</span>
+    </div>
+    <button class="btn-reset" onclick="resetAll()">↺ Reset All</button>
+  </div>
+</nav>
+
+<!-- ══════════════════ MAIN ══════════════════ -->
+<div id="main">
+
+  <!-- TOP BAR -->
+  <div id="topbar">
+    <span class="tb-title">Linear Algebra Quiz</span>
+    <div class="tb-chip a"><span class="n" id="tb-ans">0</span><span>/60 done</span></div>
+    <div class="tb-chip c"><span class="n" id="tb-cor">0</span><span>✓</span></div>
+    <div class="tb-chip w"><span class="n" id="tb-wrg">0</span><span>✗</span></div>
+  </div>
+
+  <!-- PAGE HEADER -->
+  <div class="page-header">
+    <div class="badge">📐 Section 002 · 120 min · Prof. Taehyung Lee</div>
+    <h1>Mid-Term Exam<br>Study Guide</h1>
+    <p>60 questions total · Choose an answer to instantly reveal feedback &amp; explanation · Use the sidebar to navigate sections</p>
+  </div>
+
+  <!-- ── MCQ EASY (1–15) ── -->
+  <div class="content-section active" id="sec-mcq-easy">
+    <div class="sec-title"><div class="sec-pill pill-easy">✦ Easy Level · Questions 1–15</div></div>
+    <div id="mcq-easy-container"></div>
+  </div>
+
+  <!-- ── MCQ MID (16–40) ── -->
+  <div class="content-section" id="sec-mcq-mid">
+    <div class="sec-title"><div class="sec-pill pill-mid">⚡ Mid-Level · Questions 16–40</div></div>
+    <div id="mcq-mid-container"></div>
+  </div>
+
+  <!-- ── MCQ BONUS (41–50) ── -->
+  <div class="content-section" id="sec-mcq-bonus">
+    <div class="sec-title"><div class="sec-pill pill-bonus">🆕 Bonus Questions · 41–50</div></div>
+    <div id="mcq-bonus-container"></div>
+  </div>
+
+  <!-- ── TRUE / FALSE ── -->
+  <div class="content-section" id="sec-trueFalse">
+    <div class="sec-title"><div class="sec-pill pill-tf">✓/✗ True or False · Questions 51–55</div></div>
+    <div id="tf-container"></div>
+  </div>
+
+  <!-- ── Q & A ── -->
+  <div class="content-section" id="sec-qna">
+    <div class="sec-title"><div class="sec-pill pill-qna">📝 Short Essay / Q&A · Questions 56–60</div></div>
+    <div id="qna-container"></div>
+    <div class="final-score" id="scoreCard">
+      <div style="font-size:2rem;margin-bottom:.5rem">🎉</div>
+      <div class="score-big" id="scoreNum">—</div>
+      <div style="color:var(--muted2);font-size:.85rem;margin:.4rem 0 1.2rem">out of 60 answered correctly</div>
+      <button class="btn-reset" style="display:inline-block;width:auto;padding:.5rem 1.5rem" onclick="resetAll()">↺ Try Again</button>
+    </div>
+  </div>
+
+  <footer>Linear Algebra · Section 002 · Prof. Taehyung Lee &nbsp;|&nbsp; 60 Questions · Interactive Study App</footer>
 </div>
 
 <script>
-  // ==================== MCQ DATA: complete 40, matrix notation exactly as in docx ====================
-  const mcqData = [
-    { text: "Which of the following expressions prevents an equation from being linear?", options: ["\\(2x_1 + 5x_2 = 1\\)", "\\(x + y = 2\\)", "\\(xy = 4\\)", "\\(3x - z = 0\\)"], correct: 2, explanation: "Product of variables (xy) introduces non‑linearity." },
-    { text: "In the \"Anatomy of the Machine\" (\\(Ax = b\\)), what is defined as the \"Central Problem\" of Linear Algebra?", options: ["Finding the known output \\(b\\)", "Finding the unknown input \\(x\\)", "Multiplying \\(A\\) by the identity matrix", "Counting the number of equations"], correct: 1, explanation: "Central problem: solve for unknown input x given A and b." },
-    { text: "If a matrix \\(A\\) has dimensions \\(m \\times n\\), what does the \\(m\\) represent?", options: ["The number of columns", "The number of rows", "The number of unknown variables", "The number of solution sets"], correct: 1, explanation: "m = number of rows, n = number of columns." },
-    { text: "When viewing \\(Ax = b\\) through the \"Row Picture\" perspective, what is the primary mathematical operation?", options: ["Linear combinations of columns", "Gaussian elimination", "Dot products of rows and the input vector", "Mapping to the Null Space"], correct: 2, explanation: "Row picture: each row gives dot product row_i · x = b_i." },
-    { text: "The expression \\(Ax\\) is fundamentally a:", options: ["List of separate equations", "Linear combination of the columns of \\(A\\) weighted by \\(x\\)", "Way to find the determinant", "Process of row swapping"], correct: 1, explanation: "Ax = x₁a₁ + x₂a₂ + … + xₙaₙ (columns combination)." },
-    { text: "A system of linear equations is defined as \"Consistent\" if:", options: ["It has no solutions", "It has at least one solution", "The equations contradict each other", "The matrix \\(A\\) is non-linear"], correct: 1, explanation: "Consistent = at least one solution exists." },
-    { text: "Which of the following describes an \"Inconsistent\" system?", options: ["The machine works and \\(b\\) is reachable", "There is exactly one unique solution", "The equations contradict each other and no combination of columns can reach \\(b\\)", "The system is triangular"], correct: 2, explanation: "Inconsistent = no solution, b ∉ C(A)." },
-    { text: "What is the term for the matrix formed by juxtaposing \\(A\\) and \\(b\\), denoted as \\([A \\mid b]\\)?", options: ["Inverse Matrix", "Augmented Matrix", "Identity Matrix", "Singular Matrix"], correct: 1, explanation: "Augmented matrix [A | b]." },
-    { text: "In the context of Gauss-Jordan elimination, what is a \"Pivot\"?", options: ["The result of a row swap", "A \"Forbidden\" variable", "The '1' on the diagonal used to eliminate other numbers in its column", "The sum of all elements in \\(b\\)"], correct: 2, explanation: "Pivot = leading 1 after normalization." },
-    { text: "Which \"Forbidden\" element describes a non-linear relationship due to a power?", options: ["\\(x^2\\)", "\\(\\sin(x)\\)", "\\(\\cos(y)\\)", "\\(x_1 + x_2\\)"], correct: 0, explanation: "Power/exponent → nonlinear." },
-    { text: "The \"Crucial Change in Viewpoint\" defines the \"Inverse Problem\" as:", options: ["Calculating \\(b\\) when \\(x\\) and \\(A\\) are known", "Shifting from calculating \\(b\\) to discovering the input \\(x\\) that caused it", "Multiplying \\(x\\) by zero to see if \\(A\\) is invertible", "Swapping the columns of \\(A\\) to match \\(b\\)"], correct: 1, explanation: "Inverse: given b, find x." },
-    { text: "In the \"Anatomy of the Machine\" diagram, what does the variable \\(n\\) specifically denote?", options: ["The number of target components in \\(b\\)", "The number of columns (the length of input \\(x\\))", "The number of rows (the height of \\(A\\))", "The number of \"Forbidden\" products"], correct: 1, explanation: "n = number of columns = length of input x." },
-    { text: "Which equation is linear according to the \"Allowed\" criteria?", options: ["\\(x^2 + y = 2\\)", "\\(\\sin(x) + \\cos(y) = 5\\)", "\\(2x + 5y = 1\\)", "\\(x \\cdot y = 4\\)"], correct: 2, explanation: "Only constant × variable terms." },
-    { text: "On Slide 8-1, what is the specific name given to the dashed vertical bar in the augmented matrix \\([A \\mid I]\\)?", options: ["The Pivot", "The Mirror", "The Spine", "The Target"], correct: 1, explanation: "The Mirror — row operations mirrored to find inverse." },
-    { text: "Why are \"Triangular Matrices\" referred to as \"The Friendly Machine\"?", options: ["Because they never contain zeros", "Because they can be solved in order using substitution", "Because they are always 2 × 2", "Because they do not require an input \\(x\\)"], correct: 1, explanation: "Back substitution works directly." },
-    { text: "If you are in the \"Normalization\" phase and Row 2 is currently \\([0\\; 4\\; -2]\\), what is the result of the \"Scale\" operation required to create the pivot?", options: ["\\([0\\; 1\\; -0.5]\\)", "\\([0\\; 1\\; 1]\\)", "\\([0\\; 1\\; 0]\\)", "\\([0\\; 8\\; -4]\\)"], correct: 0, explanation: "Divide by 4 → [0 1 -0.5]." },
-    { text: "If you apply the \"Swap\" elementary row operation to the matrix \\(A = \\begin{bmatrix}0&1\\\\1&2\\end{bmatrix}\\), what is the resulting matrix?", options: ["\\(\\begin{bmatrix}1&2\\\\0&1\\end{bmatrix}\\)", "\\(\\begin{bmatrix}1&0\\\\2&1\\end{bmatrix}\\)", "\\(\\begin{bmatrix}0&2\\\\1&1\\end{bmatrix}\\)", "\\(\\begin{bmatrix}1&2\\\\-2&?\\end{bmatrix}\\)"], correct: 0, explanation: "Swap rows → [[1,2],[0,1]]." },
-    { text: "If you have \\(R_2 = [0\\; 1\\; -0.5]\\) and \\(R_3 = [0\\; 0\\; 1]\\), what is the result of the \"Combine\" operation \\(R_2 = R_2 + (0.5 \\times R_3)\\) to eliminate the −0.5 above the third pivot?", options: ["New Row 2 = \\([0\\; 1\\; 0.5]\\)", "New Row 2 = \\([0\\; 1\\; 0]\\)", "New Row 2 = \\([0\\; 0\\; 1]\\)", "New Row 2 = \\([0\\; 1.5\\; 0]\\)"], correct: 1, explanation: "-0.5+0.5=0 → [0 1 0]." },
-    { text: "According to the \"Gauss-Jordan Elimination Algorithm\" flowchart, what is the correct sequence of steps?", options: ["Normalize → Eliminate → Setup → Result", "Setup \\([A \\mid I]\\) → Normalize → Eliminate → Result \\([I \\mid A^{-1}]\\)", "Eliminate → Normalize → Setup → Inverse", "Setup \\([A \\mid b]\\) → Solve → Inverse → Check"], correct: 1, explanation: "Setup, Normalize, Eliminate, Result." },
-    { text: "The \"Solvability Link\" states that \\(Ax = b\\) is solvable if and only if:", options: ["The matrix \\(A\\) is singular", "Vector \\(b\\) is in the Column Space \\(C(A)\\)", "Vector \\(x\\) is the zero vector", "The Null Space is empty"], correct: 1, explanation: "b ∈ C(A) ⇔ solvable." },
-    { text: "Considering the \"2D Case Study\" from last week, why is the matrix \\(A = \\begin{bmatrix}1&2\\\\3&6\\end{bmatrix}\\) considered singular?", options: ["It is a triangular matrix", "The second row is a multiple of the first (specifically \\(R_2 = 3R_1\\))", "It has too many pivots", "It is an identity matrix"], correct: 1, explanation: "Rows linearly dependent → singular." },
-    { text: "For the singular system \\(\\{1x_1 + 2x_2 = 0,\\ 0 = 0\\}\\), which variable is identified as the \"Free Variable\"?", options: ["\\(x_1\\)", "\\(x_2\\)", "Both \\(x_1\\) and \\(x_2\\)", "Neither variable is free"], correct: 1, explanation: "x₂ has no pivot → free variable." },
-    { text: "Based on the \"Special Choice\" method, if we set the free variable \\(x_2 = 1\\) for the system \\(x_1 + 2x_2 = 0\\), what is the \"Special Solution\" vector \\(s\\)?", options: ["\\(\\begin{bmatrix}2\\\\1\\end{bmatrix}\\)", "\\(\\begin{bmatrix}-2\\\\1\\end{bmatrix}\\)", "\\(\\begin{bmatrix}1\\\\-2\\end{bmatrix}\\)", "\\(\\begin{bmatrix}0\\\\0\\end{bmatrix}\\)"], correct: 1, explanation: "x₁ = -2 → s = [-2, 1]ᵀ." },
-    { text: "If \\(A\\) is an \\(m \\times n\\) matrix, the Column Space \\(C(A)\\) is a subspace of:", options: ["\\(\\mathbb{R}^n\\)", "\\(\\mathbb{R}^m\\)", "The Null Space", "The Origin only"], correct: 1, explanation: "Columns have m entries → subspace of ℝᵐ." },
-    { text: "According to the \"Anatomy and Geography of \\(Ax = 0\\),\" the Null Space \\(N(A)\\) is a subspace of:", options: ["\\(\\mathbb{R}^n\\)", "\\(\\mathbb{R}^m\\)", "The Column Space", "A 4D hyper-plane"], correct: 0, explanation: "x has n entries → N(A) ⊆ ℝⁿ." },
-    { text: "Which of the following is the correct definition of the \"Zero Test\"?", options: ["If \\(Ax = 0\\) only when \\(x = 0\\), the matrix is not invertible.", "If we can get a zero output (\\(Ax = 0\\)) even when the input is NOT zero (\\(x \\neq 0\\)), the matrix is NOT invertible.", "Every matrix passes the Zero Test if it has a row of zeros.", "If \\(Ax = b\\) has a solution, the matrix fails the Zero Test."], correct: 1, explanation: "Non‑trivial null space ⇒ singular." },
-    { text: "During \"Step 1: Normalization\" of the Gauss-Jordan process, what is the goal of applying the \"Scale\" operation?", options: ["To create zeros above the diagonal", "To create 1s on the diagonal (the Pivots)", "To swap rows for better alignment", "To solve for the output \\(b\\)"], correct: 1, explanation: "Scale makes pivot = 1." },
-    { text: "In the \"Procedural Roadmap\" for testing membership in a column space, what must you do in Step 2: Process?", options: ["Construct the augmented matrix \\([A \\mid b]\\)", "Apply Gaussian elimination to reach Reduced Row-Echelon Form (RREF)", "Examine the final augmented column for consistency", "Set the free variables to 1 and 0"], correct: 1, explanation: "Process = row reduce to RREF." },
-    { text: "Geometrically, if the second column of a 2 × 2 matrix is a multiple of the first, what happens to the Column Space \\(C(A)\\)?", options: ["It expands to cover all of \\(\\mathbb{R}^2\\)", "It collapses to a single 1D line", "It becomes a single point at the origin", "It becomes a 3D plane"], correct: 1, explanation: "Dependent columns → 1D line." },
-    { text: "In the \"VIP Club\" analogy for the Null Space, what is the requirement for a vector \\(x\\) to be \"Mapped to the Zero Vector\"?", options: ["\\(Ax = b\\)", "\\(Ax = I\\)", "\\(Ax = 0\\)", "\\(x = A^{-1}b\\)"], correct: 2, explanation: "Null space condition: Ax = 0." },
-    { text: "Consider the 1 × 3 matrix \\(A = [1\\; 2\\; 3]\\). Geometrically, what does the null space of the equation \\(x + 2y + 3z = 0\\) represent?", options: ["A line in 3D space", "A point at the origin", "A plane in 3D space", "The entire 3D space"], correct: 2, explanation: "1 equation, 3 variables → plane through origin." },
-    { text: "According to the \"Boring vs. Interesting\" matrix slide, the Null Space of an Invertible matrix is:", options: ["An infinite line of solutions", "A single point (the origin)", "The Column Space", "A plane"], correct: 1, explanation: "Only trivial solution x=0." },
-    { text: "Which error described in \"What could go wrong?\" involves small fraction errors that derail the elimination process?", options: ["The Forgotten Right Side", "Arithmetic Drifts", "Order of Operations", "The Non-linear Trap"], correct: 1, explanation: "Accumulated rounding errors." },
-    { text: "To ensure that special solutions in 3D (with two free variables \\(y\\) and \\(z\\)) are independent, what \"efficient\" values does the slide suggest we set?", options: ["Set \\(y=1,z=1\\) and \\(y=0,z=0\\)", "Set \\(y=1,z=0\\) for the first solution, then \\(y=0,z=1\\) for the second", "Set \\(x=1,y=2,z=3\\)", "Set all variables to 0"], correct: 1, explanation: "Basis for free variables." },
-    { text: "What is the result of the \"Reveal\" step in Gauss-Jordan elimination after \\(A\\) has been transformed into \\(I\\)?", options: ["The left side is \\(A^{-1}\\)", "The Identity matrix has \"absorbed the chaos\" to become the Inverse \\(A^{-1}\\) on the right side", "The right side is still \\(I\\)", "The matrix \\(A\\) becomes a vector \\(b\\)"], correct: 1, explanation: "[A|I] → [I|A⁻¹]." },
-    { text: "After the \"Spine is Set\" in the DIN Pro method, what is the \"logical sequence strictly followed\" to eliminate non-zero numbers?", options: ["Top-to-bottom", "Columns left-to-right, then bottom-to-top", "Randomly attacking any non-zero number", "Only normalizing the right side"], correct: 1, explanation: "Systematic elimination order." },
-    { text: "If a matrix has redundant columns, it implies:", options: ["The system has no solution", "The system has exactly one solution", "The system has infinite solutions", "The matrix is invertible"], correct: 2, explanation: "Free variables → infinite solutions." },
-    { text: "Use the \"Null Space Membership Test\" for matrix \\(A = \\begin{bmatrix}1&2\\\\-1&-2\\\\3&6\\end{bmatrix}\\) and candidate vector \\(x = \\begin{bmatrix}2\\\\-1\\end{bmatrix}\\). Does \\(x\\) gain \"VIP Access\"?", options: ["No, access denied (\\(Ax \\neq 0\\))", "Yes, VIP access granted (\\(Ax = 0\\))", "Access granted only if \\(A\\) is square", "Access denied because \\(x\\) has only 2 components"], correct: 1, explanation: "Ax = 0 for all rows → null space vector." },
-    { text: "The \"Solvability Link\" states that \\(Ax = b\\) is solvable if and only if \\(b\\) is:", options: ["The zero vector", "A combination of the columns of \\(A\\)", "Equal to the first column of \\(A\\)", "A forbidden element"], correct: 1, explanation: "b ∈ C(A)." },
-    { text: "In the \"Anatomy of a Linear Combination,\" the scalar components of the input vector \\(x\\) act as:", options: ["Pivots", "Weights", "Forbidden powers", "Matrix dimensions"], correct: 1, explanation: "Weights for columns combination." }
-  ];
+// ═══════════════════════════════════════════════════════
+// DATA
+// ═══════════════════════════════════════════════════════
 
-  const tfData = [
-    { text: "The Zero Test: If a matrix A is invertible, the only solution to Ax = 0 is the trivial solution x = 0.", correct: true, explanation: "Invertible ⇔ null space = {0}." },
-    { text: "Friendly Machines: Triangular matrices are considered 'friendly' because they can be solved in order without using Gaussian elimination.", correct: true, explanation: "Back substitution works directly." },
-    { text: "Column Space: The Column Space C(A) consists only of the static columns of A and does not include their linear combinations.", correct: false, explanation: "False. Column space = all linear combinations of columns." },
-    { text: "Chaos Absorption: During Gauss-Jordan, the Identity matrix I on the right side absorbs row operations to become A⁻¹.", correct: true, explanation: "[A|I] → [I|A⁻¹]." },
-    { text: "Solvability: A system Ax = b is consistent if there is no combination of the columns of A that can reach b.", correct: false, explanation: "False. Consistent ⇔ b ∈ C(A)." }
-  ];
+const MCQ = [
+  // EASY 1–15
+  {id:1,sec:'easy',q:'Which of the following expressions prevents an equation from being <em>linear</em>?',opts:['\\(2x_1 + 5x_2 = 1\\)','\\(x + y = 2\\)','\\(xy = 4\\)','\\(3x - z = 0\\)'],ans:2,expl:'\\(xy\\) is a <strong>product of two variables</strong> — this creates non-linearity. Linear equations allow only constant × single-variable terms. Options A, B, D are all valid linear expressions.'},
+  {id:2,sec:'easy',q:'In the "Anatomy of the Machine" (\\(Ax = b\\)), what is the "Central Problem" of Linear Algebra?',opts:['Finding the known output \\(b\\)','Finding the unknown input \\(x\\)','Multiplying \\(A\\) by the identity matrix','Counting the number of equations'],ans:1,expl:'The central problem: given \\(A\\) and \\(b\\), <strong>solve for the unknown input \\(x\\)</strong>. This is the Inverse Problem — harder than computing \\(b\\) from a known \\(x\\).'},
+  {id:3,sec:'easy',q:'If matrix \\(A\\) has dimensions \\(m \\times n\\), what does \\(m\\) represent?',opts:['The number of columns','The number of rows','The number of unknown variables','The number of solution sets'],ans:1,expl:'In \\(A_{m\\times n}\\): <strong>\\(m\\) = rows</strong> (height of \\(A\\) = dimension of output \\(b\\)), and \\(n\\) = columns (number of variables = length of \\(x\\)).'},
+  {id:4,sec:'easy',q:'In the "Row Picture" of \\(Ax = b\\), what is the primary mathematical operation?',opts:['Linear combinations of columns','Gaussian elimination','Dot products of rows and the input vector','Mapping to the Null Space'],ans:2,expl:'<strong>Row Picture:</strong> each equation is a dot product of a row of \\(A\\) with \\(x\\), equaling the corresponding entry of \\(b\\). Each row defines a hyperplane; the solution is their intersection.'},
+  {id:5,sec:'easy',q:'The expression \\(Ax\\) is fundamentally a:',opts:['List of separate equations','Linear combination of the columns of \\(A\\) weighted by \\(x\\)','Way to find the determinant','Process of row swapping'],ans:1,expl:'\\(Ax = x_1\\mathbf{a}_1 + x_2\\mathbf{a}_2 + \\cdots + x_n\\mathbf{a}_n\\). Each entry of \\(x\\) is a <strong>scalar weight</strong> scaling a column of \\(A\\). This is the Column Picture viewpoint.'},
+  {id:6,sec:'easy',q:'A system is "Consistent" if:',opts:['It has no solutions','It has at least one solution','The equations contradict each other','The matrix \\(A\\) is non-linear'],ans:1,expl:'<strong>Consistent</strong> = at least one solution exists. <strong>Inconsistent</strong> = no solution (contradiction like \\(0=1\\) appears during elimination).'},
+  {id:7,sec:'easy',q:'Which describes an "Inconsistent" system?',opts:['The machine works and \\(b\\) is reachable','There is exactly one unique solution','Equations contradict — no column combination can reach \\(b\\)','The system is triangular'],ans:2,expl:'Inconsistent means \\(b \\notin C(A)\\). During elimination a row like \\([0\\ 0\\ |\\ 5]\\) appears, meaning \\(0=5\\) — a contradiction. The machine cannot produce \\(b\\).'},
+  {id:8,sec:'easy',q:'What is the matrix \\([A \\mid b]\\) called?',opts:['Inverse Matrix','Augmented Matrix','Identity Matrix','Singular Matrix'],ans:1,expl:'The <strong>Augmented Matrix</strong> \\([A \\mid b]\\) appends \\(b\\) as an extra column to \\(A\\). For finding \\(A^{-1}\\), we use \\([A \\mid I]\\) instead.'},
+  {id:9,sec:'easy',q:'In Gauss-Jordan elimination, what is a "Pivot"?',opts:['The result of a row swap','A "Forbidden" variable','The 1 on the diagonal used to eliminate other entries in its column','The sum of all elements in \\(b\\)'],ans:2,expl:'A <strong>pivot</strong> is the leading 1 created during normalization. It eliminates all other entries in its column — above and below — producing RREF.'},
+  {id:10,sec:'easy',q:'Which "Forbidden" element is non-linear due to a <em>power</em>?',opts:['\\(x^2\\)','\\(\\sin(x)\\)','\\(\\cos(y)\\)','\\(x_1 + x_2\\)'],ans:0,expl:'\\(x^2\\) is non-linear due to an <strong>exponent</strong>. Note: \\(\\sin(x)\\) and \\(\\cos(y)\\) are also forbidden (transcendental), but the question specifically asks about a power.'},
+  {id:11,sec:'easy',q:'The "Crucial Change in Viewpoint" defines the Inverse Problem as:',opts:['Calculating \\(b\\) when \\(x\\) and \\(A\\) are known','Shifting from calculating \\(b\\) to discovering the input \\(x\\) that caused it','Multiplying \\(x\\) by zero to check invertibility','Swapping the columns of \\(A\\) to match \\(b\\)'],ans:1,expl:'<strong>Forward:</strong> compute \\(b=Ax\\) (easy). <strong>Inverse:</strong> given \\(b\\), find \\(x\\) (harder — requires elimination or \\(A^{-1}\\)).'},
+  {id:12,sec:'easy',q:'In the "Anatomy of the Machine", what does \\(n\\) denote?',opts:['The number of target components in \\(b\\)','The number of columns (length of input \\(x\\))','The number of rows (height of \\(A\\))','The number of Forbidden products'],ans:1,expl:'\\(n\\) = number of <strong>columns</strong> = length of input \\(x \\in \\mathbb{R}^n\\). \\(m\\) = rows = length of output \\(b \\in \\mathbb{R}^m\\).'},
+  {id:13,sec:'easy',q:'Which equation is linear?',opts:['\\(x^2 + y = 2\\)','\\(\\sin(x) + \\cos(y) = 5\\)','\\(2x + 5y = 1\\)','\\(x \\cdot y = 4\\)'],ans:2,expl:'\\(2x + 5y = 1\\) has only <strong>constant × variable</strong> terms — fully linear. A: power, B: transcendental functions, D: product of variables.'},
+  {id:14,sec:'easy',q:'What is the dashed vertical bar in \\([A \\mid I]\\) called?',opts:['The Pivot','The Mirror','The Spine','The Target'],ans:1,expl:'Called <strong>"The Mirror"</strong> — row operations applied to the left side (\\(A\\)) are mirrored to the right side (\\(I\\)), transforming it into \\(A^{-1}\\).'},
+  {id:15,sec:'easy',q:'Why are Triangular Matrices called "The Friendly Machine"?',opts:['They never contain zeros','They can be solved in order using back substitution','They are always 2×2','They do not require an input \\(x\\)'],ans:1,expl:'Friendly because you can solve sequentially via <strong>back substitution</strong> — start from the last equation (one variable) and substitute upward. No elimination needed.'},
 
-  let mcqCorrect = new Array(40).fill(false);
-  let tfSelected = new Array(5).fill(null);
+  // MID 16–40
+  {id:16,sec:'mid',q:'Row 2 is \\([0\\ \\ 4\\ \\ {-2}]\\). What does the Scale operation produce?',opts:['\\([0\\quad 1\\quad {-0.5}]\\)','\\([0\\quad 1\\quad 1]\\)','\\([0\\quad 1\\quad 0]\\)','\\([0\\quad 8\\quad {-4}]\\)'],ans:0,expl:'Divide by the pivot element 4: \\(\\frac{1}{4}[0\\ 4\\ -2] = [0\\ 1\\ -0.5]\\). Normalization makes the leading entry = <strong>1</strong>.'},
+  {id:17,sec:'mid',q:'Apply Swap to \\(A = \\begin{bmatrix}0&1\\\\1&2\\end{bmatrix}\\). Result?',opts:['\\(\\begin{bmatrix}1&2\\\\0&1\\end{bmatrix}\\)','\\(\\begin{bmatrix}1&0\\\\2&1\\end{bmatrix}\\)','\\(\\begin{bmatrix}0&2\\\\1&1\\end{bmatrix}\\)','\\(\\begin{bmatrix}1&2\\\\-2&0\\end{bmatrix}\\)'],ans:0,expl:'\\(R_1 \\leftrightarrow R_2\\): \\(\\begin{bmatrix}0&1\\\\1&2\\end{bmatrix} \\rightarrow \\begin{bmatrix}1&2\\\\0&1\\end{bmatrix}\\). We swap so the pivot position gets a non-zero value.'},
+  {id:18,sec:'mid',q:'\\(R_2=[0\\ 1\\ {-0.5}]\\), \\(R_3=[0\\ 0\\ 1]\\). Compute \\(R_2 = R_2 + 0.5R_3\\).',opts:['\\([0\\ \\ 1\\ \\ 0.5]\\)','\\([0\\ \\ 1\\ \\ 0]\\)','\\([0\\ \\ 0\\ \\ 1]\\)','\\([0\\ \\ 1.5\\ \\ 0]\\)'],ans:1,expl:'\\([0\\ 1\\ -0.5]+0.5\\cdot[0\\ 0\\ 1]=[0\\ 1\\ -0.5+0.5]=[0\\ 1\\ 0]\\). The \\(-0.5\\) is eliminated cleanly.'},
+  {id:19,sec:'mid',q:'Correct Gauss-Jordan sequence?',opts:['Normalize → Eliminate → Setup → Result','Setup \\([A\\mid I]\\) → Normalize → Eliminate → Result \\([I\\mid A^{-1}]\\)','Eliminate → Normalize → Setup → Inverse','Setup \\([A\\mid b]\\) → Solve → Inverse → Check'],ans:1,expl:'<strong>(1)</strong> Setup \\([A\\mid I]\\) → <strong>(2)</strong> Normalize (pivot=1) → <strong>(3)</strong> Eliminate (zero out column) → <strong>(4)</strong> Result \\([I\\mid A^{-1}]\\).'},
+  {id:20,sec:'mid',q:'The Solvability Link: \\(Ax=b\\) is solvable iff:',opts:['Matrix \\(A\\) is singular','Vector \\(b\\) is in the Column Space \\(C(A)\\)','Vector \\(x\\) is the zero vector','The Null Space is empty'],ans:1,expl:'\\(Ax=b\\) is solvable \\(\\iff b \\in C(A)\\). \\(b\\) must be a linear combination of the columns of \\(A\\). Outside the Column Space → no solution.'},
+  {id:21,sec:'mid',q:'Why is \\(A=\\begin{bmatrix}1&2\\\\3&6\\end{bmatrix}\\) singular?',opts:['It is triangular','\\(R_2 = 3R_1\\) — rows are linearly dependent','It has too many pivots','It is an identity matrix'],ans:1,expl:'\\(R_2=3\\cdot R_1\\) → <strong>dependent rows</strong> → zero row after elimination → no second pivot → \\(\\det(A)=0\\) → singular, \\(A^{-1}\\) does not exist.'},
+  {id:22,sec:'mid',q:'For \\(\\{x_1+2x_2=0,\\ 0=0\\}\\), which is the Free Variable?',opts:['\\(x_1\\)','\\(x_2\\)','Both','Neither'],ans:1,expl:'\\(x_1\\) has a pivot (leading variable). \\(x_2\\) has <strong>no pivot</strong> in its column → it is free and generates infinitely many null space solutions.'},
+  {id:23,sec:'mid',q:'Special Choice: set \\(x_2=1\\) in \\(x_1+2x_2=0\\). Find \\(s\\).',opts:['\\(\\begin{bmatrix}2\\\\1\\end{bmatrix}\\)','\\(\\begin{bmatrix}-1\\\\2\\end{bmatrix}\\)','\\(\\begin{bmatrix}-2\\\\1\\end{bmatrix}\\)','\\(\\begin{bmatrix}0\\\\0\\end{bmatrix}\\)'],ans:2,expl:'\\(x_2=1 \\Rightarrow x_1+2=0 \\Rightarrow x_1=-2\\). Special solution \\(s=\\begin{bmatrix}-2\\\\1\\end{bmatrix}\\). Full null space: \\(N(A)=c\\cdot s,\\ c\\in\\mathbb{R}\\).'},
+  {id:24,sec:'mid',q:'Column Space \\(C(A)\\) of an \\(m\\times n\\) matrix is a subspace of:',opts:['\\(\\mathbb{R}^n\\)','\\(\\mathbb{R}^m\\)','The Null Space','The Origin only'],ans:1,expl:'Each column has \\(m\\) entries → lives in \\(\\mathbb{R}^m\\). So \\(C(A) \\subseteq \\mathbb{R}^m\\). Trick: <strong>C</strong>olumns → \\(\\mathbb{R}^{\\mathbf{m}}\\), <strong>N</strong>ull → \\(\\mathbb{R}^{\\mathbf{n}}\\).'},
+  {id:25,sec:'mid',q:'Null Space \\(N(A)\\) is a subspace of:',opts:['\\(\\mathbb{R}^n\\)','\\(\\mathbb{R}^m\\)','The Column Space','A 4D hyper-plane'],ans:0,expl:'Null space vectors \\(x\\) have \\(n\\) components → \\(N(A) \\subseteq \\mathbb{R}^n\\). Trick: <strong>N</strong>ull → \\(\\mathbb{R}^{\\mathbf{n}}\\).'},
+  {id:26,sec:'mid',q:'Correct definition of the "Zero Test":',opts:['If \\(Ax=0\\) only when \\(x=0\\), \\(A\\) is not invertible.','If \\(Ax=0\\) when \\(x\\neq 0\\), then \\(A\\) is NOT invertible.','Every matrix passes if it has a row of zeros.','If \\(Ax=b\\) has a solution, the matrix fails.'],ans:1,expl:'<strong>Zero Test:</strong> if \\(\\exists x\\neq 0\\) such that \\(Ax=0\\), then \\(A\\) is NOT invertible. The null space contains non-trivial "VIP members."'},
+  {id:27,sec:'mid',q:'Goal of the "Scale" operation during Normalization:',opts:['Create zeros above diagonal','Create 1s on the diagonal (Pivots)','Swap rows for better alignment','Solve for output \\(b\\)'],ans:1,expl:'<strong>Normalization = Scale</strong>: divide row by its leading entry to create a <strong>pivot of 1</strong>. Creating zeros is the separate Elimination step.'},
+  {id:28,sec:'mid',q:'In the Procedural Roadmap, what is Step 2: Process?',opts:['Construct the augmented matrix \\([A\\mid b]\\)','Apply Gaussian elimination to reach RREF','Examine augmented column for consistency','Set free variables to 1 and 0'],ans:1,expl:'3-Step Roadmap: <strong>Setup</strong> \\([A\\mid b]\\) → <strong>Process</strong> (row reduce to RREF) → <strong>Interpret</strong> (check for contradiction). Step 2 is the actual elimination work.'},
+  {id:29,sec:'mid',q:'If column 2 of a 2×2 matrix is a multiple of column 1, \\(C(A)\\) becomes:',opts:['All of \\(\\mathbb{R}^2\\)','A single 1D line','A point at the origin','A 3D plane'],ans:1,expl:'Dependent columns point the same direction → all combinations \\(x_1\\mathbf{c}_1+x_2\\mathbf{c}_2\\) stay on <strong>one line</strong>. The Column Space "collapses" from 2D to 1D.'},
+  {id:30,sec:'mid',q:'In the VIP Club analogy, the condition for null space membership is:',opts:['\\(Ax=b\\)','\\(Ax=I\\)','\\(Ax=0\\)','\\(x=A^{-1}b\\)'],ans:2,expl:'\\(N(A)=\\{x \\mid Ax=\\mathbf{0}\\}\\). VIP access = input \\(x\\) maps to zero vector. For invertible matrices, only \\(x=0\\) qualifies.'},
+  {id:31,sec:'mid',q:'For \\(A=[1\\ 2\\ 3]\\), the null space of \\(x+2y+3z=0\\) is geometrically:',opts:['A line in 3D','A point at the origin','A plane in 3D','The entire 3D space'],ans:2,expl:'1 equation, 3 unknowns → \\(3-1=2\\) free variables → <strong>2D = a plane through the origin</strong> in \\(\\mathbb{R}^3\\).'},
+  {id:32,sec:'mid',q:'The Null Space of an Invertible matrix is:',opts:['An infinite line','Just the origin \\(\\{\\mathbf{0}\\}\\)','The Column Space','A plane'],ans:1,expl:'<strong>Invertible (Boring):</strong> \\(Ax=0\\) has only \\(x=0\\). Null space = \\(\\{\\mathbf{0}\\}\\). <strong>Singular (Interesting):</strong> infinitely many non-zero solutions.'},
+  {id:33,sec:'mid',q:'Which error involves small fraction errors derailing elimination?',opts:['The Forgotten Right Side','Arithmetic Drifts','Order of Operations','The Non-linear Trap'],ans:1,expl:'<strong>Arithmetic Drifts</strong> — rounding/fraction errors accumulate through elimination steps and compound into wrong answers.'},
+  {id:34,sec:'mid',q:'To find independent special solutions with free variables \\(y,z\\):',opts:['Set \\(y=1,z=1\\) and \\(y=0,z=0\\)','Set \\((y,z)=(1,0)\\) for solution 1; \\((y,z)=(0,1)\\) for solution 2','Set \\(x=1,y=2,z=3\\)','Set all variables to 0'],ans:1,expl:'Identity-like choices guarantee <strong>independent</strong> basis vectors: \\((1,0)\\) and \\((0,1)\\). They span the null space without overlap — like standard basis vectors.'},
+  {id:35,sec:'mid',q:'After the Gauss-Jordan "Reveal" step:',opts:['The left side is \\(A^{-1}\\)','The right side (initially \\(I\\)) has become \\(A^{-1}\\)','The right side is still \\(I\\)','Matrix \\(A\\) becomes vector \\(b\\)'],ans:1,expl:'After all row operations: \\([A\\mid I]\\rightarrow[I\\mid A^{-1}]\\). The <strong>right side</strong> absorbs all operations and becomes \\(A^{-1}\\).'},
+  {id:36,sec:'mid',q:'After "Spine is Set," the elimination sequence is:',opts:['Top-to-bottom','Columns left-to-right, within each column bottom-to-top','Random non-zero attack','Only normalizing the right side'],ans:1,expl:'Systematic elimination: <strong>left column → right column</strong>, within each column <strong>bottom → top</strong>. Avoids re-introducing non-zeros.'},
+  {id:37,sec:'mid',q:'A matrix with redundant (dependent) columns implies:',opts:['No solution','Exactly one solution','Infinite solutions','The matrix is invertible'],ans:2,expl:'Dependent columns → free variables → <strong>infinite solutions</strong>. The null space is non-trivial (contains non-zero vectors).'},
+  {id:38,sec:'mid',q:'Null Space Test: \\(A=\\begin{bmatrix}1&2\\\\-1&-2\\\\3&6\\end{bmatrix}\\), \\(x=\\begin{bmatrix}2\\\\-1\\end{bmatrix}\\). VIP access?',opts:['No — \\(Ax\\neq 0\\)','Yes — \\(Ax=0\\)','Only if \\(A\\) is square','No — \\(x\\) has only 2 components'],ans:1,expl:'Row 1: \\(1(2)+2(-1)=0\\)✓, Row 2: \\(-1(2)+(-2)(-1)=0\\)✓, Row 3: \\(3(2)+6(-1)=0\\)✓. All zero → <strong>VIP access granted!</strong>'},
+  {id:39,sec:'mid',q:'The Solvability Link says \\(b\\) must be:',opts:['The zero vector','A linear combination of the columns of \\(A\\)','Equal to the first column of \\(A\\)','A forbidden element'],ans:1,expl:'\\(Ax=b\\) is solvable \\(\\iff b\\in C(A)\\) \\(\\iff b\\) is a <strong>linear combination of the columns of \\(A\\)</strong>.'},
+  {id:40,sec:'mid',q:'Scalar components of \\(x\\) in \\(Ax\\) act as:',opts:['Pivots','Weights','Forbidden powers','Matrix dimensions'],ans:1,expl:'Each component of \\(x\\) is a <strong>scalar weight</strong> scaling a column of \\(A\\). \\(Ax = x_1\\mathbf{a}_1+x_2\\mathbf{a}_2+\\cdots\\) — a weighted sum.'},
 
-  function renderMCQ() {
-    const container = document.getElementById('mcq-container');
-    if (!container) return;
-    container.innerHTML = '';
-    mcqData.forEach((q, idx) => {
-      const card = document.createElement('div');
-      card.className = 'q-card';
-      card.innerHTML = `
-        <div class="q-header"><div class="q-num">Q${idx+1}</div><div class="q-text">${q.text}</div></div>
-        <div class="q-options" id="mcq-opt-${idx}"></div>
-        <div class="feedback" id="mcq-fb-${idx}"></div>
-      `;
-      const optsDiv = card.querySelector(`#mcq-opt-${idx}`);
-      q.options.forEach((opt, optIdx) => {
-        const optEl = document.createElement('div');
-        optEl.className = 'option';
-        optEl.innerHTML = `<span class="opt-letter">${String.fromCharCode(65+optIdx)}</span><span class="opt-text">${opt}</span>`;
-        optEl.onclick = () => {
-          if (mcqCorrect[idx]) return;
-          const isCor = (optIdx === q.correct);
-          const fbDiv = document.getElementById(`mcq-fb-${idx}`);
-          if (isCor) {
-            mcqCorrect[idx] = true;
-            fbDiv.innerHTML = `✅ Correct! ${q.explanation}`;
-            fbDiv.className = 'feedback correct';
-          } else {
-            fbDiv.innerHTML = `❌ Wrong. Correct answer: ${String.fromCharCode(65+q.correct)}. ${q.explanation}`;
-            fbDiv.className = 'feedback wrong';
-          }
-          updateAllScores();
-        };
-        optsDiv.appendChild(optEl);
-      });
-      container.appendChild(card);
-    });
-    if (window.MathJax) MathJax.typesetPromise?.();
+  // BONUS 41–50
+  {id:41,sec:'bonus',q:'What does <strong>RREF</strong> stand for?',opts:['Row-Reduced Elementary Form','Reduced Row-Echelon Form','Recurrent Row Elimination Form','Row-Ratio Entry Form'],ans:1,expl:'<strong>RREF = Reduced Row-Echelon Form.</strong> Conditions: (1) all pivots = 1, (2) pivots are the only non-zero in their column, (3) each pivot is right of the one above it.'},
+  {id:42,sec:'bonus',q:'For a \\(3\\times 5\\) matrix, the <em>maximum</em> number of pivots is:',opts:['5','8','3','15'],ans:2,expl:'Pivots ≤ min(rows, cols) = min(3, 5) = <strong>3</strong>. Each pivot occupies one row and one column.'},
+  {id:43,sec:'bonus',q:'Which is NOT a valid elementary row operation?',opts:['Multiply a row by a non-zero scalar','Add a multiple of one row to another','Swap two rows','Multiply two rows together'],ans:3,expl:'Valid operations: <strong>Scale</strong> (×non-zero scalar), <strong>Combine</strong> (add multiple of row), <strong>Swap</strong> (exchange rows). Multiplying two rows together is non-linear — never allowed.'},
+  {id:44,sec:'bonus',q:'If \\(Ax=0\\) has only the trivial solution \\(x=0\\) (square \\(A\\)), then:',opts:['\\(A\\) is singular with no inverse','\\(A\\) is invertible and \\(\\det(A)\\neq 0\\)','\\(A\\) has free variables','The column space is just the origin'],ans:1,expl:'Trivial null space → <strong>\\(A\\) is invertible</strong> with \\(\\det(A)\\neq 0\\). All columns are linearly independent; the column space spans \\(\\mathbb{R}^m\\).'},
+  {id:45,sec:'bonus',q:'The general solution to a consistent \\(Ax=b\\) is:',opts:['Just the particular solution \\(x_p\\)','\\(x = x_p + x_n\\), where \\(x_n\\in N(A)\\)','Only valid when \\(A\\) is square','\\(x = A^{-1}\\) always'],ans:1,expl:'General solution: \\(x = x_p + x_n\\), where \\(x_p\\) is any particular solution to \\(Ax=b\\), and \\(x_n\\) is any null space vector. If \\(N(A)=\\{0\\}\\), the solution is unique.'},
+  {id:46,sec:'bonus',q:'The "dimension" of the null space \\(N(A)\\) is called:',opts:['The rank of \\(A\\)','The nullity of \\(A\\)','The trace of \\(A\\)','The pivot count'],ans:1,expl:'The dimension of \\(N(A)\\) is the <strong>nullity</strong> of \\(A\\). Rank-Nullity Theorem: \\(\\text{rank}(A) + \\text{nullity}(A) = n\\) (number of columns).'},
+  {id:47,sec:'bonus',q:'Which vector is in the null space of \\(A=[1\\quad {-1}]\\)?',opts:['\\(\\begin{bmatrix}1\\\\0\\end{bmatrix}\\)','\\(\\begin{bmatrix}1\\\\1\\end{bmatrix}\\)','\\(\\begin{bmatrix}2\\\\1\\end{bmatrix}\\)','\\(\\begin{bmatrix}0\\\\2\\end{bmatrix}\\)'],ans:1,expl:'Test: \\(A\\begin{bmatrix}1\\\\1\\end{bmatrix}=1(1)+(-1)(1)=0\\)✓. The null space condition is \\(x_1=x_2\\), so the null space is \\(c\\begin{bmatrix}1\\\\1\\end{bmatrix}\\).'},
+  {id:48,sec:'bonus',q:'Elementary row operations on \\([A\\mid b]\\) do NOT change:',opts:['The matrix \\(A\\) itself','The solution set of \\(Ax=b\\)','The augmented matrix','The pivot positions'],ans:1,expl:'Row operations preserve the <strong>solution set</strong> of \\(Ax=b\\). They change the matrix representation but the set of valid \\(x\\) values remains identical — this justifies elimination.'},
+  {id:49,sec:'bonus',q:'If \\(C(A) = \\mathbb{R}^3\\) for a \\(3\\times 3\\) matrix, then:',opts:['\\(A\\) has at least one zero row','\\(A\\) is invertible and has 3 pivots','\\(A\\) has a non-trivial null space','\\(A\\) must be diagonal'],ans:1,expl:'\\(C(A)=\\mathbb{R}^3\\) → 3 independent columns → 3 pivots → <strong>\\(A\\) is invertible</strong>. The null space is just \\(\\{\\mathbf{0}\\}\\).'},
+  {id:50,sec:'bonus',q:'The Rank-Nullity Theorem states: \\(\\text{rank}(A) + \\text{nullity}(A) = \\ ?\\)',opts:['\\(m\\)','\\(m+n\\)','\\(n\\)','\\(\\text{rank}(A)^2\\)'],ans:2,expl:'<strong>Rank-Nullity Theorem:</strong> \\(\\text{rank}(A)+\\text{nullity}(A)=n\\) (number of <em>columns</em>). Rank = pivot columns; Nullity = free variables (non-pivot columns). Always sums to \\(n\\).'}
+];
+
+const TF = [
+  {id:51,statement:'<span class="tf-keyword">The Zero Test:</span> If matrix \\(A\\) is invertible, the only solution to \\(Ax=0\\) is the trivial solution \\(x=0\\).',ans:true,expl:'<strong>True.</strong> Invertible ⇒ the null space is just \\(\\{\\mathbf{0}\\}\\). If any non-zero \\(x\\) mapped to zero, the matrix would be singular (not invertible) — the two conditions are logically equivalent.'},
+  {id:52,statement:'<span class="tf-keyword">Friendly Machines:</span> Triangular matrices are considered "friendly" because they can be solved in order without using Gaussian elimination.',ans:true,expl:'<strong>True.</strong> Triangular systems are solved via back substitution — sequentially from the last equation (one variable) upward. Gaussian elimination is not needed, making them "friendly."'},
+  {id:53,statement:'<span class="tf-keyword">Column Space:</span> The Column Space \\(C(A)\\) consists only of the static columns of \\(A\\) and does not include their linear combinations.',ans:false,expl:'<strong>False.</strong> \\(C(A)\\) is the set of ALL linear combinations of the columns — not just the columns themselves. The column space is a subspace that spans all reachable outputs of \\(A\\).'},
+  {id:54,statement:'<span class="tf-keyword">Chaos Absorption:</span> During Gauss-Jordan, the identity matrix \\(I\\) on the right side of \\([A\\mid I]\\) "absorbs the chaos" and transforms into the inverse \\(A^{-1}\\).',ans:true,expl:'<strong>True.</strong> Every row operation applied to the left side (driving \\(A \\to I\\)) is simultaneously applied to the right side (driving \\(I \\to A^{-1}\\)). The identity "records" all operations.'},
+  {id:55,statement:'<span class="tf-keyword">Solvability:</span> A system \\(Ax=b\\) is consistent if there is <em>no</em> combination of the columns of \\(A\\) that can reach vector \\(b\\).',ans:false,expl:'<strong>False.</strong> A system is consistent if \\(b\\) <em>IS</em> reachable — i.e., \\(b \\in C(A)\\). The statement describes an <em>inconsistent</em> system (no solution). The word "no" makes it wrong.'}
+];
+
+const QNA = [
+  {
+    id:56,
+    tag:'Geometric vs. Algebraic',
+    q:'Based on "Geometric Case Study 2," explain why the Column Space "collapses" to a line if the second column is a multiple of the first. Contrast this with a matrix that "Spans the Whole Space."',
+    ans:[
+      'When column 2 = c × column 1, both vectors point in the exact same direction.',
+      'All linear combinations x₁·col₁ + x₂·col₂ reduce to a single scalar multiple of one direction — producing only a 1D line through the origin.',
+      'No matter what scalars x₁, x₂ you choose, you cannot escape that single line — the columns provide only one independent direction.',
+      'Contrast: if the two columns are independent (point in different directions), their combinations fill the entire 2D plane (ℝ²). This is what "spans the whole space" means — any vector in ℝ² is reachable.'
+    ]
+  },
+  {
+    id:57,
+    tag:'The Inverse Problem',
+    q:'Describe the "Crucial Change in Viewpoint" between "The Old Question: Computing" and "The New Question: Solving." Why is discovering x harder than computing b?',
+    ans:[
+      'Old Question (Forward): Given A and x, compute b = Ax. This is straightforward matrix multiplication — always possible and always gives exactly one answer.',
+      'New Question (Inverse): Given A and b, find x such that Ax = b. This is the Central Problem of Linear Algebra.',
+      'Discovering x is harder because: (1) A solution may not exist if b ∉ C(A). (2) If a solution exists, it may not be unique — infinitely many when free variables exist. (3) It requires Gaussian elimination or computing A⁻¹, both more expensive than multiplication.',
+      'This shift from "compute" to "solve" is the crucial change in viewpoint — from easy forward multiplication to the harder inverse problem.'
+    ]
+  },
+  {
+    id:58,
+    tag:'Null Space (VIP Club)',
+    q:'Using the "VIP Club" analogy, explain why "Interesting" (singular) matrices yield infinite solutions for Ax = 0, while "Boring" (invertible) matrices do not.',
+    ans:[
+      'The Null Space N(A) = {x | Ax = 0} is the "VIP Club" — vectors that map to the zero output.',
+      'Boring (Invertible) matrices: only x = 0 satisfies Ax = 0. The null space has only the trivial member. The machine is one-to-one; each output comes from exactly one input.',
+      'Interesting (Singular) matrices: there exist non-zero vectors x ≠ 0 satisfying Ax = 0. Once you find one special solution s, the entire line c·s (for any scalar c) maps to zero — infinitely many VIP members.',
+      'The reason: singular matrices have linearly dependent columns, creating "redundancy." This redundancy is the null space — directions the machine ignores entirely.'
+    ]
+  },
+  {
+    id:59,
+    tag:'RREF Diagnostic',
+    q:'Outline the three-step "Procedural Roadmap" used to algebraically prove whether a vector b belongs to a column space. Use the specific bolded verbs.',
+    ans:[
+      'Step 1 — SETUP: Construct the augmented matrix [A | b]. Append the candidate vector b as the rightmost column next to A.',
+      'Step 2 — PROCESS: Apply Gaussian elimination (row operations) to reduce [A | b] to Reduced Row-Echelon Form (RREF). Normalize pivots to 1 and eliminate all other entries in each pivot column.',
+      'Step 3 — INTERPRET: Examine the last column. If a row reads [0 0 ... 0 | k] with k ≠ 0, this is a contradiction (0 = k) → b ∉ C(A), system is inconsistent. If no contradiction appears → b ∈ C(A), system is consistent and a solution exists.'
+    ]
+  },
+  {
+    id:60,
+    tag:'Higher Dimensions',
+    q:'For a 1 × 3 matrix, explain the geometric interpretation of the null space. Why is it necessary to set free variables to specific pairs like (1,0) and (0,1) to find basis vectors?',
+    ans:[
+      'For A = [1  2  3] (a 1×3 matrix), the null space equation is x + 2y + 3z = 0.',
+      'This is 1 equation in 3 unknowns → 3 - 1 = 2 free variables (y and z) → the solution space is 2-dimensional — geometrically a plane through the origin in ℝ³.',
+      'We need 2 independent vectors to describe (span) this plane — a basis.',
+      'Setting (y,z) = (1,0): gives solution s₁ = (-2, 1, 0). Setting (y,z) = (0,1): gives s₂ = (-3, 0, 1). These choices are efficient because they mimic the standard basis — they are guaranteed to be independent (one has y=1,z=0; the other has y=0,z=1 — they cannot be multiples of each other).',
+      'Together {s₁, s₂} form the basis of N(A). Any null space vector = c₁s₁ + c₂s₂.'
+    ]
   }
+];
 
-  function renderTF() {
-    const container = document.getElementById('tf-container');
-    if (!container) return;
-    container.innerHTML = '';
-    tfData.forEach((item, idx) => {
-      const card = document.createElement('div');
-      card.className = 'tf-card';
-      card.innerHTML = `
-        <div class="tf-question"><strong>${idx+41}.</strong> ${item.text}</div>
-        <div class="tf-buttons"><button class="tf-btn" data-tf-idx="${idx}" data-val="true">✔ TRUE</button><button class="tf-btn" data-tf-idx="${idx}" data-val="false">✘ FALSE</button></div>
-        <div class="tf-feedback" id="tf-fb-${idx}" style="display: none;"></div>
-      `;
-      container.appendChild(card);
-    });
-    document.querySelectorAll('.tf-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const idx = parseInt(btn.dataset.tfIdx);
-        const chosen = btn.dataset.val === 'true';
-        if (tfSelected[idx] !== null) return;
-        const isCorrect = (chosen === tfData[idx].correct);
-        tfSelected[idx] = chosen;
-        const fbDiv = document.getElementById(`tf-fb-${idx}`);
-        fbDiv.style.display = 'block';
-        fbDiv.innerHTML = `<strong>${isCorrect ? '✓ Correct' : '✗ Incorrect'}</strong><br>${tfData[idx].explanation}`;
-        const parent = btn.parentElement;
-        parent.querySelectorAll('.tf-btn').forEach(b => b.classList.remove('selected-true', 'selected-false'));
-        if (chosen) btn.classList.add('selected-true');
-        else btn.classList.add('selected-false');
-        updateAllScores();
-      });
-    });
+// ═══════════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════════
+const state = { ans:0, cor:0, wrg:0, results:{}, tfResults:{}, qnaRevealed:{} };
+const TOTAL = 60;
+
+// ═══════════════════════════════════════════════════════
+// RENDER MCQ
+// ═══════════════════════════════════════════════════════
+function renderMCQ(data, containerId) {
+  const c = document.getElementById(containerId);
+  c.innerHTML = '';
+  data.forEach((q,i) => {
+    const card = document.createElement('div');
+    card.className = 'q-card'; card.id = `card-${q.id}`;
+    card.style.animationDelay = (i*30)+'ms';
+    const letters = ['A','B','C','D'];
+    const optsHTML = q.opts.map((o,j)=>`
+      <div class="option" id="opt-${q.id}-${j}" onclick="pickMCQ(${q.id},${j})">
+        <span class="opt-letter">${letters[j]}</span>
+        <span class="opt-text">${o}</span>
+      </div>`).join('');
+    card.innerHTML = `
+      <div class="q-top">
+        <span class="q-num">Q${q.id}</span>
+        <span class="q-text">${q.q}</span>
+      </div>
+      <div class="q-options">${optsHTML}</div>
+      <div class="result-badge" id="badge-${q.id}"></div>
+      <div class="expl" id="expl-${q.id}">
+        <div class="expl-hd">Explanation</div>${q.expl}
+      </div>`;
+    c.appendChild(card);
+  });
+  // Re-apply saved answers
+  data.forEach(q => {
+    if(state.results[q.id] !== undefined) applyMCQResult(q.id, state.results[q.id], q.ans);
+  });
+}
+
+function pickMCQ(id, chosen) {
+  if (state.results[id] !== undefined) return;
+  const q = MCQ.find(x=>x.id===id);
+  const isCorrect = chosen === q.ans;
+  state.results[id] = chosen;
+  state.ans++; if(isCorrect) state.cor++; else state.wrg++;
+  applyMCQResult(id, chosen, q.ans);
+  updateStats();
+}
+
+function applyMCQResult(id, chosen, correctIdx) {
+  const card = document.getElementById(`card-${id}`);
+  if(!card) return;
+  const letters = ['A','B','C','D'];
+  card.querySelectorAll('.option').forEach(o=>o.classList.add('locked'));
+  const chosenEl = document.getElementById(`opt-${id}-${chosen}`);
+  if(chosenEl) chosenEl.classList.add(chosen===correctIdx?'correct':'wrong');
+  if(chosen!==correctIdx) {
+    const ce = document.getElementById(`opt-${id}-${correctIdx}`);
+    if(ce) ce.classList.add('correct');
   }
-
-  function updateAllScores() {
-    const mcqCount = mcqCorrect.filter(v => v === true).length;
-    const tfCount = tfSelected.filter((v,i) => v !== null && v === tfData[i].correct).length;
-    document.getElementById('mcqScore').innerText = mcqCount;
-    document.getElementById('tfScore').innerText = tfCount;
-    document.getElementById('finalMcqSpan').innerText = mcqCount;
-    document.getElementById('finalTfSpan').innerText = tfCount;
-    document.getElementById('totalSpan').innerText = mcqCount + tfCount;
-    document.getElementById('sidebarMcq').innerText = mcqCount;
-    document.getElementById('sidebarTf').innerText = tfCount;
-    document.getElementById('sidebarTotal').innerText = mcqCount + tfCount;
-    const total = mcqCount + tfCount;
-    const percent = (total / 45) * 100;
-    document.getElementById('progressFill').style.width = percent + '%';
-    document.getElementById('progressLabel').innerText = `${total}/45 correct (MCQ+T/F)`;
+  const badge = document.getElementById(`badge-${id}`);
+  if(badge){
+    if(chosen===correctIdx){badge.className='result-badge cb';badge.textContent='✓ Correct!'}
+    else{badge.className='result-badge wb';badge.textContent=`✗ Incorrect — Correct: ${letters[correctIdx]}`}
   }
+  const expl = document.getElementById(`expl-${id}`);
+  if(expl) expl.classList.add('visible');
+  card.classList.add('answered');
+}
 
-  function resetAll() {
-    mcqCorrect.fill(false);
-    tfSelected.fill(null);
-    renderMCQ();
-    renderTF();
-    updateAllScores();
+// ═══════════════════════════════════════════════════════
+// RENDER T/F
+// ═══════════════════════════════════════════════════════
+function renderTF() {
+  const c = document.getElementById('tf-container'); c.innerHTML='';
+  TF.forEach((q,i)=>{
+    const card = document.createElement('div');
+    card.className='tf-card'; card.id=`tfcard-${q.id}`;
+    card.style.animationDelay=(i*40)+'ms';
+    card.innerHTML=`
+      <div class="tf-top">
+        <span class="tf-num">Q${q.id}</span>
+        <span class="tf-statement">${q.statement}</span>
+      </div>
+      <div class="tf-btns">
+        <button class="tf-btn true-btn" id="tfT-${q.id}" onclick="pickTF(${q.id},true)">✓ True</button>
+        <button class="tf-btn false-btn" id="tfF-${q.id}" onclick="pickTF(${q.id},false)">✗ False</button>
+      </div>
+      <div class="tf-result" id="tfres-${q.id}"></div>
+      <div class="tf-expl" id="tfexpl-${q.id}"><div class="expl-hd" style="color:var(--blue)">Explanation</div>${q.expl}</div>`;
+    c.appendChild(card);
+  });
+  TF.forEach(q=>{
+    if(state.tfResults[q.id]!==undefined) applyTFResult(q.id,state.tfResults[q.id],q.ans);
+  });
+}
+
+function pickTF(id, chosen) {
+  if(state.tfResults[id]!==undefined) return;
+  const q = TF.find(x=>x.id===id);
+  const isCorrect = chosen===q.ans;
+  state.tfResults[id]=chosen;
+  state.ans++; if(isCorrect) state.cor++; else state.wrg++;
+  applyTFResult(id,chosen,q.ans);
+  updateStats();
+}
+
+function applyTFResult(id,chosen,correct) {
+  const tBtn=document.getElementById(`tfT-${id}`);
+  const fBtn=document.getElementById(`tfF-${id}`);
+  if(!tBtn) return;
+  [tBtn,fBtn].forEach(b=>b.classList.add('locked'));
+  const chosenBtn = chosen?tBtn:fBtn;
+  const correctBtn = correct?tBtn:fBtn;
+  chosenBtn.classList.add(chosen===correct?'correct-pick':'wrong-pick');
+  if(chosen!==correct) correctBtn.classList.add('correct-reveal');
+  const res=document.getElementById(`tfres-${id}`);
+  if(res){res.className=chosen===correct?'tf-result cb':'tf-result wb';res.textContent=chosen===correct?'✓ Correct!':'✗ Incorrect — Answer: '+(correct?'True':'False')}
+  const expl=document.getElementById(`tfexpl-${id}`);
+  if(expl) expl.classList.add('visible');
+}
+
+// ═══════════════════════════════════════════════════════
+// RENDER Q&A
+// ═══════════════════════════════════════════════════════
+function renderQNA() {
+  const c=document.getElementById('qna-container'); c.innerHTML='';
+  QNA.forEach((q,i)=>{
+    const card=document.createElement('div');
+    card.className='qna-card'; card.id=`qnacard-${q.id}`;
+    card.style.animationDelay=(i*40)+'ms';
+    const pointsHTML=q.ans.map(p=>`<div class="qna-point">${p}</div>`).join('');
+    card.innerHTML=`
+      <div class="qna-top">
+        <span class="qna-num">Q${q.id}</span>
+        <div class="qna-q">
+          <span class="qna-tag">${q.tag}</span>
+          <p>${q.q}</p>
+        </div>
+      </div>
+      <button class="qna-reveal-btn" id="qnabtn-${q.id}" onclick="revealQNA(${q.id})">▸ Reveal Model Answer</button>
+      <div class="qna-answer" id="qnaanswer-${q.id}">
+        <div class="qna-answer-hd">Model Answer</div>
+        ${pointsHTML}
+      </div>`;
+    c.appendChild(card);
+  });
+  QNA.forEach(q=>{
+    if(state.qnaRevealed[q.id]) applyQNAReveal(q.id);
+  });
+}
+
+function revealQNA(id) {
+  if(state.qnaRevealed[id]) return;
+  state.qnaRevealed[id]=true;
+  state.ans++;
+  applyQNAReveal(id);
+  updateStats();
+  if(window.MathJax&&MathJax.typeset) MathJax.typeset([document.getElementById(`qnaanswer-${id}`)]);
+}
+
+function applyQNAReveal(id) {
+  const btn=document.getElementById(`qnabtn-${id}`);
+  const ans=document.getElementById(`qnaanswer-${id}`);
+  if(btn){btn.textContent='✓ Answer Revealed';btn.classList.add('revealed')}
+  if(ans) ans.classList.add('visible');
+}
+
+// ═══════════════════════════════════════════════════════
+// STATS
+// ═══════════════════════════════════════════════════════
+function updateStats() {
+  const pct=Math.round((state.ans/TOTAL)*100);
+  ['tb-ans','sb-pct'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el) el.textContent=`${state.ans} / ${TOTAL}`;
+  });
+  document.getElementById('tb-cor').textContent=state.cor;
+  document.getElementById('tb-wrg').textContent=state.wrg;
+  document.getElementById('sb-correct').textContent=state.cor;
+  document.getElementById('sb-wrong').textContent=state.wrg;
+  document.getElementById('sb-fill').style.width=pct+'%';
+  if(state.ans===TOTAL){
+    document.getElementById('scoreNum').textContent=state.cor;
+    document.getElementById('scoreCard').classList.add('visible');
   }
+}
 
-  function showSection(sectionId) {
-    document.getElementById('mcq-section').classList.add('hidden');
-    document.getElementById('tf-section').classList.add('hidden');
-    document.getElementById('essay-section').classList.add('hidden');
-    document.getElementById(`${sectionId}-section`).classList.remove('hidden');
-    document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
-    document.querySelector(`.nav-btn[data-section="${sectionId}"]`).classList.add('active');
-  }
+// ═══════════════════════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════════════════════
+function showSection(key, navEl) {
+  // Hide all
+  document.querySelectorAll('.content-section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.sb-item').forEach(s=>s.classList.remove('active'));
+  // Show target
+  const sec=document.getElementById(`sec-${key}`);
+  if(sec){sec.classList.add('active')}
+  if(navEl) navEl.classList.add('active');
+  // Re-typeset MathJax
+  setTimeout(()=>{if(window.MathJax&&MathJax.typeset)MathJax.typeset()},100);
+  // Close mobile sidebar
+  document.getElementById('sidebar').classList.remove('open');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
 
-  document.querySelectorAll('.nav-btn').forEach(btn => btn.addEventListener('click', () => showSection(btn.dataset.section)));
-  document.getElementById('resetAllBtn').addEventListener('click', resetAll);
-  document.getElementById('resetSidebarBtn').addEventListener('click', resetAll);
+// ═══════════════════════════════════════════════════════
+// RESET
+// ═══════════════════════════════════════════════════════
+function resetAll() {
+  state.ans=0;state.cor=0;state.wrg=0;
+  Object.keys(state.results).forEach(k=>delete state.results[k]);
+  Object.keys(state.tfResults).forEach(k=>delete state.tfResults[k]);
+  Object.keys(state.qnaRevealed).forEach(k=>delete state.qnaRevealed[k]);
+  updateStats();
+  document.getElementById('scoreCard').classList.remove('visible');
+  init();
+}
 
-  renderMCQ();
+// ═══════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════
+function init() {
+  renderMCQ(MCQ.filter(q=>q.sec==='easy'), 'mcq-easy-container');
+  renderMCQ(MCQ.filter(q=>q.sec==='mid'),  'mcq-mid-container');
+  renderMCQ(MCQ.filter(q=>q.sec==='bonus'),'mcq-bonus-container');
   renderTF();
-  updateAllScores();
-  showSection('mcq');
+  renderQNA();
+  updateStats();
+  setTimeout(()=>{if(window.MathJax&&MathJax.typeset)MathJax.typeset()},300);
+}
+
+init();
 </script>
 </body>
 </html>
