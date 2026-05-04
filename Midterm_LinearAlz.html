@@ -501,6 +501,66 @@ footer{text-align:center;padding:1.5rem;font-family:'JetBrains Mono',monospace;f
 }
 .zoom-hint.hidden{opacity:0}
 
+/* ══════ BOTTOM NAV (mobile only) ══════ */
+#bottom-nav{
+  display:none;
+  position:fixed;bottom:0;left:0;right:0;z-index:150;
+  background:var(--surface);
+  border-top:1px solid var(--border2);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+.bn-inner{display:flex;height:60px}
+
+.bn-item{
+  flex:1;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:3px;
+  cursor:pointer;position:relative;
+  user-select:none;-webkit-tap-highlight-color:transparent;
+  transition:background var(--t);
+}
+.bn-item:active{background:rgba(255,255,255,.04)}
+
+/* top indicator bar */
+.bn-item::before{
+  content:'';position:absolute;top:0;left:20%;right:20%;
+  height:2px;border-radius:0 0 3px 3px;
+  background:transparent;transition:background var(--t);
+}
+
+.bn-icon{
+  width:22px;height:22px;
+  color:var(--muted);transition:color var(--t);
+  display:flex;align-items:center;justify-content:center;
+}
+.bn-icon svg{width:100%;height:100%;stroke:currentColor;fill:none}
+
+.bn-label{
+  font-family:'JetBrains Mono',monospace;font-size:.48rem;
+  letter-spacing:.06em;text-transform:uppercase;
+  color:var(--muted);transition:color var(--t);white-space:nowrap;
+}
+
+/* ── Active colours per section ── */
+.bn-item.bn-easy.active .bn-icon,
+.bn-item.bn-easy.active .bn-label{color:var(--easy)}
+.bn-item.bn-easy.active::before{background:var(--easy)}
+
+.bn-item.bn-mid.active .bn-icon,
+.bn-item.bn-mid.active .bn-label{color:var(--mid)}
+.bn-item.bn-mid.active::before{background:var(--mid)}
+
+.bn-item.bn-bonus.active .bn-icon,
+.bn-item.bn-bonus.active .bn-label{color:var(--bonus)}
+.bn-item.bn-bonus.active::before{background:var(--bonus)}
+
+.bn-item.bn-tf.active .bn-icon,
+.bn-item.bn-tf.active .bn-label{color:var(--blue)}
+.bn-item.bn-tf.active::before{background:var(--blue)}
+
+.bn-item.bn-qna.active .bn-icon,
+.bn-item.bn-qna.active .bn-label{color:#f0ebe0}
+.bn-item.bn-qna.active::before{background:#f0ebe0}
+
 /* ── Sidebar hamburger (lives inside topbar on mobile) ── */
 .sb-toggle{
   display:none;background:var(--card2);border:1px solid var(--border2);
@@ -539,14 +599,15 @@ footer{text-align:center;padding:1.5rem;font-family:'JetBrains Mono',monospace;f
   /* ── Main: full width ── */
   #main{margin-left:0}
 
-  /* ── Show hamburger ── */
-  .sb-toggle{display:flex;align-items:center;justify-content:center}
+  /* ── Hide hamburger — bottom nav handles navigation ── */
+  .sb-toggle{display:none}
 
-  /* ── Topbar: compact single row ── */
-  #topbar{
-    padding:.55rem .9rem;gap:.5rem;flex-wrap:nowrap;
-  }
-  .tb-title{font-size:.82rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:35vw}
+  /* ── Show bottom nav ── */
+  #bottom-nav{display:block}
+
+  /* ── Topbar: compact ── */
+  #topbar{padding:.55rem 1rem;gap:.55rem;flex-wrap:nowrap}
+  .tb-title{font-size:.82rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .tb-chip{padding:.22rem .55rem;font-size:.65rem;gap:.3rem}
 
   /* ── Page header ── */
@@ -555,8 +616,8 @@ footer{text-align:center;padding:1.5rem;font-family:'JetBrains Mono',monospace;f
   .page-header h1{font-size:clamp(1.25rem,6vw,1.7rem)}
   .page-header p{font-size:.78rem}
 
-  /* ── Content sections ── */
-  .content-section{padding:1rem 1rem 5rem}
+  /* ── Content sections — extra bottom padding clears the nav bar ── */
+  .content-section{padding:1rem 1rem calc(60px + env(safe-area-inset-bottom,0px) + 1.5rem)}
   .sec-title{margin-bottom:1rem}
   .sec-pill{font-size:.58rem;padding:.22rem .6rem}
 
@@ -656,15 +717,15 @@ footer{text-align:center;padding:1.5rem;font-family:'JetBrains Mono',monospace;f
 
   <div class="sb-section">
     <div class="sb-section-label">📊 Multiple Choice</div>
-    <div class="sb-item active easy-nav" onclick="showSection('mcq-easy',this)">
+    <div class="sb-item active easy-nav" data-sec="mcq-easy" onclick="showSection('mcq-easy',this)">
       <span class="sb-dot"></span> Easy Level
       <span class="sb-count">1–15</span>
     </div>
-    <div class="sb-item mid-nav" onclick="showSection('mcq-mid',this)">
+    <div class="sb-item mid-nav" data-sec="mcq-mid" onclick="showSection('mcq-mid',this)">
       <span class="sb-dot"></span> Mid-Level
       <span class="sb-count">16–40</span>
     </div>
-    <div class="sb-item bonus-nav" onclick="showSection('mcq-bonus',this)">
+    <div class="sb-item bonus-nav" data-sec="mcq-bonus" onclick="showSection('mcq-bonus',this)">
       <span class="sb-dot"></span> Bonus Set
       <span class="sb-count">41–50</span>
     </div>
@@ -672,7 +733,7 @@ footer{text-align:center;padding:1.5rem;font-family:'JetBrains Mono',monospace;f
 
   <div class="sb-section">
     <div class="sb-section-label">✓/✗ True or False</div>
-    <div class="sb-item tf-nav" onclick="showSection('trueFalse',this)">
+    <div class="sb-item tf-nav" data-sec="trueFalse" onclick="showSection('trueFalse',this)">
       <span class="sb-dot"></span> T/F Questions
       <span class="sb-count">5 Qs</span>
     </div>
@@ -680,7 +741,7 @@ footer{text-align:center;padding:1.5rem;font-family:'JetBrains Mono',monospace;f
 
   <div class="sb-section">
     <div class="sb-section-label">📝 Short Essay / Q&A</div>
-    <div class="sb-item" style="" onclick="showSection('qna',this)">
+    <div class="sb-item" data-sec="qna" onclick="showSection('qna',this)">
       <span class="sb-dot"></span> Essay Questions
       <span class="sb-count">5 Qs</span>
     </div>
@@ -761,6 +822,62 @@ footer{text-align:center;padding:1.5rem;font-family:'JetBrains Mono',monospace;f
 
   <footer>Linear Algebra · Section 002 · Prof. Taehyung Lee &nbsp;|&nbsp; 60 Questions · Interactive Study App</footer>
 </div>
+
+<!-- ══════ BOTTOM NAV (mobile) ══════ -->
+<nav id="bottom-nav">
+  <div class="bn-inner">
+
+    <div class="bn-item bn-easy active" data-sec="mcq-easy" onclick="showSection('mcq-easy',this)">
+      <span class="bn-icon">
+        <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round">
+          <circle cx="5" cy="7" r="1.5" fill="currentColor" stroke="none"/>
+          <circle cx="5" cy="12" r="1.5" fill="currentColor" stroke="none"/>
+          <circle cx="5" cy="17" r="1.5" fill="currentColor" stroke="none"/>
+          <line x1="9" y1="7" x2="20" y2="7"/><line x1="9" y1="12" x2="20" y2="12"/><line x1="9" y1="17" x2="20" y2="17"/>
+        </svg>
+      </span>
+      <span class="bn-label">Easy</span>
+    </div>
+
+    <div class="bn-item bn-mid" data-sec="mcq-mid" onclick="showSection('mcq-mid',this)">
+      <span class="bn-icon">
+        <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+        </svg>
+      </span>
+      <span class="bn-label">Mid</span>
+    </div>
+
+    <div class="bn-item bn-bonus" data-sec="mcq-bonus" onclick="showSection('mcq-bonus',this)">
+      <span class="bn-icon">
+        <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+        </svg>
+      </span>
+      <span class="bn-label">Bonus</span>
+    </div>
+
+    <div class="bn-item bn-tf" data-sec="trueFalse" onclick="showSection('trueFalse',this)">
+      <span class="bn-icon">
+        <svg viewBox="0 0 24 24" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 12 L7 16 L13 8"/>
+          <path d="M17 9 L21 13"/><path d="M21 9 L17 13"/>
+        </svg>
+      </span>
+      <span class="bn-label">T / F</span>
+    </div>
+
+    <div class="bn-item bn-qna" data-sec="qna" onclick="showSection('qna',this)">
+      <span class="bn-icon">
+        <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+        </svg>
+      </span>
+      <span class="bn-label">Q &amp; A</span>
+    </div>
+
+  </div>
+</nav>
 
 <!-- ══════ QNA MODAL ══════ -->
 <div class="qna-modal-backdrop" id="qnaModalBackdrop">
@@ -1207,9 +1324,11 @@ function closeSidebar() {
 function showSection(key, navEl) {
   document.querySelectorAll('.content-section').forEach(s=>s.classList.remove('active'));
   document.querySelectorAll('.sb-item').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.bn-item').forEach(s=>s.classList.remove('active'));
   const sec=document.getElementById(`sec-${key}`);
   if(sec) sec.classList.add('active');
-  if(navEl) navEl.classList.add('active');
+  // Activate all nav elements matching this section (sidebar + bottom nav)
+  document.querySelectorAll(`[data-sec="${key}"]`).forEach(el=>el.classList.add('active'));
   setTimeout(()=>{if(window.MathJax&&MathJax.typeset)MathJax.typeset()},100);
   closeSidebar();
   window.scrollTo({top:0,behavior:'smooth'});
