@@ -334,23 +334,67 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;
 
 .qna-answer{
   display:none;margin:0 1.3rem 1.3rem;
-  padding:1rem 1.1rem;
-  background:rgba(255,255,255,.018);
-  border:1px solid var(--border2);border-radius:9px;
-  font-size:.85rem;line-height:1.8;color:var(--text);
+  background:rgba(255,255,255,.012);
+  border:1px solid var(--border2);border-radius:10px;
+  overflow:hidden;
 }
 .qna-answer.visible{display:block;animation:slideIn .25s ease}
 .qna-answer-hd{
   font-family:'JetBrains Mono',monospace;font-size:.62rem;color:var(--green);
-  letter-spacing:.12em;text-transform:uppercase;margin-bottom:.7rem;
+  letter-spacing:.12em;text-transform:uppercase;
+  padding:.6rem 1.1rem;
+  background:rgba(54,212,110,.06);border-bottom:1px solid rgba(54,212,110,.15);
   display:flex;align-items:center;gap:.5rem;
 }
-.qna-answer-hd::after{content:'';flex:1;height:1px;background:rgba(54,212,110,.15)}
-.qna-point{
-  display:flex;gap:.6rem;margin-bottom:.5rem;padding-left:.2rem;
+.qna-answer-hd::after{content:'';flex:1;height:1px;background:rgba(54,212,110,.2)}
+/* student answer body */
+.ans-body{padding:.9rem 1.1rem 1rem;font-size:.875rem;line-height:1.75;color:var(--text)}
+.ans-given{
+  font-family:'JetBrains Mono',monospace;font-size:.78rem;
+  background:rgba(226,180,74,.07);border:1px solid rgba(226,180,74,.2);
+  border-left:3px solid var(--gold);
+  border-radius:0 6px 6px 0;padding:.45rem .85rem;
+  margin-bottom:.85rem;color:#e8d9b0;
 }
-.qna-point::before{
-  content:'▸';color:var(--gold);font-size:.75rem;margin-top:.2rem;flex-shrink:0;
+.ans-case{
+  font-family:'DM Sans',sans-serif;font-size:.78rem;font-weight:600;
+  letter-spacing:.04em;text-transform:uppercase;
+  color:var(--blue);margin:.85rem 0 .35rem;
+  display:flex;align-items:center;gap:.5rem;
+}
+.ans-case::after{content:'';flex:1;height:1px;background:rgba(107,163,255,.15)}
+.ans-step{
+  display:flex;align-items:center;gap:.65rem;
+  margin:.8rem 0 .3rem;
+}
+.step-num{
+  width:1.4rem;height:1.4rem;border-radius:50%;
+  background:var(--gold);color:#000;
+  font-family:'JetBrains Mono',monospace;font-size:.72rem;font-weight:700;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.step-verb{
+  font-family:'JetBrains Mono',monospace;font-size:.75rem;font-weight:600;
+  letter-spacing:.1em;text-transform:uppercase;color:var(--gold);
+}
+.ans-row{
+  padding:.1rem 0 .1rem .5rem;
+  border-left:2px solid var(--border2);
+  margin:.3rem 0;font-size:.86rem;color:#ccc9be;
+}
+.ans-math{
+  font-size:.9rem;
+  background:rgba(107,163,255,.04);
+  border:1px solid rgba(107,163,255,.12);
+  border-radius:7px;padding:.55rem .9rem;
+  margin:.45rem 0;overflow-x:auto;text-align:center;
+}
+.ans-note{
+  margin-top:.85rem;padding:.5rem .85rem;
+  background:rgba(54,212,110,.06);
+  border:1px solid rgba(54,212,110,.2);
+  border-radius:7px;font-size:.84rem;
+  color:#b6f5cf;font-family:'DM Sans',sans-serif;
 }
 
 /* ══════ SCORE CARD ══════ */
@@ -372,27 +416,236 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;
 
 footer{text-align:center;padding:1.5rem;font-family:'JetBrains Mono',monospace;font-size:.62rem;color:var(--muted);border-top:1px solid var(--border)}
 
-/* Mobile sidebar toggle */
-.sb-toggle{display:none;position:fixed;top:.7rem;left:.7rem;z-index:200;
-  background:var(--card);border:1px solid var(--border2);border-radius:8px;
-  padding:.4rem .6rem;cursor:pointer;font-size:1rem}
+/* ══════ QNA MODAL ══════ */
+.qna-modal-backdrop{
+  display:none;position:fixed;inset:0;z-index:500;
+  background:rgba(4,6,12,.92);backdrop-filter:blur(8px);
+  flex-direction:column;
+}
+.qna-modal-backdrop.open{display:flex;animation:backdropIn .2s ease both}
+@keyframes backdropIn{from{opacity:0}to{opacity:1}}
 
+.qna-modal{
+  background:var(--card);border-bottom:1px solid var(--border2);
+  width:100%;display:flex;flex-direction:column;
+  flex-shrink:0;
+  animation:modalIn .2s ease both;
+}
+@keyframes modalIn{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
+
+.qna-modal-header{
+  display:flex;align-items:flex-start;gap:1rem;
+  padding:.85rem 1.4rem .75rem;
+  border-bottom:1px solid var(--border);
+}
+.qna-modal-meta{flex:1;min-width:0;display:flex;align-items:center;gap:.75rem;flex-wrap:wrap}
+.qna-modal-tag{
+  font-family:'JetBrains Mono',monospace;font-size:.6rem;
+  letter-spacing:.13em;text-transform:uppercase;
+  color:var(--muted2);
+}
+.qna-modal-qnum{
+  font-family:'JetBrains Mono',monospace;font-size:.7rem;font-weight:600;
+  background:rgba(240,235,224,.07);border:1px solid rgba(240,235,224,.15);
+  color:#f0ebe0;border-radius:6px;padding:.15rem .5rem;
+  flex-shrink:0;
+}
+.qna-modal-question{font-size:.88rem;line-height:1.5;color:var(--muted2);flex:1;min-width:0}
+.qna-modal-controls{display:flex;align-items:center;gap:.5rem;flex-shrink:0}
+.qna-modal-zoom-btn{
+  width:1.9rem;height:1.9rem;border-radius:6px;
+  background:var(--card2);border:1px solid var(--border2);
+  color:var(--muted2);font-size:.95rem;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  transition:all var(--t);user-select:none;font-family:'JetBrains Mono',monospace;font-weight:600;
+}
+.qna-modal-zoom-btn:hover{border-color:var(--gold);color:var(--gold)}
+.qna-modal-zoom-level{
+  font-family:'JetBrains Mono',monospace;font-size:.65rem;
+  color:var(--muted2);min-width:2.8rem;text-align:center;
+}
+.qna-modal-close{
+  width:1.9rem;height:1.9rem;border-radius:6px;
+  background:var(--card2);border:1px solid var(--border2);
+  color:var(--muted2);font-size:.95rem;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  transition:all var(--t);flex-shrink:0;
+}
+.qna-modal-close:hover{border-color:var(--red);color:var(--red);background:var(--red-bg)}
+
+.qna-modal-ans-header{
+  font-family:'JetBrains Mono',monospace;font-size:.6rem;color:var(--green);
+  letter-spacing:.12em;text-transform:uppercase;
+  padding:.45rem 1.1rem;flex-shrink:0;
+  background:rgba(54,212,110,.05);border-bottom:1px solid rgba(54,212,110,.12);
+  display:flex;align-items:center;gap:.5rem;
+}
+.qna-modal-ans-header::after{content:'';flex:1;height:1px;background:rgba(54,212,110,.15)}
+
+.qna-modal-body{
+  flex:1;overflow:auto;
+  display:flex;align-items:center;justify-content:center;
+  cursor:grab;position:relative;
+}
+.qna-modal-body.grabbing{cursor:grabbing}
+.qna-modal-body::-webkit-scrollbar{width:5px;height:5px}
+.qna-modal-body::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+
+/* zoom hint */
+.zoom-hint{
+  position:absolute;bottom:.75rem;right:.9rem;
+  font-family:'JetBrains Mono',monospace;font-size:.58rem;
+  color:var(--muted);background:rgba(8,10,16,.7);
+  padding:.2rem .55rem;border-radius:4px;pointer-events:none;
+  opacity:1;transition:opacity 1s ease;
+}
+.zoom-hint.hidden{opacity:0}
+
+/* ── Sidebar hamburger (lives inside topbar on mobile) ── */
+.sb-toggle{
+  display:none;background:var(--card2);border:1px solid var(--border2);
+  border-radius:8px;padding:.38rem .55rem;cursor:pointer;
+  font-size:1rem;line-height:1;color:var(--text);flex-shrink:0;
+}
+
+/* ── Sidebar overlay backdrop (mobile) ── */
+.sb-overlay{
+  display:none;position:fixed;inset:0;z-index:99;
+  background:rgba(0,0,0,.55);
+}
+.sb-overlay.open{display:block}
+
+/* ════════════════════════════════════════
+   TABLET  (≤ 900px)
+════════════════════════════════════════ */
+@media(max-width:900px){
+  :root{--sidebar:220px}
+}
+
+/* ════════════════════════════════════════
+   MOBILE  (≤ 768px)
+════════════════════════════════════════ */
 @media(max-width:768px){
   :root{--sidebar:0px}
-  #sidebar{transform:translateX(-260px);width:260px;transition:transform .3s}
+
+  /* ── Sidebar: off-canvas drawer ── */
+  #sidebar{
+    width:260px;transform:translateX(-260px);
+    transition:transform .28s cubic-bezier(.4,0,.2,1);
+    z-index:200;
+  }
   #sidebar.open{transform:translateX(0)}
+
+  /* ── Main: full width ── */
   #main{margin-left:0}
-  .sb-toggle{display:block}
-  .page-header,.content-section{padding-left:1rem;padding-right:1rem}
-  .content-section{padding-left:1rem;padding-right:1rem}
-  #topbar{padding:.7rem 1rem}
+
+  /* ── Show hamburger ── */
+  .sb-toggle{display:flex;align-items:center;justify-content:center}
+
+  /* ── Topbar: compact single row ── */
+  #topbar{
+    padding:.55rem .9rem;gap:.5rem;flex-wrap:nowrap;
+  }
+  .tb-title{font-size:.82rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:35vw}
+  .tb-chip{padding:.22rem .55rem;font-size:.65rem;gap:.3rem}
+
+  /* ── Page header ── */
+  .page-header{padding:1.2rem 1rem .8rem}
+  .page-header .badge{font-size:.58rem;padding:.22rem .65rem}
+  .page-header h1{font-size:clamp(1.25rem,6vw,1.7rem)}
+  .page-header p{font-size:.78rem}
+
+  /* ── Content sections ── */
+  .content-section{padding:1rem 1rem 5rem}
+  .sec-title{margin-bottom:1rem}
+  .sec-pill{font-size:.58rem;padding:.22rem .6rem}
+
+  /* ── MCQ cards ── */
+  .q-top{padding:.9rem 1rem .65rem;gap:.7rem}
+  .q-num{font-size:.62rem;padding:.14rem .42rem}
+  .q-text{font-size:.86rem}
+  .q-options{padding:0 1rem 1rem;gap:.35rem}
+  .option{padding:.55rem .75rem;gap:.55rem}
+  .opt-letter{width:1.25rem;height:1.25rem;font-size:.65rem}
+  .opt-text{font-size:.82rem}
+  .result-badge{margin:0 1rem .35rem;font-size:.65rem;padding:.3rem .75rem}
+  .expl{margin:0 1rem 1rem;padding:.7rem .85rem;font-size:.79rem}
+  .expl-hd{font-size:.58rem}
+
+  /* ── T/F cards ── */
+  .tf-top{padding:.9rem 1rem .7rem;gap:.7rem}
+  .tf-num{font-size:.62rem}
+  .tf-statement{font-size:.86rem}
+  .tf-btns{padding:0 1rem 1rem;gap:.55rem}
+  .tf-btn{padding:.65rem .5rem;font-size:.75rem}
+  .tf-result{margin:0 1rem .35rem;font-size:.65rem}
+  .tf-expl{margin:0 1rem 1rem;padding:.7rem .85rem;font-size:.79rem}
+
+  /* ── Q&A cards ── */
+  .qna-top{padding:1rem 1rem .8rem;gap:.7rem}
+  .qna-num{font-size:.62rem}
+  .qna-q .qna-tag{font-size:.58rem}
+  .qna-q p{font-size:.86rem}
+  .qna-reveal-btn{
+    margin:0 1rem 1rem;
+    width:calc(100% - 2rem);
+    justify-content:center;
+    font-size:.67rem;padding:.6rem 1rem;
+  }
+
+  /* ── Score card ── */
+  .final-score{padding:1.5rem 1rem}
+  .score-big{font-size:2.8rem}
+
+  /* ── Footer ── */
+  footer{font-size:.58rem;padding:1rem}
+
+  /* ── Modal header: wrap question text onto second row ── */
+  .qna-modal-header{padding:.65rem .9rem .6rem;gap:.6rem;flex-wrap:wrap}
+  .qna-modal-meta{flex-basis:100%;order:2;flex-wrap:nowrap}
+  .qna-modal-question{font-size:.8rem;display:none} /* hide long question on mobile – qnum+tag enough */
+  .qna-modal-controls{order:1;margin-left:auto}
+  .qna-modal-zoom-btn{width:2rem;height:2rem;font-size:.9rem}
+  .qna-modal-close{width:2rem;height:2rem;font-size:.9rem}
+  .qna-modal-zoom-level{font-size:.6rem;min-width:2.4rem}
+  .qna-modal-ans-header{padding:.4rem .9rem;font-size:.56rem}
+}
+
+/* ════════════════════════════════════════
+   SMALL PHONES  (≤ 480px)
+════════════════════════════════════════ */
+@media(max-width:480px){
+  #topbar{padding:.5rem .75rem;gap:.4rem}
+  .tb-title{font-size:.75rem;max-width:28vw}
+  .tb-chip{padding:.18rem .45rem;font-size:.6rem}
+
+  .page-header{padding:1rem .85rem .7rem}
+  .page-header h1{font-size:clamp(1.1rem,7vw,1.4rem)}
+
+  .content-section{padding:.85rem .85rem 5rem}
+
+  .q-top{padding:.8rem .85rem .6rem}
+  .q-options{padding:0 .85rem .9rem}
+  .option{padding:.5rem .65rem}
+  .result-badge,.expl{margin-left:.85rem;margin-right:.85rem}
+
+  .tf-top{padding:.8rem .85rem .65rem}
+  .tf-btns{padding:0 .85rem .9rem}
+  .tf-result,.tf-expl{margin-left:.85rem;margin-right:.85rem}
+
+  .qna-top{padding:.85rem .85rem .7rem}
+  .qna-reveal-btn{margin:0 .85rem .9rem;width:calc(100% - 1.7rem)}
+
+  .qna-modal-controls{gap:.3rem}
+  .qna-modal-zoom-btn,.qna-modal-close{width:1.8rem;height:1.8rem;font-size:.8rem}
+  .qna-modal-zoom-level{display:none}
 }
 </style>
 </head>
 <body>
 
-<!-- Mobile sidebar toggle -->
-<button class="sb-toggle" onclick="document.getElementById('sidebar').classList.toggle('open')">☰</button>
+<!-- Sidebar backdrop overlay (mobile) -->
+<div class="sb-overlay" id="sbOverlay" onclick="closeSidebar()"></div>
 
 <!-- ══════════════════ SIDEBAR ══════════════════ -->
 <nav id="sidebar">
@@ -456,6 +709,7 @@ footer{text-align:center;padding:1.5rem;font-family:'JetBrains Mono',monospace;f
 
   <!-- TOP BAR -->
   <div id="topbar">
+    <button class="sb-toggle" onclick="toggleSidebar()" aria-label="Menu">☰</button>
     <span class="tb-title">Linear Algebra Quiz</span>
     <div class="tb-chip a"><span class="n" id="tb-ans">0</span><span>/60 done</span></div>
     <div class="tb-chip c"><span class="n" id="tb-cor">0</span><span>✓</span></div>
@@ -506,6 +760,30 @@ footer{text-align:center;padding:1.5rem;font-family:'JetBrains Mono',monospace;f
   </div>
 
   <footer>Linear Algebra · Section 002 · Prof. Taehyung Lee &nbsp;|&nbsp; 60 Questions · Interactive Study App</footer>
+</div>
+
+<!-- ══════ QNA MODAL ══════ -->
+<div class="qna-modal-backdrop" id="qnaModalBackdrop">
+  <div class="qna-modal" id="qnaModal">
+    <div class="qna-modal-header">
+      <div class="qna-modal-meta">
+        <span class="qna-modal-qnum" id="modalQNum">Q—</span>
+        <span class="qna-modal-tag" id="modalTag"></span>
+        <div class="qna-modal-question" id="modalQuestion"></div>
+      </div>
+      <div class="qna-modal-controls">
+        <button class="qna-modal-zoom-btn" onclick="adjustZoom(-0.25)" title="Zoom out">−</button>
+        <span class="qna-modal-zoom-level" id="zoomLevel">100%</span>
+        <button class="qna-modal-zoom-btn" onclick="adjustZoom(0.25)" title="Zoom in">+</button>
+        <button class="qna-modal-zoom-btn" onclick="resetZoom()" title="Reset zoom" style="font-size:.6rem;letter-spacing:.04em">FIT</button>
+        <button class="qna-modal-close" onclick="closeQNAModal()" title="Close">✕</button>
+      </div>
+    </div>
+    <div class="qna-modal-ans-header">✎ Model Answer</div>
+    <div class="qna-modal-body" id="modalBody">
+      <div class="zoom-hint" id="zoomHint">scroll to zoom · drag to pan</div>
+    </div>
+  </div>
 </div>
 
 <script>
@@ -583,57 +861,32 @@ const QNA = [
   {
     id:56,
     tag:'Geometric vs. Algebraic',
-    q:'Based on "Geometric Case Study 2," explain why the Column Space "collapses" to a line if the second column is a multiple of the first. Contrast this with a matrix that "Spans the Whole Space."',
-    ans:[
-      'When column 2 = c × column 1, both vectors point in the exact same direction.',
-      'All linear combinations x₁·col₁ + x₂·col₂ reduce to a single scalar multiple of one direction — producing only a 1D line through the origin.',
-      'No matter what scalars x₁, x₂ you choose, you cannot escape that single line — the columns provide only one independent direction.',
-      'Contrast: if the two columns are independent (point in different directions), their combinations fill the entire 2D plane (ℝ²). This is what "spans the whole space" means — any vector in ℝ² is reachable.'
-    ]
+    q:'Based on <em>"Geometric Case Study 2,"</em> explain why the Column Space <strong>"collapses"</strong> to a line if the second column is a multiple of the first. Contrast this with a matrix that <strong>"Spans the Whole Space."</strong>',
+    ans:`<img src="56_Answer.png" alt="Answer for Q56" style="max-width:90%;max-height:calc(100vh - 140px);object-fit:contain;border-radius:6px;display:block;user-select:none">`
   },
   {
     id:57,
     tag:'The Inverse Problem',
-    q:'Describe the "Crucial Change in Viewpoint" between "The Old Question: Computing" and "The New Question: Solving." Why is discovering x harder than computing b?',
-    ans:[
-      'Old Question (Forward): Given A and x, compute b = Ax. This is straightforward matrix multiplication — always possible and always gives exactly one answer.',
-      'New Question (Inverse): Given A and b, find x such that Ax = b. This is the Central Problem of Linear Algebra.',
-      'Discovering x is harder because: (1) A solution may not exist if b ∉ C(A). (2) If a solution exists, it may not be unique — infinitely many when free variables exist. (3) It requires Gaussian elimination or computing A⁻¹, both more expensive than multiplication.',
-      'This shift from "compute" to "solve" is the crucial change in viewpoint — from easy forward multiplication to the harder inverse problem.'
-    ]
+    q:'Describe the <strong>"Crucial Change in Viewpoint"</strong> between <em>"The Old Question: Computing"</em> and <em>"The New Question: Solving."</em> Why is discovering \\(x\\) harder than computing \\(b\\)?',
+    ans:`<img src="57_answer.png" alt="Answer for Q57" style="max-width:90%;max-height:calc(100vh - 140px);object-fit:contain;border-radius:6px;display:block;user-select:none">`
   },
   {
     id:58,
-    tag:'Null Space (VIP Club)',
-    q:'Using the "VIP Club" analogy, explain why "Interesting" (singular) matrices yield infinite solutions for Ax = 0, while "Boring" (invertible) matrices do not.',
-    ans:[
-      'The Null Space N(A) = {x | Ax = 0} is the "VIP Club" — vectors that map to the zero output.',
-      'Boring (Invertible) matrices: only x = 0 satisfies Ax = 0. The null space has only the trivial member. The machine is one-to-one; each output comes from exactly one input.',
-      'Interesting (Singular) matrices: there exist non-zero vectors x ≠ 0 satisfying Ax = 0. Once you find one special solution s, the entire line c·s (for any scalar c) maps to zero — infinitely many VIP members.',
-      'The reason: singular matrices have linearly dependent columns, creating "redundancy." This redundancy is the null space — directions the machine ignores entirely.'
-    ]
+    tag:'Null Space Mapping',
+    q:'Using the <strong>"VIP Club"</strong> analogy from Slide 9-2, explain why <strong>"Interesting"</strong> (singular) matrices yield an infinite number of solutions for \\(Ax = 0\\), while <strong>"Boring"</strong> (invertible) matrices do not.',
+    ans:`<img src="58_answer.png" alt="Answer for Q58" style="max-width:90%;max-height:calc(100vh - 140px);object-fit:contain;border-radius:6px;display:block;user-select:none">`
   },
   {
     id:59,
     tag:'RREF Diagnostic',
-    q:'Outline the three-step "Procedural Roadmap" used to algebraically prove whether a vector b belongs to a column space. Use the specific bolded verbs.',
-    ans:[
-      'Step 1 — SETUP: Construct the augmented matrix [A | b]. Append the candidate vector b as the rightmost column next to A.',
-      'Step 2 — PROCESS: Apply Gaussian elimination (row operations) to reduce [A | b] to Reduced Row-Echelon Form (RREF). Normalize pivots to 1 and eliminate all other entries in each pivot column.',
-      'Step 3 — INTERPRET: Examine the last column. If a row reads [0 0 ... 0 | k] with k ≠ 0, this is a contradiction (0 = k) → b ∉ C(A), system is inconsistent. If no contradiction appears → b ∈ C(A), system is consistent and a solution exists.'
-    ]
+    q:'Outline the three-step <strong>"Procedural Roadmap"</strong> used to algebraically prove whether a vector \\(b\\) belongs to a column space. Use the specific bolded verbs from Slide 9-1.',
+    ans:`<img src="59_Answer.png" alt="Answer for Q59" style="max-width:90%;max-height:calc(100vh - 140px);object-fit:contain;border-radius:6px;display:block;user-select:none">`
   },
   {
     id:60,
     tag:'Higher Dimensions',
-    q:'For a 1 × 3 matrix, explain the geometric interpretation of the null space. Why is it necessary to set free variables to specific pairs like (1,0) and (0,1) to find basis vectors?',
-    ans:[
-      'For A = [1  2  3] (a 1×3 matrix), the null space equation is x + 2y + 3z = 0.',
-      'This is 1 equation in 3 unknowns → 3 - 1 = 2 free variables (y and z) → the solution space is 2-dimensional — geometrically a plane through the origin in ℝ³.',
-      'We need 2 independent vectors to describe (span) this plane — a basis.',
-      'Setting (y,z) = (1,0): gives solution s₁ = (-2, 1, 0). Setting (y,z) = (0,1): gives s₂ = (-3, 0, 1). These choices are efficient because they mimic the standard basis — they are guaranteed to be independent (one has y=1,z=0; the other has y=0,z=1 — they cannot be multiples of each other).',
-      'Together {s₁, s₂} form the basis of N(A). Any null space vector = c₁s₁ + c₂s₂.'
-    ]
+    q:'For a \\(1 \\times 3\\) matrix, explain the geometric interpretation of the null space. Why is it <strong>necessary</strong> to set free variables to specific pairs like \\((1, 0)\\) and \\((0, 1)\\) to find the basis vectors of this space?',
+    ans:`<img src="60_Ans.png" alt="Answer for Q60" style="max-width:90%;max-height:calc(100vh - 140px);object-fit:contain;border-radius:6px;display:block;user-select:none">`
   }
 ];
 
@@ -769,7 +1022,6 @@ function renderQNA() {
     const card=document.createElement('div');
     card.className='qna-card'; card.id=`qnacard-${q.id}`;
     card.style.animationDelay=(i*40)+'ms';
-    const pointsHTML=q.ans.map(p=>`<div class="qna-point">${p}</div>`).join('');
     card.innerHTML=`
       <div class="qna-top">
         <span class="qna-num">Q${q.id}</span>
@@ -778,11 +1030,7 @@ function renderQNA() {
           <p>${q.q}</p>
         </div>
       </div>
-      <button class="qna-reveal-btn" id="qnabtn-${q.id}" onclick="revealQNA(${q.id})">▸ Reveal Model Answer</button>
-      <div class="qna-answer" id="qnaanswer-${q.id}">
-        <div class="qna-answer-hd">Model Answer</div>
-        ${pointsHTML}
-      </div>`;
+      <button class="qna-reveal-btn" id="qnabtn-${q.id}" onclick="openQNAModal(${q.id})">▸ Reveal Model Answer</button>`;
     c.appendChild(card);
   });
   QNA.forEach(q=>{
@@ -790,20 +1038,131 @@ function renderQNA() {
   });
 }
 
-function revealQNA(id) {
-  if(state.qnaRevealed[id]) return;
-  state.qnaRevealed[id]=true;
-  state.ans++;
-  applyQNAReveal(id);
-  updateStats();
-  if(window.MathJax&&MathJax.typeset) MathJax.typeset([document.getElementById(`qnaanswer-${id}`)]);
+// ─── Modal zoom/pan state ───
+let _zoom = 1, _panX = 0, _panY = 0, _dragging = false, _dragStart = {x:0,y:0}, _panStart = {x:0,y:0};
+
+function _getModalImg() { return document.querySelector('#modalBody img'); }
+
+function _applyTransform() {
+  const img = _getModalImg(); if(!img) return;
+  img.style.transform = `scale(${_zoom}) translate(${_panX/_zoom}px, ${_panY/_zoom}px)`;
+  document.getElementById('zoomLevel').textContent = Math.round(_zoom*100)+'%';
 }
+
+function adjustZoom(delta) {
+  _zoom = Math.min(5, Math.max(0.25, _zoom + delta));
+  _applyTransform();
+}
+
+function resetZoom() {
+  _zoom=1; _panX=0; _panY=0; _applyTransform();
+}
+
+function openQNAModal(id) {
+  const q = QNA.find(x=>x.id===id);
+  if(!q) return;
+  if(!state.qnaRevealed[id]) {
+    state.qnaRevealed[id]=true;
+    state.ans++;
+    applyQNAReveal(id);
+    updateStats();
+  }
+  document.getElementById('modalQNum').textContent = `Q${q.id}`;
+  document.getElementById('modalTag').textContent = q.tag;
+  document.getElementById('modalQuestion').innerHTML = q.q;
+
+  // Insert answer content, keeping the zoom hint at the end
+  const body = document.getElementById('modalBody');
+  const hint = document.getElementById('zoomHint');
+  body.innerHTML = q.ans;
+  body.appendChild(hint);
+  hint.classList.remove('hidden');
+
+  // Reset zoom/pan
+  _zoom=1; _panX=0; _panY=0;
+  const img = _getModalImg();
+  if(img) {
+    img.style.transformOrigin = 'center center';
+    img.style.transition = 'transform .15s ease';
+    img.draggable = false;
+    _applyTransform();
+  }
+
+  document.getElementById('qnaModalBackdrop').classList.add('open');
+  document.body.style.overflow='hidden';
+
+  // Hide hint after 3s
+  setTimeout(()=>{ hint.classList.add('hidden'); }, 3000);
+
+  if(window.MathJax&&MathJax.typeset)
+    setTimeout(()=>MathJax.typeset([document.getElementById('qnaModal')]),50);
+}
+
+function closeQNAModal() {
+  document.getElementById('qnaModalBackdrop').classList.remove('open');
+  document.body.style.overflow='';
+  _zoom=1; _panX=0; _panY=0;
+}
+
+// ─── Scroll-to-zoom ───
+document.addEventListener('DOMContentLoaded', ()=>{
+  const body = document.getElementById('modalBody');
+
+  body.addEventListener('wheel', e=>{
+    if(!document.getElementById('qnaModalBackdrop').classList.contains('open')) return;
+    if(!_getModalImg()) return;
+    e.preventDefault();
+    const delta = e.deltaY > 0 ? -0.15 : 0.15;
+    _zoom = Math.min(5, Math.max(0.25, _zoom + delta));
+    _applyTransform();
+  }, {passive:false});
+
+  // ─── Drag-to-pan ───
+  body.addEventListener('mousedown', e=>{
+    if(!_getModalImg()) return;
+    _dragging=true; _dragStart={x:e.clientX,y:e.clientY}; _panStart={x:_panX,y:_panY};
+    body.classList.add('grabbing');
+  });
+  window.addEventListener('mousemove', e=>{
+    if(!_dragging) return;
+    _panX = _panStart.x + (e.clientX - _dragStart.x);
+    _panY = _panStart.y + (e.clientY - _dragStart.y);
+    _applyTransform();
+  });
+  window.addEventListener('mouseup', ()=>{ _dragging=false; document.getElementById('modalBody').classList.remove('grabbing'); });
+
+  // ─── Touch pinch-to-zoom + drag ───
+  let _lastDist=0, _touches=[];
+  body.addEventListener('touchstart', e=>{
+    _touches=[...e.touches];
+    if(e.touches.length===2) _lastDist=Math.hypot(e.touches[0].clientX-e.touches[1].clientX, e.touches[0].clientY-e.touches[1].clientY);
+    if(e.touches.length===1){ _dragging=true; _dragStart={x:e.touches[0].clientX,y:e.touches[0].clientY}; _panStart={x:_panX,y:_panY}; }
+  },{passive:true});
+  body.addEventListener('touchmove', e=>{
+    if(e.touches.length===2){
+      e.preventDefault();
+      const dist=Math.hypot(e.touches[0].clientX-e.touches[1].clientX, e.touches[0].clientY-e.touches[1].clientY);
+      _zoom=Math.min(5,Math.max(0.25,_zoom*(dist/_lastDist))); _lastDist=dist; _applyTransform();
+    } else if(e.touches.length===1&&_dragging){
+      _panX=_panStart.x+(e.touches[0].clientX-_dragStart.x);
+      _panY=_panStart.y+(e.touches[0].clientY-_dragStart.y);
+      _applyTransform();
+    }
+  },{passive:false});
+  body.addEventListener('touchend', ()=>{ _dragging=false; });
+
+  // Escape key
+  document.addEventListener('keydown', e=>{
+    if(e.key==='Escape') closeQNAModal();
+    if(e.key==='+') adjustZoom(0.25);
+    if(e.key==='-') adjustZoom(-0.25);
+    if(e.key==='0') resetZoom();
+  });
+});
 
 function applyQNAReveal(id) {
   const btn=document.getElementById(`qnabtn-${id}`);
-  const ans=document.getElementById(`qnaanswer-${id}`);
   if(btn){btn.textContent='✓ Answer Revealed';btn.classList.add('revealed')}
-  if(ans) ans.classList.add('visible');
 }
 
 // ═══════════════════════════════════════════════════════
@@ -827,20 +1186,32 @@ function updateStats() {
 }
 
 // ═══════════════════════════════════════════════════════
+// SIDEBAR
+// ═══════════════════════════════════════════════════════
+function toggleSidebar() {
+  const sb = document.getElementById('sidebar');
+  const ov = document.getElementById('sbOverlay');
+  const open = sb.classList.toggle('open');
+  ov.classList.toggle('open', open);
+  document.body.style.overflow = open ? 'hidden' : '';
+}
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sbOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+// ═══════════════════════════════════════════════════════
 // NAVIGATION
 // ═══════════════════════════════════════════════════════
 function showSection(key, navEl) {
-  // Hide all
   document.querySelectorAll('.content-section').forEach(s=>s.classList.remove('active'));
   document.querySelectorAll('.sb-item').forEach(s=>s.classList.remove('active'));
-  // Show target
   const sec=document.getElementById(`sec-${key}`);
-  if(sec){sec.classList.add('active')}
+  if(sec) sec.classList.add('active');
   if(navEl) navEl.classList.add('active');
-  // Re-typeset MathJax
   setTimeout(()=>{if(window.MathJax&&MathJax.typeset)MathJax.typeset()},100);
-  // Close mobile sidebar
-  document.getElementById('sidebar').classList.remove('open');
+  closeSidebar();
   window.scrollTo({top:0,behavior:'smooth'});
 }
 
@@ -871,6 +1242,7 @@ function init() {
 }
 
 init();
+
 </script>
 </body>
 </html>
