@@ -1,0 +1,1396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Linear Algebra: Dimension - Study Notes</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #3b82f6;
+            --primary-dark: #1e40af;
+            --accent: #8b5cf6;
+            --accent-light: #a78bfa;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --bg-tertiary: #334155;
+            --text-primary: #f1f5f9;
+            --text-secondary: #cbd5e1;
+            --text-tertiary: #94a3b8;
+            --border-color: #475569;
+            --highlight: #dbeafe;
+            --success-light: #d1fae5;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, var(--bg-primary) 0%, #0a0e27 50%, var(--bg-secondary) 100%);
+            color: var(--text-primary);
+            line-height: 1.7;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 20% 50%, rgba(59, 130, 246, 0.08) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 80%, rgba(139, 92, 246, 0.08) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .wrapper {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 280px;
+            height: 100vh;
+            background: linear-gradient(180deg, var(--bg-secondary) 0%, var(--bg-primary) 100%);
+            border-right: 1px solid var(--border-color);
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding: 30px 0;
+            transition: transform 0.3s ease;
+            z-index: 100;
+        }
+
+        .sidebar::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .sidebar::-webkit-scrollbar-thumb {
+            background: var(--accent);
+            border-radius: 3px;
+        }
+
+        .sidebar-header {
+            padding: 0 25px 30px;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 20px;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo span {
+            color: var(--accent);
+        }
+
+        .subtitle {
+            font-size: 12px;
+            color: var(--text-tertiary);
+            font-weight: 400;
+        }
+
+        .nav-section {
+            padding: 15px 0;
+            margin: 0 15px;
+        }
+
+        .nav-title {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: var(--text-tertiary);
+            padding: 10px 20px;
+            letter-spacing: 0.5px;
+        }
+
+        .nav-item {
+            padding: 12px 20px;
+            margin: 5px 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-secondary);
+            border-left: 3px solid transparent;
+        }
+
+        .nav-item:hover {
+            background: rgba(59, 130, 246, 0.1);
+            color: var(--primary);
+        }
+
+        .nav-item.active {
+            background: rgba(59, 130, 246, 0.2);
+            color: var(--primary);
+            border-left-color: var(--primary);
+        }
+
+        .nav-item-icon {
+            font-size: 18px;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 280px;
+            padding: 50px;
+            max-width: 1200px;
+        }
+
+        /* Header */
+        .page-header {
+            margin-bottom: 50px;
+            animation: slideUp 0.6s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .page-title {
+            font-size: 3.5em;
+            font-weight: 700;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .page-subtitle {
+            font-size: 16px;
+            color: var(--text-secondary);
+            font-weight: 400;
+        }
+
+        .breadcrumb {
+            display: flex;
+            gap: 8px;
+            font-size: 13px;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .breadcrumb-item {
+            color: var(--text-tertiary);
+        }
+
+        .breadcrumb-item.active {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        /* Tabs Navigation */
+        .tabs-nav {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 45px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 0;
+            flex-wrap: wrap;
+        }
+
+        .tab-nav-item {
+            padding: 12px 0;
+            border-bottom: 2px solid transparent;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 15px;
+            color: var(--text-secondary);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            position: relative;
+        }
+
+        .tab-nav-item:hover {
+            color: var(--primary);
+        }
+
+        .tab-nav-item.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+
+        .tab-nav-item::before {
+            content: '';
+            display: inline-block;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: currentColor;
+        }
+
+        /* Tab Content */
+        .tab-pane {
+            display: none;
+            animation: fadeInTab 0.4s ease-in;
+        }
+
+        .tab-pane.active {
+            display: block;
+        }
+
+        @keyframes fadeInTab {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Section Cards */
+        .section {
+            margin-bottom: 40px;
+        }
+
+        .section-title {
+            font-size: 1.8em;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .section-title::before {
+            content: '';
+            display: inline-block;
+            width: 4px;
+            height: 28px;
+            background: var(--primary);
+            border-radius: 2px;
+        }
+
+        /* Cards */
+        .card {
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.8) 0%, rgba(51, 65, 85, 0.5) 100%);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 28px;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .card:hover {
+            border-color: var(--primary);
+            box-shadow: 0 8px 32px rgba(59, 130, 246, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .card-title {
+            font-size: 1.4em;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card-content {
+            color: var(--text-secondary);
+            line-height: 1.8;
+        }
+
+        .card-content p {
+            margin-bottom: 14px;
+        }
+
+        .card-content ul,
+        .card-content ol {
+            margin-left: 20px;
+            margin-bottom: 16px;
+        }
+
+        .card-content li {
+            margin-bottom: 10px;
+            padding-left: 8px;
+        }
+
+        .card-content strong {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        /* Info/Alert Boxes */
+        .info-box {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(139, 92, 246, 0.05) 100%);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            display: flex;
+            gap: 15px;
+        }
+
+        .info-box-icon {
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        .info-box-content {
+            flex: 1;
+            color: var(--text-secondary);
+        }
+
+        .info-box-content strong {
+            color: var(--primary);
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        /* Code/Formula Boxes */
+        .formula-box {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 16px;
+            margin: 15px 0;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            color: var(--accent-light);
+            overflow-x: auto;
+            line-height: 1.6;
+        }
+
+        /* Quiz Section */
+        .quiz-container {
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.9) 0%, rgba(51, 65, 85, 0.6) 100%);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 25px;
+            backdrop-filter: blur(10px);
+        }
+
+        .quiz-item {
+            margin-bottom: 28px;
+            padding-bottom: 28px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .quiz-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .quiz-question-text {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 16px;
+            font-size: 15px;
+        }
+
+        .quiz-option {
+            background: rgba(51, 65, 85, 0.5);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 14px 16px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .quiz-option:hover {
+            background: rgba(59, 130, 246, 0.15);
+            border-color: var(--primary);
+        }
+
+        .quiz-option input[type="radio"] {
+            cursor: pointer;
+            width: 18px;
+            height: 18px;
+        }
+
+        .quiz-option.selected {
+            background: rgba(59, 130, 246, 0.2);
+            border-color: var(--primary);
+        }
+
+        .quiz-option.correct {
+            background: rgba(16, 185, 129, 0.15);
+            border-color: var(--success);
+        }
+
+        .quiz-option.incorrect {
+            background: rgba(239, 68, 68, 0.15);
+            border-color: var(--danger);
+        }
+
+        .quiz-feedback {
+            margin-top: 12px;
+            padding: 12px 14px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 500;
+            display: none;
+        }
+
+        .quiz-feedback.show {
+            display: block;
+        }
+
+        .quiz-feedback.correct {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--success-light);
+            border-left: 3px solid var(--success);
+        }
+
+        .quiz-feedback.incorrect {
+            background: rgba(239, 68, 68, 0.2);
+            color: #fca5a5;
+            border-left: 3px solid var(--danger);
+        }
+
+        .quiz-btn {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            color: white;
+            border: none;
+            padding: 11px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 13px;
+            transition: all 0.3s ease;
+            margin-top: 12px;
+        }
+
+        .quiz-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+        }
+
+        /* QA Section */
+        .qa-item {
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.8) 0%, rgba(51, 65, 85, 0.4) 100%);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            margin-bottom: 15px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .qa-question {
+            background: linear-gradient(90deg, rgba(59, 130, 246, 0.15) 0%, rgba(139, 92, 246, 0.1) 100%);
+            border-bottom: 1px solid var(--border-color);
+            padding: 20px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .qa-question:hover {
+            background: linear-gradient(90deg, rgba(59, 130, 246, 0.25) 0%, rgba(139, 92, 246, 0.15) 100%);
+        }
+
+        .qa-icon {
+            font-size: 20px;
+            transition: transform 0.3s ease;
+            color: var(--primary);
+        }
+
+        .qa-item.open .qa-icon {
+            transform: rotate(180deg);
+        }
+
+        .qa-answer {
+            padding: 0 20px;
+            background: var(--bg-secondary);
+            color: var(--text-secondary);
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .qa-item.open .qa-answer {
+            max-height: 1500px;
+            padding: 20px;
+        }
+
+        .qa-answer p {
+            margin-bottom: 12px;
+        }
+
+        .qa-answer ul {
+            margin-left: 20px;
+            margin-bottom: 12px;
+        }
+
+        .qa-answer li {
+            margin-bottom: 8px;
+        }
+
+        /* Grid Cards */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .grid-card {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(139, 92, 246, 0.05) 100%);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .grid-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(59, 130, 246, 0.2);
+        }
+
+        .grid-card-title {
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 10px;
+            font-size: 15px;
+        }
+
+        .grid-card-content {
+            color: var(--text-secondary);
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        /* Footer */
+        footer {
+            margin-left: 280px;
+            padding: 40px 50px;
+            border-top: 1px solid var(--border-color);
+            text-align: center;
+            color: var(--text-tertiary);
+            font-size: 13px;
+            margin-top: 50px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 70px;
+                padding: 20px 0;
+            }
+
+            .sidebar-header {
+                padding: 0 10px 20px;
+            }
+
+            .logo {
+                font-size: 20px;
+                justify-content: center;
+            }
+
+            .subtitle {
+                display: none;
+            }
+
+            .nav-title {
+                display: none;
+            }
+
+            .nav-item {
+                justify-content: center;
+                padding: 12px 10px;
+                margin: 5px 5px;
+            }
+
+            .nav-item span {
+                display: none;
+            }
+
+            .main-content {
+                margin-left: 70px;
+                padding: 30px 20px;
+            }
+
+            .page-title {
+                font-size: 2em;
+            }
+
+            .cards-grid {
+                grid-template-columns: 1fr;
+            }
+
+            footer {
+                margin-left: 70px;
+                padding: 30px 20px;
+            }
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+            height: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-primary);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--accent);
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    📐 <span>Linear</span>
+                </div>
+                <div class="subtitle">Chapter 12: Dimension</div>
+            </div>
+
+            <nav>
+                <div class="nav-section">
+                    <div class="nav-title">📚 Study Sections</div>
+                    <div class="nav-item active" onclick="switchTab('notes')">
+                        <span class="nav-item-icon">📝</span>
+                        <span>Complete Notes</span>
+                    </div>
+                    <div class="nav-item" onclick="switchTab('concepts')">
+                        <span class="nav-item-icon">💡</span>
+                        <span>Key Concepts</span>
+                    </div>
+                    <div class="nav-item" onclick="switchTab('examples')">
+                        <span class="nav-item-icon">📊</span>
+                        <span>Examples</span>
+                    </div>
+                    <div class="nav-item" onclick="switchTab('quiz')">
+                        <span class="nav-item-icon">❓</span>
+                        <span>Quiz</span>
+                    </div>
+                    <div class="nav-item" onclick="switchTab('qa')">
+                        <span class="nav-item-icon">💬</span>
+                        <span>Q&A</span>
+                    </div>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Page Header -->
+            <div class="page-header">
+                <h1 class="page-title">Linear Algebra: Dimension</h1>
+                <p class="page-subtitle">Master the 4 Fundamental Subspaces - Complete Interactive Guide</p>
+                <div class="breadcrumb">
+                    <span class="breadcrumb-item">Mathematics</span>
+                    <span class="breadcrumb-item">→</span>
+                    <span class="breadcrumb-item">Linear Algebra</span>
+                    <span class="breadcrumb-item">→</span>
+                    <span class="breadcrumb-item active">Chapter 12</span>
+                </div>
+            </div>
+
+            <!-- Tabs Navigation -->
+            <div class="tabs-nav">
+                <div class="tab-nav-item active" onclick="switchTab('notes')">
+                    📝 Notes
+                </div>
+                <div class="tab-nav-item" onclick="switchTab('concepts')">
+                    💡 Concepts
+                </div>
+                <div class="tab-nav-item" onclick="switchTab('examples')">
+                    📊 Examples
+                </div>
+                <div class="tab-nav-item" onclick="switchTab('quiz')">
+                    ❓ Quiz
+                </div>
+                <div class="tab-nav-item" onclick="switchTab('qa')">
+                    💬 Q&A
+                </div>
+            </div>
+
+            <!-- NOTES TAB -->
+            <div id="notes" class="tab-pane active">
+                <div class="section">
+                    <h2 class="section-title">📌 What is Dimension?</h2>
+                    <div class="card">
+                        <p class="card-content">Imagine you're describing how many different independent directions you can move:</p>
+                        <ul class="card-content">
+                            <li><strong>On a line:</strong> Only 1 direction (left/right) → Dimension = 1</li>
+                            <li><strong>On a piece of paper:</strong> 2 directions (left/right and up/down) → Dimension = 2</li>
+                            <li><strong>In the real world:</strong> 3 directions (length, width, height) → Dimension = 3</li>
+                            <li><strong>In linear algebra:</strong> The number of independent basis vectors in a vector space</li>
+                        </ul>
+                    </div>
+
+                    <div class="info-box">
+                        <div class="info-box-icon">💡</div>
+                        <div class="info-box-content">
+                            <strong>Key Definition:</strong>
+                            Dimension is the minimum number of independent vectors needed to represent every point in a space. It's like asking: "How many independent directions describe this space?"
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h2 class="section-title">🔗 The Rank & Dimension Connection</h2>
+                    <div class="card">
+                        <div class="card-content">
+                            <p><strong>Rank</strong> = Number of pivot columns in a matrix</p>
+                            <p><strong>Dimension</strong> = Number of vectors in a basis of a space</p>
+                            <p style="color: var(--primary); font-weight: 600; margin-top: 15px;">Key Link: Rank = Dimension of Column Space = Dimension of Row Space</p>
+                            <p style="margin-top: 15px;">Think of it this way: When you reduce a matrix, the pivots show you which columns are independent. These independent columns form a basis, and the count of pivots equals the dimension!</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h2 class="section-title">🏗️ The Four Fundamental Subspaces</h2>
+                    
+                    <div class="card">
+                        <h3 class="card-title">1️⃣ Column Space C(A)</h3>
+                        <div class="card-content">
+                            <p><strong>What it is:</strong> All possible outputs when multiplying matrix A by any input vector x</p>
+                            <p><strong>Picture:</strong> If A is 3×2, column space is like a plane floating in 3D space</p>
+                            <p><strong>Dimension:</strong> = Rank of A (number of pivot columns)</p>
+                            <p><strong>How to find:</strong> Use the pivot columns as the basis</p>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h3 class="card-title">2️⃣ Row Space C(A^T)</h3>
+                        <div class="card-content">
+                            <p><strong>What it is:</strong> All possible linear combinations of the rows of A</p>
+                            <p><strong>Picture:</strong> The "output space" created by row combinations</p>
+                            <p><strong>Dimension:</strong> = Rank of A (surprisingly, same as column space!)</p>
+                            <p><strong>Why this works:</strong> Row rank = Column rank (fundamental theorem!)</p>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h3 class="card-title">3️⃣ Null Space N(A)</h3>
+                        <div class="card-content">
+                            <p><strong>What it is:</strong> All vectors x where Ax = 0 (inputs that produce zero output)</p>
+                            <p><strong>Picture:</strong> "Which inputs completely disappear when transformed?"</p>
+                            <p><strong>Dimension:</strong> = n - Rank (where n = total columns)</p>
+                            <p><strong>Formula:</strong> Nullity = Free variables = n - Rank</p>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h3 class="card-title">4️⃣ Left Null Space N(A^T)</h3>
+                        <div class="card-content">
+                            <p><strong>What it is:</strong> All vectors y where y^T A = 0 (vectors that disappear from the left)</p>
+                            <p><strong>Picture:</strong> "Which row vectors vanish when hitting A from the left?"</p>
+                            <p><strong>Dimension:</strong> = m - Rank (where m = number of rows)</p>
+                            <p><strong>Note:</strong> This is the null space of A^T (the transpose)</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h2 class="section-title">🔄 The Fundamental Theorem</h2>
+                    <div class="card">
+                        <div class="card-content">
+                            <p style="margin-bottom: 15px;"><strong>The Balance Law:</strong></p>
+                            <div class="formula-box">
+Rank(A) + Nullity(A) = n
+
+(number of pivots) + (number of free variables) = (total columns)
+                            </div>
+                            <p style="margin-top: 20px;">This beautiful equation tells us that pivot columns and free columns must add up perfectly!</p>
+                            <p style="margin-top: 15px;"><strong>Another profound truth:</strong> The row space and null space are perpendicular (orthogonal) to each other. If a vector is in the null space, it's perpendicular to every row of the matrix.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="cards-grid">
+                    <div class="grid-card">
+                        <div class="grid-card-title">📊 Matrix Size</div>
+                        <div class="grid-card-content">Rank ≤ min(m, n)</div>
+                    </div>
+                    <div class="grid-card">
+                        <div class="grid-card-title">✅ Pivot Columns</div>
+                        <div class="grid-card-content">Form a basis for column space</div>
+                    </div>
+                    <div class="grid-card">
+                        <div class="grid-card-title">🔄 Transpose Property</div>
+                        <div class="grid-card-content">Rank(A) = Rank(A^T)</div>
+                    </div>
+                    <div class="grid-card">
+                        <div class="grid-card-title">🎯 Basis</div>
+                        <div class="grid-card-content">Independent spanning vectors</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CONCEPTS TAB -->
+            <div id="concepts" class="tab-pane">
+                <div class="section">
+                    <h2 class="section-title">🧠 Understanding Dimension</h2>
+                    <div class="card">
+                        <p class="card-content"><strong>Think about everyday examples:</strong></p>
+                        <ul class="card-content">
+                            <li><strong>A street address:</strong> Just need the house number → 1 dimension</li>
+                            <li><strong>A city grid:</strong> Need avenue and street → 2 dimensions</li>
+                            <li><strong>Global position:</strong> Need latitude, longitude, altitude → 3 dimensions</li>
+                            <li><strong>Data in a spreadsheet:</strong> Each independent column is a dimension</li>
+                        </ul>
+                        <p class="card-content" style="margin-top: 15px; color: var(--primary); font-weight: 600;">In linear algebra: Dimension = number of linearly independent directions</p>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h2 class="section-title">🎨 What is a Basis?</h2>
+                    <div class="card">
+                        <p class="card-content"><strong>A basis is:</strong> A set of vectors that can build any vector in a space</p>
+                        <ul class="card-content" style="margin-top: 12px;">
+                            <li><strong>Independent:</strong> No vector is a combination of others (they don't overlap)</li>
+                            <li><strong>Spanning:</strong> Together they cover the entire space</li>
+                            <li><strong>Minimal:</strong> You can't remove any vector without losing coverage</li>
+                            <li><strong>Count:</strong> A basis always has exactly <strong>dimension</strong> vectors</li>
+                        </ul>
+
+                        <div class="info-box" style="margin-top: 20px;">
+                            <div class="info-box-icon">💡</div>
+                            <div class="info-box-content">
+                                <strong>Think of it like LEGO:</strong> A basis is the minimum set of unique LEGO pieces you need to build anything in that space. You can't use duplicate pieces, and every piece is essential.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h2 class="section-title">🎯 Pivot Columns = Basis</h2>
+                    <div class="card">
+                        <p class="card-content"><strong>The Magic Fact:</strong> The pivot columns of A form a basis for its column space!</p>
+                        <ul class="card-content" style="margin-top: 12px;">
+                            <li><strong>Why?</strong> Pivot columns are independent (they create the identity pattern)</li>
+                            <li><strong>Count:</strong> Exactly equal to the rank</li>
+                            <li><strong>Free columns:</strong> These are combinations of pivot columns, not independent</li>
+                            <li><strong>Dimension:</strong> = Number of pivots</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h2 class="section-title">⚡ Orthogonal Subspaces</h2>
+                    <div class="card">
+                        <p class="card-content"><strong>The Perpendicularity Fact:</strong></p>
+                        <ul class="card-content" style="margin-top: 12px;">
+                            <li>Row Space ⊥ Null Space (perpendicular!)</li>
+                            <li>Column Space ⊥ Left Null Space (perpendicular!)</li>
+                        </ul>
+                        <p class="card-content" style="margin-top: 15px;">This means: If you pick any vector from the row space and any from the null space, their dot product is zero!</p>
+
+                        <div class="info-box" style="margin-top: 20px;">
+                            <div class="info-box-icon">🎯</div>
+                            <div class="info-box-content">
+                                <strong>Why this matters:</strong> These perpendicular relationships are the foundation of solving equations, least squares, and projections. It's pure geometry!
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="cards-grid">
+                    <div class="grid-card">
+                        <div class="grid-card-title">Dimension =</div>
+                        <div class="grid-card-content">Basis vector count</div>
+                    </div>
+                    <div class="grid-card">
+                        <div class="grid-card-title">Basis =</div>
+                        <div class="grid-card-content">Independent set that spans</div>
+                    </div>
+                    <div class="grid-card">
+                        <div class="grid-card-title">Rank =</div>
+                        <div class="grid-card-content">Number of pivots</div>
+                    </div>
+                    <div class="grid-card">
+                        <div class="grid-card-title">Nullity =</div>
+                        <div class="grid-card-content">Free variable count</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- EXAMPLES TAB -->
+            <div id="examples" class="tab-pane">
+                <div class="section">
+                    <h2 class="section-title">📝 Example 1: Simple 1×3 Matrix</h2>
+                    <div class="card">
+                        <p class="card-content"><strong>Matrix: A = [1  2  3]</strong> (1 row, 3 columns)</p>
+                        
+                        <h3 style="color: var(--primary); margin-top: 20px; margin-bottom: 12px; font-weight: 600;">Analysis:</h3>
+                        
+                        <p class="card-content" style="margin-top: 12px;"><strong>1. Row Space C(A^T):</strong></p>
+                        <p class="card-content" style="margin-left: 20px;">Only one non-zero row: [1, 2, 3]. This creates a line in 3D space.</p>
+                        <div class="formula-box">Dimension = 1 (one pivot)</div>
+
+                        <p class="card-content" style="margin-top: 15px;"><strong>2. Column Space C(A):</strong></p>
+                        <p class="card-content" style="margin-left: 20px;">All scalar multiples of the single column [1]. This is the real line.</p>
+                        <div class="formula-box">Dimension = 1 (one pivot)</div>
+
+                        <p class="card-content" style="margin-top: 15px;"><strong>3. Null Space N(A):</strong></p>
+                        <p class="card-content" style="margin-left: 20px;">Solve: x₁ + 2x₂ + 3x₃ = 0</p>
+                        <p class="card-content" style="margin-left: 20px; margin-top: 8px;">We have 1 pivot and 2 free variables, creating a 2D plane in 3D space.</p>
+                        <div class="formula-box">Dimension = 3 - 1 = 2</div>
+
+                        <p class="card-content" style="margin-top: 15px;"><strong>4. Left Null Space N(A^T):</strong></p>
+                        <p class="card-content" style="margin-left: 20px;">Solve: y[1  2  3] = 0 → y = 0</p>
+                        <div class="formula-box">Dimension = 1 - 1 = 0</div>
+
+                        <div class="info-box" style="margin-top: 20px;">
+                            <div class="info-box-icon">✅</div>
+                            <div class="info-box-content">
+                                <strong>The Balance Check:</strong> 1 + 2 = 3 ✓ and 1 + 0 = 1 ✓
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h2 class="section-title">📝 Example 2: Rank & Nullity</h2>
+                    <div class="card">
+                        <p class="card-content"><strong>Matrix: A = [1  2  3; 0  0  0; 0  0  0]</strong> (3×3)</p>
+                        
+                        <h3 style="color: var(--primary); margin-top: 20px; margin-bottom: 12px; font-weight: 600;">Quick Analysis:</h3>
+                        
+                        <ul class="card-content" style="margin-top: 12px;">
+                            <li><strong>Pivots:</strong> Only at position (1,1)</li>
+                            <li><strong>Rank:</strong> 1</li>
+                            <li><strong>Nullity:</strong> 3 - 1 = 2</li>
+                            <li><strong>Column Space:</strong> The direction [1, 0, 0]^T</li>
+                            <li><strong>Null Space:</strong> The 2D plane perpendicular to [1, 2, 3]</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h2 class="section-title">📝 Example 3: Rank-2 Matrix</h2>
+                    <div class="card">
+                        <p class="card-content"><strong>Matrix: A = [1  0; 0  1; 0  0]</strong> (3×2)</p>
+                        
+                        <div class="formula-box" style="margin: 15px 0;">
+Rank = 2
+Nullity = 2 - 2 = 0
+                        </div>
+
+                        <ul class="card-content" style="margin-top: 15px;">
+                            <li><strong>Column Space:</strong> The xy-plane in 3D. Dimension = 2</li>
+                            <li><strong>Null Space:</strong> Only the zero vector. Dimension = 0</li>
+                            <li><strong>Row Space:</strong> Vectors [1,0] and [0,1]. Dimension = 2</li>
+                            <li><strong>Left Null Space:</strong> The z-direction. Dimension = 3 - 2 = 1</li>
+                        </ul>
+
+                        <div class="info-box" style="margin-top: 20px;">
+                            <div class="info-box-icon">✅</div>
+                            <div class="info-box-content">
+                                <strong>Everything adds up perfectly:</strong> 2 + 0 = 2 ✓ and 2 + 1 = 3 ✓
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- QUIZ TAB -->
+            <div id="quiz" class="tab-pane">
+                <div class="section">
+                    <h2 class="section-title">❓ Self-Assessment Quiz</h2>
+                    <div class="quiz-container">
+                        <div class="quiz-item">
+                            <div class="quiz-question-text">1. What does dimension measure?</div>
+                            <div class="quiz-option" onclick="selectQuizOption(this)">
+                                <input type="radio" name="q1" value="a">
+                                <label>The size of the matrix</label>
+                            </div>
+                            <div class="quiz-option" onclick="selectQuizOption(this)">
+                                <input type="radio" name="q1" value="b">
+                                <label>The number of independent directions in a space</label>
+                            </div>
+                            <div class="quiz-option" onclick="selectQuizOption(this)">
+                                <input type="radio" name="q1" value="c">
+                                <label>The number of columns in a matrix</label>
+                            </div>
+                            <button class="quiz-btn" onclick="checkQuizAnswer('q1', 'b', 'Correct! Dimension counts independent directions—the basis vectors needed to span a space.')">Submit Answer</button>
+                            <div class="quiz-feedback"></div>
+                        </div>
+
+                        <div class="quiz-item">
+                            <div class="quiz-question-text">2. What is the rank of a matrix?</div>
+                            <div class="quiz-option" onclick="selectQuizOption(this)">
+                                <input type="radio" name="q2" value="a">
+                                <label>The number of rows</label>
+                            </div>
+                            <div class="quiz-option" onclick="selectQuizOption(this)">
+                                <input type="radio" name="q2" value="b">
+                                <label>The number of pivot columns</label>
+                            </div>
+                            <div class="quiz-option" onclick="selectQuizOption(this)">
+                                <input type="radio" name="q2" value="c">
+                                <label>The number of non-zero entries</label>
+                            </div>
+                            <button class="quiz-btn" onclick="checkQuizAnswer('q2', 'b', 'Correct! Rank equals the number of pivots, which determines the dimension of the column space.')">Submit Answer</button>
+                            <div class="quiz-feedback"></div>
+                        </div>
+
+                        <div class="quiz-item">
+                            <div class="quiz-question-text">3. If rank(A) = 3 and A is 5×3, what is the nullity?</div>
+                            <div class="quiz-option" onclick="selectQuizOption(this)">
+                                <input type="radio" name="q3" value="a">
+                                <label>0</label>
+                            </div>
+                            <div class="quiz-option" onclick="selectQuizOption(this)">
+                                <input type="radio" name="q3" value="b">
+                                <label>2</label>
+                            </div>
+                            <div class="quiz-option" onclick="selectQuizOption(this)">
+                                <input type="radio" name="q3" value="c">
+                                <label>5</label>
+                            </div>
+                            <button class="quiz-btn" onclick="checkQuizAnswer('q3', 'a', 'Correct! Nullity = n - rank = 3 - 3 = 0. No free variables!')">Submit Answer</button>
+                            <div class="quiz-feedback"></div>
+                        </div>
+
+                        <div class="quiz-item">
+                            <div class="quiz-question-text">4. What is the null space of a matrix?</div>
+                            <div class="quiz-option" onclick="selectQuizOption(this)">
+                                <input type="radio" name="q4" value="a">
+                                <label>All vectors x where Ax = 0</label>
+                            </div>
+                            <div class="quiz-option" onclick="selectQuizOption(this)">
+                                <input type="radio" name="q4" value="b">
+                                <label>All vectors not in the column space</label>
+                            </div>
+                            <div class="quiz-option" onclick="selectQuizOption(this)">
+                                <input type="radio" name="q4" value="c">
+                                <label>The row space of the matrix</label>
+                            </div>
+                            <button class="quiz-btn" onclick="checkQuizAnswer('q4', 'a', 'Correct! The null space N(A) contains exactly the solutions to Ax = 0.')">Submit Answer</button>
+                            <div class="quiz-feedback"></div>
+                        </div>
+
+                        <div class="quiz-item">
+                            <div class="quiz-question-text">5. Which vectors form a basis for the column space?</div>
+                            <div class="quiz-option" onclick="selectQuizOption(this)">
+                                <input type="radio" name="q5" value="a">
+                                <label>The pivot columns of the matrix</label>
+                            </div>
+                            <div class="quiz-option" onclick="selectQuizOption(this)">
+                                <input type="radio" name="q5" value="b">
+                                <label>The free columns of the matrix</label>
+                            </div>
+                            <div class="quiz-option" onclick="selectQuizOption(this)">
+                                <input type="radio" name="q5" value="c">
+                                <label>All columns of the matrix</label>
+                            </div>
+                            <button class="quiz-btn" onclick="checkQuizAnswer('q5', 'a', 'Correct! Pivot columns are independent and form a perfect basis for the column space.')">Submit Answer</button>
+                            <div class="quiz-feedback"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Q&A TAB -->
+            <div id="qa" class="tab-pane">
+                <div class="section">
+                    <h2 class="section-title">💬 Frequently Asked Questions</h2>
+
+                    <div class="qa-item">
+                        <div class="qa-question">
+                            <span>What exactly is a dimension? Simple explanation?</span>
+                            <span class="qa-icon">▼</span>
+                        </div>
+                        <div class="qa-answer">
+                            <p><strong>Simple Answer:</strong> Dimension is the number of independent choices needed to locate a point in a space.</p>
+                            <p><strong>Real examples:</strong></p>
+                            <ul>
+                                <li>A telephone pole: 1 dimension (up/down)</li>
+                                <li>A chessboard: 2 dimensions (row, column)</li>
+                                <li>Our world: 3 dimensions (length, width, height)</li>
+                            </ul>
+                            <p><strong>In linear algebra:</strong> Dimension = number of basis vectors in a space.</p>
+                        </div>
+                    </div>
+
+                    <div class="qa-item">
+                        <div class="qa-question">
+                            <span>Why are they called "Four Fundamental Subspaces"?</span>
+                            <span class="qa-icon">▼</span>
+                        </div>
+                        <div class="qa-answer">
+                            <p>Because they completely describe what a matrix does. Together, they tell you:</p>
+                            <ul>
+                                <li>What outputs are possible (column space)</li>
+                                <li>What inputs vanish (null space)</li>
+                                <li>The structure of rows (row space)</li>
+                                <li>Hidden constraints (left null space)</li>
+                            </ul>
+                            <p>They're the complete map of a matrix's behavior!</p>
+                        </div>
+                    </div>
+
+                    <div class="qa-item">
+                        <div class="qa-question">
+                            <span>How do rank and dimension relate?</span>
+                            <span class="qa-icon">▼</span>
+                        </div>
+                        <div class="qa-answer">
+                            <ul>
+                                <li><strong>Rank</strong> = number of pivot columns</li>
+                                <li><strong>Dimension of column space</strong> = rank</li>
+                                <li><strong>Dimension of row space</strong> = rank</li>
+                                <li><strong>Dimension of null space</strong> = n - rank</li>
+                            </ul>
+                            <p><strong>Key insight:</strong> Rank is the "master number" that unlocks all four subspace dimensions!</p>
+                        </div>
+                    </div>
+
+                    <div class="qa-item">
+                        <div class="qa-question">
+                            <span>What's a basis? Why is it important?</span>
+                            <span class="qa-icon">▼</span>
+                        </div>
+                        <div class="qa-answer">
+                            <p><strong>Definition:</strong> A minimal set of independent vectors that span a space.</p>
+                            <p><strong>Properties:</strong></p>
+                            <ul>
+                                <li>Independent (no overlaps)</li>
+                                <li>Spanning (cover the entire space)</li>
+                                <li>Minimal (can't remove any)</li>
+                                <li>Number = dimension of space</li>
+                            </ul>
+                            <p><strong>Why it matters:</strong> A basis lets you represent any vector uniquely. It's your "coordinate system" for a space.</p>
+                        </div>
+                    </div>
+
+                    <div class="qa-item">
+                        <div class="qa-question">
+                            <span>Can dimension be zero? What would that mean?</span>
+                            <span class="qa-icon">▼</span>
+                        </div>
+                        <div class="qa-answer">
+                            <p><strong>Yes!</strong> Dimension is zero for the zero subspace {0}.</p>
+                            <p><strong>What this means:</strong> The only vector in the space is the zero vector.</p>
+                            <p><strong>When this happens:</strong></p>
+                            <ul>
+                                <li>If all columns are pivots, the null space is just {0}</li>
+                                <li>If rank equals the number of rows, left null space is just {0}</li>
+                            </ul>
+                            <p>It's rare but mathematically valid!</p>
+                        </div>
+                    </div>
+
+                    <div class="qa-item">
+                        <div class="qa-question">
+                            <span>What does orthogonal (perpendicular) have to do with dimension?</span>
+                            <span class="qa-icon">▼</span>
+                        </div>
+                        <div class="qa-answer">
+                            <p><strong>The beautiful truth:</strong> Row space and null space are perpendicular!</p>
+                            <p><strong>Why?</strong> If x is in null space, then Ax = 0. Every row of A is perpendicular to x.</p>
+                            <p><strong>What this means:</strong></p>
+                            <ul>
+                                <li>They're "opposite" directions</li>
+                                <li>Their dimensions add up: rank + nullity = n</li>
+                                <li>Together they fill the entire input space</li>
+                            </ul>
+                            <p><strong>Same principle:</strong> Column space ⊥ Left null space</p>
+                        </div>
+                    </div>
+
+                    <div class="qa-item">
+                        <div class="qa-question">
+                            <span>How do I find the dimension of a subspace?</span>
+                            <span class="qa-icon">▼</span>
+                        </div>
+                        <div class="qa-answer">
+                            <p><strong>Method:</strong></p>
+                            <ol>
+                                <li>Reduce the matrix to row echelon form</li>
+                                <li>Count the pivot positions</li>
+                                <li>This count = dimension of column space</li>
+                            </ol>
+                            <p><strong>For null space:</strong></p>
+                            <ol>
+                                <li>Count free variables (non-pivot columns)</li>
+                                <li>This count = dimension of null space</li>
+                            </ol>
+                            <p><strong>Quick check:</strong> (Rank) + (Nullity) = (Total columns) ✓</p>
+                        </div>
+                    </div>
+
+                    <div class="qa-item">
+                        <div class="qa-question">
+                            <span>Why are pivot columns so important?</span>
+                            <span class="qa-icon">▼</span>
+                        </div>
+                        <div class="qa-answer">
+                            <p><strong>Pivots are the "keys" to everything!</strong></p>
+                            <p>Once you count pivots (rank), you instantly know:</p>
+                            <ul>
+                                <li>Dimension of column space = number of pivots</li>
+                                <li>Dimension of row space = number of pivots</li>
+                                <li>Dimension of null space = n - number of pivots</li>
+                                <li>Which variables are free</li>
+                                <li>The structure of all four subspaces</li>
+                            </ul>
+                            <p><strong>Why this works:</strong> Pivots identify the independent rows and columns—they show the "skeleton" of a matrix!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer>
+            <p>📐 Linear Algebra: Chapter 12 - Complete Interactive Study Guide</p>
+            <p style="margin-top: 10px;">Master the Four Fundamental Subspaces and become a linear algebra expert! 🚀</p>
+        </footer>
+    </div>
+
+    <script>
+        function switchTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-pane').forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+            // Remove active from all nav items
+            document.querySelectorAll('.tab-nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+
+            // Show selected tab
+            document.getElementById(tabName).classList.add('active');
+
+            // Add active to clicked elements
+            document.querySelectorAll('.tab-nav-item').forEach(item => {
+                if (item.textContent.toLowerCase().includes(tabName.charAt(0))) {
+                    item.classList.add('active');
+                }
+            });
+            document.querySelectorAll('.nav-item').forEach(item => {
+                const itemText = item.textContent.toLowerCase();
+                if ((tabName === 'notes' && itemText.includes('notes')) ||
+                    (tabName === 'concepts' && itemText.includes('concepts')) ||
+                    (tabName === 'examples' && itemText.includes('examples')) ||
+                    (tabName === 'quiz' && itemText.includes('quiz')) ||
+                    (tabName === 'qa' && itemText.includes('q&a'))) {
+                    item.classList.add('active');
+                }
+            });
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function selectQuizOption(element) {
+            const parent = element.parentElement;
+            parent.querySelectorAll('.quiz-option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            element.classList.add('selected');
+            element.querySelector('input[type="radio"]').checked = true;
+        }
+
+        function checkQuizAnswer(questionName, correctAnswer, feedback) {
+            const selected = document.querySelector(`input[name="${questionName}"]:checked`);
+            if (!selected) {
+                alert('Please select an answer!');
+                return;
+            }
+
+            const selectedValue = selected.value;
+            const feedbackDiv = event.target.nextElementSibling;
+
+            // Update option styles
+            document.querySelectorAll(`input[name="${questionName}"]`).forEach(radio => {
+                const option = radio.closest('.quiz-option');
+                option.classList.remove('correct', 'incorrect');
+                if (radio.value === correctAnswer) {
+                    option.classList.add('correct');
+                } else if (radio.checked) {
+                    option.classList.add('incorrect');
+                }
+            });
+
+            // Show feedback
+            feedbackDiv.textContent = feedback;
+            feedbackDiv.classList.add('show');
+            feedbackDiv.classList.add(selectedValue === correctAnswer ? 'correct' : 'incorrect');
+        }
+
+        // Q&A Accordion
+        document.querySelectorAll('.qa-question').forEach(question => {
+            question.addEventListener('click', function() {
+                this.closest('.qa-item').classList.toggle('open');
+            });
+        });
+
+        // Initial active states
+        document.querySelector('.nav-item').classList.add('active');
+        document.querySelector('.tab-nav-item').classList.add('active');
+    </script>
+</body>
+</html>
