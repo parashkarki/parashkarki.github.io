@@ -1,0 +1,1113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>MyStore — Digital Products</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --primary: #4F46E5;
+    --primary-dark: #4338CA;
+    --primary-light: #EEF0FE;
+    --primary-soft: #E8EAFD;
+    --bg: #ffffff;
+    --bg-soft: #F7F8FB;
+    --hero-bg: #EFEEFB;
+    --text: #1A1A2E;
+    --text-soft: #5A5A6E;
+    --text-mute: #9094A6;
+    --border: #ECEEF3;
+    --ebook: #EFEDFD;
+    --ebook-icon: #6C5CE7;
+    --course: #E6EFFC;
+    --course-icon: #2D7CF6;
+    --music: #DFF1E9;
+    --music-icon: #1A9B6B;
+    --other: #FCE9D6;
+    --other-icon: #F39839;
+    --green: #16A36A;
+    --star: #F5B11A;
+    --shadow-sm: 0 1px 2px rgba(20, 20, 40, 0.04);
+    --shadow-md: 0 4px 14px rgba(20, 20, 40, 0.06);
+    --shadow-lg: 0 12px 32px rgba(20, 20, 40, 0.08);
+    --radius-sm: 10px;
+    --radius: 16px;
+    --radius-lg: 22px;
+    --sidebar-w: 240px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: var(--bg); color: var(--text); font-family: 'Plus Jakarta Sans', system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+  body { min-height: 100vh; overflow-x: hidden; }
+  a { color: inherit; text-decoration: none; }
+  button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
+
+  /* ===== LAYOUT ===== */
+  .app { display: flex; min-height: 100vh; }
+
+  /* ===== SIDEBAR (desktop) ===== */
+  .sidebar {
+    width: var(--sidebar-w);
+    flex-shrink: 0;
+    border-right: 1px solid var(--border);
+    padding: 22px 18px 22px 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    background: #fff;
+  }
+  .brand { display: flex; align-items: center; gap: 12px; padding: 4px 6px; }
+  .brand-logo {
+    width: 38px; height: 38px;
+    border-radius: 10px;
+    background: var(--primary);
+    display: flex; align-items: center; justify-content: center;
+    color: #fff;
+    box-shadow: 0 6px 14px rgba(79, 70, 229, 0.28);
+  }
+  .brand-name { font-weight: 800; font-size: 17px; line-height: 1.1; letter-spacing: -0.01em; }
+  .brand-sub { font-size: 12px; color: var(--text-mute); margin-top: 2px; }
+
+  .nav { display: flex; flex-direction: column; gap: 4px; margin-top: 4px; }
+  .nav-item {
+    display: flex; align-items: center; gap: 14px;
+    padding: 11px 14px;
+    border-radius: 12px;
+    font-size: 14.5px;
+    font-weight: 500;
+    color: var(--text-soft);
+    transition: all 0.18s ease;
+  }
+  .nav-item svg { width: 20px; height: 20px; stroke-width: 1.8; }
+  .nav-item:hover { background: var(--bg-soft); color: var(--text); }
+  .nav-item.active {
+    background: var(--primary-light);
+    color: var(--primary);
+    font-weight: 600;
+  }
+
+  .sidebar-spacer { flex: 1; }
+
+  .premium-card {
+    background: linear-gradient(180deg, #F4F4FE 0%, #ECECFA 100%);
+    border: 1px solid #E2E2F5;
+    border-radius: 16px;
+    padding: 16px;
+    text-align: left;
+  }
+  .premium-title { display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 14.5px; }
+  .premium-desc { color: var(--text-soft); font-size: 12.5px; line-height: 1.45; margin: 8px 0 12px; }
+  .btn-upgrade {
+    width: 100%;
+    background: var(--primary);
+    color: #fff;
+    padding: 10px;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 13.5px;
+    transition: background 0.2s;
+  }
+  .btn-upgrade:hover { background: var(--primary-dark); }
+
+  .sidebar-footer { display: flex; flex-direction: column; gap: 2px; }
+  .sidebar-footer .nav-item { padding: 9px 14px; font-size: 14px; }
+
+  /* ===== MAIN ===== */
+  .main {
+    flex: 1;
+    min-width: 0;
+    padding: 22px 30px 32px;
+  }
+
+  /* ===== TOP BAR ===== */
+  .topbar {
+    display: flex; align-items: center; gap: 16px;
+    margin-bottom: 22px;
+  }
+  .search {
+    flex: 1;
+    display: flex; align-items: center; gap: 10px;
+    background: var(--bg-soft);
+    padding: 13px 18px;
+    border-radius: 12px;
+    border: 1px solid transparent;
+    transition: all 0.2s;
+  }
+  .search:focus-within { border-color: var(--primary); background: #fff; box-shadow: var(--shadow-sm); }
+  .search svg { width: 18px; height: 18px; color: var(--text-mute); flex-shrink: 0; }
+  .search input {
+    flex: 1; border: none; outline: none; background: none;
+    font-size: 14.5px; font-family: inherit; color: var(--text);
+  }
+  .search input::placeholder { color: var(--text-mute); }
+
+  .cart {
+    width: 44px; height: 44px;
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+    background: var(--bg-soft);
+    transition: background 0.2s;
+  }
+  .cart:hover { background: var(--primary-light); }
+  .cart svg { width: 20px; height: 20px; }
+  .cart-badge {
+    position: absolute;
+    top: -4px; right: -4px;
+    background: var(--primary);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    min-width: 18px; height: 18px;
+    border-radius: 9px;
+    display: flex; align-items: center; justify-content: center;
+    padding: 0 5px;
+    border: 2px solid #fff;
+  }
+
+  .avatar-wrap { display: flex; align-items: center; gap: 6px; cursor: pointer; }
+  .avatar {
+    width: 38px; height: 38px;
+    border-radius: 50%;
+    background: var(--primary-light);
+    color: var(--primary);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700;
+    font-size: 13px;
+  }
+  .avatar-wrap svg { width: 16px; height: 16px; color: var(--text-soft); }
+
+  /* ===== HERO ===== */
+  .hero {
+    background: linear-gradient(135deg, #EFEEFB 0%, #E8E6F8 100%);
+    border-radius: 22px;
+    padding: 44px 44px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    gap: 30px;
+    margin-bottom: 36px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    width: 300px; height: 300px;
+    background: radial-gradient(circle, rgba(159, 139, 232, 0.25), transparent 65%);
+    right: -50px; top: -80px;
+    border-radius: 50%;
+  }
+  .hero-pill {
+    display: none;
+    background: rgba(79, 70, 229, 0.12);
+    color: var(--primary);
+    font-size: 12.5px;
+    font-weight: 600;
+    padding: 7px 14px;
+    border-radius: 999px;
+    width: fit-content;
+    margin-bottom: 14px;
+  }
+  .hero h1 {
+    font-size: 44px;
+    line-height: 1.08;
+    font-weight: 800;
+    letter-spacing: -0.025em;
+    color: var(--text);
+  }
+  .hero h1 span { color: var(--primary); }
+  .hero p {
+    color: var(--text-soft);
+    font-size: 15.5px;
+    line-height: 1.55;
+    margin: 18px 0 26px;
+    max-width: 380px;
+  }
+  .hero-buttons { display: flex; gap: 12px; flex-wrap: wrap; }
+  .btn {
+    padding: 13px 22px;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 14.5px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s ease;
+  }
+  .btn-primary { background: var(--primary); color: #fff; box-shadow: 0 6px 18px rgba(79, 70, 229, 0.32); }
+  .btn-primary:hover { background: var(--primary-dark); transform: translateY(-1px); }
+  .btn-outline { background: #fff; color: var(--primary); border: 1.5px solid var(--primary); }
+  .btn-outline:hover { background: var(--primary-light); }
+  .btn svg { width: 16px; height: 16px; }
+
+  .hero-art {
+    position: relative;
+    height: 320px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .hero-art svg { width: 100%; height: 100%; max-width: 520px; }
+
+  .hero-dots { display: none; gap: 6px; margin-top: 16px; }
+  .hero-dots span {
+    width: 22px; height: 4px;
+    background: rgba(79, 70, 229, 0.25);
+    border-radius: 2px;
+    transition: background 0.2s;
+  }
+  .hero-dots span.active { background: var(--primary); width: 22px; }
+
+  /* ===== SECTION HEADER ===== */
+  .section-head {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 18px;
+  }
+  .section-head h2 {
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.015em;
+  }
+  .view-all {
+    color: var(--primary);
+    font-weight: 600;
+    font-size: 14px;
+    display: inline-flex; align-items: center; gap: 4px;
+  }
+  .view-all:hover { gap: 8px; }
+
+  /* ===== CATEGORIES ===== */
+  .categories {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 18px;
+    margin-bottom: 38px;
+  }
+  .cat-card {
+    border-radius: 18px;
+    padding: 20px;
+    display: flex; align-items: center; gap: 16px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  .cat-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); }
+  .cat-card.ebook { background: var(--ebook); }
+  .cat-card.course { background: var(--course); }
+  .cat-card.music { background: var(--music); }
+  .cat-card.other { background: var(--other); }
+
+  .cat-icon {
+    width: 54px; height: 54px;
+    border-radius: 14px;
+    background: #fff;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .cat-icon svg { width: 26px; height: 26px; }
+  .cat-card.ebook .cat-icon svg { color: var(--ebook-icon); }
+  .cat-card.course .cat-icon svg { color: var(--course-icon); }
+  .cat-card.music .cat-icon svg { color: var(--music-icon); }
+  .cat-card.other .cat-icon svg { color: var(--other-icon); }
+
+  .cat-info { flex: 1; min-width: 0; }
+  .cat-info h3 { font-size: 16px; font-weight: 700; margin-bottom: 3px; }
+  .cat-info p { font-size: 12.5px; color: var(--text-soft); line-height: 1.35; }
+  .cat-arrow {
+    width: 28px; height: 28px;
+    background: #fff;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .cat-arrow svg { width: 14px; height: 14px; color: var(--text-soft); }
+
+  /* ===== FEATURED PRODUCTS ===== */
+  .products {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 18px;
+    margin-bottom: 32px;
+  }
+  .product {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 14px;
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    cursor: pointer;
+    transition: all 0.22s ease;
+  }
+  .product:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); border-color: transparent; }
+  .product-img {
+    width: 84px;
+    height: 100px;
+    border-radius: 10px;
+    flex-shrink: 0;
+    overflow: hidden;
+    position: relative;
+    background: #f0f0f5;
+  }
+  .product-img svg { width: 100%; height: 100%; display: block; }
+  .product-info { flex: 1; min-width: 0; padding-top: 2px; }
+  .product-type {
+    font-size: 12px;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+  .product-type.ebook { color: var(--ebook-icon); }
+  .product-type.course { color: var(--course-icon); }
+  .product-type.music { color: var(--music-icon); }
+  .product-type.template { color: var(--other-icon); }
+  .product-title { font-size: 14.5px; font-weight: 700; line-height: 1.25; margin-bottom: 6px; }
+  .product-desc { font-size: 12px; color: var(--text-soft); line-height: 1.4; margin-bottom: 10px; }
+  .product-meta {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 8px;
+  }
+  .rating { display: flex; align-items: center; gap: 4px; font-size: 12.5px; color: var(--text-soft); font-weight: 500; }
+  .rating svg { width: 13px; height: 13px; color: var(--star); fill: var(--star); }
+  .price { font-weight: 700; font-size: 14.5px; color: var(--primary); }
+  .price-free { color: var(--green); font-weight: 700; font-size: 14.5px; }
+  .price-strike { color: var(--text-mute); text-decoration: line-through; font-size: 12.5px; font-weight: 500; margin-left: 6px; }
+
+  /* ===== TRUST ROW ===== */
+  .trust {
+    background: var(--bg-soft);
+    border-radius: 16px;
+    padding: 24px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+  }
+  .trust-item { display: flex; align-items: center; gap: 14px; }
+  .trust-icon {
+    width: 44px; height: 44px;
+    border-radius: 12px;
+    background: #fff;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--text-soft);
+    flex-shrink: 0;
+  }
+  .trust-icon svg { width: 20px; height: 20px; }
+  .trust-info h4 { font-size: 14.5px; font-weight: 700; margin-bottom: 2px; }
+  .trust-info p { font-size: 12.5px; color: var(--text-soft); }
+
+  /* ===== MOBILE TOP HEADER (hidden on desktop) ===== */
+  .mobile-header { display: none; }
+
+  /* ===== MOBILE BOTTOM NAV ===== */
+  .bottom-nav { display: none; }
+
+  /* ===== DOWNLOAD ICON (for mobile product cards) ===== */
+  .product-download {
+    width: 38px; height: 38px;
+    border-radius: 50%;
+    background: var(--primary-light);
+    color: var(--primary);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    align-self: center;
+    margin-left: auto;
+    display: none;
+  }
+  .product-download svg { width: 18px; height: 18px; }
+
+  /* ============================== */
+  /* ===== MOBILE BREAKPOINT  ===== */
+  /* ============================== */
+  @media (max-width: 900px) {
+    .sidebar { display: none; }
+    .main { padding: 0 16px 100px; }
+    .topbar { display: none; }
+
+    /* mobile header */
+    .mobile-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 0 14px;
+    }
+    .mh-brand { display: flex; align-items: center; gap: 10px; }
+    .mh-brand .brand-logo { width: 40px; height: 40px; border-radius: 11px; }
+    .mh-actions { display: flex; align-items: center; gap: 14px; }
+    .mh-icon {
+      width: 40px; height: 40px;
+      display: flex; align-items: center; justify-content: center;
+      position: relative;
+      color: var(--text);
+    }
+    .mh-icon svg { width: 22px; height: 22px; }
+    .mh-icon .cart-badge { top: 0; right: 0; }
+
+    /* hero mobile */
+    .hero {
+      grid-template-columns: 1fr;
+      padding: 26px 22px 22px;
+      border-radius: 22px;
+      gap: 8px;
+    }
+    .hero-pill { display: inline-flex; }
+    .hero h1 { font-size: 32px; line-height: 1.1; }
+    .hero p { font-size: 14.5px; margin: 14px 0 18px; }
+    .hero-buttons { flex-direction: column; gap: 10px; width: 100%; }
+    .btn { width: 100%; justify-content: center; padding: 14px; }
+    .hero-art { height: 240px; margin-top: 6px; }
+    .hero-dots { display: flex; justify-content: center; margin-top: 10px; }
+
+    /* categories grid 4 col but compact */
+    .categories {
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin-bottom: 26px;
+    }
+    .cat-card {
+      flex-direction: column;
+      align-items: flex-start;
+      padding: 14px 12px;
+      gap: 10px;
+      position: relative;
+      min-height: 142px;
+    }
+    .cat-icon { width: 46px; height: 46px; border-radius: 11px; }
+    .cat-icon svg { width: 22px; height: 22px; }
+    .cat-info h3 { font-size: 14.5px; }
+    .cat-info p { font-size: 11.5px; line-height: 1.3; }
+    .cat-arrow {
+      position: absolute;
+      bottom: 12px; right: 12px;
+    }
+
+    .section-head h2 { font-size: 20px; }
+
+    /* products as vertical list on mobile */
+    .products {
+      grid-template-columns: 1fr;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+    .product { padding: 12px; align-items: center; }
+    .product-img { width: 84px; height: 84px; }
+    .product-info { padding-top: 0; }
+    .product-meta { margin-top: 4px; }
+    .product-download { display: flex; }
+    /* on mobile, hide price area when free icon shows? keep both */
+
+    /* trust hidden on mobile (per design) */
+    .trust { display: none; }
+
+    /* bottom nav */
+    .bottom-nav {
+      display: flex;
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      background: #fff;
+      border-top: 1px solid var(--border);
+      padding: 10px 6px 14px;
+      justify-content: space-around;
+      z-index: 100;
+      box-shadow: 0 -2px 12px rgba(0,0,0,0.04);
+    }
+    .bn-item {
+      flex: 1;
+      display: flex; flex-direction: column;
+      align-items: center; gap: 4px;
+      color: var(--text-mute);
+      font-size: 11px;
+      font-weight: 500;
+      padding: 4px;
+      transition: color 0.2s;
+    }
+    .bn-item svg { width: 22px; height: 22px; stroke-width: 1.8; }
+    .bn-item.active { color: var(--primary); font-weight: 600; }
+  }
+
+  /* small phone tweaks */
+  @media (max-width: 420px) {
+    .categories { grid-template-columns: repeat(2, 1fr); }
+    .hero h1 { font-size: 28px; }
+  }
+
+  /* large desktop tweaks */
+  @media (min-width: 1400px) {
+    .main { padding: 24px 44px 40px; }
+  }
+
+  /* ===== ANIMATIONS ===== */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .hero, .section-head, .categories, .products, .trust {
+    animation: fadeUp 0.6s ease both;
+  }
+  .categories { animation-delay: 0.08s; }
+  .products { animation-delay: 0.14s; }
+  .trust { animation-delay: 0.2s; }
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- ===== SIDEBAR (desktop) ===== -->
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-logo">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+      </div>
+      <div>
+        <div class="brand-name">MyStore</div>
+        <div class="brand-sub">Digital Products</div>
+      </div>
+    </div>
+
+    <nav class="nav">
+      <a class="nav-item active" data-nav="home">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        Home
+      </a>
+      <a class="nav-item" data-nav="ebooks">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+        Ebooks
+      </a>
+      <a class="nav-item" data-nav="courses">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+        Courses
+      </a>
+      <a class="nav-item" data-nav="music">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+        Music
+      </a>
+      <a class="nav-item" data-nav="purchases">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+        My Purchases
+      </a>
+    </nav>
+
+    <div class="sidebar-spacer"></div>
+
+    <div class="premium-card">
+      <div class="premium-title">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4F46E5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15 8.5 22 9 17 14 18 21 12 17.5 6 21 7 14 2 9 9 8.5 12 2"/></svg>
+        Go Premium
+      </div>
+      <p class="premium-desc">Unlock premium products and exclusive content.</p>
+      <button class="btn-upgrade">Upgrade Now</button>
+    </div>
+
+    <div class="sidebar-footer">
+      <a class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        Settings
+      </a>
+      <a class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        Help
+      </a>
+    </div>
+  </aside>
+
+  <!-- ===== MAIN ===== -->
+  <main class="main">
+
+    <!-- mobile header -->
+    <header class="mobile-header">
+      <div class="mh-brand">
+        <div class="brand-logo">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+        </div>
+        <div>
+          <div class="brand-name">MyStore</div>
+          <div class="brand-sub">Digital Products</div>
+        </div>
+      </div>
+      <div class="mh-actions">
+        <button class="mh-icon" aria-label="Search">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        </button>
+        <button class="mh-icon" aria-label="Cart">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+          <span class="cart-badge">2</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- top bar (desktop) -->
+    <div class="topbar">
+      <div class="search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" placeholder="Search for ebooks, courses, music...">
+      </div>
+      <button class="cart" aria-label="Cart">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+        <span class="cart-badge">2</span>
+      </button>
+      <div class="avatar-wrap">
+        <div class="avatar">AM</div>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+    </div>
+
+    <!-- HERO -->
+    <section class="hero">
+      <div class="hero-content">
+        <div class="hero-pill">Quality Digital Products</div>
+        <h1>Digital Products,<br><span>Made Simple</span></h1>
+        <p>Ebooks, courses, music and more — handpicked digital products you'll love.</p>
+        <div class="hero-buttons">
+          <button class="btn btn-primary">Browse Products</button>
+          <button class="btn btn-outline">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><line x1="12" y1="22" x2="12" y2="7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg>
+            View Freebies
+          </button>
+        </div>
+        <div class="hero-dots">
+          <span class="active"></span>
+          <span></span>
+          <span></span>
+        </div>
+      </div>
+      <div class="hero-art">
+        <!-- composite illustration: laptop + book + phone -->
+        <svg viewBox="0 0 520 340" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="laptopScreen" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#1a1a2e"/>
+              <stop offset="100%" stop-color="#2d2d4a"/>
+            </linearGradient>
+            <linearGradient id="phoneScreen" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#3d2a5e"/>
+              <stop offset="100%" stop-color="#1a1530"/>
+            </linearGradient>
+            <linearGradient id="bookCover" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#f5f0e6"/>
+              <stop offset="100%" stop-color="#e8e0d0"/>
+            </linearGradient>
+            <radialGradient id="purpleBg" cx="0.5" cy="0.5">
+              <stop offset="0%" stop-color="#C7BFEC" stop-opacity="0.7"/>
+              <stop offset="100%" stop-color="#C7BFEC" stop-opacity="0"/>
+            </radialGradient>
+          </defs>
+
+          <!-- decorative purple circle behind -->
+          <circle cx="430" cy="140" r="110" fill="url(#purpleBg)"/>
+
+          <!-- LAPTOP -->
+          <g transform="translate(40, 95)">
+            <!-- screen body -->
+            <rect x="0" y="0" width="240" height="150" rx="10" fill="#2a2a40"/>
+            <rect x="8" y="8" width="224" height="134" rx="6" fill="url(#laptopScreen)"/>
+            <!-- screen content - "Design Like a Pro" -->
+            <text x="20" y="44" fill="#ffffff" font-family="Plus Jakarta Sans" font-size="16" font-weight="700">Design</text>
+            <text x="20" y="64" fill="#ffffff" font-family="Plus Jakarta Sans" font-size="16" font-weight="700">Like a Pro</text>
+            <text x="20" y="86" fill="#a0a0c0" font-family="Plus Jakarta Sans" font-size="9">UI/UX Design Course</text>
+            <!-- play button -->
+            <circle cx="180" cy="62" r="16" fill="rgba(255,255,255,0.15)" stroke="rgba(255,255,255,0.4)" stroke-width="1"/>
+            <polygon points="176,54 176,70 188,62" fill="#ffffff"/>
+            <!-- progress bar -->
+            <rect x="20" y="118" width="200" height="3" rx="1.5" fill="rgba(255,255,255,0.18)"/>
+            <rect x="20" y="118" width="80" height="3" rx="1.5" fill="#7B6CF6"/>
+            <!-- laptop base -->
+            <path d="M -10 150 L 250 150 L 256 162 L -16 162 Z" fill="#9da3b8"/>
+            <rect x="105" y="150" width="30" height="4" rx="2" fill="#7a8094"/>
+          </g>
+
+          <!-- BOOK -->
+          <g transform="translate(285, 75)">
+            <!-- book shadow -->
+            <rect x="2" y="6" width="98" height="170" rx="3" fill="rgba(0,0,0,0.12)"/>
+            <!-- book body -->
+            <rect x="0" y="0" width="98" height="170" rx="3" fill="url(#bookCover)"/>
+            <!-- spine highlight -->
+            <rect x="0" y="0" width="6" height="170" fill="rgba(0,0,0,0.08)"/>
+            <!-- title block -->
+            <text x="14" y="32" fill="#1a1a2e" font-family="Plus Jakarta Sans" font-size="13" font-weight="700">The</text>
+            <text x="14" y="48" fill="#1a1a2e" font-family="Plus Jakarta Sans" font-size="13" font-weight="700">Mindset</text>
+            <text x="14" y="64" fill="#1a1a2e" font-family="Plus Jakarta Sans" font-size="13" font-weight="700">Shift</text>
+            <line x1="14" y1="74" x2="42" y2="74" stroke="#1a1a2e" stroke-width="0.8"/>
+            <text x="14" y="90" fill="#5a5a6e" font-family="Plus Jakarta Sans" font-size="7">A Guide to Personal</text>
+            <text x="14" y="100" fill="#5a5a6e" font-family="Plus Jakarta Sans" font-size="7">Growth</text>
+            <!-- plant leaf decoration -->
+            <path d="M 12 175 Q 18 155 28 158 Q 32 170 12 175" fill="#5fa872" opacity="0.9"/>
+            <path d="M 22 175 Q 30 150 40 156 Q 38 172 22 175" fill="#4a9560"/>
+          </g>
+
+          <!-- PHONE -->
+          <g transform="translate(370, 100)">
+            <!-- phone shadow -->
+            <rect x="2" y="6" width="86" height="160" rx="16" fill="rgba(0,0,0,0.15)"/>
+            <!-- phone body -->
+            <rect x="0" y="0" width="86" height="160" rx="16" fill="#1a1a2e"/>
+            <rect x="3" y="3" width="80" height="154" rx="13" fill="url(#phoneScreen)"/>
+            <!-- notch -->
+            <rect x="34" y="6" width="18" height="4" rx="2" fill="#0a0a18"/>
+            <!-- album art area -->
+            <rect x="10" y="20" width="66" height="60" rx="8" fill="#5a4a8f"/>
+            <circle cx="60" cy="36" r="6" fill="#f4d57a" opacity="0.9"/>
+            <path d="M 10 65 Q 25 55 40 62 Q 55 70 76 60 L 76 80 L 10 80 Z" fill="#3a2a5e" opacity="0.7"/>
+            <!-- text -->
+            <text x="13" y="98" fill="#ffffff" font-family="Plus Jakarta Sans" font-size="9" font-weight="700">Chill Vibes</text>
+            <text x="13" y="110" fill="#a090c0" font-family="Plus Jakarta Sans" font-size="6">Lo-Fi Beats</text>
+            <!-- controls -->
+            <circle cx="43" cy="130" r="11" fill="rgba(255,255,255,0.15)"/>
+            <polygon points="40,125 40,135 49,130" fill="#ffffff"/>
+            <polygon points="20,127 20,133 25,130" fill="#ffffff" opacity="0.7"/>
+            <polygon points="64,127 64,133 69,130 64,127" fill="#ffffff" opacity="0.7"/>
+            <rect x="68" y="127" width="2" height="6" fill="#ffffff" opacity="0.7"/>
+          </g>
+
+          <!-- AirPods -->
+          <g transform="translate(450, 240)">
+            <ellipse cx="8" cy="14" rx="6" ry="9" fill="#ffffff"/>
+            <ellipse cx="8" cy="9" rx="5" ry="4" fill="#f0f0f5"/>
+            <ellipse cx="26" cy="16" rx="6" ry="9" fill="#ffffff"/>
+            <ellipse cx="26" cy="11" rx="5" ry="4" fill="#f0f0f5"/>
+          </g>
+
+          <!-- audio waveform -->
+          <g transform="translate(440, 200)" opacity="0.55">
+            <rect x="0" y="6" width="2" height="6" rx="1" fill="#7B6CF6"/>
+            <rect x="5" y="2" width="2" height="14" rx="1" fill="#7B6CF6"/>
+            <rect x="10" y="5" width="2" height="8" rx="1" fill="#7B6CF6"/>
+            <rect x="15" y="0" width="2" height="18" rx="1" fill="#7B6CF6"/>
+            <rect x="20" y="3" width="2" height="12" rx="1" fill="#7B6CF6"/>
+            <rect x="25" y="6" width="2" height="6" rx="1" fill="#7B6CF6"/>
+            <rect x="30" y="2" width="2" height="14" rx="1" fill="#7B6CF6"/>
+            <rect x="35" y="4" width="2" height="10" rx="1" fill="#7B6CF6"/>
+            <rect x="40" y="6" width="2" height="6" rx="1" fill="#7B6CF6"/>
+          </g>
+        </svg>
+      </div>
+    </section>
+
+    <!-- CATEGORIES -->
+    <div class="section-head">
+      <h2>Categories</h2>
+      <a class="view-all">View all
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </a>
+    </div>
+
+    <section class="categories">
+      <div class="cat-card ebook">
+        <div class="cat-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+        </div>
+        <div class="cat-info">
+          <h3>Ebooks</h3>
+          <p>Insightful reads you can keep</p>
+        </div>
+        <div class="cat-arrow">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+        </div>
+      </div>
+
+      <div class="cat-card course">
+        <div class="cat-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+        </div>
+        <div class="cat-info">
+          <h3>Courses</h3>
+          <p>Learn new skills at your pace</p>
+        </div>
+        <div class="cat-arrow">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+        </div>
+      </div>
+
+      <div class="cat-card music">
+        <div class="cat-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+        </div>
+        <div class="cat-info">
+          <h3>Music</h3>
+          <p>Sounds that inspire you</p>
+        </div>
+        <div class="cat-arrow">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+        </div>
+      </div>
+
+      <div class="cat-card other">
+        <div class="cat-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><polyline points="10 13 8 15 10 17"/><polyline points="14 13 16 15 14 17"/></svg>
+        </div>
+        <div class="cat-info">
+          <h3>Other</h3>
+          <p>Templates, tools and more</p>
+        </div>
+        <div class="cat-arrow">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+        </div>
+      </div>
+    </section>
+
+    <!-- FEATURED PRODUCTS -->
+    <div class="section-head">
+      <h2>Featured Products</h2>
+      <a class="view-all">View all
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </a>
+    </div>
+
+    <section class="products">
+      <!-- Atomic Habits -->
+      <article class="product">
+        <div class="product-img">
+          <svg viewBox="0 0 100 120" preserveAspectRatio="xMidYMid slice">
+            <rect width="100" height="120" fill="#e8e0d0"/>
+            <rect x="0" y="0" width="6" height="120" fill="#c8b89a"/>
+            <text x="50" y="35" text-anchor="middle" fill="#8a4a2a" font-family="Plus Jakarta Sans" font-size="6" font-weight="600">Tiny Changes,</text>
+            <text x="50" y="44" text-anchor="middle" fill="#8a4a2a" font-family="Plus Jakarta Sans" font-size="6" font-weight="600">Remarkable Results</text>
+            <text x="50" y="68" text-anchor="middle" fill="#b85a2a" font-family="Plus Jakarta Sans" font-size="13" font-weight="800">Atomic</text>
+            <text x="50" y="82" text-anchor="middle" fill="#b85a2a" font-family="Plus Jakarta Sans" font-size="13" font-weight="800">Habits</text>
+            <text x="50" y="108" text-anchor="middle" fill="#5a4a3a" font-family="Plus Jakarta Sans" font-size="5">James Clear</text>
+          </svg>
+        </div>
+        <div class="product-info">
+          <div class="product-type ebook">Ebook</div>
+          <h4 class="product-title">Atomic Habits</h4>
+          <p class="product-desc">Tiny changes, remarkable results.</p>
+          <div class="product-meta">
+            <span class="price-free">Free <span class="price-strike">$9.99</span></span>
+          </div>
+        </div>
+        <button class="product-download" aria-label="Download">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        </button>
+      </article>
+
+      <!-- UI/UX Course -->
+      <article class="product">
+        <div class="product-img">
+          <svg viewBox="0 0 100 120" preserveAspectRatio="xMidYMid slice">
+            <rect width="100" height="120" fill="#1a1a2e"/>
+            <text x="10" y="22" fill="#ffffff" font-family="Plus Jakarta Sans" font-size="9" font-weight="700">UI/UX</text>
+            <text x="10" y="33" fill="#ffffff" font-family="Plus Jakarta Sans" font-size="9" font-weight="700">Design</text>
+            <text x="10" y="44" fill="#ffffff" font-family="Plus Jakarta Sans" font-size="9" font-weight="700">Masterclass</text>
+            <!-- mini laptop -->
+            <rect x="14" y="62" width="38" height="26" rx="3" fill="#2d7cf6"/>
+            <rect x="16" y="64" width="34" height="22" rx="2" fill="#1a1a2e"/>
+            <circle cx="22" cy="72" r="2" fill="#2d7cf6"/>
+            <circle cx="30" cy="76" r="1.5" fill="#7b6cf6"/>
+            <!-- second laptop -->
+            <rect x="55" y="72" width="34" height="22" rx="3" fill="#7b6cf6"/>
+            <rect x="57" y="74" width="30" height="18" rx="2" fill="#1a1a2e"/>
+            <circle cx="68" cy="82" r="1.5" fill="#2d7cf6"/>
+          </svg>
+        </div>
+        <div class="product-info">
+          <div class="product-type course">Course</div>
+          <h4 class="product-title">UI/UX Design Masterclass</h4>
+          <p class="product-desc">Design beautiful and usable interfaces.</p>
+          <div class="product-meta">
+            <span class="rating">
+              <svg viewBox="0 0 24 24"><polygon points="12 2 15 8.5 22 9 17 14 18 21 12 17.5 6 21 7 14 2 9 9 8.5 12 2"/></svg>
+              4.8 (120)
+            </span>
+            <span class="price">$29.99</span>
+          </div>
+        </div>
+        <button class="product-download" aria-label="Download">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        </button>
+      </article>
+
+      <!-- Lo-Fi Music -->
+      <article class="product">
+        <div class="product-img">
+          <svg viewBox="0 0 100 120" preserveAspectRatio="xMidYMid slice">
+            <defs>
+              <linearGradient id="lofiBg" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#6e3a8c"/>
+                <stop offset="100%" stop-color="#2a1840"/>
+              </linearGradient>
+            </defs>
+            <rect width="100" height="120" fill="url(#lofiBg)"/>
+            <!-- skyline -->
+            <rect x="10" y="60" width="8" height="40" fill="#1a0a30"/>
+            <rect x="20" y="50" width="6" height="50" fill="#1a0a30"/>
+            <rect x="28" y="65" width="10" height="35" fill="#1a0a30"/>
+            <rect x="40" y="45" width="8" height="55" fill="#1a0a30"/>
+            <rect x="50" y="55" width="7" height="45" fill="#1a0a30"/>
+            <rect x="59" y="40" width="9" height="60" fill="#1a0a30"/>
+            <rect x="70" y="50" width="6" height="50" fill="#1a0a30"/>
+            <rect x="78" y="60" width="12" height="40" fill="#1a0a30"/>
+            <!-- moon -->
+            <circle cx="75" cy="22" r="8" fill="#f0c870"/>
+            <!-- person silhouette -->
+            <ellipse cx="35" cy="78" rx="5" ry="6" fill="#0a0518"/>
+            <rect x="32" y="80" width="6" height="14" rx="2" fill="#0a0518"/>
+            <!-- play button -->
+            <circle cx="50" cy="65" r="11" fill="rgba(255,255,255,0.2)" stroke="rgba(255,255,255,0.5)"/>
+            <polygon points="47,60 47,70 55,65" fill="#ffffff"/>
+          </svg>
+        </div>
+        <div class="product-info">
+          <div class="product-type music">Music</div>
+          <h4 class="product-title">Lo-Fi Study Mix</h4>
+          <p class="product-desc">Focus, relax, and get things done.</p>
+          <div class="product-meta">
+            <span class="rating">
+              <svg viewBox="0 0 24 24"><polygon points="12 2 15 8.5 22 9 17 14 18 21 12 17.5 6 21 7 14 2 9 9 8.5 12 2"/></svg>
+              4.9 (86)
+            </span>
+            <span class="price">$4.99</span>
+          </div>
+        </div>
+        <button class="product-download" aria-label="Download">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        </button>
+      </article>
+
+      <!-- Notion Template -->
+      <article class="product">
+        <div class="product-img">
+          <svg viewBox="0 0 100 120" preserveAspectRatio="xMidYMid slice">
+            <rect width="100" height="120" fill="#f5f5f5"/>
+            <!-- N logo block -->
+            <rect x="20" y="20" width="36" height="36" rx="6" fill="#ffffff" stroke="#1a1a2e" stroke-width="1.5"/>
+            <text x="38" y="46" text-anchor="middle" fill="#1a1a2e" font-family="Plus Jakarta Sans" font-size="22" font-weight="800">N</text>
+            <!-- doc preview -->
+            <rect x="14" y="65" width="72" height="46" rx="3" fill="#ffffff" stroke="#e0e0e8"/>
+            <rect x="18" y="70" width="20" height="3" rx="1" fill="#d0d0d8"/>
+            <rect x="18" y="76" width="64" height="2" rx="1" fill="#e8e8f0"/>
+            <rect x="18" y="81" width="58" height="2" rx="1" fill="#e8e8f0"/>
+            <rect x="18" y="86" width="62" height="2" rx="1" fill="#e8e8f0"/>
+            <rect x="18" y="91" width="48" height="2" rx="1" fill="#e8e8f0"/>
+            <rect x="18" y="98" width="20" height="3" rx="1" fill="#d0d0d8"/>
+            <rect x="18" y="104" width="56" height="2" rx="1" fill="#e8e8f0"/>
+          </svg>
+        </div>
+        <div class="product-info">
+          <div class="product-type template">Template</div>
+          <h4 class="product-title">Notion Planner Template</h4>
+          <p class="product-desc">Organize your life and get more done.</p>
+          <div class="product-meta">
+            <span class="price-free">Free</span>
+          </div>
+        </div>
+        <button class="product-download" aria-label="Download">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        </button>
+      </article>
+    </section>
+
+    <!-- TRUST ROW -->
+    <section class="trust">
+      <div class="trust-item">
+        <div class="trust-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </div>
+        <div class="trust-info">
+          <h4>Secure Payments</h4>
+          <p>Your payments are safe and encrypted.</p>
+        </div>
+      </div>
+      <div class="trust-item">
+        <div class="trust-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        </div>
+        <div class="trust-info">
+          <h4>Instant Access</h4>
+          <p>Get your products immediately.</p>
+        </div>
+      </div>
+      <div class="trust-item">
+        <div class="trust-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+        </div>
+        <div class="trust-info">
+          <h4>Money Back Guarantee</h4>
+          <p>Not happy? Get a full refund.</p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- ===== MOBILE BOTTOM NAV ===== -->
+<nav class="bottom-nav">
+  <button class="bn-item active" data-tab="home">
+    <svg viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="0.5"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+    Home
+  </button>
+  <button class="bn-item" data-tab="browse">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+    Browse
+  </button>
+  <button class="bn-item" data-tab="freebies">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><line x1="12" y1="22" x2="12" y2="7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg>
+    Freebies
+  </button>
+  <button class="bn-item" data-tab="purchases">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+    My Purchases
+  </button>
+  <button class="bn-item" data-tab="account">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="10" r="3"/><path d="M6.5 19a6 6 0 0 1 11 0"/></svg>
+    Account
+  </button>
+</nav>
+
+<script>
+  // sidebar nav active state
+  document.querySelectorAll('.sidebar .nav-item[data-nav]').forEach(item => {
+    item.addEventListener('click', e => {
+      e.preventDefault();
+      document.querySelectorAll('.sidebar .nav-item').forEach(i => i.classList.remove('active'));
+      item.classList.add('active');
+    });
+  });
+
+  // mobile bottom nav
+  document.querySelectorAll('.bn-item').forEach(item => {
+    item.addEventListener('click', () => {
+      document.querySelectorAll('.bn-item').forEach(i => i.classList.remove('active'));
+      item.classList.add('active');
+    });
+  });
+
+  // hero dots auto-rotate (mobile only)
+  let dotIdx = 0;
+  const dots = document.querySelectorAll('.hero-dots span');
+  if (dots.length) {
+    setInterval(() => {
+      dots.forEach(d => d.classList.remove('active'));
+      dotIdx = (dotIdx + 1) % dots.length;
+      dots[dotIdx].classList.add('active');
+    }, 3000);
+  }
+
+  // cart click feedback
+  document.querySelectorAll('.cart, .mh-icon').forEach(b => {
+    b.addEventListener('click', () => {
+      b.animate(
+        [{ transform: 'scale(1)' }, { transform: 'scale(0.92)' }, { transform: 'scale(1)' }],
+        { duration: 200 }
+      );
+    });
+  });
+
+  // Browse Products button → scroll to products
+  document.querySelectorAll('.btn-primary').forEach(b => {
+    b.addEventListener('click', () => {
+      document.querySelector('.products').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+</script>
+
+</body>
+</html>
