@@ -1,0 +1,1380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hotel Management System — Phase 2 | MySQL Workbench</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#1a1d23;--bg2:#21252e;--bg3:#272b35;--bg4:#2d3240;--sb:#181b22;--bd:#333849;--bd2:#3d4359;--ac:#4d9ef0;--ac2:#6ab0f5;--gn:#5cb85c;--gn2:#7ed07e;--or:#e8974a;--yw:#e8c84a;--rd:#e05555;--cy:#4ecdc4;--tx:#cdd3e0;--tx2:#8892a4;--tx3:#5c6479;--wh:#e8edf5;--pk:#e8974a;--fk:#4ecdc4;--uq:#a78bfa;--nn:#f87171}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;font-family:'JetBrains Mono',monospace;background:var(--bg);color:var(--tx)}
+body{display:flex;flex-direction:column;min-height:100vh}
+.menubar{background:#141720;border-bottom:1px solid var(--bd);display:flex;align-items:center;padding:0 16px;height:36px;gap:2px;flex-shrink:0}
+.ml{display:flex;align-items:center;gap:8px;margin-right:20px}
+.ml svg{width:18px;height:18px}
+.ml span{font-size:12px;font-weight:600;color:var(--wh);letter-spacing:.5px}
+.mi{padding:4px 10px;font-size:12px;color:var(--tx2);cursor:pointer;border-radius:4px}
+.mi:hover{background:var(--bg3);color:var(--tx)}
+.toolbar{background:var(--bg2);border-bottom:1px solid var(--bd);display:flex;align-items:center;padding:0 12px;height:42px;gap:4px;flex-shrink:0;flex-wrap:wrap}
+.tbtn{display:flex;align-items:center;gap:5px;padding:5px 11px;font-size:11px;font-family:'JetBrains Mono',monospace;color:var(--tx2);background:transparent;border:1px solid transparent;border-radius:4px;cursor:pointer;transition:all .15s;white-space:nowrap}
+.tbtn:hover{background:var(--bg3);color:var(--tx);border-color:var(--bd)}
+.tbtn.run{background:var(--ac);color:#fff;border-color:var(--ac)}
+.tbtn.run:hover{background:#5ba8f5}
+.tbtn.dl{background:#1a3a1a;color:var(--gn2);border:1px solid #2a5a2a;font-weight:600}
+.tbtn.dl:hover{background:#1f4a1f;border-color:var(--gn2)}
+.tbtn.cp{background:#1a2a3a;color:var(--ac2);border:1px solid #2a4a6a}
+.tbtn.cp:hover{background:#1f354f;border-color:var(--ac2)}
+.tbtn.ok{background:#0a2a0a !important;color:var(--gn2) !important;border-color:var(--gn) !important}
+.tsep{width:1px;height:22px;background:var(--bd);margin:0 4px;flex-shrink:0}
+.sb-box{background:var(--bg3);border:1px solid var(--bd);border-radius:4px;padding:4px 10px;font-size:11px;font-family:'JetBrains Mono',monospace;color:var(--tx);width:155px;outline:none;margin-left:auto}
+.sb-box:focus{border-color:var(--ac)}
+.sb-box::placeholder{color:var(--tx3)}
+.main{display:flex;flex:1;overflow:hidden}
+.sidebar{width:215px;background:var(--sb);border-right:1px solid var(--bd);display:flex;flex-direction:column;flex-shrink:0;overflow-y:auto}
+.ss{padding:8px 0;border-bottom:1px solid var(--bd)}
+.sh{display:flex;align-items:center;gap:6px;padding:6px 12px;font-size:10px;font-weight:600;color:var(--tx3);text-transform:uppercase;letter-spacing:1px}
+.si{display:flex;align-items:center;gap:8px;padding:5px 12px 5px 22px;font-size:11.5px;color:var(--tx2);cursor:pointer;transition:all .1s;border-left:2px solid transparent}
+.si:hover{background:var(--bg3);color:var(--tx)}
+.si.active{background:var(--bg4);color:var(--ac2);border-left-color:var(--ac)}
+.cdot{width:7px;height:7px;border-radius:50%;background:var(--gn);box-shadow:0 0 6px var(--gn);flex-shrink:0}
+.sdb{display:flex;align-items:center;gap:8px;padding:7px 12px;font-size:12px;color:var(--gn2);cursor:pointer;font-weight:500}
+.sdb:hover{background:var(--bg3)}
+.content{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.tabs-bar{background:var(--bg2);border-bottom:1px solid var(--bd);display:flex;align-items:flex-end;padding:0 8px;gap:2px;flex-shrink:0;overflow-x:auto}
+.tab{display:flex;align-items:center;gap:6px;padding:8px 14px;font-size:11.5px;color:var(--tx3);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;transition:all .15s}
+.tab:hover{color:var(--tx)}
+.tab.active{color:var(--ac2);border-bottom-color:var(--ac)}
+.qe{background:#1e2230;border-bottom:1px solid var(--bd);padding:10px 16px;display:flex;align-items:flex-start;gap:10px;flex-shrink:0}
+.qln{color:var(--tx3);font-size:11px;line-height:1.65;text-align:right;padding-top:1px;min-width:22px;user-select:none;flex-shrink:0}
+.qc{flex:1;font-size:12px;line-height:1.65;font-family:'JetBrains Mono',monospace}
+.kw{color:#569cd6}.str{color:#ce9178}.num{color:#b5cea8}.cmt{color:#6a737d;font-style:italic}.fn{color:#dcdcaa}.tbl{color:#4ec9b0}.col{color:var(--tx)}.pu{color:var(--tx2)}.ty{color:#4ec9b0}
+.rb{background:#1c2030;border-bottom:1px solid var(--bd);padding:4px 16px;display:flex;align-items:center;gap:16px;font-size:11px;color:var(--tx2);flex-shrink:0}
+.rok{color:var(--gn2)}
+.panels{flex:1;overflow:hidden;display:flex;flex-direction:column}
+.ptabs{background:var(--bg2);display:flex;border-bottom:1px solid var(--bd);padding:0 8px;flex-shrink:0}
+.ptab{padding:6px 14px;font-size:11px;color:var(--tx3);cursor:pointer;border-bottom:2px solid transparent;transition:all .15s}
+.ptab.active{color:var(--ac2);border-bottom-color:var(--ac)}
+.ptab:hover{color:var(--tx)}
+.ap{display:flex;flex-direction:column;flex:1;overflow:hidden}
+.hp{display:none}
+.ga{flex:1;overflow:auto}
+.gw{min-width:max-content}
+.gt{width:100%;border-collapse:collapse;font-size:12px;font-family:'JetBrains Mono',monospace}
+.gt thead tr{background:#1d2130;position:sticky;top:0;z-index:2}
+.gt th{padding:8px 16px;text-align:left;color:var(--tx2);font-weight:500;font-size:11px;border-right:1px solid var(--bd);border-bottom:2px solid var(--bd2);white-space:nowrap;cursor:pointer;user-select:none}
+.gt th:hover{background:var(--bg3);color:var(--tx)}
+.gt td{padding:6px 16px;border-right:1px solid var(--bd);border-bottom:1px solid #252a35;white-space:nowrap;color:var(--tx);font-size:11.5px}
+.gt tr:hover td{background:#262b38}
+.gt tr.sel td{background:#1e3050}
+.nv{color:var(--tx3);font-style:italic}
+.pv{color:var(--pk)}
+.fv{color:var(--fk)}
+.ec{display:inline-block;padding:1px 7px;border-radius:3px;font-size:10px;font-weight:600;letter-spacing:.3px}
+.cg{background:#1a3a1a;color:#7ed07e}.co{background:#3a2a10;color:#e8a84a}.cb{background:#102040;color:#6ab0f5}.cr{background:#3a1010;color:#f87171}.cp{background:#2a1a3a;color:#c084fc}.cc{background:#0f2a2a;color:#4ecdc4}
+.rn{color:var(--tx3);font-size:10px;text-align:right;padding:6px 8px;border-right:1px solid var(--bd);border-bottom:1px solid #252a35;user-select:none;background:#1a1d24;min-width:36px}
+.sch-panel{padding:0;overflow:auto;flex:1}
+.sch-sec{border-bottom:1px solid var(--bd)}
+.stn{display:flex;align-items:center;gap:8px;padding:10px 16px;font-size:12px;font-weight:600;color:var(--cy);background:var(--bg2);border-bottom:1px solid var(--bd);position:sticky;top:0;z-index:1}
+.stn span{color:var(--tx3);font-weight:400;font-size:11px}
+.sch-cols{background:var(--bg)}
+.scol{display:grid;grid-template-columns:155px 130px 50px 130px 90px auto;border-bottom:1px solid #252a35;font-size:11px;transition:background .1s}
+.scol:hover{background:var(--bg3)}
+.scol>div{padding:5px 10px;border-right:1px solid #252a35;display:flex;align-items:center;overflow:hidden}
+.shdr{display:grid;grid-template-columns:155px 130px 50px 130px 90px auto;background:#1a1d25;border-bottom:1px solid var(--bd2);font-size:10px;color:var(--tx3);font-weight:600;text-transform:uppercase;letter-spacing:.8px;position:sticky;top:36px}
+.shdr>div{padding:5px 10px;border-right:1px solid var(--bd)}
+.bpk{background:#3a2000;color:var(--pk);padding:1px 6px;border-radius:3px;font-size:10px;font-weight:700}
+.bfk{background:#00252a;color:var(--fk);padding:1px 6px;border-radius:3px;font-size:10px;font-weight:700}
+.buq{background:#1e1030;color:var(--uq);padding:1px 6px;border-radius:3px;font-size:10px;font-weight:700}
+.bnn{background:#2a0a0a;color:var(--nn);padding:1px 6px;border-radius:3px;font-size:10px;font-weight:700}
+.fd-panel{padding:16px;overflow:auto;flex:1}
+.fd-tw{margin-bottom:18px}
+.fd-tn{font-size:13px;font-weight:600;color:var(--cy);margin-bottom:8px;display:flex;align-items:center;gap:8px}
+.bcnf{font-size:10px;padding:2px 8px;border-radius:3px;font-weight:600;background:#0a2a0a;color:var(--gn2);border:1px solid #1a4a1a}
+.fd-row{display:flex;align-items:flex-start;gap:8px;margin-bottom:5px;font-size:11.5px}
+.fl{color:var(--or);min-width:210px;font-family:'JetBrains Mono',monospace}
+.fa{color:var(--tx3);flex-shrink:0}
+.fr{color:var(--tx2);font-family:'JetBrains Mono',monospace}
+.norm-panel{padding:16px;overflow:auto;flex:1}
+.nc{background:var(--bg3);border:1px solid var(--bd);border-radius:6px;margin-bottom:12px;overflow:hidden}
+.nh{padding:10px 16px;display:flex;align-items:center;justify-content:space-between;background:var(--bg4);cursor:pointer;border-bottom:1px solid var(--bd);font-size:12px;font-weight:600;color:var(--wh)}
+.nb2{font-size:10px;padding:2px 8px;border-radius:3px;font-weight:700}
+.nb1{background:#102030;color:#6ab0f5}.nb2a{background:#0a2a1a;color:#7ed07e}.nb3{background:#1a1030;color:#c084fc}.nbbc{background:#2a1800;color:var(--or)}
+.nbody{padding:14px 16px;font-size:11.5px;line-height:1.8;color:var(--tx2);display:none}
+.nbody.open{display:block}
+.nbody .hl{color:var(--or);font-family:'JetBrains Mono'}
+.nbody .ok{color:var(--gn2)}
+.nbody .fx{color:var(--yw)}
+.ntog{color:var(--tx3);font-size:14px;margin-left:8px}
+.nbody ul{margin-left:16px;margin-top:4px}
+.nbody li{margin-bottom:4px}
+.sql-panel{flex:1;overflow:hidden;display:flex;flex-direction:column}
+.sql-tb{background:#1c2030;border-bottom:1px solid var(--bd);padding:8px 12px;display:flex;align-items:center;gap:8px;flex-shrink:0;flex-wrap:wrap}
+.sql-tb span{font-size:11px;color:var(--tx2)}
+.sql-wrap{flex:1;overflow:auto}
+.sql-code{display:flex;font-size:12px;font-family:'JetBrains Mono',monospace;line-height:1.6}
+.sql-ln{background:#1a1d24;color:var(--tx3);font-size:10.5px;padding:8px 10px 8px 6px;text-align:right;user-select:none;border-right:1px solid var(--bd);min-width:44px;flex-shrink:0}
+.sql-ln span{display:block;line-height:1.6}
+.sql-ct{flex:1;padding:8px 16px;white-space:pre;color:var(--tx);line-height:1.6}
+.rcb{background:var(--bg2);border-top:1px solid var(--bd);padding:4px 12px;font-size:10.5px;color:var(--tx3);display:flex;align-items:center;gap:16px;flex-shrink:0}
+.rcb em{color:var(--ac2);font-style:normal}
+.stbar{background:var(--ac);padding:3px 12px;display:flex;align-items:center;gap:20px;font-size:10.5px;font-family:'JetBrains Mono',monospace;color:rgba(255,255,255,.9);flex-shrink:0}
+.stbar .sp{opacity:.4}
+::-webkit-scrollbar{width:8px;height:8px}
+::-webkit-scrollbar-track{background:var(--bg2)}
+::-webkit-scrollbar-thumb{background:var(--bd2);border-radius:4px}
+::-webkit-scrollbar-thumb:hover{background:#4a5168}
+
+.guide-panel{padding:0;overflow:auto;flex:1;background:var(--bg)}
+.g-hero{background:linear-gradient(135deg,#0d1f3c 0%,#1a2540 50%,#0f2a1a 100%);padding:32px 36px;border-bottom:1px solid var(--bd)}
+.g-hero h1{font-size:22px;font-weight:700;color:var(--wh);margin-bottom:6px;font-family:'JetBrains Mono',monospace}
+.g-hero p{font-size:12px;color:var(--tx2);line-height:1.6}
+.g-hero .badges{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+.g-badge{padding:3px 10px;border-radius:20px;font-size:10px;font-weight:600;border:1px solid}
+.gb-blue{background:#102040;color:#6ab0f5;border-color:#1a4080}
+.gb-green{background:#0a2a0a;color:#7ed07e;border-color:#1a4a1a}
+.gb-orange{background:#2a1800;color:#e8974a;border-color:#4a3000}
+.g-progress{background:var(--bg2);border-bottom:1px solid var(--bd);padding:12px 36px;display:flex;align-items:center;gap:0;overflow-x:auto}
+.g-step-pill{display:flex;align-items:center;gap:0;flex-shrink:0}
+.gsp-num{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;cursor:pointer;transition:all .2s}
+.gsp-num.done{background:var(--gn);color:#fff}
+.gsp-num.active{background:var(--ac);color:#fff;box-shadow:0 0 0 3px rgba(77,158,240,.3)}
+.gsp-num.todo{background:var(--bg4);color:var(--tx3);border:1px solid var(--bd)}
+.gsp-num:hover{transform:scale(1.1)}
+.gsp-label{font-size:10px;color:var(--tx3);margin-left:6px;white-space:nowrap;max-width:70px;overflow:hidden;text-overflow:ellipsis}
+.gsp-arrow{color:var(--bd2);margin:0 8px;font-size:12px}
+.g-body{padding:24px 36px;max-width:900px}
+.g-section{margin-bottom:36px}
+.g-section-hdr{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+.g-num{width:32px;height:32px;border-radius:50%;background:var(--ac);color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0}
+.g-num.green{background:var(--gn)}
+.g-num.orange{background:var(--or)}
+.g-num.purple{background:#7c3aed}
+.g-title{font-size:15px;font-weight:600;color:var(--wh)}
+.g-subtitle{font-size:11px;color:var(--tx3);margin-top:2px}
+.g-card{background:var(--bg2);border:1px solid var(--bd);border-radius:8px;overflow:hidden;margin-bottom:12px}
+.g-card-head{background:var(--bg3);padding:10px 16px;font-size:12px;font-weight:600;color:var(--ac2);border-bottom:1px solid var(--bd);display:flex;align-items:center;gap:8px}
+.g-card-body{padding:14px 16px;font-size:12px;line-height:1.8;color:var(--tx2)}
+.g-card-body strong{color:var(--wh);font-weight:600}
+.g-step{display:flex;align-items:flex-start;gap:12px;padding:10px 0;border-bottom:1px solid #252a35}
+.g-step:last-child{border-bottom:none}
+.g-step-n{width:22px;height:22px;border-radius:50%;background:var(--bg4);color:var(--ac2);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0;margin-top:1px;border:1px solid var(--bd2)}
+.g-step-content{flex:1}
+.g-step-title{font-size:12px;font-weight:600;color:var(--wh);margin-bottom:3px}
+.g-step-desc{font-size:11.5px;color:var(--tx2);line-height:1.7}
+.g-code{background:#141720;border:1px solid var(--bd);border-radius:6px;padding:12px 16px;font-family:'JetBrains Mono',monospace;font-size:11.5px;color:#c9d1d9;margin:8px 0;position:relative;line-height:1.6}
+.g-code .kw{color:#569cd6}.g-code .tbl{color:#4ec9b0}.g-code .str{color:#ce9178}.g-code .cmt{color:#6a737d;font-style:italic}.g-code .fn{color:#dcdcaa}
+.g-copy-mini{position:absolute;top:8px;right:8px;background:var(--bg4);border:1px solid var(--bd);border-radius:4px;padding:2px 8px;font-size:10px;color:var(--tx3);cursor:pointer;font-family:'JetBrains Mono',monospace;transition:all .15s}
+.g-copy-mini:hover{background:var(--bg3);color:var(--ac2);border-color:var(--ac)}
+.g-img-mock{background:var(--bg3);border:1px solid var(--bd);border-radius:8px;padding:16px;margin:10px 0;position:relative}
+.g-img-mock .mock-title{font-size:10px;color:var(--tx3);margin-bottom:10px;text-transform:uppercase;letter-spacing:.8px}
+.g-screen{background:#141720;border-radius:6px;border:1px solid var(--bd2);overflow:hidden}
+.g-screen-bar{background:#1c2030;padding:6px 12px;display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--bd)}
+.g-screen-bar span{font-size:10px;color:var(--tx3)}
+.g-screen-dot{width:8px;height:8px;border-radius:50%}
+.g-screen-content{padding:10px 14px;font-size:11px;font-family:'JetBrains Mono',monospace;line-height:1.7;color:var(--tx2)}
+.g-tip{background:#102040;border:1px solid #1a4080;border-radius:6px;padding:10px 14px;margin:10px 0;font-size:11.5px;color:#6ab0f5;display:flex;gap:10px;align-items:flex-start;line-height:1.7}
+.g-tip-icon{font-size:16px;flex-shrink:0;margin-top:1px}
+.g-warn{background:#2a1800;border:1px solid #4a3000;border-radius:6px;padding:10px 14px;margin:10px 0;font-size:11.5px;color:#e8974a;display:flex;gap:10px;align-items:flex-start;line-height:1.7}
+.g-success{background:#0a2a0a;border:1px solid #1a4a1a;border-radius:6px;padding:10px 14px;margin:10px 0;font-size:11.5px;color:#7ed07e;display:flex;gap:10px;align-items:flex-start;line-height:1.7}
+.g-checklist{list-style:none;padding:0;margin:8px 0}
+.g-checklist li{padding:5px 0;font-size:12px;color:var(--tx2);display:flex;align-items:center;gap:8px;border-bottom:1px solid #252a35}
+.g-checklist li:last-child{border-bottom:none}
+.g-checklist .ck{color:var(--gn2);font-size:13px}
+.g-checklist .ck-todo{color:var(--tx3);font-size:13px}
+.g-result-mock{background:#1a1d23;border:1px solid var(--bd);border-radius:6px;overflow:hidden;margin:10px 0}
+.g-result-mock table{width:100%;border-collapse:collapse;font-size:11px;font-family:'JetBrains Mono',monospace}
+.g-result-mock th{background:#1d2130;padding:6px 12px;text-align:left;color:var(--tx2);font-size:10px;border-right:1px solid var(--bd);border-bottom:1px solid var(--bd2)}
+.g-result-mock td{padding:5px 12px;border-right:1px solid var(--bd);border-bottom:1px solid #252a35;color:var(--tx)}
+.g-result-mock tr:hover td{background:#262b38}
+.g-divider{border:none;border-top:1px solid var(--bd);margin:24px 0}
+.g-final-card{background:linear-gradient(135deg,#0a2a0a,#102040);border:1px solid #1a4a2a;border-radius:10px;padding:20px 24px;margin-bottom:20px}
+.g-final-card h3{font-size:14px;font-weight:700;color:var(--wh);margin-bottom:10px}
+.nav-btns{display:flex;gap:10px;margin-top:20px;flex-wrap:wrap}
+.nav-btn{padding:8px 18px;border-radius:6px;font-size:12px;font-family:'JetBrains Mono',monospace;cursor:pointer;border:1px solid;font-weight:500;transition:all .15s}
+.nb-prev{background:var(--bg3);color:var(--tx2);border-color:var(--bd)}
+.nb-prev:hover{background:var(--bg4);color:var(--tx)}
+.nb-next{background:var(--ac);color:#fff;border-color:var(--ac)}
+.nb-next:hover{background:#5ba8f5}
+.nb-dl{background:#1a3a1a;color:var(--gn2);border-color:#2a5a2a}
+.nb-dl:hover{background:#1f4a1f}
+</style>
+</head>
+<body>
+
+<div class="menubar">
+  <div class="ml">
+    <svg viewBox="0 0 40 40" fill="none"><rect width="40" height="40" rx="6" fill="#1f6feb"/><path d="M8 20c0-6.627 5.373-12 12-12s12 5.373 12 12-5.373 12-12 12S8 26.627 8 20z" stroke="#fff" stroke-width="2"/><path d="M14 20c0-3.314 2.686-6 6-6s6 2.686 6 6-2.686 6-6 6-6-2.686-6-6z" fill="#fff" fill-opacity=".3"/><circle cx="20" cy="20" r="2.5" fill="#fff"/></svg>
+    <span>MySQL Workbench 8.0</span>
+  </div>
+  <div class="mi">File</div><div class="mi">Edit</div><div class="mi">View</div>
+  <div class="mi">Query</div><div class="mi">Database</div><div class="mi">Server</div>
+  <div class="mi">Tools</div><div class="mi">Help</div>
+  <div class="mi" id="erBtn" onclick="openERDiagram()" style="color:var(--cy);border:1px solid rgba(78,205,196,.3);border-radius:4px;padding:3px 10px;margin-left:6px">&#128448; ER Diagram</div>
+</div>
+
+<!-- ER Diagram fullscreen viewer -->
+<div id="erOverlay" style="display:none;position:fixed;inset:0;background:#0d0f14;z-index:9999;flex-direction:column;overflow:hidden;font-family:'JetBrains Mono',monospace">
+  <!-- toolbar -->
+  <div style="background:#141720;border-bottom:1px solid #2a2f3e;padding:0 14px;height:40px;display:flex;align-items:center;gap:10px;flex-shrink:0;user-select:none">
+    <span style="font-size:11.5px;color:#4ecdc4;font-weight:600">&#128448; Hotel Management System — ER Diagram</span>
+    <div style="margin-left:auto;display:flex;align-items:center;gap:6px">
+      <button onclick="erZoomBy(1/1.3)" title="Zoom out" style="background:#1e2230;color:#cdd3e0;border:1px solid #333849;border-radius:4px;padding:3px 10px;font-size:15px;cursor:pointer;font-family:'JetBrains Mono',monospace;line-height:1">−</button>
+      <span id="erZoomLbl" style="font-size:11px;color:#8892a4;min-width:42px;text-align:center">100%</span>
+      <button onclick="erZoomBy(1.3)" title="Zoom in" style="background:#1e2230;color:#cdd3e0;border:1px solid #333849;border-radius:4px;padding:3px 10px;font-size:15px;cursor:pointer;font-family:'JetBrains Mono',monospace;line-height:1">+</button>
+      <div style="width:1px;height:20px;background:#333849;margin:0 4px"></div>
+      <button onclick="erFit()" title="Fit to screen" style="background:#1e2230;color:#cdd3e0;border:1px solid #333849;border-radius:4px;padding:3px 10px;font-size:11px;cursor:pointer;font-family:'JetBrains Mono',monospace">Fit</button>
+      <button onclick="erOneToOne()" title="100% native pixels" style="background:#1e2230;color:#cdd3e0;border:1px solid #333849;border-radius:4px;padding:3px 10px;font-size:11px;cursor:pointer;font-family:'JetBrains Mono',monospace">1:1</button>
+      <div style="width:1px;height:20px;background:#333849;margin:0 4px"></div>
+      <button onclick="closeERDiagram()" title="Close (Esc)" style="background:#2a1010;color:#f87171;border:1px solid #4a2020;border-radius:4px;padding:3px 12px;font-size:11px;cursor:pointer;font-family:'JetBrains Mono',monospace">✕ Close</button>
+    </div>
+  </div>
+  <!-- pan/zoom canvas -->
+  <div id="erCanvas" style="flex:1;overflow:hidden;position:relative;cursor:grab">
+    <div id="erWrap" style="position:absolute;top:0;left:0;transform-origin:0 0;will-change:transform">
+      <img id="erImg" src="Hotel Management system-ER-Diagram.png" draggable="false"
+           style="display:block;max-width:none;max-height:none;image-rendering:auto;user-select:none">
+    </div>
+  </div>
+  <!-- hint bar -->
+  <div style="background:#141720;border-top:1px solid #2a2f3e;padding:5px 16px;font-size:10px;color:#3d4359;display:flex;align-items:center;gap:20px;flex-shrink:0">
+    <span>&#128400; Scroll to zoom</span><span>&#128072; Drag to pan</span><span>&#10006;&#10006; Double-click to fit</span><span>&#9166; Esc to close</span>
+  </div>
+</div>
+
+<div class="toolbar">
+  <button class="tbtn run">&#9654; Execute</button>
+  <button class="tbtn">&#9654;&#9654; Execute All</button>
+  <div class="tsep"></div>
+  <button class="tbtn cp" id="cpBtn" onclick="copySQL()">&#128203; Copy SQL</button>
+  <button class="tbtn dl" id="dlBtn" onclick="downloadSQL()">&#11015; Download hotel_db.sql</button>
+  <div class="tsep"></div>
+  <button class="tbtn" onclick="switchMainTab('sql',document.getElementById('tsql'))">&#128196; View SQL Source</button>
+  <button class="tbtn" style="background:#1a1030;color:#c084fc;border:1px solid #3a2060" onclick="switchMainTab('guide',document.getElementById('tguide'))">&#128218; Phase 2 Guide</button>
+  <input class="sb-box" placeholder="&#128269; Filter tables..." oninput="filterTables(this.value)">
+</div>
+
+<div class="main">
+  <div class="sidebar">
+    <div class="ss">
+      <div class="sh">&#9432; Connections</div>
+      <div class="sdb"><span class="cdot"></span>hotel_db@localhost</div>
+    </div>
+    <div class="ss">
+      <div class="sh">&#128196; Tables (11)</div>
+      <div class="si active" onclick="act(this,'guest')"><span style="color:var(--pk);font-size:10px">&#9670;</span> GUEST</div>
+      <div class="si" onclick="act(this,'room_type')"><span style="color:var(--pk);font-size:10px">&#9670;</span> ROOM_TYPE</div>
+      <div class="si" onclick="act(this,'room')"><span style="color:var(--fk);font-size:10px">&#9671;</span> ROOM</div>
+      <div class="si" onclick="act(this,'staff')"><span style="color:var(--pk);font-size:10px">&#9670;</span> STAFF</div>
+      <div class="si" onclick="act(this,'booking')"><span style="color:var(--fk);font-size:10px">&#9671;</span> BOOKING</div>
+      <div class="si" onclick="act(this,'checkin')"><span style="color:var(--fk);font-size:10px">&#9671;</span> CHECK_IN</div>
+      <div class="si" onclick="act(this,'checkout')"><span style="color:var(--fk);font-size:10px">&#9671;</span> CHECK_OUT</div>
+      <div class="si" onclick="act(this,'payment')"><span style="color:var(--fk);font-size:10px">&#9671;</span> PAYMENT</div>
+      <div class="si" onclick="act(this,'ptype')"><span style="color:var(--pk);font-size:10px">&#9670;</span> PAYMENT_TYPE</div>
+      <div class="si" onclick="act(this,'service')"><span style="color:var(--pk);font-size:10px">&#9670;</span> SERVICE</div>
+      <div class="si" onclick="act(this,'sreq')"><span style="color:var(--fk);font-size:10px">&#9671;</span> SERVICE_REQUEST</div>
+    </div>
+    <div class="ss">
+      <div class="sh">&#128202; Analysis</div>
+      <div class="si" onclick="showView('fd')"><span>&#8594;</span> Func. Dependencies</div>
+      <div class="si" onclick="showView('norm')"><span>&#10003;</span> Normalization (BCNF)</div>
+      <div class="si" onclick="switchMainTab('sql',document.getElementById('tsql'))"><span>&#128196;</span> SQL Source</div>
+      <div class="si" onclick="switchMainTab('guide',document.getElementById('tguide'))"><span>&#128218;</span> Phase 2 Guide</div>
+    </div>
+  </div>
+
+  <div class="content">
+    <div class="tabs-bar">
+      <div class="tab active" id="tdata" onclick="switchMainTab('data',this)"><span>&#128196;</span> Table Data</div>
+      <div class="tab" id="tschema" onclick="switchMainTab('schema',this)"><span>&#9783;</span> Schema</div>
+      <div class="tab" id="tfd" onclick="switchMainTab('fd',this)"><span>&#8594;</span> Func. Deps</div>
+      <div class="tab" id="tnorm" onclick="switchMainTab('norm',this)"><span>&#9989;</span> Normalization</div>
+      <div class="tab" id="tsql" onclick="switchMainTab('sql',this)"><span>&#128196;</span> SQL Source</div>
+      <div class="tab" id="tguide" onclick="switchMainTab('guide',this)"><span>&#128218;</span> Phase 2 Guide</div>
+    </div>
+
+    <div class="qe" id="qEditor">
+      <div class="qln" id="qLN">1<br>2<br>3<br>4</div>
+      <div class="qc" id="qCode">
+        <span class="cmt">-- Hotel Management System · Phase 2 · hotel_db</span><br>
+        <span class="cmt">-- Relational Schema Mapping + BCNF Normalization</span><br>
+        <span class="kw">SELECT</span> <span class="col">*</span> <span class="kw">FROM</span> <span class="tbl">GUEST</span> <span class="kw">ORDER BY</span> <span class="col">guest_id</span> <span class="kw">ASC</span><span class="pu">;</span><br>
+        <span class="cmt">-- 5 rows returned | 0.003 sec</span>
+      </div>
+    </div>
+    <div class="rb">
+      <span class="rok">&#10003; Query OK</span>
+      <span style="color:var(--tx3)">0.003 sec</span>
+      <span>|</span><span id="rInfo">5 rows returned</span>
+      <span>|</span><span>Affected rows: 0</span>
+    </div>
+
+    <div class="panels">
+      <div class="ptabs">
+        <div class="ptab active" onclick="switchPanel('result',this)">Result Grid</div>
+        <div class="ptab" onclick="switchPanel('sch',this)">Table Schema</div>
+        <div class="ptab" onclick="switchPanel('fds',this)">Func. Deps</div>
+        <div class="ptab" onclick="switchPanel('nrm',this)">Normalization</div>
+        <div class="ptab" onclick="switchPanel('sqls',this)">SQL Source</div>
+        <div class="ptab" onclick="switchPanel('guide',this)">&#128218; Guide</div>
+      </div>
+
+      <div id="p-result" class="ap">
+        <div class="ga"><div class="gw" id="grid"></div></div>
+        <div class="rcb">Showing <em id="bRows">5</em> rows &nbsp;|&nbsp; Table: <em id="bTbl">GUEST</em> &nbsp;|&nbsp; hotel_db@localhost:3306</div>
+      </div>
+      <div id="p-sch" class="hp"><div class="sch-panel" id="schCont"></div></div>
+      <div id="p-fds" class="hp"><div class="fd-panel" id="fdCont"></div></div>
+      <div id="p-nrm" class="hp"><div class="norm-panel" id="normCont"></div></div>
+      <div id="p-sqls" class="hp sql-panel">
+        <div class="sql-tb">
+          <span>&#128196; hotel_management.sql &nbsp;&bull;&nbsp; UTF-8 &nbsp;&bull;&nbsp; MySQL 8.0</span>
+          <button class="tbtn cp" id="cpBtn2" onclick="copySQL()" style="margin-left:auto">&#128203; Copy All SQL</button>
+          <button class="tbtn dl" onclick="downloadSQL()">&#11015; Download .sql</button>
+        </div>
+        <div class="sql-wrap">
+          <div class="sql-code">
+            <div class="sql-ln" id="sqlLN"></div>
+            <div class="sql-ct" id="sqlCT"></div>
+          </div>
+        </div>
+      </div>
+      <div id="p-guide" class="hp"><div class="guide-panel" id="guideCont"></div></div>
+    </div>
+  </div>
+</div>
+
+<div class="stbar">
+  <span>&#9679; Connected: hotel_db@localhost:3306</span>
+  <span class="sp">|</span><span>MySQL 8.0.36</span>
+  <span class="sp">|</span><span>11 tables &middot; 6 indexes</span>
+  <span class="sp">|</span><span>Schema: BCNF Normalized</span>
+  <span class="sp">|</span><span>Hotel Management System &middot; Phase 2 &middot; Team F &middot; Woosong University</span>
+</div>
+
+<script>
+// ── FULL SQL (exact copy for download & clipboard) ────────────────────
+const SQL_RAW = `-- ============================================================
+-- Hotel Management System -- Phase 3: DDL + DML
+-- Database: hotel_db
+-- Compatible: MySQL 8.0+
+-- Team F | Woosong University | Database Systems
+-- ============================================================
+
+DROP DATABASE IF EXISTS hotel_db;
+CREATE DATABASE hotel_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+USE hotel_db;
+
+-- ============================================================
+-- TABLE 1: ROOM_TYPE
+-- ============================================================
+CREATE TABLE ROOM_TYPE (
+    type_id       INT AUTO_INCREMENT PRIMARY KEY,
+    type_name     VARCHAR(50)    NOT NULL UNIQUE,
+    description   TEXT,
+    max_occupancy INT            NOT NULL CHECK (max_occupancy > 0),
+    base_price    DECIMAL(10,2)  NOT NULL CHECK (base_price > 0)
+);
+
+-- ============================================================
+-- TABLE 2: GUEST
+-- ============================================================
+CREATE TABLE GUEST (
+    guest_id     INT AUTO_INCREMENT PRIMARY KEY,
+    first_name   VARCHAR(50)   NOT NULL,
+    last_name    VARCHAR(50)   NOT NULL,
+    email        VARCHAR(100)  NOT NULL UNIQUE,
+    phone        VARCHAR(20),
+    national_id  VARCHAR(50)   UNIQUE,
+    loyalty_no   VARCHAR(30)   UNIQUE,
+    date_of_birth DATE,
+    street       VARCHAR(100),
+    city         VARCHAR(50),
+    state        VARCHAR(50),
+    zip          VARCHAR(20)
+);
+
+-- ============================================================
+-- TABLE 3: ROOM
+-- ============================================================
+CREATE TABLE ROOM (
+    room_id        INT AUTO_INCREMENT PRIMARY KEY,
+    type_id        INT           NOT NULL,
+    room_no        VARCHAR(10)   NOT NULL UNIQUE,
+    floor          INT           NOT NULL,
+    price_per_night DECIMAL(10,2) NOT NULL CHECK (price_per_night > 0),
+    status         ENUM('Available','Occupied','Maintenance') NOT NULL DEFAULT 'Available',
+    description    TEXT,
+    FOREIGN KEY (type_id) REFERENCES ROOM_TYPE(type_id) ON UPDATE CASCADE
+);
+
+-- ============================================================
+-- TABLE 4: STAFF
+-- ============================================================
+CREATE TABLE STAFF (
+    staff_id   INT AUTO_INCREMENT PRIMARY KEY,
+    first_name VARCHAR(50)  NOT NULL,
+    last_name  VARCHAR(50)  NOT NULL,
+    phone      VARCHAR(20),
+    email      VARCHAR(100) UNIQUE,
+    job_title  VARCHAR(50)  NOT NULL,
+    hire_date  DATE         NOT NULL
+);
+
+-- ============================================================
+-- TABLE 5: BOOKING
+-- ============================================================
+CREATE TABLE BOOKING (
+    booking_id      INT AUTO_INCREMENT PRIMARY KEY,
+    guest_id        INT  NOT NULL,
+    room_id         INT  NOT NULL,
+    staff_id        INT,
+    booking_date    DATE NOT NULL,
+    check_in_date   DATE NOT NULL,
+    check_out_date  DATE NOT NULL,
+    no_of_guests    INT  NOT NULL CHECK (no_of_guests > 0),
+    special_request TEXT,
+    status          ENUM('Confirmed','Cancelled','Checked-in','Checked-out') NOT NULL DEFAULT 'Confirmed',
+    CHECK (check_out_date > check_in_date),
+    FOREIGN KEY (guest_id)  REFERENCES GUEST(guest_id)  ON UPDATE CASCADE,
+    FOREIGN KEY (room_id)   REFERENCES ROOM(room_id)    ON UPDATE CASCADE,
+    FOREIGN KEY (staff_id)  REFERENCES STAFF(staff_id)  ON UPDATE CASCADE ON DELETE SET NULL
+);
+
+-- ============================================================
+-- TABLE 6: CHECK_IN
+-- ============================================================
+CREATE TABLE CHECK_IN (
+    checkin_id       INT AUTO_INCREMENT PRIMARY KEY,
+    booking_id       INT          NOT NULL UNIQUE,
+    check_in_time    DATETIME     NOT NULL,
+    assigned_room_no VARCHAR(10)  NOT NULL,
+    notes            TEXT,
+    FOREIGN KEY (booking_id) REFERENCES BOOKING(booking_id) ON UPDATE CASCADE
+);
+
+-- ============================================================
+-- TABLE 7: CHECK_OUT
+-- ============================================================
+CREATE TABLE CHECK_OUT (
+    checkout_id         INT AUTO_INCREMENT PRIMARY KEY,
+    booking_id          INT           NOT NULL UNIQUE,
+    check_out_time      DATETIME      NOT NULL,
+    additional_charges  DECIMAL(10,2) DEFAULT 0.00,
+    notes               TEXT,
+    FOREIGN KEY (booking_id) REFERENCES BOOKING(booking_id) ON UPDATE CASCADE
+);
+
+-- ============================================================
+-- TABLE 8: PAYMENT_TYPE
+-- ============================================================
+CREATE TABLE PAYMENT_TYPE (
+    payment_type_id INT AUTO_INCREMENT PRIMARY KEY,
+    type_name       VARCHAR(30) NOT NULL UNIQUE,
+    description     TEXT
+);
+
+-- ============================================================
+-- TABLE 9: PAYMENT
+-- ============================================================
+CREATE TABLE PAYMENT (
+    payment_id      INT AUTO_INCREMENT PRIMARY KEY,
+    booking_id      INT           NOT NULL,
+    payment_type_id INT,
+    staff_id        INT,
+    amount          DECIMAL(10,2) NOT NULL CHECK (amount >= 0),
+    payment_date    DATETIME      NOT NULL,
+    payment_method  ENUM('Cash','Card','Online') NOT NULL,
+    status          ENUM('Paid','Refunded','Pending') NOT NULL DEFAULT 'Pending',
+    FOREIGN KEY (booking_id)      REFERENCES BOOKING(booking_id)           ON UPDATE CASCADE,
+    FOREIGN KEY (payment_type_id) REFERENCES PAYMENT_TYPE(payment_type_id) ON UPDATE CASCADE ON DELETE SET NULL,
+    FOREIGN KEY (staff_id)        REFERENCES STAFF(staff_id)               ON UPDATE CASCADE ON DELETE SET NULL
+);
+
+-- ============================================================
+-- TABLE 10: SERVICE
+-- ============================================================
+CREATE TABLE SERVICE (
+    service_id   INT AUTO_INCREMENT PRIMARY KEY,
+    service_name VARCHAR(100)  NOT NULL,
+    description  TEXT,
+    price        DECIMAL(10,2) NOT NULL CHECK (price >= 0)
+);
+
+-- ============================================================
+-- TABLE 11: SERVICE_REQUEST
+-- ============================================================
+CREATE TABLE SERVICE_REQUEST (
+    request_id   INT AUTO_INCREMENT PRIMARY KEY,
+    booking_id   INT  NOT NULL,
+    service_id   INT  NOT NULL,
+    request_date DATE NOT NULL,
+    request_time TIME,
+    status       ENUM('Pending','Completed','Cancelled') NOT NULL DEFAULT 'Pending',
+    remarks      TEXT,
+    FOREIGN KEY (booking_id) REFERENCES BOOKING(booking_id) ON UPDATE CASCADE,
+    FOREIGN KEY (service_id) REFERENCES SERVICE(service_id) ON UPDATE CASCADE
+);
+
+-- ============================================================
+-- INDEX CREATION (for performance)
+-- ============================================================
+CREATE INDEX idx_booking_guest   ON BOOKING(guest_id);
+CREATE INDEX idx_booking_room    ON BOOKING(room_id);
+CREATE INDEX idx_booking_dates   ON BOOKING(check_in_date, check_out_date);
+CREATE INDEX idx_payment_booking ON PAYMENT(booking_id);
+CREATE INDEX idx_svcreq_booking  ON SERVICE_REQUEST(booking_id);
+CREATE INDEX idx_room_status     ON ROOM(status);
+
+-- ============================================================
+-- DML: SAMPLE DATA
+-- ============================================================
+
+-- ROOM_TYPE
+INSERT INTO ROOM_TYPE (type_name, description, max_occupancy, base_price) VALUES
+('Single',  'Cozy room for one guest',          1, 80000.00),
+('Double',  'Comfortable room for two guests',  2, 120000.00),
+('Deluxe',  'Premium room with city view',      2, 180000.00),
+('Suite',   'Luxury suite with living area',    4, 350000.00);
+
+-- GUEST
+INSERT INTO GUEST (first_name, last_name, email, phone, national_id, loyalty_no, date_of_birth, street, city, state, zip) VALUES
+('Parash',  'Karki',   'parash@email.com',  '010-1234-5678', 'NP-12345', 'LY-001', '1999-05-15', 'Khiratadi Rd', 'Bajhang',   'Sudurpashchim', '10900'),
+('Rohit',   'Khanal',  'rohit@email.com',   '010-2345-6789', 'NP-23456', 'LY-002', '2000-03-22', 'Main St',      'Kathmandu', 'Bagmati',       '44600'),
+('Ali',     'Saad',    'ali@email.com',     '010-3456-7890', 'SA-11111', 'LY-003', '1998-08-10', 'King Fahd Ave','Riyadh',    'Riyadh',        '11564'),
+('islam', '',  'islam@email.com', '010-4567-8901', 'NP-34567', 'LY-004', '2001-11-30', 'Lakeside Rd',  'Pokhara',   'Gandaki',       '33700'),
+('Min-jun', 'Lee',     'minjun@email.com',  '010-5678-9012', 'KR-55555', 'LY-005', '1997-07-04', 'Daejeon-ro',   'Daejeon',   'Chungnam',      '34000');
+
+-- ROOM
+INSERT INTO ROOM (type_id, room_no, floor, price_per_night, status, description) VALUES
+(1, '101', 1, 85000.00,  'Available',   'Standard single near lobby'),
+(2, '201', 2, 125000.00, 'Occupied',    'Mountain view double'),
+(3, '301', 3, 190000.00, 'Available',   'Deluxe with balcony'),
+(4, '401', 4, 360000.00, 'Occupied',    'Presidential suite'),
+(2, '202', 2, 125000.00, 'Maintenance', 'Under renovation'),
+(3, '302', 3, 195000.00, 'Available',   'Corner deluxe room');
+
+-- STAFF
+INSERT INTO STAFF (first_name, last_name, phone, email, job_title, hire_date) VALUES
+('Jung-ho', 'Park',  '010-1111-2222', 'jh.park@hotel.com',  'Front Desk Manager', '2020-03-01'),
+('Seo-yeon','Kim',   '010-2222-3333', 'sy.kim@hotel.com',   'Receptionist',       '2021-06-15'),
+('Hari',    'Basnet','010-3333-4444', 'h.basnet@hotel.com', 'Housekeeping Lead',  '2019-09-10'),
+('Min-ah',  'Choi',  '010-4444-5555', 'ma.choi@hotel.com',  'Concierge',          '2022-01-20');
+
+-- BOOKING
+INSERT INTO BOOKING (guest_id, room_id, staff_id, booking_date, check_in_date, check_out_date, no_of_guests, special_request, status) VALUES
+(1, 2, 1, '2025-05-01', '2025-06-01', '2025-06-05', 2, 'Non-smoking room',  'Checked-out'),
+(2, 4, 2, '2025-05-10', '2025-06-10', '2025-06-15', 3, NULL,               'Confirmed'),
+(3, 1, 1, '2025-05-15', '2025-06-16', '2025-06-18', 1, 'Extra pillow',     'Checked-in'),
+(4, 3, 4, '2025-05-20', '2025-06-20', '2025-06-25', 2, 'Late checkout',    'Confirmed'),
+(5, 6, 2, '2025-05-25', '2025-06-25', '2025-06-28', 2, NULL,               'Cancelled');
+
+-- CHECK_IN
+INSERT INTO CHECK_IN (booking_id, check_in_time, assigned_room_no, notes) VALUES
+(1, '2025-06-01 14:30:00', '201', 'Early check-in arranged'),
+(3, '2025-06-16 15:00:00', '101', 'Standard check-in');
+
+-- CHECK_OUT
+INSERT INTO CHECK_OUT (booking_id, check_out_time, additional_charges, notes) VALUES
+(1, '2025-06-05 11:20:00', 15000.00, 'Mini-bar charges added');
+
+-- PAYMENT_TYPE
+INSERT INTO PAYMENT_TYPE (type_name, description) VALUES
+('Cash',   'Physical currency payment at front desk'),
+('Card',   'Credit or debit card via POS terminal'),
+('Online', 'Bank transfer or online payment gateway');
+
+-- PAYMENT
+INSERT INTO PAYMENT (booking_id, payment_type_id, staff_id, amount, payment_date, payment_method, status) VALUES
+(1, 2, 1, 500000.00,  '2025-06-05 12:00:00', 'Card',   'Paid'),
+(2, 1, 2, 1800000.00, '2025-06-10 09:30:00', 'Cash',   'Pending'),
+(3, 3, 1, 170000.00,  '2025-06-16 15:10:00', 'Online', 'Paid'),
+(5, 2, 2, 0.00,       '2025-06-01 10:00:00', 'Card',   'Refunded');
+
+-- SERVICE
+INSERT INTO SERVICE (service_name, description, price) VALUES
+('Room Service',     '24/7 in-room dining service',          15000.00),
+('Laundry',          'Same-day laundry and dry cleaning',     10000.00),
+('Spa & Massage',    'Relaxation and wellness treatments',    50000.00),
+('Airport Transfer', 'Private car to/from airport',          30000.00),
+('Tour Guide',       'Local city and cultural tour service',  40000.00);
+
+-- SERVICE_REQUEST
+INSERT INTO SERVICE_REQUEST (booking_id, service_id, request_date, request_time, status, remarks) VALUES
+(1, 1, '2025-06-02', '19:30:00', 'Completed', 'Burger and fries ordered'),
+(1, 2, '2025-06-03', '09:00:00', 'Completed', '3 shirts pressed'),
+(3, 3, '2025-06-17', '16:00:00', 'Pending',   'Swedish massage requested'),
+(4, 4, '2025-06-20', '07:00:00', 'Pending',   'Airport pickup on check-in day');
+
+-- ============================================================
+-- VERIFICATION QUERIES
+-- ============================================================
+SELECT 'hotel_db created successfully!' AS status;
+SELECT table_name, table_rows
+FROM information_schema.tables
+WHERE table_schema = 'hotel_db'
+ORDER BY table_name;
+`;
+
+// ── TABLE DATA ────────────────────────────────────────────────────────
+const TABLES = {
+  guest:{label:'GUEST',rows:5,
+    cols:[{n:'guest_id',t:'INT',f:['PK']},{n:'first_name',t:'VARCHAR(50)',f:['NN']},{n:'last_name',t:'VARCHAR(50)',f:['NN']},{n:'email',t:'VARCHAR(100)',f:['UQ','NN']},{n:'phone',t:'VARCHAR(20)',f:[]},{n:'national_id',t:'VARCHAR(50)',f:['UQ']},{n:'loyalty_no',t:'VARCHAR(30)',f:['UQ']},{n:'date_of_birth',t:'DATE',f:[]},{n:'street',t:'VARCHAR(100)',f:[]},{n:'city',t:'VARCHAR(50)',f:[]},{n:'state',t:'VARCHAR(50)',f:[]},{n:'zip',t:'VARCHAR(20)',f:[]}],
+    data:[[1,'Parash','Karki','parash@email.com','010-1234-5678','NP-12345','LY-001','1999-05-15','Khiratadi Rd','Bajhang','Sudurpashchim','10900'],[2,'Rohit','Khanal','rohit@email.com','010-2345-6789','NP-23456','LY-002','2000-03-22','Main St','Kathmandu','Bagmati','44600'],[3,'Ali','Saad','ali@email.com','010-3456-7890','SA-11111','LY-003','1998-08-10','King Fahd Ave','Riyadh','Riyadh','11564'],[4,'Islam','','islam@email.com','010-4567-8901','NP-34567','LY-004','2001-11-30','Lakeside Rd','Pokhara','Gandaki','33700'],[5,'Min-jun','Lee','minjun@email.com','010-5678-9012','KR-55555','LY-005','1997-07-04','Daejeon-ro','Daejeon','Chungnam','34000']]},
+  room_type:{label:'ROOM_TYPE',rows:4,
+    cols:[{n:'type_id',t:'INT',f:['PK']},{n:'type_name',t:'VARCHAR(50)',f:['UQ','NN']},{n:'description',t:'TEXT',f:[]},{n:'max_occupancy',t:'INT',f:['NN']},{n:'base_price',t:'DECIMAL(10,2)',f:['NN']}],
+    data:[[1,'Single','Cozy room for one guest',1,'80000.00'],[2,'Double','Comfortable room for two guests',2,'120000.00'],[3,'Deluxe','Premium room with city view',2,'180000.00'],[4,'Suite','Luxury suite with living area',4,'350000.00']]},
+  room:{label:'ROOM',rows:6,
+    cols:[{n:'room_id',t:'INT',f:['PK']},{n:'type_id',t:'INT',f:['FK->ROOM_TYPE','NN']},{n:'room_no',t:'VARCHAR(10)',f:['UQ','NN']},{n:'floor',t:'INT',f:['NN']},{n:'price_per_night',t:'DECIMAL(10,2)',f:['NN']},{n:'status',t:'ENUM',f:['NN']},{n:'description',t:'TEXT',f:[]}],
+    data:[[1,1,'101',1,'85000.00',{e:'Available',c:'cg'},'Standard single near lobby'],[2,2,'201',2,'125000.00',{e:'Occupied',c:'co'},'Mountain view double'],[3,3,'301',3,'190000.00',{e:'Available',c:'cg'},'Deluxe with balcony'],[4,4,'401',4,'360000.00',{e:'Occupied',c:'co'},'Presidential suite'],[5,2,'202',2,'125000.00',{e:'Maintenance',c:'cr'},'Under renovation'],[6,3,'302',3,'195000.00',{e:'Available',c:'cg'},'Corner deluxe room']]},
+  staff:{label:'STAFF',rows:4,
+    cols:[{n:'staff_id',t:'INT',f:['PK']},{n:'first_name',t:'VARCHAR(50)',f:['NN']},{n:'last_name',t:'VARCHAR(50)',f:['NN']},{n:'phone',t:'VARCHAR(20)',f:[]},{n:'email',t:'VARCHAR(100)',f:['UQ']},{n:'job_title',t:'VARCHAR(50)',f:['NN']},{n:'hire_date',t:'DATE',f:['NN']}],
+    data:[[1,'Jung-ho','Park','010-1111-2222','jh.park@hotel.com','Front Desk Manager','2020-03-01'],[2,'Seo-yeon','Kim','010-2222-3333','sy.kim@hotel.com','Receptionist','2021-06-15'],[3,'Hari','Basnet','010-3333-4444','h.basnet@hotel.com','Housekeeping Lead','2019-09-10'],[4,'Min-ah','Choi','010-4444-5555','ma.choi@hotel.com','Concierge','2022-01-20']]},
+  booking:{label:'BOOKING',rows:5,
+    cols:[{n:'booking_id',t:'INT',f:['PK']},{n:'guest_id',t:'INT',f:['FK->GUEST','NN']},{n:'room_id',t:'INT',f:['FK->ROOM','NN']},{n:'staff_id',t:'INT',f:['FK->STAFF']},{n:'booking_date',t:'DATE',f:['NN']},{n:'check_in_date',t:'DATE',f:['NN']},{n:'check_out_date',t:'DATE',f:['NN']},{n:'no_of_guests',t:'INT',f:['NN']},{n:'special_request',t:'TEXT',f:[]},{n:'status',t:'ENUM',f:['NN']}],
+    data:[[1,1,2,1,'2025-05-01','2025-06-01','2025-06-05',2,'Non-smoking room',{e:'Checked-out',c:'cp'}],[2,2,4,2,'2025-05-10','2025-06-10','2025-06-15',3,null,{e:'Confirmed',c:'cb'}],[3,3,1,1,'2025-05-15','2025-06-16','2025-06-18',1,'Extra pillow',{e:'Checked-in',c:'cg'}],[4,4,3,4,'2025-05-20','2025-06-20','2025-06-25',2,'Late checkout',{e:'Confirmed',c:'cb'}],[5,5,6,2,'2025-05-25','2025-06-25','2025-06-28',2,null,{e:'Cancelled',c:'cr'}]]},
+  checkin:{label:'CHECK_IN',rows:2,
+    cols:[{n:'checkin_id',t:'INT',f:['PK']},{n:'booking_id',t:'INT',f:['FK->BOOKING','UQ']},{n:'check_in_time',t:'DATETIME',f:['NN']},{n:'assigned_room_no',t:'VARCHAR(10)',f:['NN']},{n:'notes',t:'TEXT',f:[]}],
+    data:[[1,1,'2025-06-01 14:30:00','201','Early check-in arranged'],[2,3,'2025-06-16 15:00:00','101','Standard check-in']]},
+  checkout:{label:'CHECK_OUT',rows:1,
+    cols:[{n:'checkout_id',t:'INT',f:['PK']},{n:'booking_id',t:'INT',f:['FK->BOOKING','UQ']},{n:'check_out_time',t:'DATETIME',f:['NN']},{n:'additional_charges',t:'DECIMAL(10,2)',f:[]},{n:'notes',t:'TEXT',f:[]}],
+    data:[[1,1,'2025-06-05 11:20:00','15000.00','Mini-bar charges added']]},
+  payment:{label:'PAYMENT',rows:4,
+    cols:[{n:'payment_id',t:'INT',f:['PK']},{n:'booking_id',t:'INT',f:['FK->BOOKING','NN']},{n:'payment_type_id',t:'INT',f:['FK->PAYMENT_TYPE']},{n:'staff_id',t:'INT',f:['FK->STAFF']},{n:'amount',t:'DECIMAL(10,2)',f:['NN']},{n:'payment_date',t:'DATETIME',f:['NN']},{n:'payment_method',t:'ENUM',f:['NN']},{n:'status',t:'ENUM',f:['NN']}],
+    data:[[1,1,2,1,'500000.00','2025-06-05 12:00:00',{e:'Card',c:'cb'},{e:'Paid',c:'cg'}],[2,2,1,2,'1800000.00','2025-06-10 09:30:00',{e:'Cash',c:'cc'},{e:'Pending',c:'co'}],[3,3,3,1,'170000.00','2025-06-16 15:10:00',{e:'Online',c:'cp'},{e:'Paid',c:'cg'}],[4,5,2,2,'0.00','2025-06-01 10:00:00',{e:'Card',c:'cb'},{e:'Refunded',c:'cr'}]]},
+  ptype:{label:'PAYMENT_TYPE',rows:3,
+    cols:[{n:'payment_type_id',t:'INT',f:['PK']},{n:'type_name',t:'VARCHAR(30)',f:['UQ','NN']},{n:'description',t:'TEXT',f:[]}],
+    data:[[1,'Cash','Physical currency payment at front desk'],[2,'Card','Credit or debit card via POS terminal'],[3,'Online','Bank transfer or online payment gateway']]},
+  service:{label:'SERVICE',rows:5,
+    cols:[{n:'service_id',t:'INT',f:['PK']},{n:'service_name',t:'VARCHAR(100)',f:['NN']},{n:'description',t:'TEXT',f:[]},{n:'price',t:'DECIMAL(10,2)',f:['NN']}],
+    data:[[1,'Room Service','24/7 in-room dining service','15000.00'],[2,'Laundry','Same-day laundry and dry cleaning','10000.00'],[3,'Spa & Massage','Relaxation and wellness treatments','50000.00'],[4,'Airport Transfer','Private car to/from airport','30000.00'],[5,'Tour Guide','Local city and cultural tour service','40000.00']]},
+  sreq:{label:'SERVICE_REQUEST',rows:4,
+    cols:[{n:'request_id',t:'INT',f:['PK']},{n:'booking_id',t:'INT',f:['FK->BOOKING','NN']},{n:'service_id',t:'INT',f:['FK->SERVICE','NN']},{n:'request_date',t:'DATE',f:['NN']},{n:'request_time',t:'TIME',f:[]},{n:'status',t:'ENUM',f:['NN']},{n:'remarks',t:'TEXT',f:[]}],
+    data:[[1,1,1,'2025-06-02','19:30:00',{e:'Completed',c:'cg'},'Burger and fries ordered'],[2,1,2,'2025-06-03','09:00:00',{e:'Completed',c:'cg'},'3 shirts pressed'],[3,3,3,'2025-06-17','16:00:00',{e:'Pending',c:'co'},'Swedish massage requested'],[4,4,4,'2025-06-20','07:00:00',{e:'Pending',c:'co'},'Airport pickup on check-in day']]}
+};
+
+const QUERIES = {
+  guest:`<span class="cmt">-- SELECT all guests</span>\n<span class="kw">SELECT</span> <span class="col">guest_id</span><span class="pu">,</span> <span class="col">first_name</span><span class="pu">,</span> <span class="col">last_name</span><span class="pu">,</span> <span class="col">email</span><span class="pu">,</span>\n       <span class="col">national_id</span><span class="pu">,</span> <span class="col">loyalty_no</span><span class="pu">,</span> <span class="col">city</span><span class="pu">,</span> <span class="col">state</span>\n<span class="kw">FROM</span> <span class="tbl">GUEST</span>\n<span class="kw">ORDER BY</span> <span class="col">guest_id</span> <span class="kw">ASC</span><span class="pu">;</span>`,
+  room_type:`<span class="cmt">-- SELECT all room types</span>\n<span class="kw">SELECT</span> <span class="col">*</span> <span class="kw">FROM</span> <span class="tbl">ROOM_TYPE</span> <span class="kw">ORDER BY</span> <span class="col">type_id</span><span class="pu">;</span>`,
+  room:`<span class="cmt">-- SELECT rooms with type (JOIN)</span>\n<span class="kw">SELECT</span> <span class="col">r.*</span><span class="pu">,</span> <span class="col">rt.type_name</span>\n<span class="kw">FROM</span> <span class="tbl">ROOM</span> <span class="col">r</span>\n<span class="kw">JOIN</span> <span class="tbl">ROOM_TYPE</span> <span class="col">rt</span> <span class="kw">ON</span> <span class="col">r.type_id</span> <span class="pu">=</span> <span class="col">rt.type_id</span><span class="pu">;</span>`,
+  staff:`<span class="cmt">-- SELECT all staff</span>\n<span class="kw">SELECT</span> <span class="col">*</span> <span class="kw">FROM</span> <span class="tbl">STAFF</span> <span class="kw">ORDER BY</span> <span class="col">hire_date</span> <span class="kw">ASC</span><span class="pu">;</span>`,
+  booking:`<span class="cmt">-- SELECT bookings with nights</span>\n<span class="kw">SELECT</span> <span class="col">b.*</span><span class="pu">,</span> <span class="fn">DATEDIFF</span><span class="pu">(</span><span class="col">b.check_out_date</span><span class="pu">,</span><span class="col">b.check_in_date</span><span class="pu">)</span> <span class="kw">AS</span> <span class="col">nights</span>\n<span class="kw">FROM</span> <span class="tbl">BOOKING</span> <span class="col">b</span> <span class="kw">ORDER BY</span> <span class="col">booking_id</span><span class="pu">;</span>`,
+  checkin:`<span class="cmt">-- SELECT CHECK_IN records</span>\n<span class="kw">SELECT</span> <span class="col">*</span> <span class="kw">FROM</span> <span class="tbl">CHECK_IN</span><span class="pu">;</span>`,
+  checkout:`<span class="cmt">-- SELECT CHECK_OUT records</span>\n<span class="kw">SELECT</span> <span class="col">*</span> <span class="kw">FROM</span> <span class="tbl">CHECK_OUT</span><span class="pu">;</span>`,
+  payment:`<span class="cmt">-- SELECT payments</span>\n<span class="kw">SELECT</span> <span class="col">*</span> <span class="kw">FROM</span> <span class="tbl">PAYMENT</span> <span class="kw">ORDER BY</span> <span class="col">payment_date</span> <span class="kw">DESC</span><span class="pu">;</span>`,
+  ptype:`<span class="cmt">-- SELECT payment types</span>\n<span class="kw">SELECT</span> <span class="col">*</span> <span class="kw">FROM</span> <span class="tbl">PAYMENT_TYPE</span><span class="pu">;</span>`,
+  service:`<span class="cmt">-- SELECT services by price</span>\n<span class="kw">SELECT</span> <span class="col">*</span> <span class="kw">FROM</span> <span class="tbl">SERVICE</span> <span class="kw">ORDER BY</span> <span class="col">price</span> <span class="kw">ASC</span><span class="pu">;</span>`,
+  sreq:`<span class="cmt">-- SELECT service requests with JOIN</span>\n<span class="kw">SELECT</span> <span class="col">sr.*</span><span class="pu">,</span> <span class="col">s.service_name</span>\n<span class="kw">FROM</span> <span class="tbl">SERVICE_REQUEST</span> <span class="col">sr</span>\n<span class="kw">JOIN</span> <span class="tbl">SERVICE</span> <span class="col">s</span> <span class="kw">ON</span> <span class="col">sr.service_id</span> <span class="pu">=</span> <span class="col">s.service_id</span><span class="pu">;</span>`
+};
+
+// ── COPY & DOWNLOAD ───────────────────────────────────────────────────
+function copySQL() {
+  navigator.clipboard.writeText(SQL_RAW).then(() => {
+    ['cpBtn','cpBtn2'].forEach(id => {
+      const b = document.getElementById(id);
+      if (!b) return;
+      const orig = b.textContent;
+      b.textContent = '✓ Copied!';
+      b.classList.add('ok');
+      setTimeout(() => { b.textContent = orig; b.classList.remove('ok'); }, 2500);
+    });
+  }).catch(() => {
+    // fallback for browsers that block clipboard
+    const ta = document.createElement('textarea');
+    ta.value = SQL_RAW;
+    ta.style.cssText = 'position:fixed;top:-9999px;opacity:0';
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    const b = document.getElementById('cpBtn');
+    if (b) { const o=b.textContent; b.textContent='✓ Copied!'; b.classList.add('ok'); setTimeout(()=>{b.textContent=o;b.classList.remove('ok');},2500); }
+  });
+}
+
+function downloadSQL() {
+  const blob = new Blob([SQL_RAW], {type: 'text/plain;charset=utf-8'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'hotel_management.sql';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(a.href);
+  const b = document.getElementById('dlBtn');
+  const o = b.textContent;
+  b.textContent = '✓ Downloaded!';
+  b.classList.add('ok');
+  setTimeout(() => { b.textContent = o; b.classList.remove('ok'); }, 2500);
+}
+
+// ── GRID RENDER ───────────────────────────────────────────────────────
+function renderGrid(k) {
+  const t = TABLES[k];
+  let h = '<table class="gt"><thead><tr><th style="width:36px;background:#1a1d24;border-right:1px solid var(--bd)"></th>';
+  t.cols.forEach(c => {
+    const isPK = c.f.includes('PK');
+    const isFK = c.f.some(x => x.startsWith('FK'));
+    const isUQ = c.f.includes('UQ');
+    const ic = isPK ? '<span style="color:var(--pk);font-size:10px;margin-right:3px">&#9670;</span>' :
+               isFK ? '<span style="color:var(--fk);font-size:10px;margin-right:3px">&#9671;</span>' :
+               isUQ ? '<span style="color:var(--uq);font-size:9px;margin-right:3px">&#9679;</span>' : '';
+    h += `<th>${ic}${c.n}<span style="color:var(--tx3);margin-left:4px;font-size:9px">&#8597;</span></th>`;
+  });
+  h += '</tr></thead><tbody>';
+  t.data.forEach((row, i) => {
+    h += `<tr onclick="this.classList.toggle('sel')"><td class="rn">${i+1}</td>`;
+    row.forEach((cell, ci) => {
+      if (cell === null) { h += '<td><span class="nv">NULL</span></td>'; return; }
+      if (typeof cell === 'object' && cell.e) { h += `<td><span class="ec ${cell.c}">${cell.e}</span></td>`; return; }
+      const col = t.cols[ci];
+      const cls = col.f.includes('PK') ? 'pv' : col.f.some(x => x.startsWith('FK')) ? 'fv' : '';
+      h += `<td${cls?' class="'+cls+'"':''}>${cell}</td>`;
+    });
+    h += '</tr>';
+  });
+  h += '</tbody></table>';
+  document.getElementById('grid').innerHTML = h;
+  document.getElementById('rInfo').textContent = `${t.rows} rows returned`;
+  document.getElementById('bRows').textContent = t.rows;
+  document.getElementById('bTbl').textContent = t.label;
+  const qhtml = QUERIES[k] || `<span class="kw">SELECT</span> <span class="col">*</span> <span class="kw">FROM</span> <span class="tbl">${t.label}</span><span class="pu">;</span>`;
+  document.getElementById('qCode').innerHTML = qhtml;
+  const lines = qhtml.split('\n').length;
+  document.getElementById('qLN').innerHTML = Array.from({length: lines}, (_, i) => i+1).join('<br>');
+}
+
+// ── SCHEMA RENDER ─────────────────────────────────────────────────────
+function renderSchema() {
+  let h = '<div class="shdr"><div>Column</div><div>Type</div><div>PK</div><div>FK Reference</div><div>Constraints</div><div>Notes</div></div>';
+  Object.values(TABLES).forEach(t => {
+    h += `<div class="sch-sec"><div class="stn">&#9783; ${t.label} <span>(${t.cols.length} cols · ${t.rows} rows)</span></div><div class="sch-cols">`;
+    t.cols.forEach(col => {
+      const isPK = col.f.includes('PK'), isFK = col.f.some(x => x.startsWith('FK'));
+      const fkRef = col.f.find(x => x.startsWith('FK->')) || '';
+      const isUQ = col.f.includes('UQ'), isNN = col.f.includes('NN');
+      h += `<div class="scol">
+        <div style="color:${isPK?'var(--pk)':isFK?'var(--fk)':'var(--tx)'}">${isPK?'&#9670; ':isFK?'&#9671; ':''}${col.n}</div>
+        <div style="color:var(--yw)">${col.t}</div>
+        <div>${isPK?'<span class="bpk">PK</span>':''}</div>
+        <div>${isFK?`<span class="bfk">${fkRef.replace('FK->','')}</span>`:''}</div>
+        <div style="display:flex;gap:3px;flex-wrap:wrap">${isUQ?'<span class="buq">UQ</span>':''}${isNN?'<span class="bnn">NN</span>':''}</div>
+        <div style="color:var(--tx3);font-size:10.5px">${fkRef?'ON UPDATE CASCADE':isPK?'AUTO_INCREMENT':isUQ?'Candidate key':''}</div>
+      </div>`;
+    });
+    h += '</div></div>';
+  });
+  document.getElementById('schCont').innerHTML = h;
+}
+
+// ── FD RENDER ─────────────────────────────────────────────────────────
+function renderFDs() {
+  const fds = [
+    {t:'GUEST',rules:[['guest_id','first_name, last_name, email, phone, national_id, loyalty_no, date_of_birth, street, city, state, zip'],['email','guest_id  (candidate key)'],['national_id','guest_id  (candidate key)']]},
+    {t:'ROOM_TYPE',rules:[['type_id','type_name, description, max_occupancy, base_price'],['type_name','type_id  (candidate key)']]},
+    {t:'ROOM',rules:[['room_id','type_id, room_no, floor, price_per_night, status, description'],['room_no','room_id  (candidate key)'],['NOTE: type_id → base_price','removed — base_price lives in ROOM_TYPE only (no transitive dep.)']]},
+    {t:'STAFF',rules:[['staff_id','first_name, last_name, phone, email, job_title, hire_date'],['email','staff_id  (candidate key)']]},
+    {t:'BOOKING',rules:[['booking_id','guest_id, room_id, staff_id, booking_date, check_in_date, check_out_date, no_of_guests, status'],['guest_id + check_in_date','booking_id  (business rule)']]},
+    {t:'CHECK_IN',rules:[['checkin_id','booking_id, check_in_time, assigned_room_no, notes'],['booking_id','checkin_id  (1:1 with BOOKING)']]},
+    {t:'CHECK_OUT',rules:[['checkout_id','booking_id, check_out_time, additional_charges, notes']]},
+    {t:'PAYMENT',rules:[['payment_id','booking_id, payment_type_id, amount, payment_date, method, status']]},
+    {t:'PAYMENT_TYPE',rules:[['payment_type_id','type_name, description'],['type_name','payment_type_id  (candidate key)']]},
+    {t:'SERVICE',rules:[['service_id','service_name, description, price']]},
+    {t:'SERVICE_REQUEST',rules:[['request_id','booking_id, service_id, request_date, request_time, status, remarks'],['(booking_id, service_id, request_date)','request_id  (composite candidate key)']]}
+  ];
+  let h = '';
+  fds.forEach(f => {
+    h += `<div class="fd-tw"><div class="fd-tn">&#9783; ${f.t} <span class="bcnf">&#10003; BCNF</span></div>`;
+    f.rules.forEach(r => { h += `<div class="fd-row"><span class="fl">${r[0]}</span><span class="fa">&#8594;</span><span class="fr">${r[1]}</span></div>`; });
+    h += '</div>';
+  });
+  document.getElementById('fdCont').innerHTML = h;
+}
+
+// ── NORMALIZATION RENDER ──────────────────────────────────────────────
+function renderNorm() {
+  document.getElementById('normCont').innerHTML = `
+  <div class="nc"><div class="nh" onclick="togNF(this)"><span>1NF — First Normal Form</span><span class="nb2 nb1">Applied ✓</span><span class="ntog">▼</span></div>
+  <div class="nbody open"><strong>Rule:</strong> All attributes atomic. No repeating groups.<br><br><span class="fx">Issues fixed:</span><ul><li><span class="hl">address</span> (composite) → decomposed into street, city, state, zip.</li><li><span class="hl">loyalty_no</span> (multivalued) → single UNIQUE column.</li><li>ENUM for status fields ensures atomic values.</li></ul><br><span class="ok">✓ All 11 tables satisfy 1NF.</span></div></div>
+  <div class="nc"><div class="nh" onclick="togNF(this)"><span>2NF — Second Normal Form</span><span class="nb2 nb2a">Applied ✓</span><span class="ntog">▼</span></div>
+  <div class="nbody open"><strong>Rule:</strong> 1NF + no partial dependency on composite key.<br><br><span class="fx">SERVICE_REQUEST(booking_id, service_id) check:</span><ul><li><span class="hl">request_date, status, remarks</span> → depend on FULL composite key. ✓</li><li><span class="hl">service_name, price</span> → kept in SERVICE table only. ✓</li></ul><br><span class="ok">✓ All 11 tables satisfy 2NF.</span></div></div>
+  <div class="nc"><div class="nh" onclick="togNF(this)"><span>3NF — Third Normal Form</span><span class="nb2 nb3">Applied ✓</span><span class="ntog">▼</span></div>
+  <div class="nbody open"><strong>Rule:</strong> 2NF + no transitive dependency.<br><br><span class="fx">Found & eliminated in ROOM:</span><ul><li>Before: <span class="hl">room_id → type_id → base_price</span> (transitive!)</li><li>After: <span class="hl">base_price</span> in ROOM_TYPE only. ROOM has its own <span class="hl">price_per_night</span>. ✓</li></ul><br><span class="ok">✓ All 11 tables satisfy 3NF.</span></div></div>
+  <div class="nc"><div class="nh" onclick="togNF(this)"><span>BCNF — Boyce-Codd Normal Form</span><span class="nb2 nbbc">Achieved ✓</span><span class="ntog">▼</span></div>
+  <div class="nbody open"><strong>Rule:</strong> Every FD X→Y: X must be a superkey.<br><br><ul><li>GUEST: <span class="hl">email → guest_id</span> — email is candidate key. ✓</li><li>GUEST: <span class="hl">national_id → guest_id</span> — candidate key. ✓</li><li>ROOM: <span class="hl">room_no → room_id</span> — candidate key. ✓</li><li>ROOM_TYPE: <span class="hl">type_name → type_id</span> — UNIQUE (superkey). ✓</li><li>SERVICE_REQUEST: full PK determines all attributes. ✓</li><li>PAYMENT_TYPE: <span class="hl">type_name → payment_type_id</span> — candidate key. ✓</li></ul><br><strong class="fx">Lossless Join:</strong> All FK decompositions ensure reconstructable joins — no spurious tuples.<br><br><span class="ok">✓ All 11 tables in BCNF. Zero redundancy. Zero update anomalies.</span></div></div>`;
+}
+
+// ── SQL SOURCE PANEL ──────────────────────────────────────────────────
+function renderSQLPanel() {
+  const lines = SQL_RAW.split('\n');
+  document.getElementById('sqlLN').innerHTML = lines.map((_, i) => `<span>${i+1}</span>`).join('');
+  document.getElementById('sqlCT').innerHTML = lines.map(l => hlSQL(esc(l))).join('\n');
+}
+
+function esc(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+function hlSQL(line) {
+  if (line.trim().startsWith('--')) return `<span style="color:#6a737d;font-style:italic">${line}</span>`;
+  return line
+    .replace(/\b(SELECT|FROM|WHERE|INSERT|INTO|VALUES|CREATE|DROP|USE|TABLE|DATABASE|PRIMARY|FOREIGN|KEY|REFERENCES|NOT|NULL|UNIQUE|DEFAULT|AUTO_INCREMENT|CHECK|INDEX|ON|UPDATE|CASCADE|DELETE|SET|ORDER|BY|ASC|DESC|JOIN|AND|OR|AS|IF|EXISTS|CHARACTER|COLLATE|COLLATION|ENGINE|CONSTRAINT)\b/g, '<span style="color:#569cd6">$1</span>')
+    .replace(/\b(INT|VARCHAR|TEXT|DATE|DATETIME|TIME|DECIMAL|ENUM|CHAR|BIGINT|TINYINT)\b/g, '<span style="color:#4ec9b0">$1</span>')
+    .replace(/&#39;([^&#]*)&#39;/g, "<span style='color:#ce9178'>&#39;$1&#39;</span>")
+    .replace(/'([^']*)'/g, "<span style='color:#ce9178'>'$1'</span>")
+    .replace(/\b(\d+\.?\d*)\b/g, '<span style="color:#b5cea8">$1</span>');
+}
+
+// ── NAVIGATION ────────────────────────────────────────────────────────
+function act(el, k) {
+  document.querySelectorAll('.si').forEach(i => i.classList.remove('active'));
+  el.classList.add('active');
+  renderGrid(k);
+  switchPanel('result', null);
+  document.querySelectorAll('.ptab').forEach((p, i) => p.classList.toggle('active', i === 0));
+  switchMainTab('data', document.getElementById('tdata'));
+}
+
+function switchPanel(name, el) {
+  document.querySelectorAll('[id^="p-"]').forEach(p => { p.className = p.id === 'p-'+name ? 'ap' : 'hp'; });
+  document.querySelectorAll('.ptab').forEach(p => p.classList.remove('active'));
+  if (el) el.classList.add('active');
+  else document.querySelectorAll('.ptab')[0].classList.add('active');
+}
+
+function switchMainTab(name, el) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  if (el) el.classList.add('active');
+  if (name === 'data') { switchPanel('result', document.querySelectorAll('.ptab')[0]); }
+  else if (name === 'schema') { renderSchema(); switchPanel('sch', document.querySelectorAll('.ptab')[1]); }
+  else if (name === 'fd') { renderFDs(); switchPanel('fds', document.querySelectorAll('.ptab')[2]); }
+  else if (name === 'norm') { renderNorm(); switchPanel('nrm', document.querySelectorAll('.ptab')[3]); }
+  else if (name === 'sql') { renderSQLPanel(); switchPanel('sqls', document.querySelectorAll('.ptab')[4]); }
+  else if (name === 'guide') { renderGuide(); switchPanel('guide', document.querySelectorAll('.ptab')[5]); }
+}
+
+function showView(v) {
+  if (v === 'fd') { renderFDs(); switchMainTab('fd', document.getElementById('tfd')); }
+  else if (v === 'norm') { renderNorm(); switchMainTab('norm', document.getElementById('tnorm')); }
+}
+
+function filterTables(val) {
+  document.querySelectorAll('.si').forEach(item => {
+    item.style.display = item.textContent.toLowerCase().includes(val.toLowerCase()) ? '' : 'none';
+  });
+}
+
+function togNF(head) {
+  const body = head.nextElementSibling;
+  head.querySelector('.ntog').textContent = body.classList.toggle('open') ? '▼' : '▶';
+}
+
+// ── INIT ──────────────────────────────────────────────────────────────
+renderGrid('guest');
+
+// ── GUIDE RENDER ──────────────────────────────────────────────────────
+const GUIDE_STEPS = [
+  {id:1, label:'Install', done:true},
+  {id:2, label:'Open WB', done:true},
+  {id:3, label:'Connect', done:false},
+  {id:4, label:'New Query', done:false},
+  {id:5, label:'Paste SQL', done:false},
+  {id:6, label:'Run DDL', done:false},
+  {id:7, label:'Run DML', done:false},
+  {id:8, label:'Test', done:false},
+  {id:9, label:'Verify', done:false},
+  {id:10, label:'Submit', done:false},
+];
+
+function renderGuide() {
+  const prog = GUIDE_STEPS.map((s,i) =>
+    `<div class="g-step-pill">
+      ${i>0?'<span class="gsp-arrow">›</span>':''}
+      <span class="gsp-num ${s.done?'done':'todo'}" title="Step ${s.id}: ${s.label}">${s.id}</span>
+      <span class="gsp-label">${s.label}</span>
+    </div>`).join('');
+
+  document.getElementById('guideCont').innerHTML = `
+<div class="g-hero">
+  <h1>📘 Phase 2 Complete Guide — Hotel Management System</h1>
+  <p>Follow every step below to run your SQL in MySQL Workbench, verify all 11 tables, and complete Phase 2 perfectly.</p>
+  <div class="badges">
+    <span class="g-badge gb-blue">MySQL Workbench 8.0</span>
+    <span class="g-badge gb-green">11 Tables · BCNF Normalized</span>
+    <span class="g-badge gb-orange">Team F · Woosong University</span>
+  </div>
+</div>
+<div class="g-progress">${prog}</div>
+<div class="g-body">
+
+<!-- STEP 1 -->
+<div class="g-section">
+  <div class="g-section-hdr">
+    <div class="g-num">1</div>
+    <div><div class="g-title">Install MySQL & MySQL Workbench</div><div class="g-subtitle">One-time setup — skip if already installed</div></div>
+  </div>
+  <div class="g-card">
+    <div class="g-card-head">🌐 Download links</div>
+    <div class="g-card-body">
+      <div class="g-step"><div class="g-step-n">1</div><div class="g-step-content"><div class="g-step-title">Go to MySQL official site</div><div class="g-step-desc">Visit <strong>https://dev.mysql.com/downloads/installer/</strong> and download <strong>MySQL Installer for Windows</strong> (or DMG for Mac).</div></div></div>
+      <div class="g-step"><div class="g-step-n">2</div><div class="g-step-content"><div class="g-step-title">Choose "Full" installation type</div><div class="g-step-desc">This installs both <strong>MySQL Server 8.0</strong> and <strong>MySQL Workbench</strong> together. Make sure both are checked.</div></div></div>
+      <div class="g-step"><div class="g-step-n">3</div><div class="g-step-content"><div class="g-step-title">Set root password</div><div class="g-step-desc">During setup, you will be asked to set a password for the <strong>root</strong> user. Remember this — you'll need it to connect. Example: <strong>root1234</strong></div></div></div>
+      <div class="g-step"><div class="g-step-n">4</div><div class="g-step-content"><div class="g-step-title">Finish installation</div><div class="g-step-desc">Complete the wizard. MySQL Server will start automatically as a Windows service.</div></div></div>
+    </div>
+  </div>
+  <div class="g-tip"><span class="g-tip-icon">💡</span><span>YouTube search: <strong>"MySQL 8.0 installation Windows 2024"</strong> for a visual walkthrough. The professor recommended this in the project guide.</span></div>
+</div>
+
+<!-- STEP 2 -->
+<div class="g-section">
+  <div class="g-section-hdr">
+    <div class="g-num">2</div>
+    <div><div class="g-title">Open MySQL Workbench</div><div class="g-subtitle">Launch the software and find the home screen</div></div>
+  </div>
+  <div class="g-card">
+    <div class="g-card-head">🖥️ Launching Workbench</div>
+    <div class="g-card-body">
+      <div class="g-step"><div class="g-step-n">1</div><div class="g-step-content"><div class="g-step-title">Find MySQL Workbench</div><div class="g-step-desc">On Windows: Start Menu → search <strong>"MySQL Workbench"</strong> → click to open. On Mac: Applications folder → MySQL Workbench.</div></div></div>
+      <div class="g-step"><div class="g-step-n">2</div><div class="g-step-content"><div class="g-step-title">The Home screen appears</div><div class="g-step-desc">You will see a welcome screen with a box labeled <strong>"MySQL Connections"</strong>. You should see a connection called <strong>"Local instance MySQL80"</strong> already listed.</div></div></div>
+    </div>
+  </div>
+  <div class="g-img-mock">
+    <div class="mock-title">MySQL Workbench — Home Screen</div>
+    <div class="g-screen">
+      <div class="g-screen-bar">
+        <div class="g-screen-dot" style="background:#e05555"></div>
+        <div class="g-screen-dot" style="background:#e8974a;margin-left:4px"></div>
+        <div class="g-screen-dot" style="background:#5cb85c;margin-left:4px"></div>
+        <span style="margin-left:12px">MySQL Workbench</span>
+      </div>
+      <div class="g-screen-content">
+        <span style="color:#7ed07e">MySQL Connections</span><br>
+        ┌─────────────────────────────┐<br>
+        │ <span style="color:#6ab0f5">⊞ Local instance MySQL80</span>     │<br>
+        │  localhost:3306 · root      │<br>
+        │  <span style="color:#5cb85c">● Connected</span>                 │<br>
+        └─────────────────────────────┘<br>
+        <span style="color:#5c6479">[ + ] New Connection</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- STEP 3 -->
+<div class="g-section">
+  <div class="g-section-hdr">
+    <div class="g-num green">3</div>
+    <div><div class="g-title">Connect to MySQL Server</div><div class="g-subtitle">Open your local database connection</div></div>
+  </div>
+  <div class="g-card">
+    <div class="g-card-head">🔌 Opening a connection</div>
+    <div class="g-card-body">
+      <div class="g-step"><div class="g-step-n">1</div><div class="g-step-content"><div class="g-step-title">Double-click "Local instance MySQL80"</div><div class="g-step-desc">A password dialog will appear. Enter your <strong>root password</strong> that you set during installation.</div></div></div>
+      <div class="g-step"><div class="g-step-n">2</div><div class="g-step-content"><div class="g-step-title">The main editor opens</div><div class="g-step-desc">You will see: a <strong>left panel</strong> (Navigator / Schemas), a <strong>top query editor</strong> with a blank SQL tab, and an <strong>output panel</strong> at the bottom.</div></div></div>
+      <div class="g-step"><div class="g-step-n">3</div><div class="g-step-content"><div class="g-step-title">Confirm connection status</div><div class="g-step-desc">Bottom-right of Workbench shows <strong style="color:#7ed07e">Connected to MySQL 8.0.xx</strong>. If it shows an error, check that MySQL Server service is running.</div></div></div>
+    </div>
+  </div>
+  <div class="g-warn"><span class="g-tip-icon">⚠️</span><span>If MySQL Server is not running: Windows → Services → find <strong>MySQL80</strong> → right-click → Start. Or run <strong>net start MySQL80</strong> in Command Prompt as Administrator.</span></div>
+</div>
+
+<!-- STEP 4 -->
+<div class="g-section">
+  <div class="g-section-hdr">
+    <div class="g-num">4</div>
+    <div><div class="g-title">Open a New SQL Query Tab</div><div class="g-subtitle">This is where you will paste and run your SQL</div></div>
+  </div>
+  <div class="g-card">
+    <div class="g-card-head">📄 Opening the SQL editor</div>
+    <div class="g-card-body">
+      <div class="g-step"><div class="g-step-n">1</div><div class="g-step-content"><div class="g-step-title">Click "File → New Query Tab"</div><div class="g-step-desc">Or press <strong>Ctrl + T</strong> (Windows) / <strong>Cmd + T</strong> (Mac). A blank SQL editor tab will open at the top.</div></div></div>
+      <div class="g-step"><div class="g-step-n">2</div><div class="g-step-content"><div class="g-step-title">You see a blank white/dark editor area</div><div class="g-step-desc">This is your query input area. It shows a tab called <strong>"Query 1"</strong> or <strong>"SQL File 1"</strong>. All your SQL goes here.</div></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- STEP 5 -->
+<div class="g-section">
+  <div class="g-section-hdr">
+    <div class="g-num">5</div>
+    <div><div class="g-title">Get the SQL & Paste It</div><div class="g-subtitle">Use the Copy button on this page or download the .sql file</div></div>
+  </div>
+  <div class="g-card">
+    <div class="g-card-head">📋 Two ways to get the SQL</div>
+    <div class="g-card-body">
+      <div class="g-step"><div class="g-step-n">A</div><div class="g-step-content"><div class="g-step-title">Method 1 — Copy & Paste (fastest)</div><div class="g-step-desc">Click the <strong style="color:#6ab0f5">📋 Copy SQL</strong> button in the toolbar above. Then go to Workbench, click in the empty query editor, and press <strong>Ctrl+V</strong> (Windows) / <strong>Cmd+V</strong> (Mac) to paste.</div></div></div>
+      <div class="g-step"><div class="g-step-n">B</div><div class="g-step-content"><div class="g-step-title">Method 2 — Download & Import (recommended)</div><div class="g-step-desc">Click <strong style="color:#7ed07e">⬇ Download hotel_db.sql</strong>. In Workbench: <strong>File → Run SQL Script</strong> → browse to the downloaded file → click <strong>Run</strong>. This imports everything automatically.</div></div></div>
+    </div>
+  </div>
+  <div class="g-tip"><span class="g-tip-icon">💡</span><span><strong>Method 2 is safer</strong> — it runs the file directly without any copy-paste formatting issues. Use it for your final submission.</span></div>
+  <div class="g-code"><span class="cmt">-- After pasting, the editor should look like this:</span>
+<span class="kw">DROP DATABASE IF EXISTS</span> hotel_db;
+<span class="kw">CREATE DATABASE</span> hotel_db <span class="kw">CHARACTER SET</span> utf8mb4;
+<span class="kw">USE</span> hotel_db;
+<span class="kw">CREATE TABLE</span> <span class="tbl">ROOM_TYPE</span> ( ... );
+<span class="kw">CREATE TABLE</span> <span class="tbl">GUEST</span> ( ... );
+<span class="cmt">-- ... 9 more tables ...</span>
+<span class="kw">INSERT INTO</span> <span class="tbl">GUEST</span> <span class="kw">VALUES</span> (...);
+<span class="cmt">-- ... all sample data ...</span></div>
+</div>
+
+<!-- STEP 6 -->
+<div class="g-section">
+  <div class="g-section-hdr">
+    <div class="g-num orange">6</div>
+    <div><div class="g-title">Run the Full SQL Script (DDL)</div><div class="g-subtitle">Create the database and all 11 tables</div></div>
+  </div>
+  <div class="g-card">
+    <div class="g-card-head">▶ Executing the script</div>
+    <div class="g-card-body">
+      <div class="g-step"><div class="g-step-n">1</div><div class="g-step-content"><div class="g-step-title">Select ALL the SQL text</div><div class="g-step-desc">Press <strong>Ctrl+A</strong> to select everything in the query editor. All text should be highlighted.</div></div></div>
+      <div class="g-step"><div class="g-step-n">2</div><div class="g-step-content"><div class="g-step-title">Click the Execute button (⚡ lightning bolt)</div><div class="g-step-desc">The yellow lightning bolt icon in the toolbar runs the selected SQL. Or press <strong>Ctrl+Shift+Enter</strong>. This runs ALL statements at once.</div></div></div>
+      <div class="g-step"><div class="g-step-n">3</div><div class="g-step-content"><div class="g-step-title">Watch the Output panel at the bottom</div><div class="g-step-desc">The <strong>Action Output</strong> tab shows each statement's result. You should see green checkmarks ✓ for each CREATE TABLE.</div></div></div>
+    </div>
+  </div>
+  <div class="g-img-mock">
+    <div class="mock-title">Expected Output Panel after running DDL</div>
+    <div class="g-screen">
+      <div class="g-screen-bar"><span>Action Output</span></div>
+      <div class="g-screen-content">
+        <span style="color:#7ed07e">✓</span> DROP DATABASE IF EXISTS hotel_db  &nbsp;<span style="color:#5c6479">0.031 sec</span><br>
+        <span style="color:#7ed07e">✓</span> CREATE DATABASE hotel_db  &nbsp;<span style="color:#5c6479">0.012 sec</span><br>
+        <span style="color:#7ed07e">✓</span> USE hotel_db  &nbsp;<span style="color:#5c6479">0.001 sec</span><br>
+        <span style="color:#7ed07e">✓</span> CREATE TABLE ROOM_TYPE  &nbsp;<span style="color:#5c6479">0.054 sec</span><br>
+        <span style="color:#7ed07e">✓</span> CREATE TABLE GUEST  &nbsp;<span style="color:#5c6479">0.048 sec</span><br>
+        <span style="color:#7ed07e">✓</span> CREATE TABLE ROOM  &nbsp;<span style="color:#5c6479">0.061 sec</span><br>
+        <span style="color:#7ed07e">✓</span> CREATE TABLE STAFF  &nbsp;<span style="color:#5c6479">0.044 sec</span><br>
+        <span style="color:#7ed07e">✓</span> CREATE TABLE BOOKING  &nbsp;<span style="color:#5c6479">0.073 sec</span><br>
+        <span style="color:#7ed07e">✓</span> ... 6 more tables  &nbsp;<span style="color:#5c6479">OK</span><br>
+        <span style="color:#7ed07e">✓</span> CREATE INDEX idx_booking_guest  &nbsp;<span style="color:#5c6479">0.029 sec</span><br>
+      </div>
+    </div>
+  </div>
+  <div class="g-success"><span class="g-tip-icon">✅</span><span>If you see <strong>all green checkmarks</strong> with no red errors — your DDL is perfect! All 11 tables + 6 indexes created successfully.</span></div>
+  <div class="g-warn"><span class="g-tip-icon">⚠️</span><span>If you see <strong>red errors</strong>: check that you selected ALL the SQL (Ctrl+A) before executing. Also make sure MySQL Server is running.</span></div>
+</div>
+
+<!-- STEP 7 -->
+<div class="g-section">
+  <div class="g-section-hdr">
+    <div class="g-num">7</div>
+    <div><div class="g-title">Verify Tables in the Schema Panel</div><div class="g-subtitle">Confirm all 11 tables appear in the left sidebar</div></div>
+  </div>
+  <div class="g-card">
+    <div class="g-card-head">🗂️ Checking the schema navigator</div>
+    <div class="g-card-body">
+      <div class="g-step"><div class="g-step-n">1</div><div class="g-step-content"><div class="g-step-title">Look at the left panel → "Schemas" tab</div><div class="g-step-desc">Click the <strong>"Schemas"</strong> tab in the Navigator panel on the left side of Workbench.</div></div></div>
+      <div class="g-step"><div class="g-step-n">2</div><div class="g-step-content"><div class="g-step-title">Find "hotel_db" in the list</div><div class="g-step-desc">You should see <strong>hotel_db</strong> listed. Click the arrow ▶ next to it to expand. Then expand <strong>Tables</strong>.</div></div></div>
+      <div class="g-step"><div class="g-step-n">3</div><div class="g-step-content"><div class="g-step-title">Confirm all 11 tables are there</div><div class="g-step-desc">You should see: BOOKING, CHECK_IN, CHECK_OUT, GUEST, PAYMENT, PAYMENT_TYPE, ROOM, ROOM_TYPE, SERVICE, SERVICE_REQUEST, STAFF.</div></div></div>
+      <div class="g-step"><div class="g-step-n">4</div><div class="g-step-content"><div class="g-step-title">If hotel_db is not visible</div><div class="g-step-desc">Right-click anywhere in the Schemas panel and click <strong>"Refresh All"</strong>. It should appear immediately.</div></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- STEP 8 -->
+<div class="g-section">
+  <div class="g-section-hdr">
+    <div class="g-num green">8</div>
+    <div><div class="g-title">Run Sample Data (DML) & Test Queries</div><div class="g-subtitle">The INSERT statements are already in the script — now test with SELECTs</div></div>
+  </div>
+  <div class="g-card">
+    <div class="g-card-head">🧪 Test queries to run after importing</div>
+    <div class="g-card-body">Open a <strong>new query tab</strong> (Ctrl+T) and paste each query below one at a time. Select it and press <strong>Ctrl+Enter</strong> to run just that one query.</div>
+  </div>
+
+  <div class="g-code" id="tq1">
+<span class="cmt">-- Test 1: Check all 11 tables exist</span>
+<span class="kw">USE</span> hotel_db;
+<span class="kw">SHOW TABLES</span>;
+<button class="g-copy-mini" onclick="copyCode('tq1')">Copy</button></div>
+
+  <div class="g-result-mock"><table><tr><th>Tables_in_hotel_db</th></tr><tr><td>BOOKING</td></tr><tr><td>CHECK_IN</td></tr><tr><td>CHECK_OUT</td></tr><tr><td>GUEST</td></tr><tr><td>PAYMENT</td></tr><tr><td>PAYMENT_TYPE</td></tr><tr><td>ROOM</td></tr><tr><td>ROOM_TYPE</td></tr><tr><td>SERVICE</td></tr><tr><td>SERVICE_REQUEST</td></tr><tr><td>STAFF</td></tr></table></div>
+
+  <div class="g-code" id="tq2">
+<span class="cmt">-- Test 2: See all guests</span>
+<span class="kw">SELECT</span> guest_id, first_name, last_name, email, city <span class="kw">FROM</span> <span class="tbl">GUEST</span>;
+<button class="g-copy-mini" onclick="copyCode('tq2')">Copy</button></div>
+
+  <div class="g-result-mock"><table><tr><th>guest_id</th><th>first_name</th><th>last_name</th><th>email</th><th>city</th></tr><tr><td>1</td><td>Parash</td><td>Karki</td><td>parash@email.com</td><td>Bajhang</td></tr><tr><td>2</td><td>Rohit</td><td>Khanal</td><td>rohit@email.com</td><td>Kathmandu</td></tr><tr><td>3</td><td>Ali</td><td>Saad</td><td>ali@email.com</td><td>Riyadh</td></tr><tr><td>4</td><td>Islam</td><td>ved</td><td>islam@email.com</td><td>korea</td></tr><tr><td>5</td><td>Min-jun</td><td>Lee</td><td>minjun@email.com</td><td>Daejeon</td></tr></table></div>
+
+  <div class="g-code" id="tq3">
+<span class="cmt">-- Test 3: Rooms with type name (JOIN query)</span>
+<span class="kw">SELECT</span> r.room_no, r.floor, rt.type_name, r.price_per_night, r.status
+<span class="kw">FROM</span> <span class="tbl">ROOM</span> r
+<span class="kw">JOIN</span> <span class="tbl">ROOM_TYPE</span> rt <span class="kw">ON</span> r.type_id = rt.type_id
+<span class="kw">ORDER BY</span> r.room_no;
+<button class="g-copy-mini" onclick="copyCode('tq3')">Copy</button></div>
+
+  <div class="g-code" id="tq4">
+<span class="cmt">-- Test 4: Bookings with guest name and room number</span>
+<span class="kw">SELECT</span> b.booking_id,
+       <span class="fn">CONCAT</span>(g.first_name, ' ', g.last_name) <span class="kw">AS</span> guest_name,
+       r.room_no,
+       b.check_in_date, b.check_out_date,
+       <span class="fn">DATEDIFF</span>(b.check_out_date, b.check_in_date) <span class="kw">AS</span> nights,
+       b.status
+<span class="kw">FROM</span> <span class="tbl">BOOKING</span> b
+<span class="kw">JOIN</span> <span class="tbl">GUEST</span> g <span class="kw">ON</span> b.guest_id = g.guest_id
+<span class="kw">JOIN</span> <span class="tbl">ROOM</span> r <span class="kw">ON</span> b.room_id = r.room_id;
+<button class="g-copy-mini" onclick="copyCode('tq4')">Copy</button></div>
+
+  <div class="g-code" id="tq5">
+<span class="cmt">-- Test 5: Total revenue per guest (Aggregate)</span>
+<span class="kw">SELECT</span> <span class="fn">CONCAT</span>(g.first_name,' ',g.last_name) <span class="kw">AS</span> guest_name,
+       <span class="fn">COUNT</span>(p.payment_id) <span class="kw">AS</span> total_payments,
+       <span class="fn">SUM</span>(p.amount) <span class="kw">AS</span> total_paid
+<span class="kw">FROM</span> <span class="tbl">GUEST</span> g
+<span class="kw">JOIN</span> <span class="tbl">BOOKING</span> b <span class="kw">ON</span> g.guest_id = b.guest_id
+<span class="kw">JOIN</span> <span class="tbl">PAYMENT</span> p <span class="kw">ON</span> b.booking_id = p.booking_id
+<span class="kw">GROUP BY</span> g.guest_id
+<span class="kw">ORDER BY</span> total_paid <span class="kw">DESC</span>;
+<button class="g-copy-mini" onclick="copyCode('tq5')">Copy</button></div>
+
+  <div class="g-code" id="tq6">
+<span class="cmt">-- Test 6: Service requests with guest and service name</span>
+<span class="kw">SELECT</span> sr.request_id,
+       <span class="fn">CONCAT</span>(g.first_name,' ',g.last_name) <span class="kw">AS</span> guest_name,
+       s.service_name, sr.request_date, sr.status
+<span class="kw">FROM</span> <span class="tbl">SERVICE_REQUEST</span> sr
+<span class="kw">JOIN</span> <span class="tbl">BOOKING</span> b <span class="kw">ON</span> sr.booking_id = b.booking_id
+<span class="kw">JOIN</span> <span class="tbl">GUEST</span> g <span class="kw">ON</span> b.guest_id = g.guest_id
+<span class="kw">JOIN</span> <span class="tbl">SERVICE</span> s <span class="kw">ON</span> sr.service_id = s.service_id;
+<button class="g-copy-mini" onclick="copyCode('tq6')">Copy</button></div>
+
+  <div class="g-tip"><span class="g-tip-icon">💡</span><span>These 6 test queries cover: SHOW TABLES, simple SELECT, JOIN, multi-table JOIN, Aggregate Functions (SUM, COUNT, GROUP BY) — all required for Phase 4 complex queries too!</span></div>
+</div>
+
+<!-- STEP 9 -->
+<div class="g-section">
+  <div class="g-section-hdr">
+    <div class="g-num orange">9</div>
+    <div><div class="g-title">Final Verification Checklist</div><div class="g-subtitle">Make sure everything is correct before submitting</div></div>
+  </div>
+  <div class="g-card">
+    <div class="g-card-head">✅ Phase 2 Verification Checklist</div>
+    <div class="g-card-body">
+      <ul class="g-checklist">
+        <li><span class="ck">✓</span> hotel_db database created successfully</li>
+        <li><span class="ck">✓</span> All 11 tables exist (SHOW TABLES shows 11 rows)</li>
+        <li><span class="ck">✓</span> GUEST table has 5 rows of sample data</li>
+        <li><span class="ck">✓</span> ROOM table has 6 rooms with correct ENUM status values</li>
+        <li><span class="ck">✓</span> BOOKING table has 5 bookings with FK references to GUEST and ROOM</li>
+        <li><span class="ck">✓</span> PAYMENT table has 4 payment records</li>
+        <li><span class="ck">✓</span> SERVICE_REQUEST has 4 records linking BOOKING ↔ SERVICE</li>
+        <li><span class="ck">✓</span> All foreign key constraints are working (no error on INSERT)</li>
+        <li><span class="ck">✓</span> JOIN queries return correct results</li>
+        <li><span class="ck">✓</span> No red errors in the Action Output panel</li>
+        <li><span class="ck-todo">○</span> Screenshot taken of SHOW TABLES result</li>
+        <li><span class="ck-todo">○</span> Screenshot taken of each CREATE TABLE result</li>
+        <li><span class="ck-todo">○</span> hotel_management.sql file saved for submission</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="g-code" id="tq7">
+<span class="cmt">-- Run this final verification query</span>
+<span class="kw">SELECT</span> table_name <span class="kw">AS</span> 'Table',
+       table_rows <span class="kw">AS</span> 'Approx Rows',
+       create_time <span class="kw">AS</span> 'Created'
+<span class="kw">FROM</span> information_schema.tables
+<span class="kw">WHERE</span> table_schema = 'hotel_db'
+<span class="kw">ORDER BY</span> table_name;
+<button class="g-copy-mini" onclick="copyCode('tq7')">Copy</button></div>
+</div>
+
+<!-- STEP 10 -->
+<div class="g-section">
+  <div class="g-section-hdr">
+    <div class="g-num green" style="background:#7c3aed">10</div>
+    <div><div class="g-title">What to Submit for Phase 2</div><div class="g-subtitle">Everything the professor expects to see</div></div>
+  </div>
+  <div class="g-final-card">
+    <h3>📦 Phase 2 Deliverables</h3>
+    <ul class="g-checklist">
+      <li><span class="ck">✓</span> <strong>hotel_management.sql</strong> — the full DDL + DML script file</li>
+      <li><span class="ck">✓</span> <strong>E-R Diagram</strong> — your PNG/PDF showing all entities, relationships, cardinalities</li>
+      <li><span class="ck">✓</span> <strong>Relational Schema document</strong> — all 11 tables with PK/FK/constraints listed</li>
+      <li><span class="ck">✓</span> <strong>Normalization proof</strong> — 1NF → 2NF → 3NF → BCNF written explanation</li>
+      <li><span class="ck">✓</span> <strong>Functional Dependencies</strong> — FDs for each table</li>
+      <li><span class="ck">✓</span> <strong>Screenshots</strong> — Workbench showing tables + sample data results</li>
+      <li><span class="ck-todo">○</span> <strong>Team R&R document</strong> — who did what (Database Architect, SQL Dev, Data Analyst)</li>
+      <li><span class="ck-todo">○</span> <strong>MySQL installation screenshot</strong> — proves setup was done</li>
+    </ul>
+  </div>
+
+  <div class="g-card">
+    <div class="g-card-head">📊 Grading Breakdown — How to Score Full Marks</div>
+    <div class="g-card-body">
+      <div class="g-step"><div class="g-step-n" style="background:#102040;color:#6ab0f5;border-color:#1a4080">20%</div><div class="g-step-content"><div class="g-step-title">E-R Modeling</div><div class="g-step-desc">All entities, composite/multivalued attributes, cardinalities, participation constraints correct. Your diagram already covers this perfectly.</div></div></div>
+      <div class="g-step"><div class="g-step-n" style="background:#0a2a0a;color:#7ed07e;border-color:#1a4a1a">25%</div><div class="g-step-content"><div class="g-step-title">Schema Mapping & Normalization</div><div class="g-step-desc">E-R correctly converted to relational schema. BCNF achieved with no redundancy. Lossless join decomposition verified. ← This is Phase 2.</div></div></div>
+      <div class="g-step"><div class="g-step-n" style="background:#2a1800;color:#e8974a;border-color:#4a3000">25%</div><div class="g-step-content"><div class="g-step-title">SQL Implementation & Constraints</div><div class="g-step-desc">CREATE TABLE with NOT NULL, UNIQUE, CHECK, FOREIGN KEY constraints. INSERT sample data. Indexes created. ← Your .sql file covers this.</div></div></div>
+      <div class="g-step"><div class="g-step-n" style="background:#1a1030;color:#c084fc;border-color:#3a2060">20%</div><div class="g-step-content"><div class="g-step-title">Complex Queries & Advanced Features</div><div class="g-step-desc">At least 5 complex queries with JOINs, nested subqueries, aggregate functions, views. Use the test queries above as a starting point for Phase 4.</div></div></div>
+      <div class="g-step"><div class="g-step-n" style="background:#1a1a2a;color:#888;border-color:#333">10%</div><div class="g-step-content"><div class="g-step-title">Teamwork & Documentation</div><div class="g-step-desc">Clear R&R roles assigned. MySQL install documented. Team meeting minutes. Process documented from start to finish.</div></div></div>
+    </div>
+  </div>
+
+  <div class="nav-btns">
+    <button class="nav-btn nb-dl" onclick="downloadSQL()">⬇ Download hotel_db.sql</button>
+    <button class="nav-btn nb-next" onclick="switchMainTab('sql',document.getElementById('tsql'))">📄 View SQL Source</button>
+    <button class="nav-btn nb-prev" onclick="switchMainTab('data',document.getElementById('tdata'))">← Back to Table Data</button>
+  </div>
+</div>
+
+</div>`;
+}
+
+// ── ER DIAGRAM ZOOM/PAN VIEWER ────────────────────────────────────────
+(function () {
+  var sc = 1, tx = 0, ty = 0, fitSc = 1;
+  var drag = false, px = 0, py = 0;
+  var pinchDist = 0;
+  var MIN_SC = 0.1, MAX_SC = 8;
+
+  function canvas()  { return document.getElementById('erCanvas'); }
+  function wrap()    { return document.getElementById('erWrap'); }
+  function img()     { return document.getElementById('erImg'); }
+  function lbl()     { return document.getElementById('erZoomLbl'); }
+
+  function applyT() {
+    wrap().style.transform = 'translate('+tx.toFixed(1)+'px,'+ty.toFixed(1)+'px) scale('+sc+')';
+    lbl().textContent = Math.round(sc * 100) + '%';
+  }
+
+  function clamp() {
+    var c = canvas(), iw = img().naturalWidth * sc, ih = img().naturalHeight * sc;
+    var m = 60;
+    tx = Math.min(c.clientWidth  - m, Math.max(m - iw, tx));
+    ty = Math.min(c.clientHeight - m, Math.max(m - ih, ty));
+  }
+
+  function zoomAt(cx, cy, newSc) {
+    newSc = Math.max(MIN_SC, Math.min(MAX_SC, newSc));
+    var ratio = newSc / sc;
+    tx = cx - ratio * (cx - tx);
+    ty = cy - ratio * (cy - ty);
+    sc = newSc;
+    clamp();
+    applyT();
+  }
+
+  function fit() {
+    var c = canvas(), im = img();
+    var iw = im.naturalWidth, ih = im.naturalHeight;
+    if (!iw || !ih) return;
+    fitSc = Math.min((c.clientWidth * 0.97) / iw, (c.clientHeight * 0.97) / ih);
+    sc = fitSc;
+    tx = (c.clientWidth  - iw * sc) / 2;
+    ty = (c.clientHeight - ih * sc) / 2;
+    applyT();
+  }
+
+  window.erFit = fit;
+
+  window.erOneToOne = function () {
+    var c = canvas(), im = img();
+    sc = 1;
+    tx = (c.clientWidth  - im.naturalWidth)  / 2;
+    ty = (c.clientHeight - im.naturalHeight) / 2;
+    clamp();
+    applyT();
+  };
+
+  window.erZoomBy = function (factor) {
+    var c = canvas();
+    zoomAt(c.clientWidth / 2, c.clientHeight / 2, sc * factor);
+  };
+
+  window.openERDiagram = function () {
+    var ov = document.getElementById('erOverlay');
+    ov.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+    var im = img();
+    if (im.complete && im.naturalWidth) fit();
+    else im.onload = fit;
+  };
+
+  window.closeERDiagram = function () {
+    document.getElementById('erOverlay').style.display = 'none';
+    document.body.style.overflow = '';
+  };
+
+  // scroll wheel zoom
+  document.getElementById('erCanvas').addEventListener('wheel', function (e) {
+    e.preventDefault();
+    var r = this.getBoundingClientRect();
+    zoomAt(e.clientX - r.left, e.clientY - r.top, sc * (e.deltaY < 0 ? 1.13 : 1 / 1.13));
+  }, { passive: false });
+
+  // mouse drag
+  var cv = document.getElementById('erCanvas');
+  cv.addEventListener('mousedown', function (e) {
+    if (e.button !== 0) return;
+    drag = true; px = e.clientX; py = e.clientY;
+    this.style.cursor = 'grabbing';
+    e.preventDefault();
+  });
+  document.addEventListener('mousemove', function (e) {
+    if (!drag) return;
+    tx += e.clientX - px; ty += e.clientY - py;
+    px = e.clientX; py = e.clientY;
+    clamp(); applyT();
+  });
+  document.addEventListener('mouseup', function () {
+    if (drag) { drag = false; var c = document.getElementById('erCanvas'); if (c) c.style.cursor = 'grab'; }
+  });
+
+  // double-click to fit
+  cv.addEventListener('dblclick', fit);
+
+  // touch drag + pinch zoom
+  cv.addEventListener('touchstart', function (e) {
+    e.preventDefault();
+    if (e.touches.length === 1) {
+      drag = true; px = e.touches[0].clientX; py = e.touches[0].clientY;
+    } else if (e.touches.length === 2) {
+      drag = false;
+      pinchDist = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
+    }
+  }, { passive: false });
+
+  cv.addEventListener('touchmove', function (e) {
+    e.preventDefault();
+    if (e.touches.length === 1 && drag) {
+      tx += e.touches[0].clientX - px; ty += e.touches[0].clientY - py;
+      px = e.touches[0].clientX; py = e.touches[0].clientY;
+      clamp(); applyT();
+    } else if (e.touches.length === 2) {
+      var d = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
+      var r = this.getBoundingClientRect();
+      var cx = (e.touches[0].clientX + e.touches[1].clientX) / 2 - r.left;
+      var cy = (e.touches[0].clientY + e.touches[1].clientY) / 2 - r.top;
+      if (pinchDist) zoomAt(cx, cy, sc * (d / pinchDist));
+      pinchDist = d;
+    }
+  }, { passive: false });
+
+  cv.addEventListener('touchend', function () { drag = false; pinchDist = 0; });
+
+  document.addEventListener('keydown', function (e) {
+    if (document.getElementById('erOverlay').style.display === 'none') return;
+    if (e.key === 'Escape') window.closeERDiagram();
+    if (e.key === '+' || e.key === '=') window.erZoomBy(1.2);
+    if (e.key === '-') window.erZoomBy(1 / 1.2);
+    if (e.key === '0') fit();
+    if (e.key === '1') window.erOneToOne();
+  });
+})();
+
+function copyCode(id) {
+  const el = document.getElementById(id);
+  const text = el.innerText.replace('Copy','').trim();
+  navigator.clipboard.writeText(text).catch(() => {
+    const ta = document.createElement('textarea');
+    ta.value = text; ta.style.cssText='position:fixed;top:-9999px';
+    document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
+  });
+  const btn = el.querySelector('.g-copy-mini');
+  const orig = btn.textContent; btn.textContent='✓'; btn.style.color='var(--gn2)';
+  setTimeout(()=>{ btn.textContent=orig; btn.style.color=''; },1500);
+}
+
+</script>
+</body>
+</html>
