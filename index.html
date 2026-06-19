@@ -1,0 +1,2595 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Parash</title>
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background-image: url('ROOM.png');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+      overflow: hidden;
+    }
+
+    /* ── Darkness overlay ── */
+    #darkness {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 10, 0.72);
+      z-index: 10;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 1.5s linear;
+    }
+    body.lights-off #darkness { opacity: 1; }
+
+    /* ── Dust particles ── */
+    #dust {
+      position: fixed;
+      inset: 0;
+      z-index: 9;
+      pointer-events: none;
+    }
+    .dust-particle {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(255, 240, 200, 0.55);
+      animation: floatDust linear infinite;
+    }
+    @keyframes floatDust {
+      0%   { transform: translate(0, 0) scale(1);   opacity: 0; }
+      10%  { opacity: 1; }
+      50%  { transform: translate(var(--dx), var(--dy)) scale(1.2); opacity: 0.7; }
+      90%  { opacity: 0.4; }
+      100% { transform: translate(var(--dx2), var(--dy2)) scale(0.8); opacity: 0; }
+    }
+
+    /* ── Bulb sway with breeze ── */
+    .bulb {
+      position: fixed;
+      top: 20px;
+      right: 40px;
+      width: 90px;
+      transform-origin: top center;
+      z-index: 12;
+      cursor: pointer;
+      animation: bulbSway 5s ease-in-out infinite;
+    }
+    @keyframes bulbSway {
+      0%   { transform: rotate(28deg); }
+      25%  { transform: rotate(33deg); }
+      50%  { transform: rotate(29deg); }
+      75%  { transform: rotate(32deg); }
+      100% { transform: rotate(28deg); }
+    }
+
+    .bulb img {
+      width: 100%;
+      display: block;
+      transition: filter 1.5s linear;
+    }
+    body.lights-off .bulb img {
+      filter: brightness(0.25) grayscale(0.6);
+    }
+
+    /* Wire */
+    .bulb::before {
+      content: '';
+      position: absolute;
+      top: -50px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 2px;
+      height: 62px;
+      background: linear-gradient(180deg, #555 0%, #222 100%);
+      border-radius: 1px;
+      z-index: 2;
+    }
+
+    /* Glow */
+    .bulb::after {
+      content: '';
+      position: absolute;
+      top: 30%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 120px;
+      height: 120px;
+      background: radial-gradient(circle, rgba(255, 220, 80, 0.55) 0%, transparent 70%);
+      border-radius: 50%;
+      z-index: -1;
+      opacity: 1;
+      transition: opacity 1.5s linear;
+      pointer-events: none;
+      animation: glowPulse 5s ease-in-out infinite;
+    }
+    @keyframes glowPulse {
+      0%, 100% { opacity: 0.85; transform: translate(-50%, -50%) scale(1);   }
+      50%       { opacity: 1;    transform: translate(-50%, -50%) scale(1.12); }
+    }
+    body.lights-off .bulb::after { opacity: 0; animation: none; }
+
+    /* ── Room ambient light shimmer ── */
+    #ambient {
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(ellipse at 70% 10%, rgba(255,230,120,0.08) 0%, transparent 60%);
+      z-index: 0;
+      pointer-events: none;
+      animation: ambientShimmer 7s ease-in-out infinite;
+      transition: opacity 1.5s linear;
+    }
+    @keyframes ambientShimmer {
+      0%, 100% { opacity: 0.6; }
+      50%       { opacity: 1;   }
+    }
+    body.lights-off #ambient { opacity: 0; }
+
+    /* ── Map on back wall ── */
+    .map {
+      position: fixed;
+      top: 5%;
+      left: 70%;
+      transform: translateX(-50%);
+      width: 280px;
+      z-index: 1;
+      pointer-events: none;
+      mix-blend-mode: screen;
+      opacity: 0.88;
+    }
+    .map img {
+      width: 100%;
+      display: block;
+    }
+    body.lights-off .map {
+      opacity: 0.25;
+      transition: opacity 1.5s linear;
+    }
+
+    /* ── Gallery frame on back wall ── */
+    .gallery-frame {
+      position: fixed;
+      top: 7%;
+      left: 32%;
+      width: 130px;
+      z-index: 1;
+      transform: rotate(-1.5deg);
+      filter: drop-shadow(3px 5px 14px rgba(0,0,0,0.65));
+      transition: filter 1.5s linear, transform 0.3s ease;
+      cursor: pointer;
+    }
+    .gallery-frame img {
+      width: 100%;
+      display: block;
+    }
+    .gallery-frame:hover {
+      transform: rotate(-1.5deg) scale(1.06);
+      filter: drop-shadow(3px 5px 20px rgba(0,0,0,0.75)) brightness(1.08);
+    }
+    body.lights-off .gallery-frame {
+      filter: brightness(0.25) drop-shadow(2px 4px 8px rgba(0,0,0,0.9));
+    }
+
+    /* ── Wake-up flicker keyframes ── */
+    @keyframes wakeFlicker {
+      0%   { filter: brightness(1)   drop-shadow(0 0 0px   transparent); }
+      6%   { filter: brightness(2.2) drop-shadow(0 0 14px  white); }
+      12%  { filter: brightness(1.1) drop-shadow(0 0 2px   rgba(255,255,255,0.2)); }
+      20%  { filter: brightness(2.5) drop-shadow(0 0 20px  white); }
+      28%  { filter: brightness(1.2) drop-shadow(0 0 4px   rgba(255,255,255,0.4)); }
+      38%  { filter: brightness(2)   drop-shadow(0 0 16px  white); }
+      50%  { filter: brightness(1.5) drop-shadow(0 0 10px  rgba(255,255,255,0.7)); }
+      65%  { filter: brightness(1.8) drop-shadow(0 0 14px  rgba(255,255,255,0.85)); }
+      80%  { filter: brightness(1.6) drop-shadow(0 0 12px  rgba(255,255,255,0.75)); }
+      100% { filter: brightness(1.4) drop-shadow(0 0 10px  rgba(255,255,255,0.55)); }
+    }
+
+    /* ── Mee character ── */
+    .mee {
+      position: fixed;
+      top: 0;
+      bottom: 195px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 220px;
+      overflow: hidden;
+      z-index: 2;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+    .mee img {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      transition: opacity 1.5s linear, filter 0.3s ease;
+    }
+    .mee .img-awake { opacity: 1; }
+    .mee .img-sleep { opacity: 0; }
+    body.lights-off .mee .img-awake { opacity: 0; }
+    body.lights-off .mee .img-sleep { opacity: 1; }
+
+    .mee-anim-canvas {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      z-index: 1;
+      pointer-events: none;
+      transition: opacity 1.5s linear;
+    }
+    body.lights-off .mee-anim-canvas { opacity: 0; }
+
+    @keyframes meeHoverMove {
+      0%   { transform: translateX(-50%) translateY(0) scale(1); }
+      45%  { transform: translateX(-50%) translateY(-10px) scale(1.025); }
+      100% { transform: translateX(-50%) translateY(-6px) scale(1.015); }
+    }
+
+    /* Flicker plus position movement on hover */
+    .mee:hover,
+    .mee:focus {
+      animation: meeHoverMove 0.9s ease-in-out infinite alternate;
+    }
+    .mee:hover .img-awake,
+    .mee:focus .img-awake {
+      animation: wakeFlicker 1s ease-out forwards;
+    }
+
+    /* ── Housefly canvas ── */
+    #fly {
+      position: fixed;
+      z-index: 13;
+      pointer-events: none;
+      mix-blend-mode: multiply;
+      transition: opacity 0.4s ease;
+    }
+
+    /* ── Cat canvas ── */
+    #cat {
+      position: fixed;
+      bottom: 0;
+      z-index: 1;
+      pointer-events: none;
+      mix-blend-mode: multiply;
+    }
+    /* Subtle breathing when the cat is idle */
+    #cat.idle {
+      animation: catBreathe 2.6s ease-in-out infinite;
+    }
+    #cat.walking {
+      animation: catWalkBob 0.42s ease-in-out infinite;
+    }
+    @keyframes catBreathe {
+      0%, 100% { transform: translateY(0px); }
+      45%      { transform: translateY(-2px); }
+      70%      { transform: translateY(-1px); }
+    }
+    @keyframes catWalkBob {
+      0%, 100% { transform: translateY(0px); }
+      50%      { transform: translateY(-3px); }
+    }
+
+    /* ── Telephone on table (left side) ── */
+    .telephone {
+      position: fixed;
+      bottom: 180px;
+      left: calc(48% - 215px);
+      width: 90px;
+      z-index: 3;
+      cursor: grab;
+      transition: transform 0.2s ease;
+    }
+    .telephone.dragging,
+    .telephone.dragging:hover,
+    .telephone.dragging:focus {
+      cursor: grabbing !important;
+      z-index: 50;
+      transition: none !important;
+      animation: none !important;
+      user-select: none;
+    }
+    .telephone.dragging img,
+    .telephone.dragging:hover img {
+      animation: none !important;
+    }
+    .telephone img {
+      width: 100%;
+      display: block;
+      transition: filter 0.3s ease;
+    }
+    @keyframes telephoneHoverMove {
+      0%   { transform: translateY(0) scale(1); }
+      45%  { transform: translateY(-7px) scale(1.05); }
+      100% { transform: translateY(-4px) scale(1.02); }
+    }
+    .telephone:hover,
+    .telephone:focus {
+      animation: telephoneHoverMove 0.75s ease-in-out infinite alternate;
+    }
+    .telephone:hover img,
+    .telephone:focus img {
+      animation: wakeFlicker 1s ease-out forwards;
+    }
+
+    /* ── Phone modal ── */
+    .phone-modal-overlay {
+      position: fixed;
+      right: 4%;
+      bottom: 195px;
+      z-index: 50;
+      pointer-events: none;
+    }
+    .phone-modal-overlay.open {
+      pointer-events: all;
+    }
+    .phone-frame {
+      width: 260px;
+      height: 510px;
+      background: #111;
+      border-radius: 40px;
+      border: 3px solid #2a2a2a;
+      box-shadow: 0 0 0 1px #000, 0 30px 80px rgba(0,0,0,0.8), inset 0 0 0 1px #1e1e1e;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 12px 0 20px;
+      transform: translate(var(--tel-dx, 0px), var(--tel-dy, 0px)) scale(0);
+      opacity: 0;
+      transform-origin: center center;
+      transition: transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1),
+                  opacity 0.3s ease;
+    }
+    .phone-modal-overlay.open .phone-frame {
+      transform: translate(0px, 0px) scale(1);
+      opacity: 1;
+    }
+    .phone-notch {
+      width: 100px;
+      height: 24px;
+      background: #111;
+      border-radius: 0 0 16px 16px;
+      margin-bottom: 8px;
+      position: relative;
+      cursor: grab;
+    }
+    .phone-modal-overlay.dragging .phone-notch { cursor: grabbing; }
+    .phone-modal-overlay.dragging,
+    .phone-modal-overlay.dragging * {
+      cursor: grabbing !important;
+      user-select: none;
+    }
+    .phone-notch::after {
+      content: '';
+      position: absolute;
+      top: 6px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+      background: #1a1a1a;
+      box-shadow: inset 0 0 4px rgba(80,120,255,0.35);
+    }
+    .phone-screen {
+      flex: 1;
+      width: calc(100% - 16px);
+      background: #0d0d1a;
+      border-radius: 8px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    .phone-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 16px 10px;
+      background: linear-gradient(135deg, #1a1a2e, #16213e);
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+      flex-shrink: 0;
+    }
+    .phone-header span {
+      color: #dde0ff;
+      font-size: 15px;
+      font-weight: 600;
+      font-family: 'Segoe UI', sans-serif;
+      letter-spacing: 0.5px;
+    }
+    .phone-close-btn {
+      background: none;
+      border: none;
+      color: rgba(255,255,255,0.45);
+      cursor: pointer;
+      font-size: 17px;
+      line-height: 1;
+      padding: 0 2px;
+      transition: color 0.2s;
+    }
+    .phone-close-btn:hover { color: #fff; }
+    .phone-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 18px 16px 12px;
+      scrollbar-width: thin;
+      scrollbar-color: #2a2a3a transparent;
+    }
+    .phone-body::-webkit-scrollbar { width: 4px; }
+    .phone-body::-webkit-scrollbar-thumb { background: #2a2a3a; border-radius: 2px; }
+    .phone-form-group {
+      margin-bottom: 14px;
+    }
+    .phone-form-group label {
+      display: block;
+      color: rgba(180,185,255,0.7);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 5px;
+      font-family: 'Segoe UI', sans-serif;
+    }
+    .phone-form-group input,
+    .phone-form-group textarea {
+      width: 100%;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 8px;
+      padding: 9px 11px;
+      color: #e8eaff;
+      font-size: 13px;
+      font-family: 'Segoe UI', sans-serif;
+      outline: none;
+      box-sizing: border-box;
+      transition: border-color 0.2s, background 0.2s;
+      resize: none;
+    }
+    .phone-form-group input:focus,
+    .phone-form-group textarea:focus {
+      border-color: rgba(110,110,255,0.55);
+      background: rgba(255,255,255,0.08);
+    }
+    .phone-form-group input::placeholder,
+    .phone-form-group textarea::placeholder {
+      color: rgba(255,255,255,0.22);
+    }
+    .phone-send-btn {
+      width: 100%;
+      padding: 11px;
+      background: linear-gradient(135deg, #4545e8, #7060f5);
+      border: none;
+      border-radius: 10px;
+      color: #fff;
+      font-size: 14px;
+      font-weight: 600;
+      font-family: 'Segoe UI', sans-serif;
+      cursor: pointer;
+      transition: opacity 0.2s, transform 0.1s;
+      margin-top: 6px;
+    }
+    .phone-send-btn:hover  { opacity: 0.88; }
+    .phone-send-btn:active { transform: scale(0.98); }
+    .phone-success {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      gap: 10px;
+      text-align: center;
+      padding: 20px;
+    }
+    .phone-success .check-icon { font-size: 44px; }
+    .phone-success h3 {
+      margin: 0;
+      font-size: 16px;
+      color: #dde0ff;
+      font-family: 'Segoe UI', sans-serif;
+    }
+    .phone-success p {
+      margin: 0;
+      font-size: 13px;
+      color: rgba(200,200,255,0.55);
+      font-family: 'Segoe UI', sans-serif;
+    }
+    .phone-home-bar {
+      width: 100px;
+      height: 4px;
+      background: rgba(255,255,255,0.18);
+      border-radius: 2px;
+      margin-top: 12px;
+      flex-shrink: 0;
+    }
+
+    /* ── Laptop on table ── */
+    .laptop {
+      position: fixed;
+      bottom: 175px;
+      left: 55%;
+      transform: translateX(-50%);
+      width: 220px;
+      z-index: 3;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+    .laptop img {
+      width: 100%;
+      display: block;
+      transition: filter 0.3s ease;
+    }
+    @keyframes laptopHoverMove {
+      0%   { transform: translateX(-50%) translateY(0) rotate(0deg); }
+      45%  { transform: translateX(-50%) translateY(-7px) rotate(-1deg); }
+      100% { transform: translateX(-50%) translateY(-4px) rotate(1deg); }
+    }
+    .laptop:hover,
+    .laptop:focus {
+      animation: laptopHoverMove 0.75s ease-in-out infinite alternate;
+    }
+    .laptop:hover img,
+    .laptop:focus img {
+      animation: wakeFlicker 1s ease-out forwards;
+    }
+
+    /* ── Laptop screen modal ── */
+    .laptop-modal-overlay {
+      position: fixed;
+      left: 2%;
+      bottom: 195px;
+      z-index: 50;
+      pointer-events: none;
+    }
+    .laptop-modal-overlay.open {
+      pointer-events: all;
+    }
+    .laptop-screen-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      transform: translate(var(--lap-dx, 0px), var(--lap-dy, 0px)) scale(0);
+      opacity: 0;
+      transform-origin: center center;
+      transition: transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1),
+                  opacity 0.3s ease;
+    }
+    .laptop-modal-overlay.open .laptop-screen-wrap {
+      transform: translate(0px, 0px) scale(1);
+      opacity: 1;
+    }
+    .laptop-screen-frame {
+      width: min(600px, 50vw);
+      border-radius: 12px 12px 0 0;
+      overflow: hidden;
+      background: #111;
+      border: 2px solid #1e1e1e;
+      box-shadow: 0 0 0 2px #2a2a2a, 0 40px 80px rgba(0,0,0,0.9);
+    }
+    .lsc-browser-chrome {
+      background: #1c1c1c;
+      padding: 10px 14px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border-bottom: 1px solid #2a2a2a;
+      cursor: grab;
+    }
+    .laptop-modal-overlay.dragging .lsc-browser-chrome { cursor: grabbing; }
+    .laptop-modal-overlay.dragging,
+    .laptop-modal-overlay.dragging * {
+      cursor: grabbing !important;
+      user-select: none;
+    }
+    /* keep dot cursors readable when not dragging */
+    .laptop-modal-overlay:not(.dragging) .lsc-dot { cursor: pointer; }
+    .lsc-dots { display: flex; gap: 7px; }
+    .lsc-dot {
+      width: 12px; height: 12px;
+      border-radius: 50%;
+      cursor: pointer;
+      transition: filter 0.15s;
+    }
+    .lsc-dot:hover { filter: brightness(1.35); }
+    .lsc-dot.r { background: #ff5f56; }
+    .lsc-dot.y { background: #ffbd2e; }
+    .lsc-dot.g { background: #27c93f; }
+    .lsc-url-bar {
+      flex: 1;
+      background: #111;
+      border: 1px solid #2e2e2e;
+      border-radius: 6px;
+      padding: 5px 14px;
+      color: rgba(255,255,255,0.38);
+      font-size: 12px;
+      font-family: 'Segoe UI', monospace;
+    }
+    .lsc-page {
+      background: #020617;
+      min-height: 420px;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .lsc-grid {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(16,185,129,0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(16,185,129,0.05) 1px, transparent 1px);
+      background-size: 38px 38px;
+      animation: lscGridScroll 10s linear infinite;
+      pointer-events: none;
+    }
+    @keyframes lscGridScroll {
+      0%   { transform: translateY(0); }
+      100% { transform: translateY(38px); }
+    }
+    .lsc-orb1 {
+      position: absolute; top: -80px; left: -80px;
+      width: 320px; height: 320px;
+      background: radial-gradient(circle, rgba(16,185,129,0.13) 0%, transparent 70%);
+      border-radius: 50%; pointer-events: none;
+    }
+    .lsc-orb2 {
+      position: absolute; bottom: -80px; right: -60px;
+      width: 280px; height: 280px;
+      background: radial-gradient(circle, rgba(34,211,238,0.1) 0%, transparent 70%);
+      border-radius: 50%; pointer-events: none;
+    }
+    .lsc-content {
+      position: relative; z-index: 1;
+      display: flex; flex-direction: column;
+      align-items: center; gap: 18px;
+      padding: 44px 28px; text-align: center;
+    }
+    .lsc-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 5px 16px;
+      background: rgba(16,185,129,0.1);
+      border: 1px solid rgba(16,185,129,0.25);
+      border-radius: 999px;
+      color: #10b981;
+      font-size: 11px; font-weight: 700;
+      letter-spacing: 1.5px; text-transform: uppercase;
+      font-family: 'Segoe UI', sans-serif;
+    }
+    .lsc-pulse {
+      width: 6px; height: 6px;
+      background: #10b981; border-radius: 50%;
+      animation: lscPulse 2s infinite;
+    }
+    @keyframes lscPulse {
+      0%,100% { transform: scale(1); opacity: 1; }
+      50%      { transform: scale(2); opacity: 0; }
+    }
+    .lsc-title {
+      font-size: clamp(22px, 4vw, 40px);
+      font-weight: 800; color: #f1f5f9;
+      line-height: 1.2; margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+    }
+    .lsc-title span {
+      background: linear-gradient(135deg, #10b981, #22d3ee);
+      -webkit-background-clip: text; background-clip: text;
+      color: transparent;
+    }
+    .lsc-sub {
+      color: #64748b; font-size: 14px;
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0; max-width: 400px; line-height: 1.65;
+    }
+    .lsc-chips {
+      display: flex; flex-wrap: wrap; gap: 8px; justify-content: center;
+    }
+    .lsc-chip {
+      padding: 5px 13px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 8px;
+      color: #94a3b8; font-size: 12px;
+      font-family: 'Segoe UI', sans-serif;
+    }
+    .lsc-go-btn {
+      display: inline-flex; align-items: center; gap: 10px;
+      padding: 13px 32px;
+      background: linear-gradient(135deg, #10b981, #22d3ee);
+      border-radius: 10px; border: none;
+      color: #020617; font-size: 15px; font-weight: 700;
+      font-family: 'Segoe UI', sans-serif;
+      text-decoration: none; cursor: pointer;
+      box-shadow: 0 4px 22px rgba(16,185,129,0.4);
+      transition: transform 0.2s, box-shadow 0.2s;
+      margin-top: 6px;
+    }
+    .lsc-go-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 30px rgba(16,185,129,0.55);
+    }
+    .lsc-go-btn:active { transform: scale(0.97); }
+
+    /* ── Laptop screen (iframe) ── */
+    .lsc-page {
+      position: relative !important;
+      overflow: hidden !important;
+      min-height: 348px !important;
+      height: 348px !important;
+      display: block !important;
+      background: #fff !important;
+    }
+    .lsc-iframe {
+      position: absolute;
+      top: 0; left: 0;
+      width: 1080px;
+      height: 640px;
+      border: none;
+      transform: scale(0.556);
+      transform-origin: top left;
+    }
+    /* Maximize state */
+    .laptop-modal-overlay.maximized .laptop-screen-frame { width: min(820px, 88vw); }
+    .laptop-modal-overlay.maximized .laptop-base-bar     { width: min(820px, 88vw); }
+    .laptop-modal-overlay.maximized .lsc-page            { height: 470px !important; min-height: 470px !important; }
+    .laptop-modal-overlay.maximized .lsc-iframe          { transform: scale(0.759); }
+
+    .laptop-base-bar {
+      width: min(600px, 50vw);
+      height: 20px;
+      background: linear-gradient(180deg, #1a1a1a, #222);
+      border-radius: 0 0 10px 10px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.7);
+      display: flex; align-items: flex-end;
+      justify-content: center; padding-bottom: 3px;
+    }
+    .laptop-hinge-bar {
+      width: 80px; height: 5px;
+      background: #111; border-radius: 3px 3px 0 0;
+    }
+
+    /* ── Mee Resume ── */
+    .mee-resume-overlay {
+      position: fixed;
+      left: 2%;
+      bottom: 20px;
+      z-index: 50;
+      pointer-events: none;
+    }
+    .mee-resume-overlay.open { pointer-events: all; }
+    .resume-wrap {
+      display: flex; flex-direction: column; align-items: stretch;
+      transform: translate(var(--mee-dx, 0px), var(--mee-dy, 0px)) scale(0);
+      opacity: 0; transform-origin: center center;
+      transition: transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease;
+      filter: drop-shadow(0 24px 60px rgba(0,0,0,0.8)) drop-shadow(0 4px 12px rgba(0,0,0,0.5));
+    }
+    .mee-resume-overlay.open .resume-wrap {
+      transform: translate(0px, 0px) scale(1);
+      opacity: 1;
+    }
+    /* Top chrome bar */
+    .resume-topbar {
+      display: flex; align-items: center; justify-content: space-between;
+      background: rgba(20, 18, 45, 0.97);
+      border-radius: 14px 14px 0 0;
+      padding: 7px 12px;
+      backdrop-filter: blur(10px);
+    }
+    .resume-topbar-label {
+      font-size: 10.5px; color: #9ca3af;
+      font-family: 'Segoe UI', sans-serif; font-weight: 500;
+      display: flex; align-items: center; gap: 5px;
+    }
+    .resume-topbar-label i { color: #818cf8; }
+    .resume-dl-btn {
+      display: flex; align-items: center; gap: 5px;
+      padding: 5px 11px;
+      background: linear-gradient(135deg, #6366f1, #a855f7);
+      border: none; border-radius: 7px;
+      color: white; font-size: 10px; font-weight: 700;
+      font-family: 'Segoe UI', sans-serif;
+      cursor: pointer; letter-spacing: 0.2px;
+      transition: opacity 0.2s, transform 0.15s, box-shadow 0.2s;
+      box-shadow: 0 2px 10px rgba(99,102,241,0.4);
+    }
+    .resume-dl-btn:hover { opacity: 0.9; transform: translateY(-1px); box-shadow: 0 4px 16px rgba(99,102,241,0.55); }
+    /* Resume card */
+    .resume-card {
+      width: 370px;
+      background: #fff;
+      border-radius: 0 0 14px 14px;
+      overflow: hidden;
+      font-family: 'Segoe UI', sans-serif;
+    }
+    /* ── Header band ── */
+    .rc-header {
+      background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+      padding: 20px 22px 16px;
+      color: white;
+      position: relative;
+      overflow: hidden;
+    }
+    .rc-header::after {
+      content: '';
+      position: absolute; right: -20px; top: -20px;
+      width: 120px; height: 120px;
+      border-radius: 50%;
+      background: rgba(99,102,241,0.15);
+      pointer-events: none;
+    }
+    .rc-header::before {
+      content: '';
+      position: absolute; right: 20px; bottom: -30px;
+      width: 80px; height: 80px;
+      border-radius: 50%;
+      background: rgba(168,85,247,0.12);
+      pointer-events: none;
+    }
+    .rc-header-inner {
+      display: flex; align-items: center; gap: 16px;
+      position: relative;
+    }
+    .rc-photo-wrap {
+      width: 72px; height: 72px; flex-shrink: 0;
+      border-radius: 50%;
+      border: 2.5px solid rgba(165,180,252,0.75);
+      overflow: hidden;
+      box-shadow: 0 0 0 3px rgba(99,102,241,0.3), 0 4px 16px rgba(0,0,0,0.4);
+    }
+    .rc-photo { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .rc-header-text { flex: 1; }
+    .rc-name {
+      font-size: 22px; font-weight: 800;
+      letter-spacing: -0.5px; margin-bottom: 3px;
+      position: relative;
+    }
+    .rc-role {
+      font-size: 10px; color: #a5b4fc;
+      font-weight: 500; letter-spacing: 0.6px;
+      margin-bottom: 12px; text-transform: uppercase;
+      position: relative;
+    }
+    .rc-contacts {
+      display: flex; flex-wrap: wrap; gap: 6px 14px;
+      position: relative;
+    }
+    .rc-contact-item {
+      font-size: 9.5px; color: #c7d2fe;
+      display: flex; align-items: center; gap: 4px;
+    }
+    .rc-contact-item i { color: #818cf8; font-size: 9px; }
+    /* ── Body ── */
+    .rc-body {
+      display: flex; min-height: 360px;
+    }
+    /* Left sidebar */
+    .rc-left {
+      width: 136px; flex-shrink: 0;
+      background: #f8fafc;
+      border-right: 1px solid #e2e8f0;
+      padding: 16px 13px;
+      display: flex; flex-direction: column; gap: 16px;
+    }
+    /* Right main */
+    .rc-right {
+      flex: 1; padding: 16px 15px;
+      display: flex; flex-direction: column; gap: 14px;
+      background: #fff;
+    }
+    /* Section title */
+    .rc-section-title {
+      font-size: 8px; font-weight: 800;
+      text-transform: uppercase; letter-spacing: 1.4px;
+      color: #6366f1; margin-bottom: 8px;
+      display: flex; align-items: center; gap: 0;
+    }
+    .rc-section-title::after {
+      content: '';
+      flex: 1; height: 1.5px; margin-left: 7px;
+      background: linear-gradient(to right, rgba(99,102,241,0.5), transparent);
+    }
+    /* Skills tags */
+    .rc-skills { display: flex; flex-wrap: wrap; gap: 4px; }
+    .rc-skill-tag {
+      padding: 2px 7px; border-radius: 20px;
+      font-size: 9px; font-weight: 600; line-height: 1.5;
+    }
+    .rc-skill-tag.indigo  { background: #eef2ff; color: #4338ca; }
+    .rc-skill-tag.green   { background: #ecfdf5; color: #065f46; }
+    .rc-skill-tag.violet  { background: #faf5ff; color: #7e22ce; }
+    .rc-skill-tag.amber   { background: #fffbeb; color: #92400e; }
+    .rc-skill-tag.cyan    { background: #ecfeff; color: #155e75; }
+    /* Languages */
+    .rc-lang-row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 3px 0; border-bottom: 1px solid #f1f5f9;
+      font-size: 10px; color: #334155; font-weight: 500;
+    }
+    .rc-lang-row:last-child { border-bottom: none; }
+    .rc-lang-badge {
+      font-size: 7.5px; padding: 1px 5px; border-radius: 4px;
+      background: #ede9fe; color: #5b21b6; font-weight: 600;
+    }
+    /* Values */
+    .rc-value-row {
+      display: flex; align-items: center; gap: 5px;
+      font-size: 9.5px; color: #475569; padding: 1px 0;
+    }
+    .rc-value-row i { color: #6366f1; font-size: 8px; width: 10px; text-align: center; }
+    /* About */
+    .rc-about-p {
+      font-size: 9.5px; color: #475569; line-height: 1.6; margin: 0;
+    }
+    /* Experience */
+    .rc-exp-role {
+      font-size: 11.5px; font-weight: 700; color: #0f172a; margin-bottom: 1px;
+    }
+    .rc-exp-co {
+      font-size: 9px; color: #6366f1; font-weight: 500;
+      margin-bottom: 5px; display: flex; align-items: center; gap: 4px;
+    }
+    .rc-exp-list {
+      list-style: none; padding: 0; margin: 0;
+    }
+    .rc-exp-list li {
+      font-size: 9px; color: #64748b;
+      padding: 1.5px 0 1.5px 11px; position: relative;
+    }
+    .rc-exp-list li::before {
+      content: '›'; position: absolute; left: 0;
+      color: #6366f1; font-weight: bold; font-size: 11px; line-height: 1;
+    }
+    /* Education */
+    .rc-edu-item {
+      margin-bottom: 8px; padding-bottom: 8px;
+      border-bottom: 1px dashed #e2e8f0;
+    }
+    .rc-edu-item:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
+    .rc-edu-pill {
+      display: inline-block; padding: 1.5px 7px; border-radius: 5px;
+      font-size: 7.5px; font-weight: 700; margin-bottom: 4px;
+      background: #ede9fe; color: #6d28d9;
+    }
+    .rc-edu-pill.done { background: #dcfce7; color: #166534; }
+    .rc-edu-title { font-size: 10.5px; font-weight: 700; color: #0f172a; margin-bottom: 2px; }
+    .rc-edu-sub   { font-size: 8.5px; color: #94a3b8; }
+
+    /* ── Print styles ── */
+    #resume-print-target { display: none; }
+    @media print {
+      * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+      body > *            { visibility: hidden !important; }
+      #resume-print-target,
+      #resume-print-target * { visibility: visible !important; }
+      #resume-print-target {
+        display: flex !important;
+        justify-content: center;
+        position: absolute; left: 0; top: 0; width: 100%;
+      }
+      .resume-card {
+        width: 190mm !important; border-radius: 0 !important;
+        box-shadow: none !important;
+      }
+      .rc-name  { font-size: 28px !important; }
+      .rc-role  { font-size: 12px !important; }
+      .rc-contact-item { font-size: 11px !important; }
+      .rc-left  { width: 165px !important; }
+      .rc-section-title { font-size: 10px !important; }
+      .rc-skill-tag     { font-size: 11px !important; padding: 3px 9px !important; }
+      .rc-lang-row      { font-size: 12px !important; }
+      .rc-about-p       { font-size: 11px !important; }
+      .rc-exp-role      { font-size: 13px !important; }
+      .rc-exp-list li   { font-size: 10.5px !important; }
+      .rc-edu-title     { font-size: 12px !important; }
+    }
+
+    /* ── Mobile ── */
+    .mobile {
+      position: fixed;
+      bottom: 185px;
+      left: calc(52% + 100px);
+      width: 130px;
+      z-index: 3;
+      transform: rotate(10deg);
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+    .mobile { cursor: grab; }
+    .mobile img { width: 100%; display: block; }
+
+    .mobile.dragging,
+    .mobile.dragging:hover,
+    .mobile.dragging:focus {
+      cursor: grabbing !important;
+      z-index: 50;
+      transition: none !important;
+      animation: none !important;
+      user-select: none;
+    }
+    .mobile.dragging img,
+    .mobile.dragging:hover img {
+      animation: none !important;
+    }
+
+    @keyframes mobileHoverMove {
+      0%   { transform: rotate(10deg) translateY(0) translateX(0); }
+      45%  { transform: rotate(7deg) translateY(-6px) translateX(-2px); }
+      100% { transform: rotate(12deg) translateY(-3px) translateX(2px); }
+    }
+    .mobile:hover,
+    .mobile:focus {
+      animation: mobileHoverMove 0.75s ease-in-out infinite alternate;
+    }
+    .mobile:hover img,
+    .mobile:focus img {
+      animation: wakeFlicker 1s ease-out forwards;
+    }
+
+    /* ── Social / icon bubble overlays (mobile, telephone, laptop) ── */
+    .mobile-social-overlay,
+    .tel-social-overlay,
+    .lap-social-overlay {
+      position: fixed;
+      width: 0;
+      height: 0;
+      z-index: 50;
+      pointer-events: none;
+    }
+    .mobile-social-overlay.show,  .mobile-social-overlay.pinned,
+    .tel-social-overlay.show,     .tel-social-overlay.pinned,
+    .lap-social-overlay.show,     .lap-social-overlay.pinned {
+      pointer-events: all;
+    }
+    .soc-bubble {
+      position: absolute;
+      width: 40px;
+      height: 40px;
+      margin: -20px;          /* centre on origin */
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      color: #fff;
+      font-size: 17px;
+      box-shadow: 0 3px 12px rgba(0,0,0,0.5);
+      /* collapsed at centre */
+      transform: rotate(var(--a)) translateY(0px) rotate(calc(-1 * var(--a)));
+      opacity: 0;
+      transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1),
+                  opacity   0.25s ease,
+                  box-shadow 0.18s ease;
+    }
+    /* stagger each bubble */
+    .soc-bubble:nth-child(1) { transition-delay: 0.00s; }
+    .soc-bubble:nth-child(2) { transition-delay: 0.05s; }
+    .soc-bubble:nth-child(3) { transition-delay: 0.10s; }
+    .soc-bubble:nth-child(4) { transition-delay: 0.15s; }
+    .soc-bubble:nth-child(5) { transition-delay: 0.20s; }
+    .soc-bubble:nth-child(6) { transition-delay: 0.25s; }
+    /* fly out when visible */
+    .mobile-social-overlay.show   .soc-bubble,
+    .mobile-social-overlay.pinned .soc-bubble,
+    .tel-social-overlay.show      .soc-bubble,
+    .tel-social-overlay.pinned    .soc-bubble,
+    .lap-social-overlay.show      .soc-bubble,
+    .lap-social-overlay.pinned    .soc-bubble {
+      transform: rotate(var(--a)) translateY(-92px) rotate(calc(-1 * var(--a)));
+      opacity: 1;
+    }
+    .soc-bubble:hover {
+      filter: brightness(1.25);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.65);
+    }
+    .soc-bubble.yt { background: #ff0000; }
+    .soc-bubble.ig { background: linear-gradient(45deg,#f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%); }
+    .soc-bubble.tt { background: #010101; border: 1px solid #333; }
+    .soc-bubble.fb { background: #1877f2; }
+    .soc-bubble.li { background: #0a66c2; }
+    .soc-bubble.gh { background: #24292e; }
+    .soc-bubble.em { background: #ea4335; }
+    .soc-bubble.cf { background: #7c3aed; }
+    .soc-bubble.th { background: #10b981; }
+
+    /* ── Hover annotation SVG overlay ── */
+    #annot-svg {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 20;
+      overflow: visible;
+    }
+    body.lights-off #annot-svg { opacity: 0; }
+    #annot-svg path {
+      transition: d 0.18s ease;
+    }
+    #annot-svg text {
+      paint-order: stroke fill;
+      stroke: rgba(0, 0, 0, 0.38);
+      stroke-width: 3px;
+      stroke-linejoin: round;
+      dominant-baseline: alphabetic;
+      user-select: none;
+    }
+
+    /* ── Table ── */
+    .table {
+      position: fixed;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 500px;
+      z-index: 2;
+    }
+    .table img {
+      width: 100%;
+      display: block;
+    }
+  </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+</head>
+<body>
+
+  <div id="ambient"></div>
+  <div id="darkness"></div>
+  <div id="dust"></div>
+
+  <!-- Hover annotation SVG overlay -->
+  <svg id="annot-svg" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <!-- Arrowhead scales with stroke-width so it always looks proportional -->
+      <marker id="wh-arrowhead" markerWidth="8" markerHeight="8"
+              refX="7" refY="4" orient="auto"
+              markerUnits="strokeWidth">
+        <path d="M0,0 L8,4 L0,8 Z" fill="rgba(255,255,255,0.95)"/>
+      </marker>
+      <filter id="txt-shadow" x="-10%" y="-20%" width="120%" height="140%">
+        <feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="rgba(0,0,0,0.7)"/>
+      </filter>
+    </defs>
+
+    <!-- ToolsHub annotation -->
+    <g id="annot-laptop" style="opacity:0;transition:opacity 0.3s ease">
+      <path id="annot-laptop-path"
+            stroke="rgba(255,255,255,0.95)" stroke-width="3.5"
+            stroke-linecap="round" stroke-linejoin="round"
+            fill="none" marker-end="url(#wh-arrowhead)"/>
+      <text id="annot-laptop-text"
+            font-family="'Segoe UI', Georgia, serif"
+            font-size="15" font-weight="600" font-style="italic"
+            fill="white" filter="url(#txt-shadow)">ToolsHub</text>
+    </g>
+
+    <!-- Contact annotation -->
+    <g id="annot-mobile" style="opacity:0;transition:opacity 0.3s ease">
+      <path id="annot-mobile-path"
+            stroke="rgba(255,255,255,0.95)" stroke-width="3.5"
+            stroke-linecap="round" stroke-linejoin="round"
+            fill="none" marker-end="url(#wh-arrowhead)"/>
+      <text id="annot-mobile-text"
+            font-family="'Segoe UI', Georgia, serif"
+            font-size="15" font-weight="600" font-style="italic"
+            fill="white" filter="url(#txt-shadow)">Contact</text>
+    </g>
+
+    <!-- Get in Touch annotation -->
+    <g id="annot-telephone" style="opacity:0;transition:opacity 0.3s ease">
+      <path id="annot-telephone-path"
+            stroke="rgba(255,255,255,0.95)" stroke-width="3.5"
+            stroke-linecap="round" stroke-linejoin="round"
+            fill="none" marker-end="url(#wh-arrowhead)"/>
+      <text id="annot-telephone-text"
+            font-family="'Segoe UI', Georgia, serif"
+            font-size="15" font-weight="600" font-style="italic"
+            fill="white" filter="url(#txt-shadow)">Get in Touch</text>
+    </g>
+  </svg>
+
+  <div class="bulb" id="bulb" title="Click to toggle light">
+    <img src="Bulb.png" alt="Bulb">
+  </div>
+  <div class="map">
+    <img src="Map.png" alt="Map">
+  </div>
+  <div class="gallery-frame">
+    <img src="Gallery.png" alt="Gallery">
+  </div>
+
+  <div class="mee">
+    <img class="img-awake" src="Mee.png" alt="Mee">
+    <img class="img-sleep" src="Me Sleep.png" alt="Me Sleep">
+    <canvas id="mee-anim-canvas" class="mee-anim-canvas"></canvas>
+  </div>
+  <canvas id="fly"></canvas>
+  <canvas id="cat"></canvas>
+
+  <div class="laptop">
+    <img src="Laptop.png" alt="Laptop">
+  </div>
+
+  <div class="mobile">
+    <img src="Mobile.png" alt="Mobile">
+  </div>
+
+  <!-- Social bubbles fan around the mobile phone (angles: upper-left → top → right) -->
+  <div class="mobile-social-overlay" id="mobile-social-overlay">
+    <a href="https://www.youtube.com/watch?v=7NnUhprWOKA&list=RD9s2cPPjx-xI&index=3"
+       target="_blank" class="soc-bubble yt" title="YouTube"   style="--a:-60deg"><i class="fab fa-youtube"></i></a>
+    <a href="https://instagram.com/ho_zun.0"
+       target="_blank" class="soc-bubble ig" title="Instagram"  style="--a:-30deg"><i class="fab fa-instagram"></i></a>
+    <a href="https://tiktok.com/@ho_zun"
+       target="_blank" class="soc-bubble tt" title="TikTok"     style="--a:0deg"  ><i class="fab fa-tiktok"></i></a>
+    <a href="https://facebook.com/yourusername"
+       target="_blank" class="soc-bubble fb" title="Facebook"   style="--a:30deg" ><i class="fab fa-facebook-f"></i></a>
+    <a href="https://www.linkedin.com/in/parash-karki-84732b235/"
+       target="_blank" class="soc-bubble li" title="LinkedIn"   style="--a:60deg" ><i class="fab fa-linkedin-in"></i></a>
+    <a href="https://github.com/parashkarki782"
+       target="_blank" class="soc-bubble gh" title="GitHub"     style="--a:90deg" ><i class="fab fa-github"></i></a>
+  </div>
+
+  <div class="telephone" id="telephone" tabindex="0">
+    <img src="Telephone.png" alt="Telephone">
+  </div>
+
+  <!-- Laptop screen modal -->
+  <div class="laptop-modal-overlay" id="laptop-modal">
+    <div class="laptop-screen-wrap">
+      <div class="laptop-screen-frame">
+        <div class="lsc-browser-chrome">
+          <div class="lsc-dots">
+            <div class="lsc-dot r" id="laptop-modal-close" title="Close"></div>
+            <div class="lsc-dot y"></div>
+            <div class="lsc-dot g"></div>
+          </div>
+          <div class="lsc-url-bar">🔒&nbsp;&nbsp;parash.dev / toolshub</div>
+        </div>
+        <div class="lsc-page">
+          <iframe src="toolshub.html" class="lsc-iframe" id="lsc-iframe"></iframe>
+        </div>
+      </div>
+      <div class="laptop-base-bar">
+        <div class="laptop-hinge-bar"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Phone modal -->
+  <div class="phone-modal-overlay" id="phone-modal">
+    <div class="phone-frame">
+      <div class="phone-notch"></div>
+      <div class="phone-screen">
+        <div class="phone-header">
+          <span>Contact Me</span>
+          <button class="phone-close-btn" id="phone-close">✕</button>
+        </div>
+        <div class="phone-body" id="phone-body">
+          <form id="contact-form">
+            <div class="phone-form-group">
+              <label>Name</label>
+              <input type="text" name="name" placeholder="Your name" required>
+            </div>
+            <div class="phone-form-group">
+              <label>Email</label>
+              <input type="email" name="email" placeholder="your@email.com" required>
+            </div>
+            <div class="phone-form-group">
+              <label>Subject</label>
+              <input type="text" name="subject" placeholder="What's it about?">
+            </div>
+            <div class="phone-form-group">
+              <label>Message</label>
+              <textarea name="message" rows="4" placeholder="Write your message…" required></textarea>
+            </div>
+            <button type="submit" class="phone-send-btn">Send Message</button>
+          </form>
+        </div>
+      </div>
+      <div class="phone-home-bar"></div>
+    </div>
+  </div>
+
+  <div class="table">
+    <img src="Table.png" alt="Table">
+  </div>
+
+  <!-- Mee Resume modal -->
+  <div class="mee-resume-overlay" id="mee-resume-modal">
+    <div class="resume-wrap" id="resume-wrap">
+
+      <!-- Chrome bar -->
+      <div class="resume-topbar">
+        <span class="resume-topbar-label">
+          <i class="fas fa-id-card"></i> Parash Karki — Resume
+        </span>
+        <button class="resume-dl-btn" id="resume-download">
+          <i class="fas fa-download"></i> Download PDF
+        </button>
+      </div>
+
+      <!-- Resume card -->
+      <div class="resume-card" id="resume-card">
+
+        <!-- Header -->
+        <div class="rc-header">
+          <div class="rc-header-inner">
+            <div class="rc-photo-wrap">
+              <img src="https://drive.google.com/thumbnail?id=1EefofSsPr-ersByxdbbYRZUV3r6xG5GI&sz=w400"
+                   alt="Parash Karki" class="rc-photo">
+            </div>
+            <div class="rc-header-text">
+              <div class="rc-name">Parash Karki</div>
+              <div class="rc-role">Computer Engineering Student &nbsp;·&nbsp; Developer &nbsp;·&nbsp; Creative</div>
+              <div class="rc-contacts">
+                <span class="rc-contact-item"><i class="fas fa-map-marker-alt"></i> South Korea</span>
+                <span class="rc-contact-item"><i class="fas fa-flag"></i> Nepali</span>
+                <span class="rc-contact-item"><i class="fas fa-envelope"></i> parashkarki782@gmail.com</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Body -->
+        <div class="rc-body">
+
+          <!-- Left sidebar -->
+          <div class="rc-left">
+
+            <div>
+              <div class="rc-section-title">Skills</div>
+              <div class="rc-skills">
+                <span class="rc-skill-tag indigo">HTML / CSS</span>
+                <span class="rc-skill-tag indigo">JavaScript</span>
+                <span class="rc-skill-tag green">Video Editing</span>
+                <span class="rc-skill-tag violet">Blender</span>
+                <span class="rc-skill-tag violet">Unreal Engine</span>
+                <span class="rc-skill-tag cyan">AI Tools</span>
+                <span class="rc-skill-tag amber">UI/UX</span>
+                <span class="rc-skill-tag green">Web Dev</span>
+                <span class="rc-skill-tag amber">Problem Solving</span>
+              </div>
+            </div>
+
+            <div>
+              <div class="rc-section-title">Languages</div>
+              <div class="rc-lang-row">Nepali <span class="rc-lang-badge">Native</span></div>
+              <div class="rc-lang-row">English <span class="rc-lang-badge">Fluent</span></div>
+              <div class="rc-lang-row">Korean <span class="rc-lang-badge" style="background:#dcfce7;color:#166534">Learning</span></div>
+            </div>
+
+            <div>
+              <div class="rc-section-title">Values</div>
+              <div class="rc-value-row"><i class="fas fa-seedling"></i> Growth-oriented</div>
+              <div class="rc-value-row"><i class="fas fa-bolt"></i> Self-driven</div>
+              <div class="rc-value-row"><i class="fas fa-shield-alt"></i> Adaptable</div>
+              <div class="rc-value-row"><i class="fas fa-globe-asia"></i> Open to Cultures</div>
+            </div>
+
+          </div>
+
+          <!-- Right main -->
+          <div class="rc-right">
+
+            <div>
+              <div class="rc-section-title">About Me</div>
+              <p class="rc-about-p">Computer Engineering student from <strong>Khiratadi, Bajhang, Nepal</strong> — now studying in South Korea. Passionate about building digital solutions that bridge communities. My journey from a remote mountain village to studying abroad reflects my commitment to learning, resilience, and growth.</p>
+            </div>
+
+            <div>
+              <div class="rc-section-title">Experience</div>
+              <div class="rc-exp-role">Video Editor Intern</div>
+              <div class="rc-exp-co"><i class="fas fa-building"></i> View Finders Nepal &nbsp;·&nbsp; Lalitpur</div>
+              <ul class="rc-exp-list">
+                <li>Short-form video editing during On-the-Job Training</li>
+                <li>Worked with Blender, Unreal Engine 5 &amp; AI tools in production</li>
+                <li>Developed creative storytelling &amp; team collaboration skills</li>
+              </ul>
+            </div>
+
+            <div>
+              <div class="rc-section-title">Education</div>
+              <div class="rc-edu-item">
+                <span class="rc-edu-pill">Ongoing</span>
+                <div class="rc-edu-title">Bachelor in Computer Engineering</div>
+                <div class="rc-edu-sub">South Korea &nbsp;·&nbsp; Current</div>
+              </div>
+              <div class="rc-edu-item">
+                <span class="rc-edu-pill done">Completed</span>
+                <div class="rc-edu-title">Diploma in Computer Engineering</div>
+                <div class="rc-edu-sub">Programming Fundamentals · Systems · Electronics</div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Print target (hidden; populated by JS on download) -->
+  <div id="resume-print-target"></div>
+
+  <script>
+    /* ── Bulb toggle ── */
+    const bulb = document.getElementById('bulb');
+    let isOn = true;
+    bulb.addEventListener('click', () => {
+      isOn = !isOn;
+      document.body.classList.toggle('lights-off', !isOn);
+    });
+
+    /* ── Dust particles ── */
+    const dustContainer = document.getElementById('dust');
+    const PARTICLE_COUNT = 22;
+
+    function randomBetween(a, b) {
+      return a + Math.random() * (b - a);
+    }
+
+    function createParticle() {
+      const el = document.createElement('div');
+      el.className = 'dust-particle';
+
+      const size = randomBetween(1.5, 4);
+      el.style.width  = size + 'px';
+      el.style.height = size + 'px';
+
+      // Start position
+      el.style.left = randomBetween(0, 100) + 'vw';
+      el.style.top  = randomBetween(10, 85) + 'vh';
+
+      // Drift direction — gentle horizontal air flow with slight vertical drift
+      const dx  = randomBetween(30, 90)  * (Math.random() > 0.3 ? 1 : -1);
+      const dy  = randomBetween(-40, 40);
+      const dx2 = dx  + randomBetween(-20, 20);
+      const dy2 = dy  + randomBetween(-20, 20);
+
+      el.style.setProperty('--dx',  dx  + 'px');
+      el.style.setProperty('--dy',  dy  + 'px');
+      el.style.setProperty('--dx2', dx2 + 'px');
+      el.style.setProperty('--dy2', dy2 + 'px');
+
+      const duration = randomBetween(6, 14);
+      const delay    = randomBetween(0, 10);
+      el.style.animationDuration = duration + 's';
+      el.style.animationDelay   = '-' + delay + 's';
+
+      dustContainer.appendChild(el);
+    }
+
+    for (let i = 0; i < PARTICLE_COUNT; i++) createParticle();
+
+    /* ── Housefly canvas renderer ── */
+    const fly       = document.getElementById('fly');
+    const ctx       = fly.getContext('2d');
+    const FLY_FRAMES = [
+      { x: 20,  y: 78,  w: 79, h: 109 },
+      { x: 126, y: 71,  w: 72, h: 110 },
+      { x: 212, y: 103, w: 86, h: 73  },
+      { x: 313, y: 111, w: 90, h: 65  },
+      { x: 414, y: 99,  w: 90, h: 80  },
+      { x: 523, y: 94,  w: 82, h: 86  },
+      { x: 619, y: 101, w: 73, h: 80  },
+      { x: 698, y: 116, w: 80, h: 63  },
+      { x: 789, y: 129, w: 72, h: 56  }
+    ];
+    const DISP_W    = 42;
+    const DISP_H    = 58;
+
+    fly.width  = DISP_W;
+    fly.height = DISP_H;
+    fly.style.width  = DISP_W  + 'px';
+    fly.style.height = DISP_H  + 'px';
+    fly.style.opacity = '0';
+    fly.style.transition = 'opacity 0.18s ease';
+    fly.style.willChange = 'left, top, transform, opacity';
+
+    const sprite = new Image();
+    sprite.src   = 'Housefly.png';
+
+    let frame = 0;
+    let facingRight = true;
+    let flyFrameTimer = null;
+    let flyMoveFrame = null;
+    let flyTimer = null;
+    let flyX = 0;
+    let flyY = 0;
+    let flyInitialized = false;
+
+    function drawFlyFrame() {
+      ctx.clearRect(0, 0, DISP_W, DISP_H);
+      ctx.save();
+      if (!facingRight) {
+        ctx.scale(-1, 1);
+        ctx.translate(-DISP_W, 0);
+      }
+      ctx.drawImage(
+        sprite,
+        FLY_FRAMES[frame].x, FLY_FRAMES[frame].y, FLY_FRAMES[frame].w, FLY_FRAMES[frame].h,
+        0, 0, DISP_W, DISP_H
+      );
+      ctx.restore();
+      frame = (frame + 1) % FLY_FRAMES.length;
+    }
+
+    function startFlyWings() {
+      if (flyFrameTimer) return;
+      drawFlyFrame();
+      flyFrameTimer = setInterval(drawFlyFrame, 42);
+    }
+
+    function stopFlyWings() {
+      clearInterval(flyFrameTimer);
+      flyFrameTimer = null;
+    }
+
+    function flyPoint() {
+      return {
+        x: randomBetween(20, Math.max(40, window.innerWidth - DISP_W - 20)),
+        y: randomBetween(25, Math.max(60, window.innerHeight * 0.72))
+      };
+    }
+
+    function setFlyPosition(x, y, angle) {
+      fly.style.left = x + 'px';
+      fly.style.top = y + 'px';
+      fly.style.transform = `rotate(${angle}deg)`;
+    }
+
+    function easeInOut(t) {
+      return t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+    }
+
+    function moveFlyTo(dest, duration, done) {
+      const startX = flyX;
+      const startY = flyY;
+      const drift = randomBetween(-28, 28);
+      const startedAt = performance.now();
+
+      function step(now) {
+        const t = Math.min(1, (now - startedAt) / duration);
+        const eased = easeInOut(t);
+        const baseX = startX + (dest.x - startX) * eased;
+        const baseY = startY + (dest.y - startY) * eased;
+        const buzzX = Math.sin(t * Math.PI * 10) * 6;
+        const buzzY = Math.sin(t * Math.PI * 15 + drift) * 5;
+        const arcY = Math.sin(t * Math.PI) * drift;
+        const x = baseX + buzzX;
+        const y = baseY + buzzY + arcY;
+        const angle = Math.max(-22, Math.min(22, (dest.y - startY) * 0.18 + buzzY));
+
+        facingRight = dest.x >= startX;
+        setFlyPosition(x, y, angle);
+
+        if (t < 1) {
+          flyMoveFrame = requestAnimationFrame(step);
+          return;
+        }
+
+        flyX = dest.x;
+        flyY = dest.y;
+        setFlyPosition(flyX, flyY, 0);
+        done();
+      }
+
+      flyMoveFrame = requestAnimationFrame(step);
+    }
+
+    function flyExitPoint() {
+      const side = Math.floor(Math.random() * 3);
+      if (side === 0) {
+        return { x: -DISP_W - 10, y: randomBetween(20, window.innerHeight * 0.65) };
+      } else if (side === 1) {
+        return { x: window.innerWidth + 10, y: randomBetween(20, window.innerHeight * 0.65) };
+      } else {
+        return { x: randomBetween(10, window.innerWidth - DISP_W - 10), y: -DISP_H - 10 };
+      }
+    }
+
+    function runFlyPath(remainingHops) {
+      if (remainingHops <= 0) {
+        const exit    = flyExitPoint();
+        const exitDist = Math.hypot(exit.x - flyX, exit.y - flyY);
+        const exitDur  = Math.max(500, Math.min(1400, exitDist * randomBetween(5, 8)));
+        moveFlyTo(exit, exitDur, () => {
+          fly.style.opacity = '0';
+          stopFlyWings();
+          flyTimer = setTimeout(appearAndFly, randomBetween(7000, 16000));
+        });
+        return;
+      }
+
+      const dest = flyPoint();
+      const distance = Math.hypot(dest.x - flyX, dest.y - flyY);
+      const duration = Math.max(650, Math.min(1700, distance * randomBetween(7, 11)));
+
+      moveFlyTo(dest, duration, () => {
+        flyTimer = setTimeout(() => runFlyPath(remainingHops - 1), randomBetween(80, 420));
+      });
+    }
+
+    function appearAndFly() {
+      clearTimeout(flyTimer);
+      if (flyMoveFrame) cancelAnimationFrame(flyMoveFrame);
+
+      const start = flyPoint();
+      flyX = start.x;
+      flyY = start.y;
+      setFlyPosition(flyX, flyY, 0);
+      startFlyWings();
+
+      fly.style.opacity = '1';
+      flyTimer = setTimeout(() => runFlyPath(Math.floor(randomBetween(4, 8))), randomBetween(120, 450));
+    }
+
+    function initFly() {
+      if (flyInitialized) return;
+      flyInitialized = true;
+      startFlyWings();
+      flyTimer = setTimeout(appearAndFly, randomBetween(2500, 6500));
+    }
+
+    sprite.onload = initFly;
+    if (sprite.complete) {
+      initFly();
+    }
+
+    /* ── Cat canvas renderer ── */
+    const cat         = document.getElementById('cat');
+    const catCtx      = cat.getContext('2d');
+    const CAT_FRAMES  = 8;
+    const CAT_SRC_W   = 1774;
+    const CAT_SRC_H   = 887;
+    const CAT_FRAME_W = CAT_SRC_W / CAT_FRAMES;
+    // Slightly larger cat so it reads better against the room
+    const CAT_DISP_W  = 100;
+    const CAT_DISP_H  = Math.round(CAT_DISP_W * CAT_SRC_H / CAT_FRAME_W);
+
+    cat.width        = CAT_DISP_W;
+    cat.height       = CAT_DISP_H;
+    cat.style.width  = CAT_DISP_W + 'px';
+    cat.style.height = CAT_DISP_H + 'px';
+
+    const catSprite     = new Image();
+    catSprite.src       = 'Cat.png';
+    let catFrame        = 0;
+    let catFacingRight  = true;
+    let catWalkInterval = null;
+    let catIdleInterval = null;
+    let catThinkTimer   = null;
+    let catInitialized  = false;
+
+    function drawCatFrame(f) {
+      catCtx.clearRect(0, 0, CAT_DISP_W, CAT_DISP_H);
+      catCtx.save();
+      if (!catFacingRight) {
+        catCtx.scale(-1, 1);
+        catCtx.translate(-CAT_DISP_W, 0);
+      }
+      catCtx.drawImage(
+        catSprite,
+        f * CAT_FRAME_W, 0, CAT_FRAME_W, CAT_SRC_H,
+        0, 0, CAT_DISP_W, CAT_DISP_H
+      );
+      catCtx.restore();
+    }
+
+    function startWalking() {
+      cat.classList.remove('idle');
+      cat.classList.add('walking');
+      clearInterval(catIdleInterval);
+      catIdleInterval = null;
+      catFrame = 0;
+      clearInterval(catWalkInterval);
+      catWalkInterval = setInterval(() => {
+        drawCatFrame(catFrame);
+        catFrame = (catFrame + 1) % CAT_FRAMES;
+      }, 95);
+    }
+
+    function startIdle() {
+      clearInterval(catWalkInterval);
+      catWalkInterval = null;
+      cat.classList.remove('walking');
+
+      // Draw the idle frame (facing correct direction) once
+      drawCatFrame(0);
+
+      // Slow tail/weight shift while resting.
+      let idleToggle = 0;
+      clearInterval(catIdleInterval);
+      catIdleInterval = setInterval(() => {
+        idleToggle = (idleToggle + 1) % 2;
+        const f = idleToggle === 0 ? 0 : CAT_FRAMES - 1;
+        drawCatFrame(f);
+      }, randomBetween(950, 1500));
+
+      cat.classList.add('idle'); // CSS breathing animation
+    }
+
+    /* ── Cat floor boundaries ──
+       Left wall (window side) at ~6 % viewport width.
+       Right wall (bookshelf) at ~80 % viewport width.
+       Cat's left edge is kept strictly between those bounds.          */
+    const CAT_FLOOR_LEFT  = 0.06;
+    const CAT_FLOOR_RIGHT = 0.80;
+
+    function catFloorBounds() {
+      return {
+        left:  Math.round(window.innerWidth * CAT_FLOOR_LEFT),
+        right: Math.round(window.innerWidth * CAT_FLOOR_RIGHT - CAT_DISP_W)
+      };
+    }
+
+    function buildCatSpots() {
+      const { left, right } = catFloorBounds();
+      const count = 8;
+      return Array.from({ length: count }, (_, i) =>
+        Math.round(left + (right - left) * i / (count - 1))
+      );
+    }
+
+    let CAT_SPOTS  = buildCatSpots();
+    let catSpotIdx = Math.floor(Math.random() * CAT_SPOTS.length);
+    let catX       = CAT_SPOTS[catSpotIdx];
+
+    cat.style.transition = 'none';
+    cat.style.left       = catX + 'px';
+
+    function catDecide() {
+      clearTimeout(catThinkTimer);
+      const willWalk = Math.random() > 0.32;
+
+      if (!willWalk) {
+        startIdle();
+        catThinkTimer = setTimeout(catDecide, randomBetween(3500, 9000));
+        return;
+      }
+
+      // Prefer neighboring spots so movement feels like wandering, not teleport planning.
+      const step = Math.random() < 0.78 ? (Math.random() < 0.5 ? -1 : 1) : (Math.random() < 0.5 ? -2 : 2);
+      let newIdx = clamp(catSpotIdx + step, 0, CAT_SPOTS.length - 1);
+      if (newIdx === catSpotIdx) {
+        newIdx = clamp(catSpotIdx + (catSpotIdx === 0 ? 1 : -1), 0, CAT_SPOTS.length - 1);
+      }
+
+      const newX     = CAT_SPOTS[newIdx];
+      catFacingRight = newX > catX;
+      const dist     = Math.abs(newX - catX);
+      const distVw   = (dist / window.innerWidth) * 100;
+      const duration = Math.max(1700, distVw * randomBetween(95, 125));
+
+      catSpotIdx = newIdx;
+      catX       = newX;
+
+      startWalking();
+      cat.style.transition = `left ${duration}ms ease-in-out`;
+      cat.style.left       = catX + 'px';
+
+      setTimeout(() => {
+        startIdle();
+        catThinkTimer = setTimeout(catDecide, randomBetween(2500, 8000));
+      }, duration);
+    }
+
+    function initCat() {
+      if (catInitialized) return;
+      catInitialized = true;
+      clearTimeout(catThinkTimer);
+      startIdle();
+      catThinkTimer = setTimeout(catDecide, randomBetween(1800, 4200));
+    }
+
+    catSprite.onload = initCat;
+    if (catSprite.complete) initCat();
+
+    /* ── Hover annotation labels (SVG curved arrows) ── */
+    const meeEl       = document.querySelector('.mee');
+    const laptopEl    = document.querySelector('.laptop');
+    const mobileEl    = document.querySelector('.mobile');
+    const telephoneAnnotEl = document.getElementById('telephone');
+
+    const annotLaptop    = document.getElementById('annot-laptop');
+    const annotMobile    = document.getElementById('annot-mobile');
+    const annotTelephone = document.getElementById('annot-telephone');
+
+    let activeAnnotation = null;
+    let annotationFrame = null;
+
+    function clamp(value, min, max) {
+      return Math.min(Math.max(value, min), max);
+    }
+
+    function estimateTextWidth(textEl) {
+      const text = textEl.textContent || '';
+      const fontSize = Number(textEl.getAttribute('font-size')) || 15;
+      return text.length * fontSize * 0.58;
+    }
+
+    function drawAnnotation(pathEl, textEl, targetEl, opts) {
+      const r = targetEl.getBoundingClientRect();
+      const textWidth = estimateTextWidth(textEl);
+      const edgePadding = 18;
+      const labelGap = opts.labelGap || 34;
+      const arrowGap = opts.arrowGap || 5;
+      const rightSpace = window.innerWidth - r.right;
+      const leftSpace = r.left;
+      let side = opts.side || (rightSpace >= leftSpace ? 1 : -1);
+
+      if (side === 1 && rightSpace < textWidth + labelGap + edgePadding) side = -1;
+      if (side === -1 && leftSpace < textWidth + labelGap + edgePadding) side = 1;
+
+      const tipX = side === 1 ? r.right - opts.edgeInset : r.left + opts.edgeInset;
+      const tipY = r.top + r.height * opts.tipFracY;
+      let textX = side === 1 ? tipX + labelGap : tipX - labelGap - textWidth;
+      let textY = tipY + opts.textDY;
+
+      textX = clamp(textX, edgePadding, window.innerWidth - textWidth - edgePadding);
+      textY = clamp(textY, edgePadding + 12, window.innerHeight - edgePadding);
+
+      const shaftStartX = side === 1 ? textX - arrowGap : textX + textWidth + arrowGap;
+      const shaftStartY = textY - 5;
+
+      pathEl.setAttribute('d',
+        `M${shaftStartX},${shaftStartY} L${tipX},${tipY}`
+      );
+      textEl.setAttribute('x', textX);
+      textEl.setAttribute('y', textY);
+      textEl.setAttribute('text-anchor', 'start');
+    }
+
+    // Side labels stay close to their targets and avoid covering the objects.
+    const laptopOpts = {
+      side: -1,
+      tipFracY: 0.34,
+      edgeInset: 10,
+      labelGap: 32,
+      arrowGap: 5,
+      textDY: 4
+    };
+
+    const mobileOpts = {
+      side: 1,
+      tipFracY: 0.38,
+      edgeInset: 10,
+      labelGap: 32,
+      arrowGap: 5,
+      textDY: 4
+    };
+
+    const telephoneOpts = {
+      side: 1,
+      tipFracY: 0.38,
+      edgeInset: 8,
+      labelGap: 32,
+      arrowGap: 5,
+      textDY: 4
+    };
+
+    function showAnnotation(config) {
+      activeAnnotation = config;
+      drawAnnotation(config.pathEl, config.textEl, config.targetEl, config.opts);
+      config.groupEl.style.opacity = '1';
+      if (!annotationFrame) syncActiveAnnotation();
+    }
+
+    function hideAnnotation(config) {
+      if (activeAnnotation === config) activeAnnotation = null;
+      config.groupEl.style.opacity = '0';
+      if (!activeAnnotation && annotationFrame) {
+        cancelAnimationFrame(annotationFrame);
+        annotationFrame = null;
+      }
+    }
+
+    function syncActiveAnnotation() {
+      if (!activeAnnotation) {
+        annotationFrame = null;
+        return;
+      }
+      drawAnnotation(
+        activeAnnotation.pathEl,
+        activeAnnotation.textEl,
+        activeAnnotation.targetEl,
+        activeAnnotation.opts
+      );
+      annotationFrame = requestAnimationFrame(syncActiveAnnotation);
+    }
+
+    function wireAnnotation(config) {
+      config.targetEl.tabIndex = 0;
+      config.targetEl.addEventListener('mouseenter', () => showAnnotation(config));
+      config.targetEl.addEventListener('focus', () => showAnnotation(config));
+      config.targetEl.addEventListener('mouseleave', () => hideAnnotation(config));
+      config.targetEl.addEventListener('blur', () => hideAnnotation(config));
+      config.targetEl.addEventListener('click', (event) => {
+        event.stopPropagation();
+        if (activeAnnotation === config && config.groupEl.style.opacity === '1') {
+          hideAnnotation(config);
+        } else {
+          if (activeAnnotation) hideAnnotation(activeAnnotation);
+          showAnnotation(config);
+        }
+      });
+    }
+
+    const annotationConfigs = [];
+
+    annotationConfigs.forEach(wireAnnotation);
+
+    window.addEventListener('resize', () => {
+      CAT_SPOTS = buildCatSpots();
+      const { left, right } = catFloorBounds();
+      catX = Math.min(Math.max(catX, left), right);
+      cat.style.left = catX + 'px';
+      if (activeAnnotation) {
+        drawAnnotation(
+          activeAnnotation.pathEl,
+          activeAnnotation.textEl,
+          activeAnnotation.targetEl,
+          activeAnnotation.opts
+        );
+      }
+    });
+
+    document.addEventListener('click', () => {
+      if (activeAnnotation) hideAnnotation(activeAnnotation);
+    });
+
+    /* ── Telephone → phone modal ── */
+    const telephoneEl  = document.getElementById('telephone');
+    const phoneModal   = document.getElementById('phone-modal');
+    const phoneClose   = document.getElementById('phone-close');
+    const contactForm  = document.getElementById('contact-form');
+    const phoneBody    = document.getElementById('phone-body');
+
+    function openPhoneModal(e) {
+      if (e) e.stopPropagation();
+      phoneModal.classList.add('open');
+    }
+
+    function closePhoneModal() {
+      phoneModal.classList.remove('open');
+    }
+
+
+    phoneClose.addEventListener('click', (e) => { e.stopPropagation(); closePhoneModal(); });
+
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closePhoneModal();
+    });
+
+    /* ── Mee face animation (blink + talking mouth) ── */
+    (function() {
+      const AWAKE = document.querySelector('.mee .img-awake');
+      const CVS   = document.getElementById('mee-anim-canvas');
+      if (!CVS || !AWAKE) return;
+      const ctx = CVS.getContext('2d');
+
+      // Face feature positions as fractions of [imgWidth, imgHeight].
+      // Tune cx/cy if they need nudging to align with the actual face in Mee.png.
+      const F = {
+        eyeL:  { cx: 0.360, cy: 0.245, rx: 0.042, ry: 0.016 },
+        eyeR:  { cx: 0.530, cy: 0.229, rx: 0.037, ry: 0.015 },
+        mouth: { cx: 0.420, cy: 0.340, rx: 0.034, ry: 0.012 },
+      };
+
+      const COL = {
+        skin: '#a86830',
+        lip:  '#c03020',
+        dark: '#0e0404',
+      };
+
+      let W = 0, H = 0;
+
+      function resize() {
+        if (!AWAKE.complete || !AWAKE.naturalWidth) return;
+        W = AWAKE.offsetWidth;
+        H = AWAKE.offsetHeight;
+        CVS.width  = W;
+        CVS.height = H;
+      }
+
+      // Blink state
+      const BC = 80, BH = 65, BO = 115;
+      let bPhase = 'idle', bProg = 0, bT = randomBetween(2800, 6200);
+
+      // Mouth state
+      const MH = 250;
+      let mPhase = 'idle', mProg = 0, mT = randomBetween(7000, 15000);
+      let mOpen = 0, mCycle = 0, mMax = 0;
+
+      function drawLid(e, p) {
+        if (p <= 0) return;
+        const x  = e.cx * W, y  = e.cy * H;
+        const rx = e.rx * W, ry = e.ry * H;
+        ctx.save();
+        ctx.beginPath();
+        ctx.ellipse(x, y, rx * 1.15, ry * 1.25, 0, 0, Math.PI * 2);
+        ctx.clip();
+        ctx.fillStyle = COL.skin;
+        // Rect sweeps from top of eye downward by p
+        ctx.fillRect(x - rx * 1.2, y - ry * 1.4, rx * 2.4, ry * 1.4 + ry * 2 * p);
+        ctx.restore();
+      }
+
+      function drawMouth(p) {
+        if (p <= 0) return;
+        ctx.globalAlpha = 0.45;
+        const x  = F.mouth.cx * W, y  = F.mouth.cy * H;
+        const rx = F.mouth.rx * W, ry = F.mouth.ry * H;
+        const gap = ry * p * 2.3 + 0.5;
+
+        ctx.save();
+        // Cover resting smile (drawn twice for solid coverage)
+        ctx.beginPath();
+        ctx.ellipse(x, y, rx, ry * 1.1, 0, 0, Math.PI * 2);
+        ctx.fillStyle = COL.skin;
+        ctx.fill();
+        ctx.fill();
+        // Dark interior
+        ctx.beginPath();
+        ctx.ellipse(x, y + gap * 0.12, rx * 0.76, gap, 0, 0, Math.PI * 2);
+        ctx.fillStyle = COL.dark;
+        ctx.fill();
+        // Upper lip
+        ctx.beginPath();
+        ctx.ellipse(x, y - gap * 0.28, rx * 0.90, ry * 0.58, 0, 0, Math.PI * 2);
+        ctx.fillStyle = COL.lip;
+        ctx.fill();
+        // Lower lip
+        ctx.beginPath();
+        ctx.ellipse(x, y + gap * 0.82, rx * 0.87, ry * 0.52, 0, 0, Math.PI * 2);
+        ctx.fillStyle = COL.lip;
+        ctx.fill();
+        ctx.restore();
+        ctx.globalAlpha = 1;
+      }
+
+      let lastTs = null;
+
+      function tick(ts) {
+        if (!lastTs) lastTs = ts;
+        const dt = Math.min(ts - lastTs, 50);
+        lastTs = ts;
+        if (!W) resize();
+        ctx.clearRect(0, 0, W, H);
+
+        if (!document.body.classList.contains('lights-off')) {
+          // Blink update
+          if (bPhase === 'idle') {
+            bT -= dt;
+            if (bT <= 0) { bPhase = 'closing'; bProg = 0; }
+          } else if (bPhase === 'closing') {
+            bProg += dt / BC;
+            if (bProg >= 1) { bProg = 1; bPhase = 'holding'; bT = BH; }
+          } else if (bPhase === 'holding') {
+            bT -= dt;
+            if (bT <= 0) { bPhase = 'opening'; }
+          } else if (bPhase === 'opening') {
+            bProg -= dt / BO;
+            if (bProg <= 0) { bProg = 0; bPhase = 'idle'; bT = randomBetween(2800, 6200); }
+          }
+          const lidP = bPhase === 'idle' ? 0 : bProg;
+          drawLid(F.eyeL, lidP);
+          drawLid(F.eyeR, lidP);
+
+          // Mouth update
+          if (mPhase === 'idle') {
+            mT -= dt;
+            if (mT <= 0) {
+              mPhase = 'talking'; mProg = 0;
+              mOpen = 1; mCycle = 0;
+              mMax = 1;
+            }
+          } else {
+            mProg += dt / MH;
+            if (mProg >= 1) {
+              mProg = 0;
+              mOpen = 1 - mOpen;
+              if (mOpen === 1) mCycle++;
+              if (mCycle >= mMax) { mPhase = 'idle'; mT = randomBetween(4000, 11000); }
+            }
+          }
+          const mouthP = mPhase === 'talking' ? (mOpen === 1 ? mProg : 1 - mProg) : 0;
+          drawMouth(mouthP);
+        }
+
+        requestAnimationFrame(tick);
+      }
+
+      function start() {
+        resize();
+        if (!W) { setTimeout(start, 150); return; }
+        requestAnimationFrame(tick);
+      }
+
+      AWAKE.addEventListener('load', start);
+      if (AWAKE.complete && AWAKE.naturalWidth) start();
+      window.addEventListener('resize', resize);
+    })();
+
+    /* ── Laptop screen modal ── */
+    const laptopModal      = document.getElementById('laptop-modal');
+    const laptopModalClose  = document.getElementById('laptop-modal-close');
+    const laptopDotMinimize = document.querySelector('.lsc-dot.y');
+    const laptopDotMaximize = document.querySelector('.lsc-dot.g');
+
+    function openLaptopModal(e) {
+      if (e) e.stopPropagation();
+      laptopModal.classList.add('open');
+    }
+    function closeLaptopModal() {
+      laptopModal.classList.remove('open');
+    }
+
+    laptopModalClose.addEventListener('click', (e) => { e.stopPropagation(); closeLaptopModal(); });
+    laptopDotMinimize.addEventListener('click', (e) => { e.stopPropagation(); laptopPinned = false; closeLaptopModal(); });
+    laptopDotMaximize.addEventListener('click', (e) => { e.stopPropagation(); laptopModal.classList.toggle('maximized'); });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeLaptopModal(); });
+
+    /* ── Mee Resume ── */
+    const resumeModal  = document.getElementById('mee-resume-modal');
+    const resumeWrap   = document.getElementById('resume-wrap');
+    let   resumePinned = false;
+
+    function setResumeOrigin() {
+      const r   = meeEl.getBoundingClientRect();
+      const meeCx = r.left + r.width  / 2;
+      const meeCy = r.top  + r.height / 2;
+      const wrapW  = resumeWrap.offsetWidth;
+      const wrapH  = resumeWrap.offsetHeight;
+      const wrapCx = window.innerWidth * 0.02 + wrapW / 2;
+      const wrapCy = window.innerHeight - 20 - wrapH / 2;
+      resumeWrap.style.setProperty('--mee-dx', (meeCx - wrapCx) + 'px');
+      resumeWrap.style.setProperty('--mee-dy', (meeCy - wrapCy) + 'px');
+    }
+    function openResumeModal(e)  { if (e) e.stopPropagation(); resumeModal.classList.add('open'); }
+    function closeResumeModal()  { resumeModal.classList.remove('open'); }
+
+    meeEl.addEventListener('mouseenter', () => {
+      resumePinned = false; setResumeOrigin(); openResumeModal();
+    });
+    meeEl.addEventListener('mouseleave', (e) => {
+      if (!resumePinned && !resumeWrap.contains(e.relatedTarget)) closeResumeModal();
+    });
+    resumeWrap.addEventListener('mouseleave', (e) => {
+      if (!resumePinned && !meeEl.contains(e.relatedTarget)) closeResumeModal();
+    });
+    meeEl.addEventListener('click', (e) => {
+      e.stopPropagation();
+      resumePinned = !resumePinned;
+      if (resumePinned) { setResumeOrigin(); openResumeModal(e); }
+      else closeResumeModal();
+    });
+    document.addEventListener('click', (e) => {
+      if (resumePinned && !meeEl.contains(e.target) && !resumeWrap.contains(e.target)) {
+        resumePinned = false; closeResumeModal();
+      }
+    });
+
+    document.getElementById('resume-download').addEventListener('click', (e) => {
+      e.stopPropagation();
+      const btn = document.getElementById('resume-download');
+      btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating…';
+      btn.disabled = true;
+      const opt = {
+        margin: 8,
+        filename: 'Parash_Karki_Resume.pdf',
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true, allowTaint: true, logging: false },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+      };
+      html2pdf().set(opt).from(document.getElementById('resume-card')).save()
+        .then(() => {
+          btn.innerHTML = '<i class="fas fa-download"></i> Download PDF';
+          btn.disabled = false;
+        });
+    });
+
+    /* ── Mobile social bubbles ── */
+    const mobileSocialOverlay = document.getElementById('mobile-social-overlay');
+    let   socialPinned = false;
+
+    function positionMobileSocials() {
+      const r = mobileEl.getBoundingClientRect();
+      mobileSocialOverlay.style.left = Math.round(r.left + r.width  / 2) + 'px';
+      mobileSocialOverlay.style.top  = Math.round(r.top  + r.height / 2) + 'px';
+    }
+
+    mobileEl.addEventListener('mouseenter', () => {
+      positionMobileSocials();
+      mobileSocialOverlay.classList.add('show');
+    });
+    const hideSocials = (e) => {
+      if (socialPinned) return;
+      if (!mobileSocialOverlay.contains(e.relatedTarget) && e.relatedTarget !== mobileEl) {
+        mobileSocialOverlay.classList.remove('show');
+      }
+    };
+    mobileEl.addEventListener('mouseleave', hideSocials);
+    mobileSocialOverlay.addEventListener('mouseleave', hideSocials);
+
+    mobileEl.addEventListener('click', (e) => {
+      e.stopPropagation();
+      socialPinned = !socialPinned;
+      if (socialPinned) {
+        positionMobileSocials();
+        mobileSocialOverlay.classList.add('show', 'pinned');
+      } else {
+        mobileSocialOverlay.classList.remove('pinned', 'show');
+      }
+    });
+
+    document.addEventListener('click', (e) => {
+      if (socialPinned && !mobileEl.contains(e.target) && !mobileSocialOverlay.contains(e.target)) {
+        socialPinned = false;
+        mobileSocialOverlay.classList.remove('pinned', 'show');
+      }
+    });
+
+    /* ── Telephone drag-to-reposition ── */
+    (function () {
+      let dragging  = false;
+      let dragMoved = false;
+      let offX = 0, offY = 0;
+      let startX = 0, startY = 0;
+
+      telephoneEl.addEventListener('mousedown', e => {
+        if (e.button !== 0) return;
+        dragging  = true;
+        dragMoved = false;
+        startX = e.clientX;
+        startY = e.clientY;
+
+        const rect = telephoneEl.getBoundingClientRect();
+        const cx = rect.left + rect.width  / 2;
+        const cy = rect.top  + rect.height / 2;
+        offX = e.clientX - cx;
+        offY = e.clientY - cy;
+
+        telephoneEl.style.top    = (cy - telephoneEl.offsetHeight / 2) + 'px';
+        telephoneEl.style.left   = (cx - telephoneEl.offsetWidth  / 2) + 'px';
+        telephoneEl.style.bottom = 'auto';
+
+        e.preventDefault();
+      });
+
+      document.addEventListener('mousemove', e => {
+        if (!dragging) return;
+        if (!dragMoved && Math.hypot(e.clientX - startX, e.clientY - startY) < 4) return;
+
+        if (!dragMoved) {
+          dragMoved = true;
+          telephoneEl.classList.add('dragging');
+        }
+
+        const newCx = e.clientX - offX;
+        const newCy = e.clientY - offY;
+        telephoneEl.style.left = (newCx - telephoneEl.offsetWidth  / 2) + 'px';
+        telephoneEl.style.top  = (newCy - telephoneEl.offsetHeight / 2) + 'px';
+
+        // Keep phone modal origin synced while dragging
+        if (phonePinned) setPhoneOrigin();
+      });
+
+      document.addEventListener('mouseup', () => {
+        if (!dragging) return;
+        dragging = false;
+        telephoneEl.classList.remove('dragging');
+      });
+
+      telephoneEl.addEventListener('click', e => {
+        if (dragMoved) {
+          dragMoved = false;
+          e.stopImmediatePropagation();
+        }
+      }, true);
+    })();
+
+    /* ── Telephone → phone modal (hover to preview, click to pin) ── */
+    let phonePinned  = false;
+    const phoneFrame = document.querySelector('.phone-frame');
+
+    function setPhoneOrigin() {
+      const tel    = telephoneEl.getBoundingClientRect();
+      const telCx  = tel.left + tel.width  / 2;
+      const telCy  = tel.top  + tel.height / 2;
+      // Phone frame natural center: right:4%, bottom:195px, size 260×510
+      const frameCx = window.innerWidth  * 0.96 - 130;
+      const frameCy = window.innerHeight - 195  - 255;
+      phoneFrame.style.setProperty('--tel-dx', (telCx - frameCx) + 'px');
+      phoneFrame.style.setProperty('--tel-dy', (telCy - frameCy) + 'px');
+    }
+
+    telephoneEl.addEventListener('mouseenter', () => {
+      phonePinned = false;
+      setPhoneOrigin();
+      openPhoneModal();
+    });
+
+    telephoneEl.addEventListener('mouseleave', (e) => {
+      if (!phonePinned && !phoneFrame.contains(e.relatedTarget)) closePhoneModal();
+    });
+
+    phoneFrame.addEventListener('mouseleave', (e) => {
+      if (!phonePinned && !telephoneEl.contains(e.relatedTarget)) closePhoneModal();
+    });
+
+    telephoneEl.addEventListener('click', (e) => {
+      e.stopPropagation();
+      phonePinned = !phonePinned;
+      if (phonePinned) { setPhoneOrigin(); openPhoneModal(e); }
+      else closePhoneModal();
+    });
+
+    document.addEventListener('click', (e) => {
+      if (phonePinned && !telephoneEl.contains(e.target) && !phoneFrame.contains(e.target)) {
+        phonePinned = false;
+        closePhoneModal();
+      }
+    });
+
+    /* ── Phone modal drag-to-reposition (drag from notch) ── */
+    (function () {
+      let dragging  = false;
+      let dragMoved = false;
+      let offX = 0, offY = 0;
+      let startX = 0, startY = 0;
+      const overlay = phoneModal;
+      const notch   = overlay.querySelector('.phone-notch');
+
+      notch.addEventListener('mousedown', e => {
+        if (e.button !== 0) return;
+        dragging  = true;
+        dragMoved = false;
+        startX = e.clientX;
+        startY = e.clientY;
+
+        const rect = overlay.getBoundingClientRect();
+        offX = e.clientX - rect.left;
+        offY = e.clientY - rect.top;
+
+        // Convert right/bottom → left/top for free movement
+        overlay.style.left   = rect.left + 'px';
+        overlay.style.top    = rect.top  + 'px';
+        overlay.style.right  = 'auto';
+        overlay.style.bottom = 'auto';
+
+        e.preventDefault();
+        e.stopPropagation();
+      });
+
+      document.addEventListener('mousemove', e => {
+        if (!dragging) return;
+        if (!dragMoved && Math.hypot(e.clientX - startX, e.clientY - startY) < 4) return;
+
+        if (!dragMoved) {
+          dragMoved = true;
+          overlay.classList.add('dragging');
+        }
+
+        overlay.style.left = (e.clientX - offX) + 'px';
+        overlay.style.top  = (e.clientY - offY) + 'px';
+      });
+
+      document.addEventListener('mouseup', () => {
+        if (!dragging) return;
+        dragging = false;
+        overlay.classList.remove('dragging');
+      });
+    })();
+
+    /* ── Laptop modal drag-to-reposition (drag from browser chrome bar) ── */
+    (function () {
+      let dragging  = false;
+      let dragMoved = false;
+      let offX = 0, offY = 0;
+      let startX = 0, startY = 0;
+      const overlay = document.getElementById('laptop-modal');
+      const chrome  = overlay.querySelector('.lsc-browser-chrome');
+
+      chrome.addEventListener('mousedown', e => {
+        // Don't start drag when clicking the close/minimize/maximize dots
+        if (e.target.classList.contains('lsc-dot')) return;
+        if (e.button !== 0) return;
+        dragging  = true;
+        dragMoved = false;
+        startX = e.clientX;
+        startY = e.clientY;
+
+        const rect = overlay.getBoundingClientRect();
+        offX = e.clientX - rect.left;
+        offY = e.clientY - rect.top;
+
+        // Convert left/bottom → left/top for free movement
+        overlay.style.left   = rect.left + 'px';
+        overlay.style.top    = rect.top  + 'px';
+        overlay.style.bottom = 'auto';
+
+        e.preventDefault();
+        e.stopPropagation();
+      });
+
+      document.addEventListener('mousemove', e => {
+        if (!dragging) return;
+        if (!dragMoved && Math.hypot(e.clientX - startX, e.clientY - startY) < 4) return;
+
+        if (!dragMoved) {
+          dragMoved = true;
+          overlay.classList.add('dragging');
+        }
+
+        overlay.style.left = (e.clientX - offX) + 'px';
+        overlay.style.top  = (e.clientY - offY) + 'px';
+      });
+
+      document.addEventListener('mouseup', () => {
+        if (!dragging) return;
+        dragging = false;
+        overlay.classList.remove('dragging');
+      });
+    })();
+
+    /* ── Laptop → laptop modal (hover to preview, click to pin) ── */
+    let laptopPinned       = false;
+    const laptopScreenWrap = document.querySelector('.laptop-screen-wrap');
+
+    function setLaptopOrigin() {
+      const lap    = laptopEl.getBoundingClientRect();
+      const lapCx  = lap.left + lap.width  / 2;
+      const lapCy  = lap.top  + lap.height / 2;
+      // Laptop screen wrap natural center: left:2%, bottom:195px
+      const wrapW  = laptopScreenWrap.offsetWidth;
+      const wrapH  = laptopScreenWrap.offsetHeight;
+      const wrapCx = window.innerWidth * 0.02 + wrapW / 2;
+      const wrapCy = window.innerHeight - 195 - wrapH / 2;
+      laptopScreenWrap.style.setProperty('--lap-dx', (lapCx - wrapCx) + 'px');
+      laptopScreenWrap.style.setProperty('--lap-dy', (lapCy - wrapCy) + 'px');
+    }
+
+    laptopEl.addEventListener('mouseenter', () => {
+      laptopPinned = false;
+      setLaptopOrigin();
+      openLaptopModal();
+    });
+
+    laptopEl.addEventListener('mouseleave', (e) => {
+      if (!laptopPinned && !laptopScreenWrap.contains(e.relatedTarget)) closeLaptopModal();
+    });
+
+    laptopScreenWrap.addEventListener('mouseleave', (e) => {
+      if (!laptopPinned && !laptopEl.contains(e.relatedTarget)) closeLaptopModal();
+    });
+
+    laptopEl.addEventListener('click', (e) => {
+      e.stopPropagation();
+      laptopPinned = !laptopPinned;
+      if (laptopPinned) { setLaptopOrigin(); openLaptopModal(e); }
+      else closeLaptopModal();
+    });
+
+    document.addEventListener('click', (e) => {
+      if (laptopPinned && !laptopEl.contains(e.target) && !laptopScreenWrap.contains(e.target)) {
+        laptopPinned = false;
+        closeLaptopModal();
+      }
+    });
+
+    /* ── Mobile drag-to-reposition ── */
+    (function () {
+      let dragging  = false;
+      let dragMoved = false;
+      let offX = 0, offY = 0;
+      let startX = 0, startY = 0;
+
+      mobileEl.addEventListener('mousedown', e => {
+        if (e.button !== 0) return;
+        dragging  = true;
+        dragMoved = false;
+        startX = e.clientX;
+        startY = e.clientY;
+
+        // Capture cursor offset from element centre (works with rotate transform)
+        const rect = mobileEl.getBoundingClientRect();
+        const cx = rect.left + rect.width  / 2;
+        const cy = rect.top  + rect.height / 2;
+        offX = e.clientX - cx;
+        offY = e.clientY - cy;
+
+        // Switch bottom-based → top-based positioning so we can move freely
+        mobileEl.style.top    = (cy - mobileEl.offsetHeight / 2) + 'px';
+        mobileEl.style.left   = (cx - mobileEl.offsetWidth  / 2) + 'px';
+        mobileEl.style.bottom = 'auto';
+
+        e.preventDefault(); // stops text selection during drag
+      });
+
+      document.addEventListener('mousemove', e => {
+        if (!dragging) return;
+
+        // Only enter drag mode after 4 px of movement (allows normal clicks)
+        if (!dragMoved && Math.hypot(e.clientX - startX, e.clientY - startY) < 4) return;
+
+        if (!dragMoved) {
+          dragMoved = true;
+          mobileEl.classList.add('dragging');
+        }
+
+        const newCx = e.clientX - offX;
+        const newCy = e.clientY - offY;
+        mobileEl.style.left = (newCx - mobileEl.offsetWidth  / 2) + 'px';
+        mobileEl.style.top  = (newCy - mobileEl.offsetHeight / 2) + 'px';
+
+        // Keep social overlay centred on the mobile while dragging
+        positionMobileSocials();
+      });
+
+      document.addEventListener('mouseup', () => {
+        if (!dragging) return;
+        dragging = false;
+        mobileEl.classList.remove('dragging');
+      });
+
+      // Suppress the click event that always fires after mouseup
+      // (capture phase = runs before the existing social-overlay click handler)
+      mobileEl.addEventListener('click', e => {
+        if (dragMoved) {
+          dragMoved = false;
+          e.stopImmediatePropagation();
+        }
+      }, true);
+    })();
+
+    /* ── EmailJS ── */
+    emailjs.init('QNC64rgXPNYqzo-l0');
+
+    contactForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const nameVal    = contactForm.querySelector('[name="name"]').value.trim();
+      const emailVal   = contactForm.querySelector('[name="email"]').value.trim();
+      const subjectVal = contactForm.querySelector('[name="subject"]').value.trim();
+      const msgVal     = contactForm.querySelector('[name="message"]').value.trim();
+
+      if (!nameVal || !emailVal || !msgVal) return;
+
+      const sendBtn = contactForm.querySelector('.phone-send-btn');
+      sendBtn.disabled = true;
+      sendBtn.textContent = 'Sending…';
+
+      emailjs.send('service_uic2fq4', 'template_4odpj7l', {
+        from_name:  nameVal,
+        from_email: emailVal,
+        subject:    subjectVal || '(no subject)',
+        message:    msgVal,
+        to_email:   'parashkarki782@gmail.com',
+        reply_to:   emailVal
+      })
+      .then(() => {
+        phoneBody.innerHTML = `
+          <div class="phone-success">
+            <div class="check-icon">✅</div>
+            <h3>Message Sent!</h3>
+            <p>Thanks for reaching out.<br>I'll get back to you soon.</p>
+          </div>`;
+      })
+      .catch(() => {
+        sendBtn.disabled = false;
+        sendBtn.textContent = 'Send Message';
+        const err = document.createElement('p');
+        err.style.cssText = 'color:#f87171;font-size:12px;margin-top:8px;font-family:sans-serif;text-align:center';
+        err.textContent = 'Failed to send. Please try again.';
+        contactForm.appendChild(err);
+        setTimeout(() => err.remove(), 4000);
+      });
+    });
+  </script>
+</body>
+</html>
