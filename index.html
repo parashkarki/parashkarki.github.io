@@ -715,27 +715,44 @@
 
     /* ── Laptop screen (iframe) ── */
     .lsc-page {
-      position: relative !important;
-      overflow: hidden !important;
-      min-height: 348px !important;
-      height: 348px !important;
-      display: block !important;
-      background: #fff !important;
+      position: relative;
+      overflow: hidden;
+      height: 348px;       /* default — JS overrides via inline style */
+      display: block;
+      background: #fff;
+      flex-shrink: 0;
     }
     .lsc-iframe {
       position: absolute;
       top: 0; left: 0;
-      width: 1080px;
-      height: 640px;
+      width: 100%;
+      height: 100%;
       border: none;
-      transform: scale(0.556);
-      transform-origin: top left;
+      /* No scaling — content reflows naturally like a real browser resize */
     }
-    /* Maximize state */
-    .laptop-modal-overlay.maximized .laptop-screen-frame { width: min(820px, 88vw); }
-    .laptop-modal-overlay.maximized .laptop-base-bar     { width: min(820px, 88vw); }
-    .laptop-modal-overlay.maximized .lsc-page            { height: 470px !important; min-height: 470px !important; }
-    .laptop-modal-overlay.maximized .lsc-iframe          { transform: scale(0.759); }
+    /* Green dot pulses when maximized */
+    .laptop-modal-overlay.maximized .lsc-dot.g { background: #1aff4a; box-shadow: 0 0 6px #1aff4a88; }
+
+    /* Resize handles — invisible hit areas around the screen wrap */
+    .laptop-screen-wrap { position: relative; display: inline-flex; flex-direction: column; align-items: center; }
+    .lsc-resize-handle  { position: absolute; z-index: 200; }
+    .lsc-rh-e  { top: 8%;    right: -7px;  width: 14px; height: 84%; cursor: ew-resize; }
+    .lsc-rh-w  { top: 8%;    left:  -7px;  width: 14px; height: 84%; cursor: ew-resize; }
+    .lsc-rh-s  { bottom: -7px; left: 8%;   height: 14px; width: 84%; cursor: ns-resize; }
+    .lsc-rh-se { bottom: -7px; right: -7px; width: 20px; height: 20px; cursor: se-resize; }
+    .lsc-rh-sw { bottom: -7px; left:  -7px; width: 20px; height: 20px; cursor: sw-resize; }
+    /* Tiny grip dots on corners so user knows they can resize */
+    .lsc-rh-se::after, .lsc-rh-sw::after {
+      content: '';
+      position: absolute;
+      bottom: 4px; right: 4px;
+      width: 7px; height: 7px;
+      border-right:  2px solid rgba(255,255,255,0.28);
+      border-bottom: 2px solid rgba(255,255,255,0.28);
+    }
+    .lsc-rh-sw::after { right: auto; left: 4px; border-right: none; border-left: 2px solid rgba(255,255,255,0.28); }
+    /* Suppress resize handles while dragging the whole window */
+    .laptop-modal-overlay.dragging .lsc-resize-handle { pointer-events: none; }
 
     .laptop-base-bar {
       width: min(600px, 50vw);
@@ -1256,6 +1273,12 @@
       <div class="laptop-base-bar">
         <div class="laptop-hinge-bar"></div>
       </div>
+      <!-- Resize handles -->
+      <div class="lsc-resize-handle lsc-rh-e"  data-dir="e"></div>
+      <div class="lsc-resize-handle lsc-rh-w"  data-dir="w"></div>
+      <div class="lsc-resize-handle lsc-rh-s"  data-dir="s"></div>
+      <div class="lsc-resize-handle lsc-rh-se" data-dir="se"></div>
+      <div class="lsc-resize-handle lsc-rh-sw" data-dir="sw"></div>
     </div>
   </div>
 
@@ -2131,7 +2154,7 @@
 
     laptopModalClose.addEventListener('click', (e) => { e.stopPropagation(); closeLaptopModal(); });
     laptopDotMinimize.addEventListener('click', (e) => { e.stopPropagation(); laptopPinned = false; closeLaptopModal(); });
-    laptopDotMaximize.addEventListener('click', (e) => { e.stopPropagation(); laptopModal.classList.toggle('maximized'); });
+    laptopDotMaximize.addEventListener('click', (e) => { e.stopPropagation(); /* handled by resize IIFE */ });
     document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeLaptopModal(); });
 
     /* ── Mee Resume ── */
@@ -2434,6 +2457,117 @@
         if (!dragging) return;
         dragging = false;
         overlay.classList.remove('dragging');
+      });
+    })();
+
+    /* ── Laptop modal resize + maximize ── */
+    (function () {
+      const overlay   = document.getElementById('laptop-modal');
+      const frame     = overlay.querySelector('.laptop-screen-frame');
+      const baseBar   = overlay.querySelector('.laptop-base-bar');
+      const page      = overlay.querySelector('.lsc-page');
+      const iframe    = document.getElementById('lsc-iframe');
+      const dotMax    = overlay.querySelector('.lsc-dot.g');
+      const MIN_W = 300, MIN_H = 200;
+
+      // Apply a new width/height — iframe fills the frame naturally (no scaling)
+      function applySize(w, h) {
+        w = Math.max(MIN_W, Math.min(w, window.innerWidth  * 0.97));
+        h = Math.max(MIN_H, Math.min(h, window.innerHeight * 0.92));
+        frame.style.width   = w + 'px';
+        baseBar.style.width = w + 'px';
+        page.style.height   = h + 'px';
+      }
+
+      // ── Resize drag ──
+      let resizing = false, rDir = '', rX, rY, rW, rH, rOL;
+
+      overlay.querySelectorAll('.lsc-resize-handle').forEach(h => {
+        h.addEventListener('mousedown', e => {
+          if (e.button !== 0) return;
+          resizing = true;
+          rDir = h.dataset.dir;
+          rX = e.clientX; rY = e.clientY;
+          rW = frame.offsetWidth;
+          rH = page.offsetHeight;
+          rOL = overlay.getBoundingClientRect().left;
+          // Ensure overlay uses left/top (not right/bottom) before a W-resize
+          if (rDir.includes('w')) {
+            const ot = overlay.getBoundingClientRect().top;
+            overlay.style.left   = rOL + 'px';
+            overlay.style.top    = ot + 'px';
+            overlay.style.bottom = 'auto';
+          }
+          e.preventDefault();
+          e.stopPropagation();
+        });
+      });
+
+      document.addEventListener('mousemove', e => {
+        if (!resizing) return;
+        const dx = e.clientX - rX, dy = e.clientY - rY;
+        let nW = rW, nH = rH;
+
+        if (rDir.includes('e'))  nW = rW + dx;
+        if (rDir.includes('w')) { nW = rW - dx; }
+        if (rDir.includes('s'))  nH = rH + dy;
+
+        nW = Math.max(MIN_W, Math.min(nW, window.innerWidth  * 0.96));
+        nH = Math.max(MIN_H, Math.min(nH, window.innerHeight * 0.90));
+
+        frame.style.width   = nW + 'px';
+        baseBar.style.width = nW + 'px';
+        page.style.height   = nH + 'px';
+
+        // W-side resize: shift overlay left so right edge stays fixed
+        if (rDir.includes('w')) {
+          overlay.style.left = (rOL + (rW - nW)) + 'px';
+        }
+      });
+
+      document.addEventListener('mouseup', () => { resizing = false; });
+
+      // ── Maximize / restore ──
+      let maximized = false, saved = null;
+
+      // Chrome bar height + base bar height ≈ 44 + 20 = 64px
+      const CHROME_H = 44, BASE_H = 20;
+
+      function toggleMaximize() {
+        if (!maximized) {
+          saved = {
+            w:      frame.offsetWidth,
+            h:      page.offsetHeight,
+            left:   overlay.style.left,
+            top:    overlay.style.top,
+            bottom: overlay.style.bottom,
+          };
+          // Nearly full viewport — leave a tiny margin so the bezel frame is visible
+          const mW = Math.round(window.innerWidth  - 8);
+          const mH = Math.round(window.innerHeight - CHROME_H - BASE_H - 8);
+          applySize(mW, mH);
+          // Snap overlay to top-left corner (OS-style maximized)
+          overlay.style.left   = '4px';
+          overlay.style.top    = '4px';
+          overlay.style.bottom = 'auto';
+          maximized = true;
+          overlay.classList.add('maximized');
+        } else {
+          if (saved) {
+            applySize(saved.w, saved.h);
+            overlay.style.left   = saved.left;
+            overlay.style.top    = saved.top;
+            overlay.style.bottom = saved.bottom;
+          }
+          maximized = false;
+          overlay.classList.remove('maximized');
+        }
+      }
+
+      dotMax.addEventListener('click', e => { e.stopPropagation(); toggleMaximize(); });
+      // Double-click title bar also toggles maximize (standard OS behaviour)
+      overlay.querySelector('.lsc-browser-chrome').addEventListener('dblclick', e => {
+        if (!e.target.classList.contains('lsc-dot')) toggleMaximize();
       });
     })();
 
