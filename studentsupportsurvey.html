@@ -58,9 +58,29 @@
   /* ---------- Top bar / language toggle ---------- */
   .topbar{
     display:flex;
-    justify-content:flex-end;
+    justify-content:space-between;
+    align-items:center;
     margin-bottom:6px;
+    position:relative;
+    z-index:1001;
   }
+  .icon-btn{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    width:36px; height:36px;
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:50%;
+    color:var(--text-dim);
+    font-size:17px;
+    font-weight:700;
+    cursor:pointer;
+    transition:border-color .15s ease, background .15s ease, transform .1s ease, color .15s ease;
+  }
+  .icon-btn:hover{border-color:var(--gold); background:var(--surface-2); color:var(--gold);}
+  .icon-btn:active{transform:scale(0.93);}
+  .icon-btn:focus-visible{outline:2px solid var(--gold); outline-offset:2px;}
   .lang-toggle{
     display:inline-flex;
     align-items:center;
@@ -83,6 +103,78 @@
   .lang-toggle .langcode{color:var(--gold);}
   .lang-toggle .sep{color:var(--text-faint); font-weight:400;}
   .lang-toggle:focus-visible{outline:2px solid var(--gold); outline-offset:2px;}
+
+  /* ---------- Disclaimer overlay ---------- */
+  .disclaimer-overlay{
+    position:fixed;
+    inset:0;
+    background:rgba(5,7,10,0.78);
+    backdrop-filter:blur(3px);
+    display:none;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+    z-index:1000;
+  }
+  .disclaimer-overlay.show{display:flex; animation:fadeIn .2s ease both;}
+  @keyframes fadeIn{from{opacity:0;} to{opacity:1;}}
+  .disclaimer-modal{
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:20px;
+    max-width:420px;
+    width:100%;
+    max-height:88vh;
+    overflow-y:auto;
+    padding:22px 20px 20px;
+    box-shadow:0 30px 60px -20px rgba(0,0,0,0.7);
+    animation:popIn .3s cubic-bezier(.2,.9,.25,1) both;
+  }
+  .notice-tag{
+    display:inline-block;
+    font-family:'Inter',sans-serif;
+    font-size:10px;
+    font-weight:800;
+    letter-spacing:0.14em;
+    color:var(--seal);
+    border:1.5px solid var(--seal);
+    border-radius:6px;
+    padding:2px 8px;
+    margin-bottom:11px;
+  }
+  .disc-title{
+    font-family:'Noto Serif KR',serif;
+    font-weight:700;
+    font-size:18px;
+    color:var(--text);
+    margin-bottom:12px;
+    line-height:1.35;
+  }
+  .disc-body{
+    font-size:12.5px;
+    line-height:1.55;
+    color:var(--text-dim);
+  }
+  .disc-body p{margin:0 0 10px;}
+  .disc-body p:last-child{margin-bottom:0;}
+  .disc-body b{color:var(--text); font-weight:700;}
+  .disc-btn{
+    margin-top:15px;
+    width:100%;
+    background:var(--seal);
+    color:#FBEDEA;
+    border:none;
+    border-radius:13px;
+    padding:12px 0;
+    font-family:'Noto Sans KR',sans-serif;
+    font-weight:700;
+    font-size:14px;
+    cursor:pointer;
+    transition:filter .15s ease, transform .1s ease;
+  }
+  .disc-btn:hover{filter:brightness(1.08);}
+  .disc-btn:active{transform:scale(0.98);}
+  .disc-btn:focus-visible{outline:2px solid var(--gold); outline-offset:2px;}
 
   /* ---------- Header ---------- */
   header{
@@ -429,6 +521,9 @@
 <div class="wrap">
 
   <div class="topbar">
+    <button class="icon-btn" id="infoToggle" aria-label="About this tool / disclaimer">
+      <span>ⓘ</span>
+    </button>
     <button class="lang-toggle" id="langToggle" aria-label="Switch language / 언어 전환">
       <span class="globe">🌐</span><span class="langcode" id="langCode">EN</span><span class="sep">/</span><span id="langCodeOther">KO</span>
     </button>
@@ -466,6 +561,15 @@
     <span id="t-footer2"></span>
   </footer>
 
+</div>
+
+<div class="disclaimer-overlay" id="disclaimerOverlay" role="dialog" aria-modal="true" aria-labelledby="discTitle">
+  <div class="disclaimer-modal">
+    <div class="notice-tag" id="discTag">NOTICE</div>
+    <div class="disc-title" id="discTitle"></div>
+    <div class="disc-body" id="discBody"></div>
+    <button class="disc-btn" id="discClose"></button>
+  </div>
 </div>
 
 
@@ -509,6 +613,16 @@ const T = {
     statComplete: 'Can view grades',
     footer1: 'Data current as of <b>2026-06-24</b>, from department-provided rosters (Course Eval R1/R2, Major Competency R1/R2).',
     footer2: "If your ID is missing or something looks off, contact the department office.",
+    discTag: 'NOTICE',
+    discTitle: 'Before You Continue',
+    discBody: `
+      <p>This tool was built by a fellow student to help <b>AI & Big Data Dept.</b> classmates quickly check their own survey status. It is an <b>unofficial, student-made tool</b> — it is not affiliated with, operated by, or endorsed by Endicott International College, Woosong University, or any department office.</p>
+      <p><b>What it shows:</b> only whether a student ID is marked "complete" on each of the 4 department-provided survey rosters (Course Eval R1/R2, Major Competency R1/R2). It does not show grades, names, or any other personal information.</p>
+      <p><b>Accuracy:</b> the data was reconstructed from PDF rosters provided by the department and may contain errors, omissions, or be out of date. It is provided "as is" for quick reference only, with no guarantee of completeness or accuracy. Always confirm your real status through the official university portal or the department office before relying on it.</p>
+      <p><b>Intent:</b> this was made only to save students time and reduce confusion — never to expose, embarrass, or harm any student, access information you're not authorized to see, or encourage breaking any university rule or policy. If you think your information shouldn't be here, or spot an error, please reach out and it will be corrected or removed.</p>
+      <p>By continuing, you acknowledge this is an unofficial, convenience-only tool and not a substitute for official university records.</p>
+    `,
+    discBtn: 'I Understand — Continue',
   },
   ko: {
     pageTitle: '성적 열람 결재선 · AI·빅데이터학과',
@@ -536,6 +650,16 @@ const T = {
     statComplete: '성적 확인 가능',
     footer1: '데이터 기준 <b>2026-06-24</b> 학과 제공 명부 (수강설문 1·2차, 전공능력 성취도평가 1·2차).',
     footer2: '본인 학번이 보이지 않거나 정보가 다르다면 학과 사무실에 문의해주세요.',
+    discTag: '안내',
+    discTitle: '이용 전 안내사항',
+    discBody: `
+      <p>이 도구는 <b>AI·빅데이터학과</b> 학생이 같은 학과 친구들의 설문 완료 여부를 빠르게 확인할 수 있도록 만든 <b>비공식 학생 제작 도구</b>입니다. 엔디컷국제대학, 우송대학교, 또는 학과 사무실과 무관하며 공식적으로 운영·승인된 시스템이 아닙니다.</p>
+      <p><b>제공하는 정보:</b> 학번이 4개 학과 제공 설문 명부(수강설문 1·2차, 전공능력 성취도평가 1·2차) 각각에서 "완료"로 표시되어 있는지 여부만 보여줍니다. 성적, 이름, 그 외 개인정보는 표시하지 않습니다.</p>
+      <p><b>정확성 안내:</b> 데이터는 학과에서 제공한 PDF 명부를 바탕으로 재구성한 것으로, 오류나 누락이 있거나 최신 정보가 아닐 수 있습니다. 이 도구는 빠른 참고용으로 "있는 그대로" 제공되며 정확성이나 완전성을 보장하지 않습니다. 본인의 실제 설문 완료 여부는 반드시 학교 공식 포털이나 학과 사무실을 통해 다시 확인해주세요.</p>
+      <p><b>제작 의도:</b> 이 도구는 학생들의 시간을 절약하고 혼란을 줄이기 위한 목적으로만 만들어졌습니다. 특정 학생을 노출하거나 곤란하게 하거나, 권한 없는 정보에 접근하거나, 학교 규정·정책을 위반하도록 유도할 목적은 전혀 없습니다. 본인의 정보가 포함되지 않아야 한다고 생각되거나 오류를 발견하셨다면 알려주세요. 바로 수정하거나 삭제하겠습니다.</p>
+      <p>계속 이용하시면 이는 비공식적이며 참고용으로만 제공되는 도구이고, 학교 공식 기록을 대체할 수 없다는 점에 동의하는 것으로 간주됩니다.</p>
+    `,
+    discBtn: '확인했습니다 — 계속하기',
   }
 };
 
@@ -556,6 +680,12 @@ const statsGrid = $('statsGrid');
 const langToggle = $('langToggle');
 const langCode = $('langCode');
 const langCodeOther = $('langCodeOther');
+const infoToggle = $('infoToggle');
+const disclaimerOverlay = $('disclaimerOverlay');
+const discTag = $('discTag');
+const discTitle = $('discTitle');
+const discBody = $('discBody');
+const discClose = $('discClose');
 
 function applyStaticText(){
   const t = T[lang];
@@ -574,6 +704,20 @@ function applyStaticText(){
   statsBtn.textContent = statsPanel.classList.contains('show') ? t.statsHide : t.statsShow;
   langCode.textContent = lang.toUpperCase();
   langCodeOther.textContent = (lang === 'en' ? 'ko' : 'en').toUpperCase();
+  discTag.textContent = t.discTag;
+  discTitle.textContent = t.discTitle;
+  discBody.innerHTML = t.discBody;
+  discClose.textContent = t.discBtn;
+}
+
+function showDisclaimer(){
+  disclaimerOverlay.classList.add('show');
+  disclaimerOverlay.querySelector('.disclaimer-modal').scrollTop = 0;
+  discClose.focus({preventScroll:true});
+}
+function hideDisclaimer(){
+  disclaimerOverlay.classList.remove('show');
+  sidInput.focus();
 }
 
 function runSearch(){
@@ -697,10 +841,13 @@ statsBtn.addEventListener('click', () => {
   statsBtn.textContent = statsPanel.classList.contains('show') ? T[lang].statsHide : T[lang].statsShow;
 });
 
+infoToggle.addEventListener('click', showDisclaimer);
+discClose.addEventListener('click', hideDisclaimer);
+
 // Init — English by default
 applyStaticText();
 renderStats();
-sidInput.focus();
+showDisclaimer(); // always shown on open so nobody can miss it
 </script>
 
 </body>
