@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title id="pageTitle">Grade Access Approval Line · AI &amp; Big Data Dept.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@500;600;700&family=Noto+Sans+KR:wght@400;500;700;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0A0E14;
+    --bg-soft:#0D1219;
+    --surface:#141B24;
+    --surface-2:#1B2530;
+    --border:#26303B;
+    --border-soft:#1E2730;
+    --text:#F2EDE0;
+    --text-dim:#9AA5B3;
+    --text-faint:#5C6A78;
+    --seal:#C0392B;
+    --seal-dim:#5A2723;
+    --seal-glow:rgba(192,57,43,0.30);
+    --gold:#C9A33D;
+    --gold-dim:rgba(201,163,61,0.16);
+    --success:#4FAE7A;
+    --success-bg:rgba(79,174,122,0.12);
+    --success-border:rgba(79,174,122,0.35);
+    --warn:#D98E3F;
+    --warn-bg:rgba(217,142,63,0.10);
+    --warn-border:rgba(217,142,63,0.30);
+    --radius:18px;
+  }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:
+      radial-gradient(1100px 600px at 50% -10%, rgba(192,57,43,0.07), transparent 60%),
+      radial-gradient(900px 500px at 90% 10%, rgba(201,163,61,0.05), transparent 55%),
+      var(--bg);
+    color:var(--text);
+    font-family:'Inter','Noto Sans KR',sans-serif;
+    min-height:100vh;
+    -webkit-font-smoothing:antialiased;
+    line-height:1.5;
+  }
+
+  .kr{font-family:'Noto Sans KR','Inter',sans-serif;}
+  .serif-kr{font-family:'Noto Serif KR',serif;}
+
+  .wrap{
+    max-width:560px;
+    margin:0 auto;
+    padding:28px 20px 60px;
+  }
+
+  /* ---------- Top bar / language toggle ---------- */
+  .topbar{
+    display:flex;
+    justify-content:flex-end;
+    margin-bottom:6px;
+  }
+  .lang-toggle{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:999px;
+    padding:7px 13px 7px 11px;
+    color:var(--text);
+    font-family:'Inter',sans-serif;
+    font-size:12.5px;
+    font-weight:700;
+    letter-spacing:0.03em;
+    cursor:pointer;
+    transition:border-color .15s ease, background .15s ease, transform .1s ease;
+  }
+  .lang-toggle:hover{border-color:var(--gold); background:var(--surface-2);}
+  .lang-toggle:active{transform:scale(0.96);}
+  .lang-toggle .globe{font-size:15px; line-height:1;}
+  .lang-toggle .langcode{color:var(--gold);}
+  .lang-toggle .sep{color:var(--text-faint); font-weight:400;}
+  .lang-toggle:focus-visible{outline:2px solid var(--gold); outline-offset:2px;}
+
+  /* ---------- Header ---------- */
+  header{
+    text-align:center;
+    margin-bottom:28px;
+  }
+  .eyebrow{
+    font-family:'Inter',sans-serif;
+    font-size:11.5px;
+    letter-spacing:0.16em;
+    text-transform:uppercase;
+    color:var(--gold);
+    font-weight:700;
+    margin-bottom:10px;
+    opacity:0.9;
+  }
+  h1{
+    font-family:'Noto Serif KR',serif;
+    font-weight:700;
+    font-size:26px;
+    line-height:1.35;
+    margin:0 0 12px;
+    color:var(--text);
+    letter-spacing:-0.01em;
+  }
+  h1 .en{
+    display:block;
+    font-family:'Inter',sans-serif;
+    font-size:13px;
+    font-weight:500;
+    color:var(--text-faint);
+    margin-top:6px;
+    letter-spacing:0.01em;
+  }
+  .lede{
+    font-size:14px;
+    color:var(--text-dim);
+    max-width:420px;
+    margin:0 auto;
+  }
+  .lede b{color:var(--text);font-weight:700;}
+  .lede .en{
+    display:block;
+    font-family:'Inter',sans-serif;
+    font-size:12.5px;
+    color:var(--text-faint);
+    margin-top:6px;
+  }
+
+  /* ---------- Search ---------- */
+  .search-card{
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    padding:18px;
+    box-shadow:0 1px 0 rgba(255,255,255,0.02) inset, 0 20px 40px -24px rgba(0,0,0,0.6);
+  }
+  .search-row{
+    display:flex;
+    gap:10px;
+  }
+  #sid{
+    flex:1;
+    min-width:0;
+    background:var(--bg-soft);
+    border:1.5px solid var(--border);
+    border-radius:13px;
+    color:var(--text);
+    font-family:'Inter',sans-serif;
+    font-size:18px;
+    font-weight:600;
+    letter-spacing:0.04em;
+    padding:14px 14px;
+    outline:none;
+    transition:border-color .15s ease, box-shadow .15s ease;
+    -webkit-appearance:none;
+  }
+  #sid::placeholder{
+    color:var(--text-faint);
+    font-weight:500;
+    letter-spacing:0;
+  }
+  #sid:focus{
+    border-color:var(--gold);
+    box-shadow:0 0 0 3px var(--gold-dim);
+  }
+  #go{
+    flex:0 0 auto;
+    background:var(--seal);
+    color:#FBEDEA;
+    border:none;
+    border-radius:13px;
+    padding:0 20px;
+    font-family:'Noto Sans KR',sans-serif;
+    font-weight:700;
+    font-size:15px;
+    cursor:pointer;
+    transition:filter .15s ease, transform .1s ease;
+  }
+  #go:hover{filter:brightness(1.08);}
+  #go:active{transform:scale(0.97);}
+  #go:focus-visible, #sid:focus-visible{outline:2px solid var(--gold); outline-offset:2px;}
+
+  .hint{
+    margin-top:10px;
+    font-size:12.5px;
+    color:var(--text-faint);
+    min-height:16px;
+  }
+  .hint.error{color:var(--seal); font-weight:600;}
+
+  /* ---------- Results ---------- */
+  #results{
+    margin-top:26px;
+    display:none;
+  }
+  #results.show{display:block; animation:fadeUp .35s ease both;}
+  @keyframes fadeUp{
+    from{opacity:0; transform:translateY(8px);}
+    to{opacity:1; transform:translateY(0);}
+  }
+
+  .sid-label{
+    text-align:center;
+    font-size:12.5px;
+    color:var(--text-faint);
+    margin-bottom:14px;
+  }
+  .sid-label span{
+    font-weight:700;
+    color:var(--text);
+    font-size:15px;
+    letter-spacing:0.03em;
+    margin-left:4px;
+  }
+
+  .approval-line{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+    margin-bottom:18px;
+  }
+  @media (min-width:480px){
+    .approval-line{grid-template-columns:repeat(4,1fr);}
+  }
+
+  .stamp-box{
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:14px;
+    padding:14px 10px 16px;
+    text-align:center;
+    position:relative;
+    opacity:0;
+    transform:translateY(10px) scale(0.96);
+    animation:popIn .42s cubic-bezier(.2,.9,.25,1) forwards;
+  }
+  .stamp-box .ord{
+    position:absolute;
+    top:8px; left:10px;
+    font-size:10px;
+    color:var(--text-faint);
+    font-weight:700;
+    font-family:'Inter',sans-serif;
+  }
+  @keyframes popIn{
+    to{opacity:1; transform:translateY(0) scale(1);}
+  }
+  .seal-circle{
+    width:52px; height:52px;
+    margin:14px auto 10px;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border:2px dashed var(--border);
+    color:var(--text-faint);
+    font-size:22px;
+    transition:all .2s ease;
+  }
+  .stamp-box.done .seal-circle{
+    border:2.5px solid var(--seal);
+    color:var(--seal);
+    box-shadow:0 0 0 5px var(--seal-glow);
+    background:rgba(192,57,43,0.08);
+    transform:rotate(-8deg);
+  }
+  .stamp-box.done .seal-circle svg{filter:drop-shadow(0 0 1px var(--seal));}
+  .stamp-name{
+    font-family:'Noto Sans KR',sans-serif;
+    font-size:12.5px;
+    font-weight:700;
+    color:var(--text);
+    line-height:1.3;
+  }
+  .stamp-en{
+    font-family:'Inter',sans-serif;
+    font-size:9.5px;
+    color:var(--text-faint);
+    margin-top:3px;
+    letter-spacing:0.02em;
+  }
+  .stamp-status{
+    margin-top:8px;
+    font-size:10.5px;
+    font-weight:700;
+    letter-spacing:0.03em;
+  }
+  .stamp-box.done .stamp-status{color:var(--success);}
+  .stamp-box:not(.done) .stamp-status{color:var(--text-faint);}
+
+  /* ---------- Verdict banner ---------- */
+  .verdict{
+    border-radius:16px;
+    padding:20px 18px;
+    text-align:center;
+    opacity:0;
+    animation:fadeUp .4s ease .25s both;
+  }
+  .verdict.ok{
+    background:var(--success-bg);
+    border:1px solid var(--success-border);
+  }
+  .verdict.pending{
+    background:var(--warn-bg);
+    border:1px solid var(--warn-border);
+  }
+  .verdict.notfound{
+    background:var(--surface-2);
+    border:1px solid var(--border);
+  }
+  .verdict .vicon{font-size:30px; line-height:1; margin-bottom:8px;}
+  .verdict .vtitle{
+    font-family:'Noto Sans KR',sans-serif;
+    font-weight:800;
+    font-size:17px;
+    margin-bottom:6px;
+  }
+  .verdict.ok .vtitle{color:var(--success);}
+  .verdict.pending .vtitle{color:var(--warn);}
+  .verdict.notfound .vtitle{color:var(--text);}
+  .verdict .vsub{
+    font-size:13px;
+    color:var(--text-dim);
+    margin-bottom:2px;
+  }
+  .verdict .ven{
+    font-family:'Inter',sans-serif;
+    font-size:11.5px;
+    color:var(--text-faint);
+    margin-top:6px;
+  }
+  .missing-list{
+    margin:14px 0 2px;
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+  }
+  .missing-item{
+    background:rgba(255,255,255,0.03);
+    border:1px solid var(--border-soft);
+    border-radius:10px;
+    padding:8px 12px;
+    font-size:12.5px;
+    color:var(--text);
+    text-align:left;
+    font-weight:600;
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .missing-item::before{
+    content:"";
+    width:6px;height:6px;border-radius:50%;
+    background:var(--warn);
+    flex:0 0 auto;
+  }
+
+  /* ---------- Stats toggle ---------- */
+  .stats-toggle{
+    display:block;
+    margin:30px auto 0;
+    background:none;
+    border:none;
+    color:var(--text-faint);
+    font-family:'Inter',sans-serif;
+    font-size:12px;
+    text-decoration:underline;
+    text-decoration-color:var(--border);
+    cursor:pointer;
+    text-align:center;
+    width:100%;
+  }
+  .stats-toggle:hover{color:var(--text-dim);}
+  #stats{
+    display:none;
+    margin-top:14px;
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:14px;
+    padding:16px;
+  }
+  #stats.show{display:block; animation:fadeUp .3s ease both;}
+  .stats-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+    text-align:center;
+  }
+  .stat{
+    background:var(--bg-soft);
+    border:1px solid var(--border-soft);
+    border-radius:10px;
+    padding:12px 6px;
+  }
+  .stat .num{
+    font-family:'Inter',sans-serif;
+    font-size:22px;
+    font-weight:800;
+    color:var(--gold);
+    font-variant-numeric:tabular-nums;
+  }
+  .stat .lbl{
+    font-size:10.5px;
+    color:var(--text-faint);
+    margin-top:2px;
+  }
+
+  footer{
+    margin-top:36px;
+    text-align:center;
+    font-size:11px;
+    color:var(--text-faint);
+    line-height:1.7;
+  }
+  footer b{color:var(--text-dim);}
+
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:0.001s !important; transition-duration:0.001s !important;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="topbar">
+    <button class="lang-toggle" id="langToggle" aria-label="Switch language / 언어 전환">
+      <span class="globe">🌐</span><span class="langcode" id="langCode">EN</span><span class="sep">/</span><span id="langCodeOther">KO</span>
+    </button>
+  </div>
+
+  <header>
+    <div class="eyebrow" id="t-eyebrow"></div>
+    <h1 id="t-title"></h1>
+    <p class="lede" id="t-lede"></p>
+  </header>
+
+  <div class="search-card">
+    <div class="search-row">
+      <input id="sid" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="9" autocomplete="off">
+      <button id="go"></button>
+    </div>
+    <div class="hint" id="hint"></div>
+  </div>
+
+  <div id="results">
+    <div class="sid-label" id="t-sidlabel">Result for ID <span id="sidEcho"></span></div>
+
+    <div class="approval-line" id="line"></div>
+
+    <div class="verdict" id="verdict"></div>
+  </div>
+
+  <button class="stats-toggle" id="statsBtn"></button>
+  <div id="stats">
+    <div class="stats-grid" id="statsGrid"></div>
+  </div>
+
+  <footer>
+    <span id="t-footer1"></span><br>
+    <span id="t-footer2"></span>
+  </footer>
+
+</div>
+
+
+<script>
+// bit0=Course Eval R1  bit1=Course Eval R2  bit2=Major Competency R1  bit3=Major Competency R2
+const RECORDS = {"202019041":14,"202112070":8,"202201120":3,"202201125":3,"202212048":1,"202212049":2,"202212136":1,"202212146":10,"202212171":1,"202212194":3,"202212202":3,"202212206":3,"202212218":2,"202212219":3,"202212221":11,"202212227":1,"202212229":2,"202212230":11,"202312050":2,"202312074":10,"202312112":2,"202312118":4,"202312143":1,"202312148":3,"202312149":10,"202312172":7,"202312229":13,"202312232":5,"202312237":11,"202312239":11,"202312241":6,"202312294":7,"202312371":15,"202312373":3,"202312375":14,"202312394":1,"202312403":4,"202412044":11,"202412059":2,"202412061":11,"202412077":15,"202412080":3,"202412081":2,"202412093":2,"202412100":10,"202412103":7,"202412106":2,"202412109":2,"202412126":3,"202412135":7,"202412146":15,"202412150":7,"202412155":1,"202412171":2,"202412175":2,"202412188":4,"202412249":15,"202412255":10,"202412271":5,"202412273":10,"202412276":3,"202412300":7,"202412306":7,"202412309":15,"202412318":2,"202412321":1,"202412323":15,"202412331":3,"202412350":11,"202412361":3,"202412364":8,"202412372":1,"202412377":2,"202412380":4,"202412394":15,"202412406":15,"202412415":7,"202412423":14,"202412425":1,"202412428":3,"202412430":2,"202412434":7,"202412435":6,"202412438":7,"202412449":15,"202412452":1,"202412460":7,"202412468":3,"202412469":7,"202412475":3,"202412482":5,"202412483":1,"202430246":7,"202501039":4,"202510012":1,"202510024":7,"202510040":7,"202510045":5,"202510046":3,"202510051":2,"202510056":15,"202510059":3,"202510074":2,"202510086":3,"202510097":15,"202510112":3,"202510113":1,"202510119":7,"202510131":2,"202510137":15,"202510159":4,"202510162":5,"202510182":7,"202510193":15,"202512310":3,"202512316":15,"202512324":1,"202512332":1,"202512336":1,"202512349":7,"202512356":2,"202512360":1,"202512366":11,"202512367":3,"202512369":15,"202512374":15,"202512375":7,"202512377":4,"202512380":7,"202512385":7,"202512390":3,"202512398":3,"202512404":4,"202512406":3,"202512413":3,"202512422":3,"202512431":3,"202512432":14,"202512434":3,"202512435":11,"202512440":3,"202512441":7,"202512444":5,"202512446":15,"202512451":3,"202512459":4,"202512464":15,"202512465":13,"202512467":13,"202512472":15,"202512480":7,"202512484":2,"202512492":15,"202512493":1,"202512494":1,"202512508":2,"202530003":3,"202608118":1,"202608128":15,"202608132":6,"202608139":4,"202608141":6,"202608142":2,"202608144":15,"202608145":7,"202608161":5,"202612034":15,"202612038":15,"202612040":4,"202612043":1,"202612065":13,"202612066":3,"202612072":1,"202612073":15,"202612074":15,"202612084":7,"202612085":7,"202612092":10,"202612106":15,"202612107":3,"202612116":3,"202612126":3,"202612127":15,"202612128":7,"202612129":12,"202612131":11,"202612132":11,"202612145":8,"202612149":3,"202612166":2,"202612172":2,"202612173":11,"202612174":5,"202612177":3,"202612178":1,"202612180":11,"202612183":2,"202612187":2,"202612190":3};
+
+const SURVEYS = [
+  {key:'ce1', bit:1, en:'Course Eval R1',          ko:'수강설문 1차'},
+  {key:'ce2', bit:2, en:'Course Eval R2',          ko:'수강설문 2차'},
+  {key:'mc1', bit:4, en:'Major Competency R1',     ko:'전공능력평가 1차'},
+  {key:'mc2', bit:8, en:'Major Competency R2',     ko:'전공능력평가 2차'},
+];
+
+const checkSVG = `<svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+
+const T = {
+  en: {
+    pageTitle: 'Grade Access Approval Line · AI & Big Data Dept.',
+    htmlLang: 'en',
+    eyebrow: 'Endicott International College · AI & Big Data Dept.',
+    title: 'Grade Access Approval Line',
+    lede: 'You need all <b>4 surveys</b> stamped complete before your grades unlock.<br>Enter your student ID below to check your status.',
+    placeholder: 'Enter 9-digit student ID · e.g. 202612034',
+    searchBtn: 'Check',
+    hintDefault: 'Enter your student ID, then press Enter or tap Check.',
+    hintError: 'Please enter a valid 9-digit student ID.',
+    resultFor: 'Result for ID',
+    statusDone: 'Complete',
+    statusPending: 'Incomplete',
+    notFoundTitle: 'No Record Found',
+    notFoundSub: "This student ID doesn't appear in any of the 4 survey rosters.",
+    notFoundTip: 'Double-check your ID, or contact the department office.',
+    okTitle: 'All Approved — You Can View Your Grades!',
+    okSub: "You've completed all 4 surveys.",
+    pendingTitle: n => `${n} survey${n>1?'s':''} remaining`,
+    pendingSub: 'Complete the surveys above to unlock your grades.',
+    statsShow: 'View overall stats ▾',
+    statsHide: 'Hide stats ▴',
+    statTotal: 'Total students tracked',
+    statComplete: 'Can view grades',
+    footer1: 'Data current as of <b>2026-06-24</b>, from department-provided rosters (Course Eval R1/R2, Major Competency R1/R2).',
+    footer2: "If your ID is missing or something looks off, contact the department office.",
+  },
+  ko: {
+    pageTitle: '성적 열람 결재선 · AI·빅데이터학과',
+    htmlLang: 'ko',
+    eyebrow: '엔디컷국제대학 · AI·빅데이터학과',
+    title: '성적 열람 결재선',
+    lede: '<b>4개 설문</b>을 모두 완료해야 성적 확인이 가능합니다.<br>학번을 입력해 완료 여부를 확인하세요.',
+    placeholder: '학번 9자리 입력 · 예) 202612034',
+    searchBtn: '조회',
+    hintDefault: '학번을 입력하고 Enter를 누르거나 조회 버튼을 누르세요.',
+    hintError: '학번 9자리(숫자)를 정확히 입력해주세요.',
+    resultFor: '조회 결과 — 학번',
+    statusDone: '완료',
+    statusPending: '미완료',
+    notFoundTitle: '조회된 기록이 없어요',
+    notFoundSub: '4개 설문 명부 어디에도 이 학번이 보이지 않습니다.',
+    notFoundTip: '학번을 다시 확인하거나 학과 사무실에 문의해주세요.',
+    okTitle: '모든 결재 완료 — 성적 확인 가능!',
+    okSub: '4개 설문을 모두 완료하셨습니다.',
+    pendingTitle: n => `${n}개 설문이 남았어요`,
+    pendingSub: '아래 설문을 완료하면 성적을 확인할 수 있습니다.',
+    statsShow: '전체 현황 보기 ▾',
+    statsHide: '전체 현황 닫기 ▴',
+    statTotal: '명부에 등록된 학생',
+    statComplete: '성적 확인 가능',
+    footer1: '데이터 기준 <b>2026-06-24</b> 학과 제공 명부 (수강설문 1·2차, 전공능력 성취도평가 1·2차).',
+    footer2: '본인 학번이 보이지 않거나 정보가 다르다면 학과 사무실에 문의해주세요.',
+  }
+};
+
+let lang = 'en'; // English is default
+let lastSid = null; // remembers last search so we can re-render in the new language
+
+const $ = id => document.getElementById(id);
+const sidInput = $('sid');
+const goBtn = $('go');
+const hint = $('hint');
+const results = $('results');
+const line = $('line');
+const verdict = $('verdict');
+const sidEcho = $('sidEcho');
+const statsBtn = $('statsBtn');
+const statsPanel = $('stats');
+const statsGrid = $('statsGrid');
+const langToggle = $('langToggle');
+const langCode = $('langCode');
+const langCodeOther = $('langCodeOther');
+
+function applyStaticText(){
+  const t = T[lang];
+  document.documentElement.lang = t.htmlLang;
+  $('pageTitle').textContent = t.pageTitle;
+  $('t-eyebrow').textContent = t.eyebrow;
+  $('t-title').textContent = t.title;
+  $('t-lede').innerHTML = t.lede;
+  sidInput.placeholder = t.placeholder;
+  goBtn.textContent = t.searchBtn;
+  if(!hint.classList.contains('error')) hint.textContent = t.hintDefault;
+  else hint.textContent = t.hintError;
+  $('t-sidlabel').childNodes[0].nodeValue = t.resultFor + ' ';
+  $('t-footer1').innerHTML = t.footer1;
+  $('t-footer2').textContent = t.footer2;
+  statsBtn.textContent = statsPanel.classList.contains('show') ? t.statsHide : t.statsShow;
+  langCode.textContent = lang.toUpperCase();
+  langCodeOther.textContent = (lang === 'en' ? 'ko' : 'en').toUpperCase();
+}
+
+function runSearch(){
+  const raw = sidInput.value.trim();
+  if(!/^\d{9}$/.test(raw)){
+    hint.textContent = T[lang].hintError;
+    hint.classList.add('error');
+    results.classList.remove('show');
+    return;
+  }
+  hint.classList.remove('error');
+  hint.textContent = T[lang].hintDefault;
+
+  lastSid = raw;
+  const bits = RECORDS[raw];
+  sidEcho.textContent = raw;
+  renderLine(bits);
+  renderVerdict(bits);
+  results.classList.add('show');
+  results.scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+function renderLine(bits){
+  const t = T[lang];
+  line.innerHTML = '';
+  SURVEYS.forEach((s, i) => {
+    const done = bits !== undefined && (bits & s.bit) !== 0;
+    const box = document.createElement('div');
+    box.className = 'stamp-box' + (done ? ' done' : '');
+    box.style.animationDelay = (i*90) + 'ms';
+    box.innerHTML = `
+      <div class="ord">${i+1}</div>
+      <div class="seal-circle">${done ? checkSVG : ''}</div>
+      <div class="stamp-name">${s[lang]}</div>
+      <div class="stamp-en">${lang === 'en' ? s.ko : s.en}</div>
+      <div class="stamp-status">${done ? t.statusDone : t.statusPending}</div>
+    `;
+    line.appendChild(box);
+  });
+}
+
+function renderVerdict(bits){
+  const t = T[lang];
+  if(bits === undefined){
+    verdict.className = 'verdict notfound';
+    verdict.innerHTML = `
+      <div class="vicon">🔍</div>
+      <div class="vtitle">${t.notFoundTitle}</div>
+      <div class="vsub">${t.notFoundSub}</div>
+      <div class="ven">${t.notFoundTip}</div>
+    `;
+    return;
+  }
+
+  const missing = SURVEYS.filter(s => (bits & s.bit) === 0);
+
+  if(missing.length === 0){
+    verdict.className = 'verdict ok';
+    verdict.innerHTML = `
+      <div class="vicon">🎉</div>
+      <div class="vtitle">${t.okTitle}</div>
+      <div class="vsub">${t.okSub}</div>
+    `;
+  } else {
+    verdict.className = 'verdict pending';
+    const items = missing.map(s => `<div class="missing-item">${s[lang]} <span style="color:var(--text-faint);font-weight:500;">· ${lang==='en'?s.ko:s.en}</span></div>`).join('');
+    verdict.innerHTML = `
+      <div class="vicon">⏳</div>
+      <div class="vtitle">${t.pendingTitle(missing.length)}</div>
+      <div class="vsub">${t.pendingSub}</div>
+      <div class="missing-list">${items}</div>
+    `;
+  }
+}
+
+function renderStats(){
+  const t = T[lang];
+  const all = Object.values(RECORDS);
+  const total = all.length;
+  const complete = all.filter(b => b === 15).length;
+  const ce1c = all.filter(b => b & 1).length;
+  const ce2c = all.filter(b => b & 2).length;
+  const mc1c = all.filter(b => b & 4).length;
+  const mc2c = all.filter(b => b & 8).length;
+  const stats = [
+    [total, t.statTotal],
+    [complete, t.statComplete],
+    [ce1c, SURVEYS[0][lang]],
+    [ce2c, SURVEYS[1][lang]],
+    [mc1c, SURVEYS[2][lang]],
+    [mc2c, SURVEYS[3][lang]],
+  ];
+  statsGrid.innerHTML = stats.map(([n,lbl]) => `
+    <div class="stat">
+      <div class="num">${n}</div>
+      <div class="lbl">${lbl}</div>
+    </div>
+  `).join('');
+}
+
+function setLanguage(newLang){
+  lang = newLang;
+  applyStaticText();
+  renderStats();
+  if(lastSid !== null){
+    const bits = RECORDS[lastSid];
+    renderLine(bits);
+    renderVerdict(bits);
+  }
+}
+
+langToggle.addEventListener('click', () => setLanguage(lang === 'en' ? 'ko' : 'en'));
+goBtn.addEventListener('click', runSearch);
+sidInput.addEventListener('keydown', e => { if(e.key === 'Enter') runSearch(); });
+sidInput.addEventListener('input', () => {
+  sidInput.value = sidInput.value.replace(/\D/g,'').slice(0,9);
+});
+
+statsBtn.addEventListener('click', () => {
+  statsPanel.classList.toggle('show');
+  statsBtn.textContent = statsPanel.classList.contains('show') ? T[lang].statsHide : T[lang].statsShow;
+});
+
+// Init — English by default
+applyStaticText();
+renderStats();
+sidInput.focus();
+</script>
+
+</body>
+</html>
