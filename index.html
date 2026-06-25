@@ -588,15 +588,31 @@
     .laptop-modal-overlay:not(.dragging) .lsc-dot { cursor: pointer; }
     .lsc-dots { display: flex; gap: 7px; }
     .lsc-dot {
-      width: 12px; height: 12px;
+      width: 13px; height: 13px;
       border-radius: 50%;
       cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
       transition: filter 0.15s;
+      position: relative;
     }
-    .lsc-dot:hover { filter: brightness(1.35); }
+    .lsc-dot::after {
+      content: '';
+      font-size: 8px;
+      font-weight: 900;
+      line-height: 1;
+      color: rgba(0,0,0,0.65);
+      opacity: 0;
+      transition: opacity 0.12s;
+      pointer-events: none;
+      user-select: none;
+    }
+    .lsc-dots:hover .lsc-dot::after { opacity: 1; }
     .lsc-dot.r { background: #ff5f56; }
     .lsc-dot.y { background: #ffbd2e; }
     .lsc-dot.g { background: #27c93f; }
+    .lsc-dot.r::after { content: '✕'; }
+    .lsc-dot.y::after { content: '−'; }
+    .lsc-dot.g::after { content: '+'; }
     .lsc-url-bar {
       flex: 1;
       background: #111;
@@ -1004,6 +1020,307 @@
       .rc-edu-title     { font-size: 12px !important; }
     }
 
+    /* ── Camera on table ── */
+    .camera {
+      position: fixed;
+      bottom: 183px;
+      left: 44%;
+      width: 88px;
+      z-index: 3;
+      transform-origin: bottom center;
+      cursor: pointer;
+      transition: transform 0.3s ease, filter 0.3s ease;
+    }
+    .camera img { width: 100%; display: block; }
+    @keyframes cameraFloat {
+      0%,100% { transform: translateY(0) rotate(-1deg); }
+      50%      { transform: translateY(-5px) rotate(1deg); }
+    }
+    .camera:hover {
+      animation: cameraFloat 2s ease-in-out infinite;
+      filter: drop-shadow(2px 5px 14px rgba(0,0,0,0.45));
+    }
+    body.lights-off .camera { filter: brightness(0.25); transition: filter 1.5s linear; }
+
+    /* ── Notebooks on table ── */
+    .notebooks {
+      position: fixed;
+      bottom: 208px;
+      left: calc(44% - 62px);
+      width: 80px;
+      z-index: 3;
+      transform-origin: bottom center;
+      transition: filter 0.3s ease;
+    }
+    .notebooks img { width: 100%; display: block; }
+    body.lights-off .notebooks { filter: brightness(0.25); transition: filter 1.5s linear; }
+
+    /* ── Robot on table ── */
+    .robot {
+      position: fixed;
+      bottom: 228px;
+      left: calc(44% - 30px);
+      width: 75px;
+      z-index: 2;
+      transform-origin: bottom center;
+      cursor: pointer;
+      transition: transform 0.3s ease, filter 0.3s ease;
+    }
+    .robot img { width: 100%; display: block; }
+    @keyframes robotBounce {
+      0%,100% { transform: translateY(0) scale(1); }
+      30%      { transform: translateY(-8px) scale(1.04); }
+      60%      { transform: translateY(-4px) scale(1.02); }
+    }
+    .robot:hover {
+      animation: robotBounce 1.2s ease-in-out infinite;
+      filter: drop-shadow(0 4px 16px rgba(80,160,255,0.4));
+    }
+    body.lights-off .robot { filter: brightness(0.25); transition: filter 1.5s linear; }
+
+    /* ── Walkie-talkie ── */
+    .walkie {
+      position: fixed;
+      bottom: 185px;
+      left: calc(48% - 148px);
+      width: 80px;
+      z-index: 3;
+      cursor: pointer;
+      transform-origin: bottom center;
+      transition: transform 0.3s ease, filter 0.3s ease;
+    }
+    .walkie img { width: 100%; display: block; }
+    @keyframes walkieWobble {
+      0%,100% { transform: rotate(0deg); }
+      20%     { transform: rotate(-10deg); }
+      45%     { transform: rotate(8deg); }
+      65%     { transform: rotate(-6deg); }
+      82%     { transform: rotate(4deg); }
+    }
+    .walkie.transmitting { animation: walkieWobble 0.55s ease-in-out; }
+    .walkie:hover { filter: drop-shadow(0 4px 14px rgba(80,200,120,0.55)); transform: scale(1.08); }
+    body.lights-off .walkie { filter: brightness(0.25); transition: filter 1.5s linear; }
+
+.walkie-bubble {
+       bottom: 265px;
+       left: calc(48% - 200px);
+     }
+    .walkie-bubble.show { opacity: 1; transform: translateY(0) scale(1); }
+    .walkie-bubble::after {
+      content: '';
+      position: absolute;
+      bottom: -7px;
+      left: 20px;
+      border: 7px solid transparent;
+      border-top-color: rgba(126,255,160,0.4);
+      border-bottom: none;
+    }
+
+
+    /* ── Camera flash + polaroid ── */
+    #camera-flash {
+      position: fixed;
+      inset: 0;
+      background: white;
+      z-index: 200;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.06s ease;
+    }
+    #camera-flash.flash { opacity: 1; }
+
+    #polaroid-wrap {
+      position: fixed;
+      bottom: 210px;
+      left: 50%;
+      transform: translateX(-50%) translateY(60px) rotate(-4deg);
+      z-index: 100;
+      opacity: 0;
+      transition: opacity 0.4s ease, transform 0.5s cubic-bezier(0.34,1.56,0.64,1);
+      pointer-events: none;
+    }
+    #polaroid-wrap.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0) rotate(-3deg);
+      pointer-events: all;
+    }
+    .polaroid {
+      background: #fafafa;
+      padding: 12px 12px 44px;
+      box-shadow: 0 10px 35px rgba(0,0,0,0.45), 0 2px 8px rgba(0,0,0,0.2);
+      width: 170px;
+      position: relative;
+    }
+    .polaroid-photo {
+      width: 146px;
+      height: 112px;
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 45%, #0f3460 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 5px;
+      overflow: hidden;
+      position: relative;
+    }
+    .polaroid-photo::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 25% 25%, rgba(255,255,255,0.18) 0%, transparent 55%);
+    }
+    .polaroid-room-icon { font-size: 34px; }
+    .polaroid-room-label {
+      color: rgba(255,255,255,0.75);
+      font-family: 'Courier New', monospace;
+      font-size: 10px;
+      letter-spacing: 1px;
+    }
+    .polaroid-name {
+      font-family: 'Courier New', monospace;
+      font-size: 15px;
+      font-weight: bold;
+      text-align: center;
+      padding-top: 10px;
+      color: #222;
+      letter-spacing: 1px;
+    }
+    .polaroid-date {
+      font-family: 'Courier New', monospace;
+      font-size: 9px;
+      text-align: center;
+      color: #aaa;
+      margin-top: 3px;
+    }
+    .polaroid-close {
+      position: absolute;
+      top: -10px;
+      right: -10px;
+      width: 24px;
+      height: 24px;
+      background: #333;
+      color: white;
+      border-radius: 50%;
+      border: none;
+      cursor: pointer;
+      font-size: 11px;
+      line-height: 24px;
+      text-align: center;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+    }
+    .polaroid-close:hover { background: #555; }
+
+    /* ── Notebook open modal ── */
+    #notebook-modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.52);
+      backdrop-filter: blur(3px);
+      z-index: 80;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+    #notebook-modal.open { opacity: 1; pointer-events: all; }
+    .nb-book {
+      background: #fffef2;
+      width: 310px;
+      max-height: 80vh;
+      overflow-y: auto;
+      border-radius: 4px 8px 8px 4px;
+      box-shadow: 8px 10px 40px rgba(0,0,0,0.55), -2px 0 0 #2a6dd9, inset 0 0 0 1px rgba(0,0,0,0.06);
+      padding: 26px 22px 22px;
+      position: relative;
+      transform: perspective(900px) rotateY(-80deg);
+      transition: transform 0.5s cubic-bezier(0.34,1.1,0.64,1);
+    }
+    #notebook-modal.open .nb-book { transform: perspective(900px) rotateY(0deg); }
+    .nb-book::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 26px; right: 0; bottom: 0;
+      background: repeating-linear-gradient(transparent, transparent 27px, #dce8f8 27px, #dce8f8 28px);
+      pointer-events: none;
+      z-index: 0;
+      border-radius: 0 8px 8px 0;
+    }
+    .nb-book > * { position: relative; z-index: 1; }
+    .nb-title {
+      font-family: 'Courier New', monospace;
+      font-size: 17px;
+      font-weight: bold;
+      color: #1a1a2e;
+      margin-bottom: 18px;
+      text-align: center;
+      border-bottom: 2px solid #2a6dd9;
+      padding-bottom: 10px;
+    }
+    .nb-section { margin-bottom: 15px; }
+    .nb-section-title {
+      font-family: 'Courier New', monospace;
+      font-size: 11px;
+      text-transform: uppercase;
+      color: #999;
+      margin-bottom: 7px;
+      letter-spacing: 1.2px;
+    }
+    .nb-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+    .nb-tag {
+      background: #e6f0fd;
+      color: #1a5cb8;
+      padding: 4px 10px;
+      border-radius: 14px;
+      font-size: 12px;
+      font-family: 'Segoe UI', sans-serif;
+      border: 1px solid #bcd4f5;
+    }
+    .nb-close {
+      position: absolute;
+      top: 10px; right: 12px;
+      background: none;
+      border: none;
+      font-size: 18px;
+      cursor: pointer;
+      color: #aaa;
+      line-height: 1;
+    }
+    .nb-close:hover { color: #555; }
+
+    /* ── Flower growing in corner ── */
+    .flower-grow {
+      position: fixed;
+      bottom: 0;
+      left: 5.5%;
+      width: 90px;
+      height: 480px;
+      z-index: 2;
+      pointer-events: none;
+      transform-origin: bottom center;
+      animation: flowerSway 5.5s ease-in-out infinite;
+      filter: drop-shadow(3px 10px 14px rgba(0,0,0,0.55))
+              drop-shadow(-4px 0 18px rgba(140,180,255,0.18))
+              brightness(0.92) saturate(1.1);
+    }
+    @keyframes flowerSway {
+      0%, 100% { transform: rotate(0deg); }
+      35%      { transform: rotate(1.4deg); }
+      68%      { transform: rotate(-1deg); }
+    }
+    body.lights-off .flower-grow {
+      opacity: 0.15;
+      transition: opacity 1.5s linear;
+    }
+
+    /* ── Heart float (cat petting) ── */
+    @keyframes heartFloat {
+      0%   { opacity: 0.9; transform: translateY(0) scale(1) rotate(0deg); }
+      50%  { opacity: 0.7; transform: translateY(-40px) scale(0.9) rotate(10deg); }
+      100% { opacity: 0;   transform: translateY(-75px) scale(0.5) rotate(-8deg); }
+    }
+
     /* ── Mobile ── */
     .mobile {
       position: fixed;
@@ -1149,6 +1466,555 @@
       display: block;
     }
 
+    /* ══════════════════════════════════════════════════
+       WALL CLOCK
+       ══════════════════════════════════════════════════ */
+    .wall-clock {
+      position: fixed;
+      left: 51%; top: 9%;
+      transform: translateX(-50%);
+      width: 88px; height: 88px;
+      z-index: 4;
+      cursor: default;
+    }
+
+    /* Outer wooden frame — conic-gradient simulates wood grain ring */
+    .clock-frame {
+      width: 100%; height: 100%;
+      border-radius: 50%;
+      padding: 5px;
+      background: conic-gradient(
+        #7a5215 0deg,   #c08820 25deg,  #a06c18 55deg,
+        #d09c28 85deg,  #8a6018 115deg, #b07820 145deg,
+        #7a5215 180deg, #c08820 205deg, #a06c18 235deg,
+        #d09c28 265deg, #8a6018 295deg, #b07820 325deg,
+        #7a5215 360deg
+      );
+      box-shadow:
+        0 0 0 1.5px rgba(0,0,0,0.4),
+        inset 0 1.5px 2px rgba(255,255,255,0.32),
+        inset 0 -1.5px 2px rgba(0,0,0,0.22),
+        3px 7px 22px rgba(0,0,0,0.55);
+    }
+
+    /* Ivory clock face */
+    .clock-face {
+      width: 100%; height: 100%;
+      border-radius: 50%;
+      background: radial-gradient(ellipse at 38% 32%,
+        #fefef8 0%, #f7f0dc 40%, #eddfc0 75%, #e0cfa0);
+      position: relative;
+      box-shadow:
+        inset 0 2px 5px rgba(0,0,0,0.13),
+        inset 0 -1px 2px rgba(255,255,255,0.55);
+      overflow: hidden;
+    }
+
+    /* Glass sheen */
+    .clock-face::before {
+      content: '';
+      position: absolute; inset: 0; border-radius: 50%;
+      background: linear-gradient(135deg,
+        rgba(255,255,255,0.28) 0%, transparent 55%);
+      z-index: 8; pointer-events: none;
+    }
+
+    /* Tick marks */
+    .clock-marks-container {
+      position: absolute; inset: 0;
+    }
+    .clock-mark {
+      position: absolute; left: 50%; top: 2px;
+      transform-origin: center 38px;
+      border-radius: 1px;
+    }
+    .clock-mark.cm-minor  { width: 1px;   height: 3px; margin-left: -0.5px;  background: rgba(55,30,8,0.4); }
+    .clock-mark.cm-medium { width: 1.5px; height: 5px; margin-left: -0.75px; background: rgba(30,12,4,0.7); }
+    .clock-mark.cm-major  { width: 3px;   height: 8px; margin-left: -1.5px;  top: 1px; transform-origin: center 39px; background: #1a0804; }
+
+    /* City/timezone label */
+    .clock-label {
+      position: absolute;
+      left: 50%; top: 58%;
+      transform: translateX(-50%);
+      font-size: 5px;
+      font-family: 'Segoe UI', 'Arial Narrow', sans-serif;
+      letter-spacing: 1px;
+      color: #5a3818;
+      text-transform: uppercase;
+      white-space: nowrap;
+      font-weight: 700;
+      opacity: 0.75;
+      z-index: 3;
+      pointer-events: none;
+      user-select: none;
+    }
+
+    /* Hands — rotate from bottom center (= clock center) */
+    .clock-hand {
+      position: absolute;
+      bottom: 50%; left: 50%;
+      transform-origin: bottom center;
+      border-radius: 3px 3px 1px 1px;
+    }
+    .hour-hand {
+      width: 3.5px; height: 23px;
+      margin-left: -1.75px;
+      background: linear-gradient(to top, #3a1e06 0%, #18080a 100%);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.35);
+      z-index: 3;
+    }
+    .min-hand {
+      width: 2.5px; height: 31px;
+      margin-left: -1.25px;
+      background: linear-gradient(to top, #3a1e06 0%, #18080a 100%);
+      box-shadow: 0 1px 2px rgba(0,0,0,0.28);
+      z-index: 3;
+    }
+    /* Second hand: extends 34px tip + 8px tail via child */
+    .sec-hand {
+      width: 1px; height: 34px;
+      margin-left: -0.5px;
+      background: #c0392b;
+      border-radius: 1px 1px 0 0;
+      z-index: 4;
+      transition: transform 0.12s cubic-bezier(0.2, 2.0, 0.55, 0.85);
+    }
+    .sec-tail {
+      position: absolute;
+      width: 3px; height: 8px;
+      background: #c0392b;
+      border-radius: 0 0 1px 1px;
+      bottom: -8px; left: 50%;
+      margin-left: -1.5px;
+    }
+
+    /* Gold center cap */
+    .clock-cap {
+      position: absolute;
+      width: 7px; height: 7px;
+      background: radial-gradient(circle at 35% 30%, #e8cc60, #8a5c16);
+      border-radius: 50%;
+      left: 50%; top: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 10;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.5);
+    }
+
+    /* Date tooltip on hover */
+    .clock-tooltip {
+      position: absolute;
+      top: calc(100% + 7px); left: 50%;
+      transform: translateX(-50%);
+      background: rgba(10,5,0,0.88);
+      color: rgba(255,255,255,0.92);
+      font-size: 9px; font-family: 'Segoe UI', sans-serif;
+      padding: 4px 9px; border-radius: 6px;
+      white-space: nowrap; opacity: 0;
+      transition: opacity 0.2s ease; pointer-events: none;
+      z-index: 20;
+    }
+    .wall-clock:hover .clock-tooltip { opacity: 1; }
+
+    /* Night mode: dim the clock */
+    body.lights-off .wall-clock {
+      filter: brightness(0.3) drop-shadow(0px 6px 18px rgba(0,0,0,0.8));
+    }
+
+    /* Mobile: smaller & repositioned */
+    @media screen and (max-width: 768px) {
+      .wall-clock {
+        width: 52px; height: 52px;
+        top: 5%; left: 50%;
+      }
+      .clock-mark { transform-origin: center 21px !important; }
+      .clock-mark.cm-major { transform-origin: center 22px !important; }
+      .hour-hand  { height: 13px; width: 2.5px; margin-left: -1.25px; }
+      .min-hand   { height: 18px; width: 1.5px; margin-left: -0.75px; }
+      .sec-hand   { height: 20px; }
+      .clock-cap  { width: 5px; height: 5px; }
+      .clock-label { font-size: 3.5px; }
+      .clock-tooltip { display: none; }
+    }
+
+    /* ── Time-based tint overlay ── */
+    #time-tint {
+      position: fixed; inset: 0; z-index: 0;
+      pointer-events: none; opacity: 0;
+      transition: opacity 2s linear;
+    }
+
+    /* ── Mee speech bubble ── */
+    .mee-bubble {
+      position: fixed;
+      left: 50%; bottom: 490px;
+      transform: translateX(-18%) translateY(12px) scale(0.9);
+      z-index: 25;
+      background: #fff;
+      border-radius: 18px 18px 18px 4px;
+      padding: 9px 16px;
+      font-family: 'Segoe UI', sans-serif;
+      font-size: 12.5px; font-weight: 500; color: #1e293b;
+      box-shadow: 0 4px 22px rgba(0,0,0,0.22), 0 1px 4px rgba(0,0,0,0.1);
+      white-space: nowrap; opacity: 0;
+      transition: opacity 0.45s ease, transform 0.45s cubic-bezier(0.34,1.56,0.64,1);
+      pointer-events: none;
+    }
+    .mee-bubble::after {
+      content: '';
+      position: absolute; bottom: -8px; left: 20px;
+      width: 14px; height: 14px; background: #fff;
+      clip-path: polygon(0 0, 100% 0, 0 100%);
+    }
+    .mee-bubble.show { opacity: 1; transform: translateX(-18%) translateY(0) scale(1); }
+    body.lights-off .mee-bubble { opacity: 0 !important; pointer-events: none !important; }
+
+    /* ── Mee reacts to modal opens ── */
+    @keyframes meeLeanRight {
+      0%   { transform: translateX(-50%); }
+      35%  { transform: translateX(-40%) rotate(5deg) scale(1.03); }
+      65%  { transform: translateX(-42%) rotate(3.5deg) scale(1.015); }
+      100% { transform: translateX(-41%) rotate(3deg); }
+    }
+    @keyframes meeLeanLeft {
+      0%   { transform: translateX(-50%); }
+      35%  { transform: translateX(-60%) rotate(-5deg) scale(1.03); }
+      65%  { transform: translateX(-58%) rotate(-3.5deg) scale(1.015); }
+      100% { transform: translateX(-59%) rotate(-3deg); }
+    }
+    .mee.react-laptop { animation: meeLeanRight 0.65s cubic-bezier(0.34,1.56,0.64,1) forwards !important; }
+    .mee.react-phone  { animation: meeLeanLeft  0.65s cubic-bezier(0.34,1.56,0.64,1) forwards !important; }
+
+    /* ── Telephone ringing ── */
+    @keyframes telephoneRing {
+      0%       { transform: rotate(0deg) scale(1); }
+      8%       { transform: rotate(-22deg) scale(1.08); }
+      18%      { transform: rotate(22deg) scale(1.08); }
+      28%      { transform: rotate(-16deg) scale(1.05); }
+      38%      { transform: rotate(16deg) scale(1.05); }
+      50%      { transform: rotate(-8deg) scale(1.02); }
+      60%      { transform: rotate(8deg) scale(1.02); }
+      72%,100% { transform: rotate(0deg) scale(1); }
+    }
+    @keyframes ringFloat {
+      0%,100% { transform: translateX(-50%) translateY(0); opacity: 1; }
+      50%     { transform: translateX(-50%) translateY(-10px); opacity: 1; }
+    }
+    .telephone.ringing {
+      animation: telephoneRing 0.48s ease-in-out 4 !important;
+      transform-origin: bottom center;
+    }
+    .telephone.ringing::before {
+      content: '☎️';
+      position: absolute; top: -28px; left: 50%;
+      transform: translateX(-50%);
+      font-size: 18px;
+      animation: ringFloat 0.5s ease-in-out 4;
+      pointer-events: none;
+    }
+
+    /* ── Post-it notes on the wall ── */
+    .postit-wrap {
+      position: fixed; top: 26%; left: 62%;
+      z-index: 3; pointer-events: none;
+    }
+    .postit {
+      position: absolute;
+      width: 80px; padding: 8px 7px 10px;
+      font-family: 'Segoe UI', sans-serif;
+      font-size: 9.5px; line-height: 1.45;
+      box-shadow: 2px 4px 12px rgba(0,0,0,0.3);
+      transform: rotate(var(--r, 0deg));
+      transition: transform 0.22s ease, box-shadow 0.22s ease;
+      pointer-events: all; cursor: default; user-select: none;
+    }
+    .postit::before {
+      content: ''; position: absolute;
+      top: 0; left: 0; right: 0; height: 4px;
+      background: rgba(0,0,0,0.1); border-radius: 1px 1px 0 0;
+    }
+    .postit:hover {
+      transform: rotate(0deg) scale(1.12) !important;
+      box-shadow: 4px 8px 24px rgba(0,0,0,0.4);
+      z-index: 30;
+    }
+    .postit.y { background: #fff7a1; color: #5a4200; }
+    .postit.p { background: #ffd6e0; color: #5c0025; }
+    .postit.b { background: #cde7ff; color: #003060; }
+    body.lights-off .postit-wrap { opacity: 0.15; transition: opacity 1.5s linear; }
+
+    /* ── Toast notification ── */
+    #toast {
+      position: fixed; bottom: 48px; left: 50%;
+      transform: translateX(-50%) translateY(28px);
+      background: rgba(5,5,18,0.93);
+      color: #fff; padding: 13px 28px;
+      border-radius: 50px;
+      font-family: 'Segoe UI', sans-serif;
+      font-size: 13.5px; font-weight: 600;
+      z-index: 500;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,255,255,0.09);
+      opacity: 0; pointer-events: none;
+      transition: all 0.45s cubic-bezier(0.34,1.56,0.64,1);
+      white-space: nowrap;
+    }
+    #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    /* ── Visitor badge ── */
+    #visitor-badge {
+      position: fixed; bottom: 13px; right: 13px;
+      background: rgba(0,0,0,0.5);
+      backdrop-filter: blur(10px);
+      color: rgba(255,255,255,0.6);
+      font-size: 10px; font-family: monospace;
+      padding: 5px 11px; border-radius: 20px;
+      z-index: 8; border: 1px solid rgba(255,255,255,0.1);
+      pointer-events: none; letter-spacing: 0.2px;
+    }
+    body.lights-off #visitor-badge { color: rgba(255,255,255,0.25); }
+
+    /* ── GitHub Contributions Poster ── */
+    .gh-poster {
+      position: fixed; left: 76%; top: 29%;
+      transform: translateX(-50%);
+      background: #0d1117; border: 1.5px solid #30363d;
+      border-radius: 6px; padding: 5px 6px 4px;
+      z-index: 3; width: 118px;
+      box-shadow: 2px 5px 16px rgba(0,0,0,0.6);
+      cursor: default;
+    }
+    .gh-poster-lbl {
+      font-size: 5.5px; color: rgba(139,148,158,0.65);
+      font-family: monospace; letter-spacing: 0.5px;
+      text-align: center; margin-bottom: 3px;
+      text-transform: uppercase;
+    }
+    .gh-poster img { width: 100%; display: block; border-radius: 2px; }
+    .gh-poster-user {
+      font-size: 6px; color: rgba(139,148,158,0.55);
+      font-family: monospace; text-align: center; margin-top: 2px;
+    }
+    body.lights-off .gh-poster { filter: brightness(0.18); transition: filter 1.5s; }
+
+    /* ── Vinyl Record Player ── */
+    .vinyl-player {
+      position: fixed; left: 29%; bottom: 208px;
+      width: 52px; height: 52px;
+      z-index: 6; cursor: pointer; user-select: none;
+    }
+    .vinyl-base {
+      width: 100%; height: 100%;
+      background: radial-gradient(circle, #3a2a18 0%, #1a0e06 100%);
+      border-radius: 4px; position: relative;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.6), inset 0 1px 2px rgba(255,255,255,0.07);
+    }
+    .vinyl-disc {
+      position: absolute;
+      width: 40px; height: 40px; border-radius: 50%;
+      top: 50%; left: 46%;
+      transform: translate(-50%, -50%);
+      background: repeating-radial-gradient(
+        circle at center, #080808 0px, #1c1c1c 1px, #080808 2.5px
+      );
+      box-shadow: 0 0 0 1px rgba(255,255,255,0.04), inset 0 0 6px rgba(0,0,0,0.7);
+    }
+    .vinyl-disc.spinning {
+      animation: discSpin 3.2s linear infinite;
+    }
+    @keyframes discSpin {
+      to { transform: translate(-50%, -50%) rotate(360deg); }
+    }
+    .vinyl-center {
+      position: absolute;
+      width: 12px; height: 12px; border-radius: 50%;
+      background: radial-gradient(circle at 38% 32%, #e04400, #7a1800);
+      top: 50%; left: 46%;
+      transform: translate(-50%, -50%); z-index: 2;
+      box-shadow: 0 0 3px rgba(0,0,0,0.5);
+    }
+    .vinyl-center::after {
+      content: ''; position: absolute;
+      width: 3px; height: 3px; border-radius: 50%;
+      background: rgba(0,0,0,0.7);
+      top: 50%; left: 50%; transform: translate(-50%,-50%);
+    }
+    .vinyl-arm {
+      position: absolute; width: 2px; height: 22px;
+      background: linear-gradient(to bottom, #ddd, #888);
+      top: 3px; right: 7px;
+      transform-origin: top center;
+      transform: rotate(22deg); border-radius: 1px;
+      transition: transform 0.6s cubic-bezier(0.34,1.56,0.64,1);
+      z-index: 3;
+    }
+    .vinyl-arm::after {
+      content: ''; position: absolute;
+      bottom: -1px; left: 50%; transform: translateX(-50%);
+      width: 4px; height: 3px; background: #aaa; border-radius: 0 0 2px 2px;
+    }
+    .vinyl-player.playing .vinyl-arm { transform: rotate(40deg); }
+    .vinyl-hint {
+      position: absolute; bottom: calc(100% + 6px); left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0,0,0,0.8); color: rgba(255,255,255,0.9);
+      font-size: 9px; font-family: 'Segoe UI', sans-serif;
+      padding: 3px 7px; border-radius: 5px;
+      white-space: nowrap; opacity: 0;
+      transition: opacity 0.2s; pointer-events: none; z-index: 20;
+    }
+    .vinyl-player:hover .vinyl-hint { opacity: 1; }
+    .vinyl-note-fly {
+      position: fixed; font-size: 13px;
+      animation: noteFly 2.2s ease-out forwards;
+      pointer-events: none; z-index: 20;
+    }
+    @keyframes noteFly {
+      0%   { transform: translateY(0) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(-55px) rotate(25deg); opacity: 0; }
+    }
+    body.lights-off .vinyl-player { filter: brightness(0.28); transition: filter 1.5s; }
+
+    /* ── Bubble Wrap ── */
+    .bubble-wrap {
+      position: fixed; left: 74%; bottom: 203px; z-index: 6;
+    }
+    .bub-grid {
+      display: grid; grid-template-columns: repeat(5, 13px); gap: 2px;
+    }
+    .bub {
+      width: 13px; height: 13px; border-radius: 50%;
+      background: radial-gradient(circle at 35% 30%,
+        rgba(255,255,255,0.65) 0%, rgba(190,220,255,0.3) 55%, rgba(150,200,255,0.15) 100%);
+      border: 1px solid rgba(160,210,250,0.5);
+      cursor: pointer;
+      box-shadow: inset 0 -1px 2px rgba(0,0,0,0.08);
+      transition: transform 0.07s ease;
+    }
+    .bub:hover:not(.bub-out) { transform: scale(1.2); }
+    .bub.bub-out {
+      transform: scale(0.05) !important;
+      opacity: 0 !important;
+      border-color: transparent !important;
+      background: transparent !important;
+      transition: all 0.1s ease !important;
+      pointer-events: none;
+    }
+    .bub-stat {
+      margin-top: 2px; font-size: 7px; font-family: monospace;
+      color: rgba(255,255,255,0.38); text-align: center;
+    }
+    body.lights-off .bubble-wrap { opacity: 0.15; transition: opacity 1.5s; }
+
+    /* ── Click Ripple ── */
+    .click-ripple {
+      position: fixed; border-radius: 50%;
+      border: 1.5px solid rgba(255,255,255,0.4);
+      pointer-events: none; z-index: 1000;
+      animation: rippleOut 0.6s ease-out forwards;
+    }
+    @keyframes rippleOut {
+      0%   { transform: scale(0); opacity: 0.7; }
+      100% { transform: scale(4); opacity: 0; }
+    }
+
+    /* ── Idle Screensaver ── */
+    #screensaver {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.95);
+      z-index: 210; opacity: 0; pointer-events: none;
+      transition: opacity 1.8s ease;
+    }
+    body.idle-mode #screensaver { opacity: 1; pointer-events: all; }
+    #dvd-bounce {
+      position: absolute;
+      font-family: 'Segoe UI', 'Arial Black', sans-serif;
+      font-size: 17px; font-weight: 900; letter-spacing: 3px;
+      text-shadow: 0 0 14px currentColor, 0 0 30px currentColor;
+      white-space: nowrap; user-select: none;
+      color: #00ffaa; left: 100px; top: 100px;
+    }
+    .screensaver-footer {
+      position: absolute; bottom: 22px; left: 50%;
+      transform: translateX(-50%);
+      font-size: 10px; color: rgba(255,255,255,0.2);
+      font-family: 'Segoe UI', sans-serif; letter-spacing: 1px;
+      pointer-events: none;
+    }
+    .zzz {
+      position: fixed;
+      font-size: 15px; font-weight: 700;
+      color: rgba(170,210,255,0.8);
+      pointer-events: none; z-index: 35;
+      animation: zzzUp 3.5s ease-out forwards;
+    }
+    @keyframes zzzUp {
+      0%   { opacity: 0.9; transform: translate(0,0) scale(1); }
+      100% { opacity: 0; transform: translate(12px,-60px) scale(0.4); }
+    }
+
+    /* ── Achievement Popup ── */
+    #ach-popup {
+      position: fixed; bottom: 82px; right: 14px;
+      background: linear-gradient(140deg, rgba(14,8,28,0.97), rgba(28,12,50,0.97));
+      border: 1px solid rgba(120,75,255,0.28);
+      border-radius: 14px; padding: 11px 15px;
+      font-family: 'Segoe UI', sans-serif;
+      z-index: 420;
+      box-shadow: 0 8px 28px rgba(0,0,0,0.55), 0 0 18px rgba(90,50,200,0.18);
+      opacity: 0; transform: translateX(115%);
+      transition: all 0.48s cubic-bezier(0.34,1.56,0.64,1);
+      pointer-events: none; min-width: 210px;
+    }
+    #ach-popup.show { opacity: 1; transform: translateX(0); }
+    .ach-tag {
+      font-size: 8px; letter-spacing: 2px; color: rgba(150,110,255,0.9);
+      text-transform: uppercase; font-weight: 700; margin-bottom: 5px;
+    }
+    .ach-row { display: flex; align-items: center; gap: 9px; }
+    .ach-icon { font-size: 22px; line-height: 1; }
+    .ach-title { font-size: 12.5px; font-weight: 700; color: #fff; margin-bottom: 2px; }
+    .ach-desc  { font-size: 9.5px; color: rgba(255,255,255,0.48); }
+
+    /* ── Flashlight (dark mode spotlight) ── */
+    #flashlight {
+      position: fixed; inset: 0; z-index: 93;
+      pointer-events: none; opacity: 0;
+      transition: opacity 1.8s ease;
+      background: radial-gradient(circle 210px at 50% 50%,
+        rgba(255,240,190,0.06) 0%, transparent 42%,
+        rgba(0,0,0,0.86) 68%, rgba(0,0,0,0.97) 100%);
+    }
+    body.lights-off #flashlight { opacity: 1; }
+
+    /* Hide default cursor and show flashlight cursor in dark mode */
+    body.lights-off,
+    body.lights-off * { cursor: none !important; }
+
+    #cursor-light {
+      position: fixed;
+      font-size: 24px;
+      pointer-events: none;
+      z-index: 95;
+      opacity: 0;
+      /* offset so the flashlight tip (bottom-left of emoji) is at the hot-spot */
+      transform: translate(-6px, -24px) rotate(-20deg);
+      transition: opacity 0.5s ease;
+      filter: drop-shadow(0 0 5px rgba(255,220,100,0.55))
+              drop-shadow(0 0 12px rgba(255,200,80,0.25));
+      will-change: left, top;
+    }
+    body.lights-off #cursor-light { opacity: 1; }
+    .wall-secret {
+      position: fixed; pointer-events: none; z-index: 92;
+      font-family: 'Segoe UI', sans-serif; letter-spacing: 1.5px;
+      color: rgba(255,200,55,0.5); opacity: 0;
+      transition: opacity 1.8s ease;
+    }
+    body.lights-off .wall-secret { opacity: 1; }
+
+    /* ── Magnetic cursor (post-its smooth transition) ── */
+    .postit { transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.22s ease; }
+
     /* ════════════════════════════════════════════════
        MOBILE  (≤ 768 px)
        ════════════════════════════════════════════════ */
@@ -1192,11 +2058,68 @@
         transform: rotate(8deg);
       }
 
-      /* ── Telephone on table ── */
+      /* ── Table item positions (re-spaced so nothing overlaps) ── */
       .telephone {
-        width: 10vw;
-        bottom: 30vw;
-        left: calc(50% - 32vw);
+        width: 10vw; bottom: 30vw;
+        left: calc(50% - 40vw);
+      }
+.walkie {
+         width: 9vw; bottom: 30.5vw;
+         left: calc(50% - 30vw);
+       }
+      .camera {
+        width: 11vw; bottom: 31vw;
+        left: calc(50% - 18vw);
+      }
+      .robot {
+        width: 7vw; bottom: 31.5vw;
+        left: calc(50% - 15vw);
+      }
+.notebooks {
+          width: 10vw; bottom: 31.5vw;
+         left: calc(50% - 15vw);
+       }
+
+      /* ── Walkie-talkie bubble → anchored to top of screen ── */
+      .walkie-bubble {
+        left: 5% !important; right: 5% !important;
+        max-width: 90% !important;
+        bottom: auto !important; top: 12px !important;
+        font-size: 11px !important;
+      }
+      .walkie-bubble::after { display: none; }
+
+      /* ── Flower → smaller in corner ── */
+      .flower-grow {
+        width: 50px !important; height: 267px !important;
+        left: 1% !important;
+      }
+
+      /* ── Camera polaroid → centred, scaled down ── */
+      #polaroid-wrap {
+        bottom: auto !important;
+        top: 50% !important;
+        transform: translateX(-50%) translateY(-50%) rotate(-3deg) !important;
+      }
+      #polaroid-wrap.show {
+        transform: translateX(-50%) translateY(-50%) rotate(-3deg) !important;
+      }
+      .polaroid { width: 145px !important; padding: 10px 10px 36px !important; }
+      .polaroid-photo { width: 125px !important; height: 96px !important; }
+
+      /* ── Notebook modal → slide-up instead of 3-D flip ── */
+      .nb-book {
+        width: 92vw !important; max-height: 78vh !important;
+        transform: translateY(40px) scale(0.97) !important;
+        transition: transform 0.4s cubic-bezier(0.34,1.3,0.64,1) !important;
+      }
+      #notebook-modal.open .nb-book {
+        transform: translateY(0) scale(1) !important;
+      }
+
+      /* ── Touch targets for new interactive items ── */
+      .camera, .walkie, .notebooks, #cat, .walkie img, .camera img, .notebooks img {
+        touch-action: manipulation;
       }
 
       /* Disable hover float animations — touch screens don't need them */
@@ -1204,6 +2127,19 @@
       .laptop:hover,    .laptop img:hover      { animation: none !important; }
       .mobile:hover,    .mobile img:hover      { animation: none !important; }
       .telephone:hover, .telephone img:hover   { animation: none !important; }
+      .camera:hover,    .camera img:hover      { animation: none !important; }
+      .robot:hover,     .robot img:hover       { animation: none !important; }
+      .walkie:hover,    .walkie img:hover      { animation: none !important; }
+      .notebooks:hover, .notebooks img:hover   { animation: none !important; }
+
+      /* ── Hide desktop-only decorations on mobile ── */
+      .mee-bubble   { display: none !important; }
+      .postit-wrap  { display: none !important; }
+      #visitor-badge { display: none !important; }
+      .gh-poster    { display: none !important; }
+      .vinyl-player { display: none !important; }
+      .bubble-wrap  { display: none !important; }
+      #cursor-light { display: none !important; }
 
       /* ── Annotations: too cramped on mobile ── */
       #annot-svg { display: none !important; }
@@ -1319,8 +2255,76 @@
 <body>
 
   <div id="ambient"></div>
+  <div id="time-tint"></div>
   <div id="darkness"></div>
+
+  <!-- ── Wall Clock ── -->
+  <div class="wall-clock" id="wall-clock" title="">
+    <div class="clock-frame">
+      <div class="clock-face">
+        <div class="clock-marks-container" id="clock-marks"></div>
+        <div class="clock-label" id="clock-city"></div>
+        <div class="clock-hand hour-hand" id="clock-hour"></div>
+        <div class="clock-hand min-hand"  id="clock-min"></div>
+        <div class="clock-hand sec-hand"  id="clock-sec">
+          <div class="sec-tail"></div>
+        </div>
+        <div class="clock-cap"></div>
+      </div>
+    </div>
+    <div class="clock-tooltip" id="clock-tooltip"></div>
+  </div>
   <div id="dust"></div>
+
+  <!-- ── GitHub Contributions Poster ── -->
+  <div class="gh-poster" id="gh-poster">
+    <div class="gh-poster-lbl">contributions</div>
+    <img id="gh-chart-img" src="" alt="GitHub contributions" style="opacity:0">
+    <div class="gh-poster-user" id="gh-poster-user"></div>
+  </div>
+
+  <!-- ── Vinyl Record Player ── -->
+  <div class="vinyl-player" id="vinyl-player">
+    <div class="vinyl-base">
+      <div class="vinyl-disc" id="vinyl-disc"></div>
+      <div class="vinyl-center"></div>
+      <div class="vinyl-arm" id="vinyl-arm"></div>
+    </div>
+    <div class="vinyl-hint">♪ Click to play ambient music</div>
+  </div>
+
+  <!-- ── Bubble Wrap ── -->
+  <div class="bubble-wrap" id="bubble-wrap">
+    <div class="bub-grid" id="bub-grid"></div>
+    <div class="bub-stat" id="bub-stat">pop me!</div>
+  </div>
+
+  <!-- ── Flashlight overlay (dark mode) ── -->
+  <div id="flashlight"></div>
+  <div id="cursor-light">🔦</div>
+
+  <!-- ── Hidden wall messages (visible only with flashlight) ── -->
+  <div class="wall-secret" style="left:18%;top:42%;font-size:11px">Still exploring? 👀</div>
+  <div class="wall-secret" style="left:60%;top:55%;font-size:10px">hire me. seriously.</div>
+  <div class="wall-secret" style="left:38%;top:22%;font-size:9px">you found the secret wall ✨</div>
+
+  <!-- ── Screensaver ── -->
+  <div id="screensaver">
+    <div id="dvd-bounce">AVAILABLE FOR HIRE</div>
+    <div class="screensaver-footer">move your mouse to wake up · press any key</div>
+  </div>
+
+  <!-- ── Achievement Popup ── -->
+  <div id="ach-popup">
+    <div class="ach-tag">🏆 Achievement Unlocked</div>
+    <div class="ach-row">
+      <div class="ach-icon" id="ach-icon"></div>
+      <div>
+        <div class="ach-title" id="ach-title"></div>
+        <div class="ach-desc"  id="ach-desc"></div>
+      </div>
+    </div>
+  </div>
 
   <!-- Hover annotation SVG overlay -->
   <svg id="annot-svg" xmlns="http://www.w3.org/2000/svg">
@@ -1388,6 +2392,7 @@
     <img class="img-sleep" src="Me%20sleep.png" alt="Me Sleep">
     <canvas id="mee-anim-canvas" class="mee-anim-canvas"></canvas>
   </div>
+  <div class="mee-bubble" id="mee-bubble"></div>
   <canvas id="fly"></canvas>
   <canvas id="cat"></canvas>
 
@@ -1417,6 +2422,87 @@
 
   <div class="telephone" id="telephone" tabindex="0">
     <img src="Telephone.png" alt="Telephone">
+  </div>
+
+  <div class="camera" id="camera">
+    <img src="Camera.png" alt="Camera">
+  </div>
+
+  <div class="notebooks">
+    <img src="Notebooks.png" alt="Notebooks">
+  </div>
+
+  <div class="robot" id="robot">
+    <img src="Robot.png" alt="Robot">
+  </div>
+
+  <!-- Flower growing in left corner -->
+  <canvas id="flower-canvas" class="flower-grow"></canvas>
+
+  <!-- Walkie-talkie on table -->
+  <div class="walkie" id="walkie">
+    <img src="wtakie.png" alt="Walkie-talkie">
+  </div>
+  <div class="walkie-bubble" id="walkie-bubble"></div>
+
+
+  <!-- Camera flash overlay -->
+  <div id="camera-flash"></div>
+
+  <!-- Polaroid photo output -->
+  <div id="polaroid-wrap">
+    <div class="polaroid">
+      <div class="polaroid-photo">
+        <div class="polaroid-room-icon">🏠</div>
+        <div class="polaroid-room-label">PARASH'S ROOM</div>
+      </div>
+      <div class="polaroid-name">Parash</div>
+      <div class="polaroid-date" id="polaroid-date"></div>
+      <button class="polaroid-close" id="polaroid-close">✕</button>
+    </div>
+  </div>
+
+  <!-- Notebook skills modal -->
+  <div id="notebook-modal">
+    <div class="nb-book">
+      <button class="nb-close" id="nb-close">✕</button>
+      <div class="nb-title">📓 My Skills</div>
+      <div class="nb-section">
+        <div class="nb-section-title">Frontend</div>
+        <div class="nb-tags">
+          <span class="nb-tag">React</span>
+          <span class="nb-tag">TypeScript</span>
+          <span class="nb-tag">CSS / Tailwind</span>
+          <span class="nb-tag">Next.js</span>
+        </div>
+      </div>
+      <div class="nb-section">
+        <div class="nb-section-title">Backend</div>
+        <div class="nb-tags">
+          <span class="nb-tag">Node.js</span>
+          <span class="nb-tag">Python</span>
+          <span class="nb-tag">Express</span>
+          <span class="nb-tag">REST APIs</span>
+        </div>
+      </div>
+      <div class="nb-section">
+        <div class="nb-section-title">Tools</div>
+        <div class="nb-tags">
+          <span class="nb-tag">Git</span>
+          <span class="nb-tag">Docker</span>
+          <span class="nb-tag">VS Code</span>
+          <span class="nb-tag">Figma</span>
+        </div>
+      </div>
+      <div class="nb-section">
+        <div class="nb-section-title">Currently Learning</div>
+        <div class="nb-tags">
+          <span class="nb-tag">Three.js</span>
+          <span class="nb-tag">WebGL</span>
+          <span class="nb-tag">AWS</span>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- Laptop screen modal -->
@@ -1901,11 +2987,11 @@
     }
 
     /* ── Cat floor boundaries ──
-       Left wall (window side) at ~6 % viewport width.
-       Right wall (bookshelf) at ~80 % viewport width.
+       Left wall: window frame right edge at ~22 % viewport width.
+       Right wall: bookshelf left edge at ~79 % viewport width.
        Cat's left edge is kept strictly between those bounds.          */
-    const CAT_FLOOR_LEFT  = 0.06;
-    const CAT_FLOOR_RIGHT = 0.80;
+    const CAT_FLOOR_LEFT  = 0.22;
+    const CAT_FLOOR_RIGHT = 0.79;
 
     function catFloorBounds() {
       return {
@@ -2978,6 +4064,1043 @@
         setTimeout(() => err.remove(), 4000);
       });
     });
+
+    /* ══════════════════════════════════════════════════════════
+       CREATIVE FEATURES
+       ══════════════════════════════════════════════════════════ */
+
+    /* ── Wall Clock ── */
+    (function () {
+      var hourEl = document.getElementById('clock-hour');
+      var minEl  = document.getElementById('clock-min');
+      var secEl  = document.getElementById('clock-sec');
+      var marksEl = document.getElementById('clock-marks');
+      var cityEl  = document.getElementById('clock-city');
+      var tipEl   = document.getElementById('clock-tooltip');
+
+      /* Build 60 tick marks */
+      for (var i = 0; i < 60; i++) {
+        var m = document.createElement('div');
+        var cls = 'clock-mark ';
+        if (i % 15 === 0) cls += 'cm-major';
+        else if (i % 5 === 0) cls += 'cm-medium';
+        else cls += 'cm-minor';
+        m.className = cls;
+        m.style.transform = 'rotate(' + (i * 6) + 'deg)';
+        marksEl.appendChild(m);
+      }
+
+      /* Timezone city label */
+      try {
+        var tz   = Intl.DateTimeFormat().resolvedOptions().timeZone || '';
+        var city = tz.split('/').pop().replace(/_/g, ' ');
+        if (cityEl && city) cityEl.textContent = city;
+      } catch (e) {}
+
+      /* Absolute-degree approach — no backwards wrap at 59→0 */
+      var now0 = new Date();
+      var initSec = now0.getHours() % 12 * 3600 +
+                    now0.getMinutes()  * 60   +
+                    now0.getSeconds();
+
+      var totalSec = initSec;
+
+      function rotateTo(el, deg, noTransition) {
+        if (noTransition) el.style.transition = 'none';
+        el.style.transform = 'rotate(' + deg + 'deg)';
+        if (noTransition) el.offsetHeight; /* force reflow */
+      }
+
+      function setHands(noTrans) {
+        var hDeg = totalSec / 120;      /* 0.5°/min  = 360° in 12 h */
+        var mDeg = totalSec / 10;       /* 6°/min    = 360° in 60 min */
+        var sDeg = totalSec * 6;        /* 6°/sec    = 360° in 60 s  */
+        rotateTo(hourEl, hDeg, noTrans);
+        rotateTo(minEl,  mDeg, noTrans);
+        rotateTo(secEl,  sDeg, noTrans);
+      }
+
+      /* Initial set without any transition */
+      secEl.style.transition = 'none';
+      setHands(true);
+      /* Re-enable springy sec-hand transition after paint */
+      requestAnimationFrame(function () {
+        requestAnimationFrame(function () {
+          secEl.style.transition = '';
+        });
+      });
+
+      /* Tick every second — sync to wall clock */
+      function scheduleTick() {
+        var delay = 1000 - new Date().getMilliseconds();
+        setTimeout(function () {
+          totalSec++;
+          setHands(false);
+          updateTooltip();
+          scheduleTick();
+        }, delay);
+      }
+      scheduleTick();
+
+      /* Tooltip: date + timezone on hover */
+      function updateTooltip() {
+        if (!tipEl) return;
+        var d = new Date();
+        var opts = { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' };
+        var dateStr = d.toLocaleDateString(undefined, opts);
+        var tzStr = Intl.DateTimeFormat().resolvedOptions().timeZone || '';
+        tipEl.textContent = dateStr + (tzStr ? '  ·  ' + tzStr : '');
+      }
+      updateTooltip();
+    })();
+
+    /* ── Toast helper ── */
+    function showToast(msg, ms) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), ms || 4000);
+    }
+
+    /* ── Confetti burst (Web Animations API) ── */
+    function burstConfetti(n) {
+      for (let i = 0; i < (n || 80); i++) {
+        const el = document.createElement('div');
+        const sz = randomBetween(6, 13);
+        Object.assign(el.style, {
+          position: 'fixed',
+          width: sz + 'px', height: sz + 'px',
+          background: 'hsl(' + (Math.random()*360) + ',82%,60%)',
+          left: (Math.random()*100) + 'vw', top: '-14px',
+          borderRadius: Math.random() > 0.5 ? '50%' : '3px',
+          zIndex: '999', pointerEvents: 'none',
+        });
+        document.body.appendChild(el);
+        const drift = randomBetween(-130, 130);
+        const rot   = randomBetween(400, 1000);
+        el.animate([
+          { transform: 'translateY(0) translateX(0) rotate(0deg)', opacity: 1 },
+          { transform: 'translateY(110vh) translateX('+drift+'px) rotate('+rot+'deg)', opacity: 0 }
+        ], { duration: randomBetween(1500, 3200), easing: 'ease-in', fill: 'forwards' })
+          .onfinish = () => el.remove();
+      }
+    }
+
+    /* ── Konami code Easter egg ── */
+    (function () {
+      const CODE = [38,38,40,40,37,39,37,39,66,65];
+      let seq = [];
+      document.addEventListener('keydown', function(e) {
+        seq.push(e.keyCode);
+        if (seq.length > CODE.length) seq.shift();
+        if (seq.join() === CODE.join()) {
+          seq = [];
+          burstConfetti(90);
+          showToast('🎮 Secret found. Hire this person immediately.', 4500);
+          if (typeof unlockAchievement === 'function') unlockAchievement('konami');
+          meeEl.classList.remove('react-phone');
+          meeEl.classList.add('react-laptop');
+          setTimeout(() => meeEl.classList.remove('react-laptop'), 2500);
+        }
+      });
+    })();
+
+    /* ── Page title flips when tab loses focus ── */
+    (function () {
+      var orig = document.title;
+      document.addEventListener('visibilitychange', function() {
+        document.title = document.hidden ? '👋 Come back! — Parash' : orig;
+      });
+    })();
+
+    /* ── Visitor counter (localStorage) ── */
+    (function () {
+      try {
+        var KEY = 'parash-visits';
+        var n = (parseInt(localStorage.getItem(KEY)) || 0) + 1;
+        localStorage.setItem(KEY, n);
+        var el = document.getElementById('visitor-count');
+        if (el) el.textContent = n.toLocaleString();
+      } catch (e) {}
+    })();
+
+    /* ── Mouse parallax depth effect ── */
+    (function () {
+      if (NO_HOVER) return;
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+      var layers = [
+        { sel: '.bulb',           s: 4  },
+        { sel: '.map',            s: 7  },
+        { sel: '.gallery-frame',  s: 7  },
+        { sel: '.mee',            s: 14 },
+        { sel: '.table',          s: 18 },
+        { sel: '.laptop',         s: 20 },
+        { sel: '#telephone',      s: 20 },
+        { sel: '.mobile',         s: 22 },
+        { sel: '.camera',         s: 20 },
+        { sel: '.notebooks',      s: 20 },
+        { sel: '.robot',          s: 21 },
+        { sel: '.walkie',         s: 20 },
+        { sel: '.flower-grow',    s: 5  },
+      ];
+      var els = layers.map(function(l) {
+        return { el: document.querySelector(l.sel), s: l.s };
+      }).filter(function(x) { return x.el; });
+
+      var cx = window.innerWidth / 2;
+      var cy = window.innerHeight / 2;
+      var tx = 0, ty = 0, lx = 0, ly = 0, raf = null;
+
+      window.addEventListener('resize', function() { cx = window.innerWidth/2; cy = window.innerHeight/2; });
+
+      document.addEventListener('mousemove', function(e) {
+        tx = (e.clientX - cx) / cx;
+        ty = (e.clientY - cy) / cy;
+        if (!raf) raf = requestAnimationFrame(tick);
+      });
+
+      function tick() {
+        lx += (tx - lx) * 0.07;
+        ly += (ty - ly) * 0.07;
+        document.body.style.backgroundPosition = 'calc(50% + ' + (-lx*10) + 'px) calc(50% + ' + (-ly*5) + 'px)';
+        els.forEach(function(item) {
+          item.el.style.marginLeft = (-lx * item.s) + 'px';
+          item.el.style.marginTop  = (-ly * item.s * 0.35) + 'px';
+        });
+        if (Math.abs(tx-lx) > 0.0005 || Math.abs(ty-ly) > 0.0005) {
+          raf = requestAnimationFrame(tick);
+        } else { raf = null; }
+      }
+    })();
+
+    /* ── Auto day/night from visitor's local clock + greeting ── */
+    (function () {
+      var h = new Date().getHours();
+      var tint = document.getElementById('time-tint');
+
+      if      (h >= 5  && h < 8 ) { tint.style.background = 'rgba(255,150,50,0.07)';  tint.style.opacity = '1'; }
+      else if (h >= 17 && h < 20) { tint.style.background = 'rgba(255,110,20,0.09)';  tint.style.opacity = '1'; }
+      else if (h >= 20 && h < 22) { tint.style.background = 'rgba(50,20,110,0.10)';   tint.style.opacity = '1'; }
+
+      if (h >= 22 || h < 5) {
+        isOn = false;
+        document.body.classList.add('lights-off');
+      }
+
+      var greetings = {
+        morning:   'Good morning! ☀️ Coffee first...',
+        study:     'Deep work mode 💻 Hey!',
+        afternoon: 'Welcome! I\'m in the zone 🎯',
+        golden:    'Golden hour ✨ Come in!',
+        evening:   'Evening session 🌆 Hi there!',
+        late:      'Late night coding 🌙 Hi!',
+        midnight:  'You\'re up early? 🦉 Me too.',
+      };
+      var key;
+      if      (h >= 5  && h < 10) key = 'morning';
+      else if (h >= 10 && h < 13) key = 'study';
+      else if (h >= 13 && h < 17) key = 'afternoon';
+      else if (h >= 17 && h < 19) key = 'golden';
+      else if (h >= 19 && h < 22) key = 'evening';
+      else if (h >= 22)           key = 'late';
+      else                        key = 'midnight';
+
+      var bubble = document.getElementById('mee-bubble');
+      if (bubble && !document.body.classList.contains('lights-off')) {
+        bubble.textContent = greetings[key];
+        setTimeout(function() {
+          bubble.classList.add('show');
+          setTimeout(function() { bubble.classList.remove('show'); }, 5200);
+        }, 1800);
+      }
+    })();
+
+    /* ── Telephone rings after 30 s if not yet tapped ── */
+    (function () {
+      if (NO_HOVER) return;
+      var rang = false;
+      var timer = setTimeout(function() {
+        if (!phonePinned && !rang) {
+          rang = true;
+          telephoneEl.classList.add('ringing');
+          setTimeout(function() { telephoneEl.classList.remove('ringing'); }, 2200);
+          showToast("📞 Someone’s trying to reach you!", 3000);
+        }
+      }, 30000);
+      telephoneEl.addEventListener('click', function() {
+        rang = true;
+        clearTimeout(timer);
+        telephoneEl.classList.remove('ringing');
+      }, { once: true });
+    })();
+
+    /* ── Mee leans toward whichever modal is open ── */
+    (function () {
+      function syncMeeReact() {
+        var lapOpen   = laptopModal.classList.contains('open');
+        var phoneOpen = phoneModal.classList.contains('open');
+        meeEl.classList.toggle('react-laptop', lapOpen && !phoneOpen);
+        meeEl.classList.toggle('react-phone',  phoneOpen && !lapOpen);
+        if (!lapOpen && !phoneOpen) {
+          meeEl.classList.remove('react-laptop', 'react-phone');
+        }
+      }
+      new MutationObserver(syncMeeReact).observe(laptopModal, { attributes: true, attributeFilter: ['class'] });
+      new MutationObserver(syncMeeReact).observe(phoneModal,  { attributes: true, attributeFilter: ['class'] });
+    })();
+
+    /* ══════════════════════════════════════════════════════════
+       WAVE 2 FEATURES
+       ══════════════════════════════════════════════════════════ */
+
+    /* ── Achievement system ── */
+    var ACHIEVEMENTS = {
+      hover5:      { icon: '🖱️', title: 'Curious',      desc: 'Hovered over 5 different things' },
+      lightToggle: { icon: '💡', title: 'Detective',    desc: 'Figured out the light switch' },
+      konami:      { icon: '🎮', title: 'Gamer',        desc: 'Typed the Konami code' },
+      phoneDodge:  { icon: '📵', title: 'Rude',         desc: 'Ignored the ringing phone' },
+      bubblesAll:  { icon: '🫧', title: 'Popper',       desc: 'Popped ALL the bubbles!' },
+      idleMode:    { icon: '⏰', title: 'Patient',      desc: 'Waited for screensaver mode' },
+      clockHover:  { icon: '🕐', title: 'Punctual',     desc: 'Checked the time on the clock' },
+      musicPlay:   { icon: '🎵', title: 'Audiophile',   desc: 'Played the ambient music' },
+      darkSecret:  { icon: '🔦', title: 'Explorer',     desc: 'Found the flashlight mode' },
+      walkieTalkie:{ icon: '📻', title: 'Over & Out',   desc: 'Used the walkie-talkie' },
+      photographer:{ icon: '📸', title: 'Photographer', desc: 'Took a polaroid photo' },
+      catLover:    { icon: '🐱', title: 'Cat Person',   desc: 'Petted the cat' },
+      paperPlane:  { icon: '✈️', title: 'Paper Pilot',  desc: 'Launched a paper airplane' },
+      notepadOpen: { icon: '📓', title: 'Note Taker',   desc: 'Opened the notebook' },
+      flySwatter:  { icon: '🪰', title: 'Exterminator', desc: 'Swatted the housefly!' },
+    };
+    var _achUnlocked = JSON.parse(localStorage.getItem('parash-ach') || '[]');
+
+    function unlockAchievement(key) {
+      if (_achUnlocked.indexOf(key) !== -1) return;
+      _achUnlocked.push(key);
+      try { localStorage.setItem('parash-ach', JSON.stringify(_achUnlocked)); } catch(e) {}
+      var a = ACHIEVEMENTS[key];
+      if (!a) return;
+      var popup = document.getElementById('ach-popup');
+      document.getElementById('ach-icon').textContent  = a.icon;
+      document.getElementById('ach-title').textContent = a.title;
+      document.getElementById('ach-desc').textContent  = a.desc;
+      popup.classList.add('show');
+      setTimeout(function() { popup.classList.remove('show'); }, 4000);
+    }
+
+    /* Hover counter for hover5 achievement */
+    var _hoverCount = 0;
+    (function() {
+      var targets = ['.mee', '.laptop', '.mobile', '#telephone', '.gallery-frame', '.map', '.wall-clock', '.vinyl-player', '.bubble-wrap'];
+      targets.forEach(function(sel) {
+        var el = document.querySelector(sel);
+        if (!el) return;
+        el.addEventListener('mouseenter', function() {
+          _hoverCount++;
+          if (_hoverCount >= 5) unlockAchievement('hover5');
+        }, { once: true });
+      });
+      /* bulb light toggle */
+      var bulbEl = document.querySelector('.bulb');
+      if (bulbEl) bulbEl.addEventListener('click', function() { unlockAchievement('lightToggle'); }, { once: true });
+      /* clock hover */
+      var clockEl = document.getElementById('wall-clock');
+      if (clockEl) clockEl.addEventListener('mouseenter', function() { unlockAchievement('clockHover'); }, { once: true });
+    })();
+
+    /* ── GitHub Contributions Chart ── */
+    (function() {
+      var GITHUB_USER = 'parashkarki782';
+      var img = document.getElementById('gh-chart-img');
+      var userEl = document.getElementById('gh-poster-user');
+      if (!img) return;
+      img.src = 'https://ghchart.rshah.org/' + GITHUB_USER;
+      img.onload  = function() { img.style.opacity = '1'; };
+      img.onerror = function() {
+        /* Fallback: draw a minimal green-dot chart on canvas */
+        var canvas = document.createElement('canvas');
+        canvas.width = 106; canvas.height = 24;
+        var ctx = canvas.getContext('2d');
+        for (var w = 0; w < 53; w++) {
+          for (var d = 0; d < 4; d++) {
+            var v = Math.random();
+            ctx.fillStyle = v < 0.3 ? '#161b22' : v < 0.6 ? '#0e4429' : v < 0.8 ? '#006d32' : '#39d353';
+            ctx.fillRect(w * 2, d * 6, 4, 4);
+          }
+        }
+        img.src = canvas.toDataURL();
+        img.style.opacity = '1';
+      };
+      if (userEl) userEl.textContent = '@' + GITHUB_USER;
+    })();
+
+    /* ── Vinyl Record Player + Ambient Music ── */
+    (function() {
+      var playerEl = document.getElementById('vinyl-player');
+      var discEl   = document.getElementById('vinyl-disc');
+      if (!playerEl || !discEl) return;
+
+      var playing  = false;
+      var audioCtx = null;
+      var master   = null;
+      var noteTO   = null;
+      var SCALE    = [261.63, 293.66, 349.23, 392, 440, 523.25, 587.33]; /* C pentatonic */
+
+      function initAudio() {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        master = audioCtx.createGain();
+        master.gain.value = 0.11;
+        /* Tape-delay reverb */
+        var delay = audioCtx.createDelay(1.8);
+        var fb    = audioCtx.createGain();
+        delay.delayTime.value = 0.38;
+        fb.gain.value = 0.32;
+        master.connect(delay); delay.connect(fb); fb.connect(delay);
+        delay.connect(audioCtx.destination);
+        master.connect(audioCtx.destination);
+      }
+
+      function pluck() {
+        if (!playing) return;
+        var freq  = SCALE[Math.floor(Math.random() * SCALE.length)];
+        var oct   = Math.random() > 0.65 ? 0.5 : 1;
+        var osc   = audioCtx.createOscillator();
+        var env   = audioCtx.createGain();
+        osc.connect(env); env.connect(master);
+        osc.frequency.value = freq * oct;
+        osc.type = Math.random() > 0.5 ? 'triangle' : 'sine';
+        var t = audioCtx.currentTime;
+        env.gain.setValueAtTime(0.001, t);
+        env.gain.linearRampToValueAtTime(0.28, t + 0.04);
+        env.gain.exponentialRampToValueAtTime(0.001, t + 2.2);
+        osc.start(t); osc.stop(t + 2.3);
+        /* Floating note emoji */
+        var rect  = playerEl.getBoundingClientRect();
+        var note  = document.createElement('div');
+        note.className = 'vinyl-note-fly';
+        note.textContent = ['♪','♫','♩','♬'][Math.floor(Math.random()*4)];
+        note.style.cssText = 'left:'+(rect.left + randomBetween(5,30))+'px;top:'+(rect.top - 4)+'px;color:hsl('+(randomBetween(30,80))+',90%,70%)';
+        document.body.appendChild(note);
+        setTimeout(function() { note.remove(); }, 2200);
+        noteTO = setTimeout(pluck, randomBetween(700, 2100));
+      }
+
+      playerEl.addEventListener('click', function() {
+        if (!audioCtx) initAudio();
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        playing = !playing;
+        playerEl.classList.toggle('playing', playing);
+        discEl.classList.toggle('spinning', playing);
+        if (playing) { pluck(); unlockAchievement('musicPlay'); }
+        else clearTimeout(noteTO);
+      });
+
+      /* Dim record when lights off */
+      new MutationObserver(function() {
+        if (document.body.classList.contains('lights-off') && playing) {
+          playing = false;
+          clearTimeout(noteTO);
+          playerEl.classList.remove('playing');
+          discEl.classList.remove('spinning');
+        }
+      }).observe(document.body, { attributes: true, attributeFilter: ['class'] });
+    })();
+
+    /* ── Bubble Wrap ── */
+    (function() {
+      var grid  = document.getElementById('bub-grid');
+      var stat  = document.getElementById('bub-stat');
+      if (!grid) return;
+      var TOTAL = 20, popped = 0;
+      for (var i = 0; i < TOTAL; i++) {
+        (function() {
+          var b = document.createElement('div');
+          b.className = 'bub';
+          b.addEventListener('click', function(e) {
+            e.stopPropagation();
+            if (b.classList.contains('bub-out')) return;
+            b.classList.add('bub-out');
+            popped++;
+            stat.textContent = popped + '/' + TOTAL + ' popped';
+            if (popped === TOTAL) {
+              stat.textContent = '🎉 All popped!';
+              unlockAchievement('bubblesAll');
+            }
+          });
+          grid.appendChild(b);
+        })();
+      }
+    })();
+
+    /* ── Click ripple on every click ── */
+    document.addEventListener('click', function(e) {
+      if (e.target.closest('#screensaver, .laptop-modal-overlay, .phone-modal-overlay, .mee-resume-overlay')) return;
+      var r = document.createElement('div');
+      var sz = 36;
+      r.className = 'click-ripple';
+      r.style.cssText = 'left:'+(e.clientX - sz/2)+'px;top:'+(e.clientY - sz/2)+'px;width:'+sz+'px;height:'+sz+'px';
+      document.body.appendChild(r);
+      setTimeout(function() { r.remove(); }, 650);
+    });
+
+    /* ── Flashlight: cursor spotlight in dark mode ── */
+    (function() {
+      var fl = document.getElementById('flashlight');
+      var cl = document.getElementById('cursor-light');
+      if (!fl) return;
+      var firstDark = true;
+
+      document.addEventListener('mousemove', function(e) {
+        /* Always track cursor-light position (it's invisible when lights are on) */
+        if (cl) {
+          cl.style.left = e.clientX + 'px';
+          cl.style.top  = e.clientY + 'px';
+        }
+
+        if (!document.body.classList.contains('lights-off')) return;
+        if (firstDark) { unlockAchievement('darkSecret'); firstDark = false; }
+
+        fl.style.background =
+          'radial-gradient(circle 210px at ' + e.clientX + 'px ' + e.clientY + 'px,' +
+          'rgba(255,240,190,0.06) 0%, transparent 42%,' +
+          'rgba(0,0,0,0.86) 68%, rgba(0,0,0,0.97) 100%)';
+      });
+    })();
+
+    /* ── Magnetic cursor (post-its attracted to mouse) ── */
+    (function() {
+      if (NO_HOVER) return;
+      var postits = Array.from(document.querySelectorAll('.postit'));
+      postits.forEach(function(el) {
+        el.dataset.baseRot = el.style.getPropertyValue('--r') || '0deg';
+      });
+      document.addEventListener('mousemove', function(e) {
+        postits.forEach(function(el) {
+          var rect = el.getBoundingClientRect();
+          var cx = rect.left + rect.width  / 2;
+          var cy = rect.top  + rect.height / 2;
+          var dist = Math.hypot(e.clientX - cx, e.clientY - cy);
+          if (dist < 90 && !el.matches(':hover')) {
+            var pull = (1 - dist / 90) * 0.28;
+            var dx = (e.clientX - cx) * pull;
+            var dy = (e.clientY - cy) * pull;
+            el.style.transform = 'rotate('+el.dataset.baseRot+') translate('+dx+'px,'+dy+'px)';
+          } else if (!el.matches(':hover')) {
+            el.style.transform = '';
+          }
+        });
+      });
+    })();
+
+    /* ── Flower growing animation ── */
+    (function() {
+      var canvas = document.getElementById('flower-canvas');
+      if (!canvas) return;
+      var ctx = canvas.getContext('2d');
+
+      var FRAMES  = 8;
+      var SRC_W   = 192;    /* 1536 / 8 */
+      var SRC_H   = 1024;
+      var DISP_W  = 90;
+      var DISP_H  = Math.round(DISP_W * SRC_H / SRC_W); /* 480 */
+      var HOLD_MS = 3000;
+      var FADE_MS = 950;
+
+      canvas.width  = DISP_W;
+      canvas.height = DISP_H;
+
+      var img = new Image();
+      img.src = 'Flower growing.png';
+
+      /* Pre-processed offscreen canvases, one per stage */
+      var frames = [];
+
+      function removeWhite(srcImg, f) {
+        var off = document.createElement('canvas');
+        off.width = DISP_W; off.height = DISP_H;
+        var oc = off.getContext('2d');
+        oc.drawImage(srcImg, f * SRC_W, 0, SRC_W, SRC_H, 0, 0, DISP_W, DISP_H);
+        try {
+          var id = oc.getImageData(0, 0, DISP_W, DISP_H);
+          var d  = id.data;
+          for (var i = 0; i < d.length; i += 4) {
+            var r = d[i], g = d[i+1], b = d[i+2];
+            /* luminance + saturation to target only white/off-white */
+            var lum = 0.299*r + 0.587*g + 0.114*b;
+            var sat = Math.max(r,g,b) - Math.min(r,g,b);
+            if (lum > 240 && sat < 18) {
+              d[i+3] = 0;
+            } else if (lum > 210 && sat < 28) {
+              var t = (lum - 210) / 30;
+              d[i+3] = Math.round(d[i+3] * (1 - t * t));
+            }
+          }
+          oc.putImageData(id, 0, 0);
+          /* signal that pixel processing worked — no blend mode needed */
+          canvas.dataset.pixelReady = '1';
+        } catch(e) {
+          /* file:// or CORS — fall back to multiply blend mode */
+          canvas.style.mixBlendMode = 'multiply';
+        }
+        return off;
+      }
+
+      var cur = 0, nxt = 1, phase = 'hold', phaseT0 = 0, started = false;
+
+      function drawFrame(f, alpha) {
+        ctx.globalAlpha = Math.max(0, Math.min(1, alpha));
+        ctx.drawImage(frames[f], 0, 0);
+      }
+
+      function tick(now) {
+        if (!started) { phaseT0 = now; started = true; }
+        var elapsed = now - phaseT0;
+        ctx.clearRect(0, 0, DISP_W, DISP_H);
+
+        if (phase === 'hold') {
+          drawFrame(cur, 1);
+          if (elapsed >= HOLD_MS) { phase = 'fade'; phaseT0 = now; }
+        } else {
+          var t = Math.min(elapsed / FADE_MS, 1);
+          var e = t < 0.5 ? 2*t*t : 1 - Math.pow(-2*t+2, 2)/2;
+          drawFrame(cur, 1 - e);
+          drawFrame(nxt, e);
+          if (t >= 1) {
+            cur = nxt;
+            nxt = (nxt + 1) % FRAMES;
+            phase = 'hold'; phaseT0 = now;
+          }
+        }
+        ctx.globalAlpha = 1;
+        requestAnimationFrame(tick);
+      }
+
+      img.onload = function() {
+        for (var f = 0; f < FRAMES; f++) frames.push(removeWhite(img, f));
+        requestAnimationFrame(tick);
+      };
+      if (img.complete && img.naturalWidth) {
+        for (var f = 0; f < FRAMES; f++) frames.push(removeWhite(img, f));
+        requestAnimationFrame(tick);
+      }
+    })();
+
+    /* ── Walkie-talkie broadcast ── */
+    (function() {
+      var walkieEl = document.getElementById('walkie');
+      var bubbleEl = document.getElementById('walkie-bubble');
+      if (!walkieEl || !bubbleEl) return;
+
+      var msgs = [
+        'This is Parash… come in. Over.',
+        'Building cool stuff. Send coffee. Over.',
+        'Git push successful. Over and out.',
+        'Deploy to prod in 3… 2… 1… Over.',
+        'Mayday! Found a bug. Over.',
+        'Target acquired: next big idea. Over.',
+        'Position: desk. Status: coding. Over.',
+        'Signal received. Switching to dark mode. Over.',
+      ];
+      var idx   = 0;
+      var hideT = null;
+
+      /* Single shared AudioContext — never creates stacking sounds */
+      var wAC        = null;
+      var activeSrcs = [];
+
+      function getAC() {
+        if (!wAC || wAC.state === 'closed') {
+          wAC = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        if (wAC.state === 'suspended') wAC.resume();
+        return wAC;
+      }
+
+      function stopAll() {
+        activeSrcs.forEach(function(n) { try { n.stop(0); } catch(e) {} });
+        activeSrcs = [];
+      }
+
+      function playSound() {
+        try {
+          var ac  = getAC();
+          stopAll();                      /* kill any previous sound first */
+          var now = ac.currentTime;
+
+          /* ── crackle burst ── */
+          var len = Math.floor(ac.sampleRate * 0.14);
+          var buf = ac.createBuffer(1, len, ac.sampleRate);
+          var d   = buf.getChannelData(0);
+          for (var i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * 0.5;
+          var cSrc  = ac.createBufferSource();
+          cSrc.buffer = buf;
+          var cGain = ac.createGain();
+          cGain.gain.setValueAtTime(0.85, now);
+          cGain.gain.exponentialRampToValueAtTime(0.001, now + 0.14);
+          cSrc.connect(cGain); cGain.connect(ac.destination);
+          cSrc.start(now); cSrc.stop(now + 0.14);
+          activeSrcs.push(cSrc);
+
+          /* ── confirmation beep ── */
+          var osc  = ac.createOscillator();
+          var oGain = ac.createGain();
+          osc.type = 'square';
+          osc.frequency.value = 1320;
+          oGain.gain.setValueAtTime(0, now + 0.14);
+          oGain.gain.linearRampToValueAtTime(0.18, now + 0.17);
+          oGain.gain.exponentialRampToValueAtTime(0.001, now + 0.34);
+          osc.connect(oGain); oGain.connect(ac.destination);
+          osc.start(now); osc.stop(now + 0.35);
+          activeSrcs.push(osc);
+
+        } catch(e) {}
+      }
+
+      walkieEl.addEventListener('click', function() {
+        playSound();
+        walkieEl.classList.remove('transmitting');
+        void walkieEl.offsetWidth;                  /* force reflow to restart anim */
+        walkieEl.classList.add('transmitting');
+        setTimeout(function() { walkieEl.classList.remove('transmitting'); }, 560);
+        clearTimeout(hideT);
+        bubbleEl.textContent = msgs[idx % msgs.length];
+        idx++;
+        bubbleEl.classList.add('show');
+        hideT = setTimeout(function() { bubbleEl.classList.remove('show'); }, 3800);
+        unlockAchievement('walkieTalkie');
+      });
+    })();
+
+    /* ── Camera shutter + polaroid ── */
+    (function() {
+      var camEl    = document.getElementById('camera');
+      var flashEl  = document.getElementById('camera-flash');
+      var polaroid = document.getElementById('polaroid-wrap');
+      var closeBtn = document.getElementById('polaroid-close');
+      var dateEl   = document.getElementById('polaroid-date');
+      if (!camEl || !flashEl || !polaroid) return;
+      function shutterSound() {
+        try {
+          var ac = new (window.AudioContext || window.webkitAudioContext)();
+          var o  = ac.createOscillator();
+          var g  = ac.createGain();
+          o.type = 'square';
+          o.frequency.setValueAtTime(900, ac.currentTime);
+          o.frequency.exponentialRampToValueAtTime(180, ac.currentTime + 0.1);
+          g.gain.setValueAtTime(0.35, ac.currentTime);
+          g.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + 0.13);
+          o.connect(g); g.connect(ac.destination);
+          o.start(); o.stop(ac.currentTime + 0.13);
+        } catch(e) {}
+      }
+      camEl.addEventListener('click', function() {
+        shutterSound();
+        flashEl.classList.add('flash');
+        setTimeout(function() { flashEl.classList.remove('flash'); }, 160);
+        if (dateEl) {
+          var now = new Date();
+          dateEl.textContent = now.toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' });
+        }
+        setTimeout(function() {
+          polaroid.classList.add('show');
+          unlockAchievement('photographer');
+        }, 280);
+      });
+      if (closeBtn) closeBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        polaroid.classList.remove('show');
+      });
+    })();
+
+    /* ── Cat petting ── */
+    (function() {
+      var catCanvas = document.getElementById('cat');
+      if (!catCanvas) return;
+      catCanvas.style.pointerEvents = 'auto';
+      catCanvas.style.cursor = 'pointer';
+      function purr() {
+        try {
+          var ac  = new (window.AudioContext || window.webkitAudioContext)();
+          var osc = ac.createOscillator();
+          var g   = ac.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(28, ac.currentTime);
+          osc.frequency.setValueAtTime(34, ac.currentTime + 0.15);
+          osc.frequency.setValueAtTime(28, ac.currentTime + 0.30);
+          osc.frequency.setValueAtTime(34, ac.currentTime + 0.45);
+          g.gain.setValueAtTime(0.45, ac.currentTime);
+          g.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + 1.2);
+          osc.connect(g); g.connect(ac.destination);
+          osc.start(); osc.stop(ac.currentTime + 1.2);
+        } catch(e) {}
+      }
+      function spawnHeart(rect) {
+        var emojis = ['❤️','🩷','🧡','💛'];
+        var h = document.createElement('div');
+        h.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+        h.style.cssText = 'position:fixed;font-size:'+randomBetween(14,22)+'px;z-index:100;pointer-events:none;'
+          + 'left:'+(rect.left + randomBetween(10, Math.max(10, rect.width - 10)))+'px;'
+          + 'top:'+(rect.top + randomBetween(0, 20))+'px;'
+          + 'animation:heartFloat 1.4s ease-out forwards';
+        document.body.appendChild(h);
+        setTimeout(function() { h.remove(); }, 1450);
+      }
+      catCanvas.addEventListener('click', function() {
+        purr();
+        var r = catCanvas.getBoundingClientRect();
+        for (var i = 0; i < 5; i++) (function(delay) {
+          setTimeout(function() { spawnHeart(r); }, delay);
+        })(i * 80);
+        unlockAchievement('catLover');
+        showToast('😸 Purrrr…', 2000);
+      });
+    })();
+
+    /* ── Paper airplane from notebooks ── */
+    (function() {
+      var nbEl = document.querySelector('.notebooks');
+      if (!nbEl) return;
+      nbEl.addEventListener('click', function() {
+        var r  = nbEl.getBoundingClientRect();
+        var pl = document.createElement('div');
+        pl.textContent = '✈️';
+        pl.style.cssText = 'position:fixed;font-size:30px;z-index:150;pointer-events:none;'
+          + 'left:'+r.right+'px;top:'+(r.top + r.height/2 - 15)+'px;transform:rotate(-15deg)';
+        document.body.appendChild(pl);
+        requestAnimationFrame(function() { requestAnimationFrame(function() {
+          pl.style.transition = 'left 2.2s cubic-bezier(0.2,0.6,0.4,1), top 2.2s ease-in, opacity 0.6s ease 1.6s, transform 2.2s ease-in-out';
+          pl.style.left      = (window.innerWidth + 60) + 'px';
+          pl.style.top       = (r.top - 130) + 'px';
+          pl.style.transform = 'rotate(5deg)';
+          pl.style.opacity   = '0';
+        }); });
+        setTimeout(function() { pl.remove(); }, 2900);
+        unlockAchievement('paperPlane');
+      });
+    })();
+
+    /* ── Cursor sparkle trail ── */
+    (function() {
+      if (window.matchMedia('(hover: none)').matches) return; /* skip on touch */
+      var COLS = ['#fff','#ffd700','#ff88cc','#88d8ff','#aaff99','#ffbb55'];
+      var lx = -999, ly = -999;
+      document.addEventListener('mousemove', function(e) {
+        if (Math.abs(e.clientX-lx) + Math.abs(e.clientY-ly) < 8) return;
+        lx = e.clientX; ly = e.clientY;
+        if (Math.random() > 0.38) return;
+        var sz = randomBetween(4,8);
+        var s  = document.createElement('div');
+        s.style.cssText = 'position:fixed;width:'+sz+'px;height:'+sz+'px;border-radius:50%;'
+          + 'pointer-events:none;z-index:9990;left:'+(e.clientX-sz/2)+'px;top:'+(e.clientY-sz/2)+'px;'
+          + 'background:'+COLS[Math.floor(Math.random()*COLS.length)]+';opacity:0.85;'
+          + 'transition:opacity 0.55s ease,transform 0.55s ease';
+        document.body.appendChild(s);
+        var dx = (Math.random()-0.5)*38, dy = (Math.random()-0.5)*38 - 14;
+        requestAnimationFrame(function() {
+          s.style.opacity   = '0';
+          s.style.transform = 'translate('+dx+'px,'+dy+'px) scale(0.2)';
+        });
+        setTimeout(function() { s.remove(); }, 620);
+      }, { passive: true });
+    })();
+
+    /* ── Laptop typing sounds while modal open ── */
+    (function() {
+      var laptopModal = document.getElementById('laptop-modal');
+      if (!laptopModal) return;
+      var typeInt = null;
+      function tap() {
+        try {
+          var ac = new (window.AudioContext || window.webkitAudioContext)();
+          var o  = ac.createOscillator();
+          var g  = ac.createGain();
+          o.type = 'square';
+          o.frequency.value = 160 + Math.random() * 280;
+          g.gain.setValueAtTime(0.07, ac.currentTime);
+          g.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + 0.04);
+          o.connect(g); g.connect(ac.destination);
+          o.start(); o.stop(ac.currentTime + 0.04);
+        } catch(e) {}
+      }
+      function startTyping() {
+        if (typeInt) return;
+        typeInt = setInterval(function() { if (Math.random() > 0.6) tap(); }, 150 + Math.random()*220);
+      }
+      function stopTyping() { clearInterval(typeInt); typeInt = null; }
+      new MutationObserver(function() {
+        laptopModal.classList.contains('open') ? startTyping() : stopTyping();
+      }).observe(laptopModal, { attributes: true });
+    })();
+
+    /* ── Housefly swatting ── */
+    (function() {
+      if (typeof fly === 'undefined' || !fly) return;
+      fly.style.pointerEvents = 'auto';
+      fly.style.cursor = 'crosshair';
+      var swatted = false;
+      fly.addEventListener('click', function() {
+        if (swatted) return;
+        if (parseFloat(fly.style.opacity) < 0.4) return;
+        swatted = true;
+        cancelAnimationFrame(flyMoveFrame);
+        clearTimeout(flyTimer);
+        stopFlyWings();
+        fly.style.transition = 'opacity 0.25s ease, transform 0.25s ease';
+        fly.style.opacity    = '0';
+        fly.style.transform  = 'scale(0.3) rotate(60deg)';
+        showToast('💨 Swatted! The fly is gone… for now.', 2800);
+        unlockAchievement('flySwatter');
+        flyTimer = setTimeout(function() {
+          swatted = false;
+          fly.style.transition = 'opacity 0.18s ease';
+          fly.style.transform  = '';
+          appearAndFly();
+        }, randomBetween(12000, 22000));
+      });
+    })();
+
+
+
+    /* ── Notebook skills modal ── */
+    (function() {
+      var nbEl  = document.querySelector('.notebooks');
+      var modal = document.getElementById('notebook-modal');
+      var close = document.getElementById('nb-close');
+      if (!nbEl || !modal) return;
+      function openModal()  { modal.classList.add('open'); unlockAchievement('notepadOpen'); }
+      function closeModal() { modal.classList.remove('open'); }
+      nbEl.addEventListener('click', openModal);
+      if (close) close.addEventListener('click', function(e) { e.stopPropagation(); closeModal(); });
+      modal.addEventListener('click', function(e) { if (e.target === modal) closeModal(); });
+      document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeModal(); });
+    })();
+
+    /* ── Emoji cursors per object ── */
+    (function() {
+      if (window.matchMedia('(hover: none)').matches) return; /* no cursor on touch */
+      var SIZE = 34;
+      function emojiCursor(emoji) {
+        try {
+          var c = document.createElement('canvas');
+          c.width = c.height = SIZE;
+          var ctx = c.getContext('2d');
+          ctx.font = Math.round(SIZE * 0.82) + 'px serif';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText(emoji, SIZE / 2, SIZE / 2 + 1);
+          return 'url(' + c.toDataURL() + ') ' + (SIZE/2) + ' ' + (SIZE/2) + ', auto';
+        } catch(e) { return 'pointer'; }
+      }
+      var map = [
+        { sel: '.camera',        emoji: '📷' },
+        { sel: '.robot',         emoji: '🤖' },
+        { sel: '.notebooks',     emoji: '📖' },
+        { sel: '#cat',           emoji: '🐾' },
+        { sel: '.walkie',        emoji: '📻' },
+        { sel: '#telephone',     emoji: '☎️'  },
+        { sel: '.laptop',        emoji: '💻' },
+        { sel: '.mobile',        emoji: '📱' },
+        { sel: '#vinyl-player',  emoji: '🎵' },
+        { sel: '.bulb',          emoji: '💡' },
+        { sel: '.gallery-frame', emoji: '🖼️'  },
+        { sel: '.mee',           emoji: '👋' },
+        { sel: '#fly',           emoji: '🪝'  },
+        { sel: '.bubble-wrap',   emoji: '🫧' },
+        { sel: '#wall-clock',    emoji: '🕐' },
+      ];
+      map.forEach(function(item) {
+        var el = document.querySelector(item.sel);
+        if (!el) return;
+        el.style.cursor = emojiCursor(item.emoji);
+      });
+    })();
+
+    /* ── Idle Screensaver ── */
+    (function() {
+      var ss      = document.getElementById('screensaver');
+      var dvd     = document.getElementById('dvd-bounce');
+      if (!ss || !dvd) return;
+      var IDLE_MS = 120000; /* 2 minutes */
+      var idleT, dvdRAF, stopDvd;
+      var x = 120, y = 80, dx = 2.3, dy = 1.6;
+      var COLORS = ['#00ffaa','#ff6b6b','#6bcfff','#ffdd6b','#cc6bff','#6bfffb'];
+      var ci = 0;
+      var zzzInterval;
+
+      function dvdTick() {
+        x += dx; y += dy;
+        var mxX = window.innerWidth  - dvd.offsetWidth;
+        var mxY = window.innerHeight - dvd.offsetHeight;
+        var hit = false;
+        if (x <= 0)   { x = 0;   dx =  Math.abs(dx); hit = true; }
+        if (x >= mxX) { x = mxX; dx = -Math.abs(dx); hit = true; }
+        if (y <= 0)   { y = 0;   dy =  Math.abs(dy); hit = true; }
+        if (y >= mxY) { y = mxY; dy = -Math.abs(dy); hit = true; }
+        if (hit) { ci = (ci + 1) % COLORS.length; dvd.style.color = COLORS[ci]; }
+        dvd.style.left = x + 'px';
+        dvd.style.top  = y + 'px';
+        dvdRAF = requestAnimationFrame(dvdTick);
+      }
+
+      function spawnZzz() {
+        var meeRect = meeEl.getBoundingClientRect();
+        var z = document.createElement('div');
+        z.className = 'zzz';
+        var zSize = randomBetween(12, 18);
+        z.style.cssText = 'font-size:'+zSize+'px;left:'+(meeRect.left + randomBetween(10,50))+'px;top:'+(meeRect.top + randomBetween(10,40))+'px';
+        z.textContent = 'Z';
+        document.body.appendChild(z);
+        setTimeout(function() { z.remove(); }, 3500);
+      }
+
+      function activateSS() {
+        document.body.classList.add('idle-mode');
+        dvdRAF = requestAnimationFrame(dvdTick);
+        zzzInterval = setInterval(spawnZzz, 1200);
+        unlockAchievement('idleMode');
+        /* Ringing phone = ignored */
+        if (telephoneEl.classList.contains('ringing')) unlockAchievement('phoneDodge');
+      }
+
+      function deactivateSS(e) {
+        if (!document.body.classList.contains('idle-mode')) return;
+        document.body.classList.remove('idle-mode');
+        cancelAnimationFrame(dvdRAF);
+        clearInterval(zzzInterval);
+        resetIdle();
+        /* Prevent the wake-click from firing anything else */
+        if (e && e.type === 'click') e.stopPropagation();
+      }
+
+      function resetIdle() {
+        clearTimeout(idleT);
+        if (!document.body.classList.contains('idle-mode'))
+          idleT = setTimeout(activateSS, IDLE_MS);
+      }
+
+      document.addEventListener('mousemove',  resetIdle, { passive: true });
+      document.addEventListener('touchstart', resetIdle, { passive: true });
+      document.addEventListener('keydown',    resetIdle);
+      ss.addEventListener('click',      deactivateSS);
+      ss.addEventListener('touchstart', deactivateSS, { once: true });
+      ss.addEventListener('mousemove',  deactivateSS, { once: true });
+      resetIdle();
+    })();
+
   </script>
+
+  <!-- Post-it notes on the wall -->
+  <div class="postit-wrap">
+    <div class="postit y" style="--r:-5deg; top:0; left:0">Ship ToolsHub v2 🚀</div>
+    <div class="postit p" style="--r:3deg; top:-8px; left:88px">Learn Three.js 📚</div>
+    <div class="postit b" style="--r:-2deg; top:28px; left:46px">Reply recruiter 😅</div>
+  </div>
+
+  <!-- Toast notification -->
+  <div id="toast"></div>
+
+  <!-- Visitor counter badge -->
+  <div id="visitor-badge">👤 Guest #<span id="visitor-count">1</span></div>
+
 </body>
 </html>
