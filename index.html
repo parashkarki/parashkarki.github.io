@@ -1385,7 +1385,7 @@
 
   <div class="mee">
     <img class="img-awake" src="Mee.png" alt="Mee">
-    <img class="img-sleep" src="Me%20Sleep.png" alt="Me Sleep">
+    <img class="img-sleep" src="Me%20sleep.png" alt="Me Sleep">
     <canvas id="mee-anim-canvas" class="mee-anim-canvas"></canvas>
   </div>
   <canvas id="fly"></canvas>
@@ -1976,6 +1976,11 @@
     catSprite.onload = initCat;
     if (catSprite.complete) initCat();
 
+    /* True on phones/tablets that have no real hover capability.
+       On these devices every mouseenter/mouseleave is a synthetic ghost
+       event fired after touch — suppressing them keeps click-only logic clean. */
+    const NO_HOVER = window.matchMedia('(hover: none)').matches;
+
     /* ── Hover annotation labels (SVG curved arrows) ── */
     const meeEl       = document.querySelector('.mee');
     const laptopEl    = document.querySelector('.laptop');
@@ -2091,9 +2096,9 @@
 
     function wireAnnotation(config) {
       config.targetEl.tabIndex = 0;
-      config.targetEl.addEventListener('mouseenter', () => showAnnotation(config));
+      config.targetEl.addEventListener('mouseenter', () => { if (NO_HOVER) return; showAnnotation(config); });
       config.targetEl.addEventListener('focus', () => showAnnotation(config));
-      config.targetEl.addEventListener('mouseleave', () => hideAnnotation(config));
+      config.targetEl.addEventListener('mouseleave', () => { if (NO_HOVER) return; hideAnnotation(config); });
       config.targetEl.addEventListener('blur', () => hideAnnotation(config));
       config.targetEl.addEventListener('click', (event) => {
         event.stopPropagation();
@@ -2342,12 +2347,15 @@
     function closeResumeModal()  { resumeModal.classList.remove('open'); }
 
     meeEl.addEventListener('mouseenter', () => {
+      if (NO_HOVER) return;
       resumePinned = false; setResumeOrigin(); openResumeModal();
     });
     meeEl.addEventListener('mouseleave', (e) => {
+      if (NO_HOVER) return;
       if (!resumePinned && !resumeWrap.contains(e.relatedTarget)) closeResumeModal();
     });
     resumeWrap.addEventListener('mouseleave', (e) => {
+      if (NO_HOVER) return;
       if (!resumePinned && !meeEl.contains(e.relatedTarget)) closeResumeModal();
     });
     meeEl.addEventListener('click', (e) => {
@@ -2392,11 +2400,12 @@
     }
 
     mobileEl.addEventListener('mouseenter', () => {
+      if (NO_HOVER) return;
       positionMobileSocials();
       mobileSocialOverlay.classList.add('show');
     });
     const hideSocials = (e) => {
-      if (socialPinned) return;
+      if (NO_HOVER || socialPinned) return;
       if (!mobileSocialOverlay.contains(e.relatedTarget) && e.relatedTarget !== mobileEl) {
         mobileSocialOverlay.classList.remove('show');
       }
@@ -2534,16 +2543,19 @@
     }
 
     telephoneEl.addEventListener('mouseenter', () => {
+      if (NO_HOVER) return;
       phonePinned = false;
       setPhoneOrigin();
       openPhoneModal();
     });
 
     telephoneEl.addEventListener('mouseleave', (e) => {
+      if (NO_HOVER) return;
       if (!phonePinned && !phoneFrame.contains(e.relatedTarget)) closePhoneModal();
     });
 
     phoneFrame.addEventListener('mouseleave', (e) => {
+      if (NO_HOVER) return;
       if (!phonePinned && !telephoneEl.contains(e.relatedTarget)) closePhoneModal();
     });
 
@@ -2791,16 +2803,19 @@
     }
 
     laptopEl.addEventListener('mouseenter', () => {
+      if (NO_HOVER) return;
       laptopPinned = false;
       setLaptopOrigin();
       openLaptopModal();
     });
 
     laptopEl.addEventListener('mouseleave', (e) => {
+      if (NO_HOVER) return;
       if (!laptopPinned && !laptopScreenWrap.contains(e.relatedTarget)) closeLaptopModal();
     });
 
     laptopScreenWrap.addEventListener('mouseleave', (e) => {
+      if (NO_HOVER) return;
       if (!laptopPinned && !laptopEl.contains(e.relatedTarget)) closeLaptopModal();
     });
 
