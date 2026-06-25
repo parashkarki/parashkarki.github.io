@@ -1148,6 +1148,171 @@
       width: 100%;
       display: block;
     }
+
+    /* ════════════════════════════════════════════════
+       MOBILE  (≤ 768 px)
+       ════════════════════════════════════════════════ */
+    @media screen and (max-width: 768px) {
+
+      /* background-attachment:fixed breaks on iOS */
+      body { background-attachment: scroll; }
+
+      /* Remove 300 ms tap delay on interactive elements */
+      .bulb, .mee, .laptop, .mobile, .telephone,
+      .lsc-dot, .phone-close-btn, .phone-send-btn,
+      .resume-dl-btn, .soc-bubble {
+        touch-action: manipulation;
+      }
+
+      /* ── Wall decorations ── */
+      .bulb          { width: 55px; top: 8px; right: 10px; }
+      .bulb::before  { top: -34px; height: 42px; }
+      .map           { width: 26vw; top: 3%; left: 71%; }
+      .gallery-frame { width: 17vw; top: 5%; left: 24%; }
+
+      /* ── Table ── */
+      .table { width: 90vw; }
+
+      /* ── Character ── */
+      .mee { width: 30vw; bottom: 32vw; left: 47%; }
+
+      /* ── Laptop on table ── */
+      .laptop {
+        width: 22vw;
+        bottom: 30vw;
+        left: 54%;
+        transform: translateX(-50%);
+      }
+
+      /* ── Mobile phone on table ── */
+      .mobile {
+        width: 14vw;
+        bottom: 31vw;
+        left: calc(54% + 12vw);
+        transform: rotate(8deg);
+      }
+
+      /* ── Telephone on table ── */
+      .telephone {
+        width: 10vw;
+        bottom: 30vw;
+        left: calc(50% - 32vw);
+      }
+
+      /* Disable hover float animations — touch screens don't need them */
+      .mee:hover,       .mee img:hover        { animation: none !important; }
+      .laptop:hover,    .laptop img:hover      { animation: none !important; }
+      .mobile:hover,    .mobile img:hover      { animation: none !important; }
+      .telephone:hover, .telephone img:hover   { animation: none !important; }
+
+      /* ── Annotations: too cramped on mobile ── */
+      #annot-svg { display: none !important; }
+
+      /* ── Social bubbles: bigger tap targets ── */
+      .soc-bubble { width: 40px; height: 40px; font-size: 16px; }
+
+      /* ─────────────────────────────────────────────────
+         LAPTOP MODAL → full-screen slide-up
+      ───────────────────────────────────────────────── */
+      .laptop-modal-overlay {
+        inset: 0 !important;
+        left: 0 !important; top: 0 !important;
+        right: 0 !important; bottom: 0 !important;
+      }
+      .laptop-screen-wrap {
+        transform: translateY(110%) !important;
+        opacity: 1 !important;
+        transition: transform 0.40s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        width: 100% !important;
+        height: 100% !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: stretch !important;
+      }
+      .laptop-modal-overlay.open .laptop-screen-wrap {
+        transform: translateY(0) !important;
+      }
+      .laptop-screen-frame {
+        width: 100% !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        flex: 1 !important;
+        display: flex !important;
+        flex-direction: column !important;
+        min-height: 0 !important;
+      }
+      .lsc-browser-chrome { cursor: default !important; flex-shrink: 0; }
+      .lsc-page {
+        flex: 1 !important;
+        height: auto !important;
+        min-height: 0 !important;
+      }
+      .laptop-base-bar {
+        width: 100% !important;
+        border-radius: 0 !important;
+        flex-shrink: 0;
+      }
+      .lsc-resize-handle { display: none !important; }
+
+      /* ─────────────────────────────────────────────────
+         PHONE MODAL → full-screen slide-up
+      ───────────────────────────────────────────────── */
+      .phone-modal-overlay {
+        inset: 0 !important;
+        left: 0 !important; top: 0 !important;
+        right: 0 !important; bottom: 0 !important;
+      }
+      .phone-frame {
+        width: 100% !important;
+        height: 100% !important;
+        border-radius: 0 !important;
+        border: none !important;
+        padding: 0 !important;
+        align-items: stretch !important;
+        transform: translateY(110%) !important;
+        opacity: 1 !important;
+        transition: transform 0.40s cubic-bezier(0.4, 0, 0.2, 1) !important;
+      }
+      .phone-modal-overlay.open .phone-frame {
+        transform: translateY(0) !important;
+      }
+      .phone-notch    { display: none !important; }
+      .phone-home-bar { display: none !important; }
+      .phone-screen {
+        width: 100% !important;
+        border-radius: 0 !important;
+      }
+
+      /* ─────────────────────────────────────────────────
+         RESUME MODAL → bottom sheet slide-up
+      ───────────────────────────────────────────────── */
+      .mee-resume-overlay {
+        left: 0 !important;
+        right: 0 !important;
+        bottom: 0 !important;
+        top: auto !important;
+        max-height: 88vh;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+      .resume-wrap {
+        transform: translateY(110%) !important;
+        opacity: 1 !important;
+        transition: transform 0.40s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        width: 100% !important;
+      }
+      .mee-resume-overlay.open .resume-wrap {
+        transform: translateY(0) !important;
+      }
+      .resume-topbar { border-radius: 16px 16px 0 0 !important; }
+      .resume-card   { width: 100% !important; max-width: 100% !important; border-radius: 0 !important; }
+    }
+
+    /* ── Resume sidebar stacks on very narrow phones ── */
+    @media screen and (max-width: 440px) {
+      .rc-body { flex-direction: column !important; }
+      .rc-left { width: 100% !important; border-right: none !important; border-bottom: 1px solid #e5e7eb; }
+    }
   </style>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 </head>
@@ -2314,6 +2479,43 @@
           e.stopImmediatePropagation();
         }
       }, true);
+
+      // ── Touch drag support ──
+      telephoneEl.addEventListener('touchstart', e => {
+        if (e.touches.length !== 1) return;
+        const t = e.touches[0];
+        dragging  = true;
+        dragMoved = false;
+        startX = t.clientX;
+        startY = t.clientY;
+        const rect = telephoneEl.getBoundingClientRect();
+        const cx = rect.left + rect.width  / 2;
+        const cy = rect.top  + rect.height / 2;
+        offX = t.clientX - cx;
+        offY = t.clientY - cy;
+        telephoneEl.style.top    = (cy - telephoneEl.offsetHeight / 2) + 'px';
+        telephoneEl.style.left   = (cx - telephoneEl.offsetWidth  / 2) + 'px';
+        telephoneEl.style.bottom = 'auto';
+      }, { passive: true });
+
+      document.addEventListener('touchmove', e => {
+        if (!dragging || e.touches.length !== 1) return;
+        const t = e.touches[0];
+        if (!dragMoved && Math.hypot(t.clientX - startX, t.clientY - startY) < 4) return;
+        if (!dragMoved) { dragMoved = true; telephoneEl.classList.add('dragging'); }
+        const newCx = t.clientX - offX;
+        const newCy = t.clientY - offY;
+        telephoneEl.style.left = (newCx - telephoneEl.offsetWidth  / 2) + 'px';
+        telephoneEl.style.top  = (newCy - telephoneEl.offsetHeight / 2) + 'px';
+        if (typeof phonePinned !== 'undefined' && phonePinned) setPhoneOrigin();
+        e.preventDefault();
+      }, { passive: false });
+
+      document.addEventListener('touchend', () => {
+        if (!dragging) return;
+        dragging = false;
+        telephoneEl.classList.remove('dragging');
+      });
     })();
 
     /* ── Telephone → phone modal (hover to preview, click to pin) ── */
@@ -2679,6 +2881,43 @@
           e.stopImmediatePropagation();
         }
       }, true);
+
+      // ── Touch drag support ──
+      mobileEl.addEventListener('touchstart', e => {
+        if (e.touches.length !== 1) return;
+        const t = e.touches[0];
+        dragging  = true;
+        dragMoved = false;
+        startX = t.clientX;
+        startY = t.clientY;
+        const rect = mobileEl.getBoundingClientRect();
+        const cx = rect.left + rect.width  / 2;
+        const cy = rect.top  + rect.height / 2;
+        offX = t.clientX - cx;
+        offY = t.clientY - cy;
+        mobileEl.style.top    = (cy - mobileEl.offsetHeight / 2) + 'px';
+        mobileEl.style.left   = (cx - mobileEl.offsetWidth  / 2) + 'px';
+        mobileEl.style.bottom = 'auto';
+      }, { passive: true });
+
+      document.addEventListener('touchmove', e => {
+        if (!dragging || e.touches.length !== 1) return;
+        const t = e.touches[0];
+        if (!dragMoved && Math.hypot(t.clientX - startX, t.clientY - startY) < 4) return;
+        if (!dragMoved) { dragMoved = true; mobileEl.classList.add('dragging'); }
+        const newCx = t.clientX - offX;
+        const newCy = t.clientY - offY;
+        mobileEl.style.left = (newCx - mobileEl.offsetWidth  / 2) + 'px';
+        mobileEl.style.top  = (newCy - mobileEl.offsetHeight / 2) + 'px';
+        positionMobileSocials();
+        e.preventDefault();
+      }, { passive: false });
+
+      document.addEventListener('touchend', () => {
+        if (!dragging) return;
+        dragging = false;
+        mobileEl.classList.remove('dragging');
+      });
     })();
 
     /* ── EmailJS ── */
